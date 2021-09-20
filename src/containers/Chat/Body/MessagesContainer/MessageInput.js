@@ -35,6 +35,7 @@ MessageInput.propTypes = {
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
+  onSelectGifButtonClick: PropTypes.func.isRequired,
   onSelectVideoButtonClick: PropTypes.func.isRequired,
   recepientId: PropTypes.number,
   socketConnected: PropTypes.bool,
@@ -51,6 +52,7 @@ function MessageInput({
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
+  onSelectGifButtonClick,
   onSelectVideoButtonClick,
   recepientId,
   socketConnected,
@@ -301,7 +303,7 @@ function MessageInput({
           }}
           onPaste={handlePaste}
           style={{
-            marginRight: '0.7rem',
+            marginRight: '1rem',
             ...(messageExceedsCharLimit?.style || {})
           }}
         />
@@ -324,7 +326,7 @@ function MessageInput({
         <AddButtons
           disabled={loading || !!banned?.chat || !socketConnected}
           onUploadButtonClick={() => FileInputRef.current.click()}
-          onSelectGifButtonClick={() => console.log('clicked')}
+          onSelectGifButtonClick={onSelectGifButtonClick}
           onSelectVideoButtonClick={onSelectVideoButtonClick}
         />
         {!socketConnected && (

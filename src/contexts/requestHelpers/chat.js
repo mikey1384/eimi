@@ -398,11 +398,12 @@ export default function chatRequestHelpers({ auth, handleError }) {
     },
     async searchTenor(text) {
       const limit = 8;
-      const data = await request.get(
+      const {
+        data: { results }
+      } = await request.get(
         `https://g.tenor.com/v1/search?q=${text}&key=${TENOR_KEY}&limit=${limit}`
       );
-      console.log(data);
-      return Promise.resolve(data);
+      return Promise.resolve(results);
     },
     async searchUserToInvite(text) {
       try {

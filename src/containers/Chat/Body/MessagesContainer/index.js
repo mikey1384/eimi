@@ -19,6 +19,7 @@ import FullTextReveal from 'components/Texts/FullTextReveal';
 import SubjectMsgsModal from '../../Modals/SubjectMsgsModal';
 import InviteUsersModal from '../../Modals/InviteUsers';
 import ChessModal from '../../Modals/ChessModal';
+import GifModal from '../../Modals/GifModal';
 import SelectVideoModal from '../../Modals/SelectVideoModal';
 import SelectNewOwnerModal from '../../Modals/SelectNewOwnerModal';
 import SettingsModal from '../../Modals/SettingsModal';
@@ -111,6 +112,7 @@ function MessagesContainer({
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
   const [loadMoreButtonLock, setLoadMoreButtonLock] = useState(false);
   const [newUnseenMessage, setNewUnseenMessage] = useState(false);
+  const [gifModalShown, setGifModalShown] = useState(false);
   const [selectVideoModalShown, setSelectVideoModalShown] = useState(false);
   const [leaving, setLeaving] = useState(false);
   const [deleteModal, setDeleteModal] = useState({
@@ -1023,6 +1025,7 @@ function MessagesContainer({
               setTextAreaHeight(height > 46 ? height : 0);
             }
           }}
+          onSelectGifButtonClick={() => setGifModalShown(true)}
           onSelectVideoButtonClick={() => setSelectVideoModalShown(true)}
           recepientId={recepientId}
           subjectId={subjectId}
@@ -1077,6 +1080,12 @@ function MessagesContainer({
           onHide={() => setLeaveConfirmModalShown(false)}
           onConfirm={handleLeaveConfirm}
           disabled={leaving}
+        />
+      )}
+      {gifModalShown && (
+        <GifModal
+          onHide={() => setGifModalShown(false)}
+          onSend={(selectedGif) => console.log(selectedGif)}
         />
       )}
       {selectVideoModalShown && (
