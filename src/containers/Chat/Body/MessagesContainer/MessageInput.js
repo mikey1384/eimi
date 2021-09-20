@@ -301,7 +301,7 @@ function MessageInput({
           }}
           onPaste={handlePaste}
           style={{
-            marginRight: '1rem',
+            marginRight: '0.7rem',
             ...(messageExceedsCharLimit?.style || {})
           }}
         />
@@ -324,6 +324,7 @@ function MessageInput({
         <AddButtons
           disabled={loading || !!banned?.chat || !socketConnected}
           onUploadButtonClick={() => FileInputRef.current.click()}
+          onSelectGifButtonClick={() => console.log('clicked')}
           onSelectVideoButtonClick={onSelectVideoButtonClick}
         />
         {!socketConnected && (

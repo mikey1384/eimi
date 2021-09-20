@@ -29,6 +29,7 @@ export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
 export const RANKING_FILTER_LABEL = 'Ranking';
 export const MAX_PROFILE_PIC_SIZE = 10000;
 export const S3URL = `https://${process.env.REACT_APP_AWS_S3_BUCKET_NAME}.s3.amazonaws.com`;
+export const TENOR_KEY = process.env.REACT_APP_TENOR_KEY;
 export const TURN_USERNAME = process.env.REACT_APP_TURN_USERNAME;
 export const TURN_PASSWORD = process.env.REACT_APP_TURN_PASSWORD;
 export const REWARD_VALUE = 200;
