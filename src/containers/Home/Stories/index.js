@@ -14,7 +14,7 @@ import { useAppContext, useHomeContext, useNotiContext } from 'contexts';
 
 const categoryObj = {
   uploads: {
-    filter: 'subject',
+    filter: 'all', // subject
     orderBy: 'lastInteraction'
   },
   recommended: {
@@ -60,7 +60,6 @@ export default function Stories() {
       onSetDisplayOrder
     }
   } = useHomeContext();
-
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
@@ -120,7 +119,7 @@ export default function Stories() {
     async function handleLoadFeeds() {
       setLoadingFeeds(true);
       categoryRef.current = 'uploads';
-      onChangeCategory('recommended');
+      onChangeCategory('uploads');
       onChangeSubFilter('all');
       onResetNumNewPosts();
       try {
@@ -160,14 +159,16 @@ export default function Stories() {
   return (
     <ErrorBoundary>
       <div style={{ width: '100%' }} ref={ContainerRef}>
-        <HomeFilter
-          category={category}
-          changeCategory={handleChangeCategory}
-          displayOrder={displayOrder}
-          selectedFilter={subFilter}
-          applyFilter={applyFilter}
-          setDisplayOrder={handleDisplayOrder}
-        />
+        {false && (
+          <HomeFilter
+            category={category}
+            changeCategory={handleChangeCategory}
+            displayOrder={displayOrder}
+            selectedFilter={subFilter}
+            applyFilter={applyFilter}
+            setDisplayOrder={handleDisplayOrder}
+          />
+        )}
         <InputPanel />
         <div style={{ width: '100%' }}>
           {loadingFeeds && <Loading text="Loading Feeds..." />}
@@ -190,7 +191,7 @@ export default function Stories() {
           )}
           {loaded && !loadingFeeds && feeds.length > 0 && (
             <>
-              {feedsOutdated && (
+              {feedsOutdated && false && (
                 <Banner
                   color="gold"
                   onClick={() => window.location.reload()}

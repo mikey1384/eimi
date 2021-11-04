@@ -72,7 +72,7 @@ export default function HomeFilter({
           fontSize: '1.6rem'
         }}
       >
-        {['uploads', 'recommended', 'videos'].map((elem) => (
+        {['uploads', 'videos'].map((elem) => (
           <nav
             key={elem}
             className={activeTab === elem ? 'active' : ''}

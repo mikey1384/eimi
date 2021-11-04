@@ -5,7 +5,7 @@ import HomeReducer from './reducer';
 
 export const HomeContext = createContext();
 export const initialHomeState = {
-  category: 'recommended',
+  category: 'uploads', // recommended
   displayOrder: 'desc',
   feeds: [],
   feedsOutdated: false,

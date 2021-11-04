@@ -131,7 +131,7 @@ function Notification({ className, location, style }) {
             flexDirection: 'column'
           }}
         >
-          {loaded && location === 'home' && (
+          {loaded && location === 'home' && false && (
             <ChatFeeds
               myId={userId}
               content={content}
