@@ -181,46 +181,50 @@ export default function HomeMenuItems({ history, style = {} }) {
             </nav>
           )}
         />
-        <Route
-          exact
-          path="/earn"
-          children={({ match }) => (
-            <nav
-              className={match ? 'active' : ''}
-              onClick={() => history.push('/earn')}
-            >
-              <a href="/earn" onClick={(e) => e.preventDefault()}>
-                <div className="homemenu__item">
-                  <div className="selection" />
-                  <div className="icon">
-                    <Icon icon="bolt" size="1x" />
+        {false && (
+          <Route
+            exact
+            path="/earn"
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                onClick={() => history.push('/earn')}
+              >
+                <a href="/earn" onClick={(e) => e.preventDefault()}>
+                  <div className="homemenu__item">
+                    <div className="selection" />
+                    <div className="icon">
+                      <Icon icon="bolt" size="1x" />
+                    </div>
+                    <div className="label">Earn XP</div>
                   </div>
-                  <div className="label">Earn XP</div>
-                </div>
-              </a>
-            </nav>
-          )}
-        />
-        <Route
-          exact
-          path="/store"
-          children={({ match }) => (
-            <nav
-              className={match ? 'active' : ''}
-              onClick={() => history.push('/store')}
-            >
-              <a href="/store" onClick={(e) => e.preventDefault()}>
-                <div className="homemenu__item">
-                  <div className="selection" />
-                  <div className="icon">
-                    <Icon icon="shopping-bag" size="1x" />
+                </a>
+              </nav>
+            )}
+          />
+        )}
+        {false && (
+          <Route
+            exact
+            path="/store"
+            children={({ match }) => (
+              <nav
+                className={match ? 'active' : ''}
+                onClick={() => history.push('/store')}
+              >
+                <a href="/store" onClick={(e) => e.preventDefault()}>
+                  <div className="homemenu__item">
+                    <div className="selection" />
+                    <div className="icon">
+                      <Icon icon="shopping-bag" size="1x" />
+                    </div>
+                    <div className="label">Store</div>
                   </div>
-                  <div className="label">Store</div>
-                </div>
-              </a>
-            </nav>
-          )}
-        />
+                </a>
+              </nav>
+            )}
+          />
+        )}
         {managementLevel > 0 && deviceIsMobile && (
           <Route
             exact
@@ -248,18 +252,21 @@ export default function HomeMenuItems({ history, style = {} }) {
             fontSize: '1rem',
             display: 'flex',
             justifyContent: 'flex-start',
-            marginTop: '1.5rem',
+            // marginTop: '1.5rem',
             marginLeft: '1rem',
-            marginBottom: '0.5rem',
+            // marginBottom: '0.5rem',
+            marginBottom: '1rem',
             color: Color.gray()
           }}
         >
-          <div>
-            © {year} Twinkle Network ·{' '}
-            <Link to="/privacy" style={{ color: Color.gray() }}>
-              Privacy
-            </Link>
-          </div>
+          {false && (
+            <div>
+              © {year} Twinkle Network ·{' '}
+              <Link to="/privacy" style={{ color: Color.gray() }}>
+                Privacy
+              </Link>
+            </div>
+          )}
         </div>
       </div>
     </ErrorBoundary>

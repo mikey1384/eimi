@@ -71,13 +71,11 @@ export default function Subjects() {
     }
 
     async function handleLoadRecommendedSubjects() {
-      const {
-        results,
-        loadMoreButton: loadMoreRecommendsButton
-      } = await loadRecommendedUploads({
-        contentType: 'subject',
-        limit: 5
-      });
+      const { results, loadMoreButton: loadMoreRecommendsButton } =
+        await loadRecommendedUploads({
+          contentType: 'subject',
+          limit: 5
+        });
       onLoadRecommendedSubjects({
         subjects: results,
         loadMoreButton: loadMoreRecommendsButton
@@ -98,22 +96,26 @@ export default function Subjects() {
             onExpand={() => onSetFeaturedSubjectsExpanded(true)}
           />
         )}
-        <MadeByUsers
-          style={{ marginTop: '2.5rem' }}
-          expanded={byUsersExpanded}
-          subjects={byUsers}
-          loadMoreButton={byUsersLoadMoreButton}
-          loaded={byUsersLoaded}
-          onExpand={() => onSetByUserSubjectsExpanded(true)}
-        />
-        <Recommended
-          style={{ marginTop: '2.5rem' }}
-          expanded={recommendedExpanded}
-          subjects={recommendeds}
-          loadMoreButton={recommendedLoadMoreButton}
-          loaded={recommendedLoaded}
-          onExpand={() => onSetRecommendedSubjectsExpanded(true)}
-        />
+        {false && (
+          <MadeByUsers
+            style={{ marginTop: '2.5rem' }}
+            expanded={byUsersExpanded}
+            subjects={byUsers}
+            loadMoreButton={byUsersLoadMoreButton}
+            loaded={byUsersLoaded}
+            onExpand={() => onSetByUserSubjectsExpanded(true)}
+          />
+        )}
+        {false && (
+          <Recommended
+            style={{ marginTop: '2.5rem' }}
+            expanded={recommendedExpanded}
+            subjects={recommendeds}
+            loadMoreButton={recommendedLoadMoreButton}
+            loaded={recommendedLoaded}
+            onExpand={() => onSetRecommendedSubjectsExpanded(true)}
+          />
+        )}
       </ErrorBoundary>
     </div>
   );

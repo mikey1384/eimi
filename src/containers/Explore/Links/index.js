@@ -120,27 +120,31 @@ export default function Links() {
 
   return (
     <div>
-      <SectionPanel
-        title="Made by Twinkle Users"
-        emptyMessage="No User Made Content"
-        isEmpty={byUserLinks.length === 0}
-        loaded={byUserLoaded}
-        onLoadMore={handleLoadMoreByUserLinks}
-        loadMoreButtonShown={loadMoreByUserLinksButtonShown}
-      >
-        <LinkGroup links={byUserLinks} />
-      </SectionPanel>
-      <SectionPanel
-        title="Recommended"
-        style={{ marginTop: '2.5rem' }}
-        emptyMessage="No Recommended Links"
-        isEmpty={recommendeds.length === 0}
-        loaded={recommendedsLoaded}
-        onLoadMore={handleLoadMoreRecommendeds}
-        loadMoreButtonShown={loadMoreRecommendedsButtonShown}
-      >
-        <LinkGroup links={recommendeds} />
-      </SectionPanel>
+      {false && (
+        <SectionPanel
+          title="Made by Twinkle Users"
+          emptyMessage="No User Made Content"
+          isEmpty={byUserLinks.length === 0}
+          loaded={byUserLoaded}
+          onLoadMore={handleLoadMoreByUserLinks}
+          loadMoreButtonShown={loadMoreByUserLinksButtonShown}
+        >
+          <LinkGroup links={byUserLinks} />
+        </SectionPanel>
+      )}
+      {false && (
+        <SectionPanel
+          title="Recommended"
+          style={{ marginTop: '2.5rem' }}
+          emptyMessage="No Recommended Links"
+          isEmpty={recommendeds.length === 0}
+          loaded={recommendedsLoaded}
+          onLoadMore={handleLoadMoreRecommendeds}
+          loadMoreButtonShown={loadMoreRecommendedsButtonShown}
+        >
+          <LinkGroup links={recommendeds} />
+        </SectionPanel>
+      )}
       <SectionPanel
         title="All Links"
         style={{ marginTop: '2.5rem' }}

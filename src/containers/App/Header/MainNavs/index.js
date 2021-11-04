@@ -290,12 +290,14 @@ function MainNavs({
           imgLabel={contentIconType}
         />
       )}
-      <Nav
-        to={`/missions`}
-        pathname={pathname}
-        className="mobile"
-        imgLabel="tasks"
-      />
+      {false && (
+        <Nav
+          to={`/missions`}
+          pathname={pathname}
+          className="mobile"
+          imgLabel="tasks"
+        />
+      )}
       {!banned?.chat && (
         <Nav
           to={chatButtonPath}
@@ -349,15 +351,17 @@ function MainNavs({
           {contentNav.substring(0, contentNav.length - 1).toUpperCase()}
         </Nav>
       )}
-      <Nav
-        to={`/missions`}
-        pathname={pathname}
-        className="desktop"
-        style={{ marginLeft: '2rem' }}
-        imgLabel="tasks"
-      >
-        MISSIONS
-      </Nav>
+      {false && (
+        <Nav
+          to={`/missions`}
+          pathname={pathname}
+          className="desktop"
+          style={{ marginLeft: '2rem' }}
+          imgLabel="tasks"
+        >
+          MISSIONS
+        </Nav>
+      )}
       <div
         className={css`
           margin-left: 2rem;
@@ -378,7 +382,7 @@ function MainNavs({
           </Nav>
         )}
       </div>
-      {userId && typeof twinkleCoins === 'number' && (
+      {false && userId && typeof twinkleCoins === 'number' && (
         <div
           className={`mobile ${css`
             @media (max-width: ${mobileMaxWidth}) {

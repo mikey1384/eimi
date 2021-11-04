@@ -61,7 +61,7 @@ function AccountMenu({ className, history }) {
 
   return (
     <div className="desktop" style={{ display: 'flex', alignItems: 'center' }}>
-      {loggedIn && (
+      {loggedIn && false && (
         <div
           onMouseEnter={() => setTwinkleCoinsHovered(twinkleCoins > 999)}
           onMouseLeave={() => setTwinkleCoinsHovered(false)}
