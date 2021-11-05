@@ -122,8 +122,8 @@ function ContentInput() {
         return (
           <>
             This video is{' '}
-            <span style={{ color: Color.green() }}>
-              mostly for entertainment
+            <span style={{ color: Color.pink() }}>
+              purely for entertainment
             </span>
             , but {`it's`} good for English listening
           </>
