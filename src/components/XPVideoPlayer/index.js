@@ -351,7 +351,7 @@ function XPVideoPlayer({
 
   return (
     <ErrorBoundary style={style}>
-      {byUser && !isChat && (
+      {byUser && !isChat && false && (
         <div
           className={css`
             background: ${Color[themeColor](

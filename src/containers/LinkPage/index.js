@@ -296,7 +296,7 @@ export default function LinkPage({
           onEditDone={handleEditLinkPage}
           userIsUploader={userIsUploader}
         />
-        {!!byUser && (
+        {!!byUser && false && (
           <div
             style={{
               padding: '0.7rem',

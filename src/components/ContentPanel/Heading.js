@@ -6,7 +6,7 @@ import UsernameText from 'components/Texts/UsernameText';
 import { useHistory } from 'react-router-dom';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
-import { useMyState } from 'helpers/hooks';
+// import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
 
 Heading.propTypes = {
@@ -32,7 +32,7 @@ function Heading({
   action,
   contentObj,
   contentObj: {
-    byUser,
+    // byUser,
     commentId,
     contentType,
     id,
@@ -45,7 +45,7 @@ function Heading({
   }
 }) {
   const history = useHistory();
-  const { profileTheme } = useMyState();
+  // const { profileTheme } = useMyState();
   const MemoizedComponent = useMemo(() => {
     const contentLabel =
       rootType === 'url'
@@ -90,7 +90,9 @@ function Heading({
             <ContentLink
               content={{ id, title: 'subject ' }}
               contentType={contentType}
-              style={{ color: byUser ? Color[profileTheme]() : Color.green() }}
+              style={{
+                color: /* byUser ? Color[profileTheme]() : */ Color.green()
+              }}
             />
             {rootObj.id && (
               <>
@@ -152,12 +154,10 @@ function Heading({
     }
   }, [
     action,
-    byUser,
     commentId,
     contentObj,
     contentType,
     id,
-    profileTheme,
     replyId,
     rootObj,
     rootType,
