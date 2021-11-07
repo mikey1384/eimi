@@ -442,16 +442,18 @@ export default function Details({
                   </span>
                 </Button>
               )}
-              <Button
-                color="brownOrange"
-                style={{ marginLeft: '1rem' }}
-                skeuomorphic
-                filled={isRecommendedByUser}
-                disabled={recommendationInterfaceShown}
-                onClick={() => setRecommendationInterfaceShown(true)}
-              >
-                <Icon icon="star" />
-              </Button>
+              {false && (
+                <Button
+                  color="brownOrange"
+                  style={{ marginLeft: '1rem' }}
+                  skeuomorphic
+                  filled={isRecommendedByUser}
+                  disabled={recommendationInterfaceShown}
+                  onClick={() => setRecommendationInterfaceShown(true)}
+                >
+                  <Icon icon="star" />
+                </Button>
+              )}
             </div>
           </div>
         </div>

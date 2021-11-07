@@ -376,16 +376,18 @@ export default function SubjectPanel({
                     </span>
                   </Button>
                 )}
-                <Button
-                  color="brownOrange"
-                  style={{ fontSize: '2rem', marginLeft: '1rem' }}
-                  skeuomorphic
-                  filled={isRecommendedByUser}
-                  disabled={recommendationInterfaceShown}
-                  onClick={() => setRecommendationInterfaceShown(true)}
-                >
-                  <Icon icon="star" />
-                </Button>
+                {false && (
+                  <Button
+                    color="brownOrange"
+                    style={{ fontSize: '2rem', marginLeft: '1rem' }}
+                    skeuomorphic
+                    filled={isRecommendedByUser}
+                    disabled={recommendationInterfaceShown}
+                    onClick={() => setRecommendationInterfaceShown(true)}
+                  >
+                    <Icon icon="star" />
+                  </Button>
+                )}
               </div>
             )}
             {false && (

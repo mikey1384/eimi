@@ -391,16 +391,18 @@ export default function LinkPage({
               />
             </div>
           </div>
-          <Button
-            style={{ right: '1rem', bottom: '0.5rem', position: 'absolute' }}
-            color="brownOrange"
-            skeuomorphic
-            filled={isRecommendedByUser}
-            disabled={recommendationInterfaceShown}
-            onClick={() => setRecommendationInterfaceShown(true)}
-          >
-            <Icon icon="star" />
-          </Button>
+          {false && (
+            <Button
+              style={{ right: '1rem', bottom: '0.5rem', position: 'absolute' }}
+              color="brownOrange"
+              skeuomorphic
+              filled={isRecommendedByUser}
+              disabled={recommendationInterfaceShown}
+              onClick={() => setRecommendationInterfaceShown(true)}
+            >
+              <Icon icon="star" />
+            </Button>
+          )}
         </div>
         {recommendationInterfaceShown && (
           <RecommendationInterface

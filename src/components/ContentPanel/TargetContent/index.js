@@ -396,19 +396,21 @@ export default function TargetContent({
                         onLinkClick={() => setUserListModalShown(true)}
                       />
                     </div>
-                    <div
-                      style={{ display: 'flex', alignItems: 'center' }}
-                      className="right"
-                    >
-                      <Button
-                        color="brownOrange"
-                        filled={isRecommendedByUser}
-                        disabled={recommendationInterfaceShown}
-                        onClick={() => setRecommendationInterfaceShown(true)}
+                    {false && (
+                      <div
+                        style={{ display: 'flex', alignItems: 'center' }}
+                        className="right"
                       >
-                        <Icon icon="star" />
-                      </Button>
-                    </div>
+                        <Button
+                          color="brownOrange"
+                          filled={isRecommendedByUser}
+                          disabled={recommendationInterfaceShown}
+                          onClick={() => setRecommendationInterfaceShown(true)}
+                        >
+                          <Icon icon="star" />
+                        </Button>
+                      </div>
+                    )}
                   </ErrorBoundary>
                 )}
               </div>

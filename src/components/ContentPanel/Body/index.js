@@ -456,14 +456,16 @@ export default function Body({
                   className="right"
                   style={{ position: 'relative', marginRight: 0 }}
                 >
-                  <Button
-                    color="brownOrange"
-                    filled={isRecommendedByUser}
-                    disabled={recommendationInterfaceShown}
-                    onClick={() => setRecommendationInterfaceShown(true)}
-                  >
-                    <Icon icon="star" />
-                  </Button>
+                  {false && (
+                    <Button
+                      color="brownOrange"
+                      filled={isRecommendedByUser}
+                      disabled={recommendationInterfaceShown}
+                      onClick={() => setRecommendationInterfaceShown(true)}
+                    >
+                      <Icon icon="star" />
+                    </Button>
+                  )}
                   {(contentType === 'subject' ||
                     contentType === 'video' ||
                     contentType === 'url') && (

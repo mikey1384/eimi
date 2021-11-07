@@ -464,16 +464,18 @@ function Reply({
                         />
                       </small>
                     </div>
-                    <div>
-                      <Button
-                        color="brownOrange"
-                        filled={isRecommendedByUser}
-                        disabled={recommendationInterfaceShown}
-                        onClick={() => setRecommendationInterfaceShown(true)}
-                      >
-                        <Icon icon="star" />
-                      </Button>
-                    </div>
+                    {false && (
+                      <div>
+                        <Button
+                          color="brownOrange"
+                          filled={isRecommendedByUser}
+                          disabled={recommendationInterfaceShown}
+                          onClick={() => setRecommendationInterfaceShown(true)}
+                        >
+                          <Icon icon="star" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
