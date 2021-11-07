@@ -620,7 +620,7 @@ function Comment({
                 </div>
               )}
             </div>
-            {!isPreview && (
+            {!isPreview && false && (
               <RecommendationStatus
                 style={{ marginTop: likes.length > 0 ? '0.5rem' : '1rem' }}
                 contentType="comment"

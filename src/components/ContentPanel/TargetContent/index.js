@@ -412,7 +412,7 @@ export default function TargetContent({
                   </ErrorBoundary>
                 )}
               </div>
-              {comment && (
+              {comment && false && (
                 <RecommendationStatus
                   style={{
                     marginTop: 0,

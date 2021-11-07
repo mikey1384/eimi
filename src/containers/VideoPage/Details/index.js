@@ -455,16 +455,18 @@ export default function Details({
             </div>
           </div>
         </div>
-        <RecommendationStatus
-          style={{
-            marginTop: '1rem',
-            marginBottom: 0,
-            marginLeft: '-1rem',
-            marginRight: '-1rem'
-          }}
-          contentType="video"
-          recommendations={recommendations}
-        />
+        {false && (
+          <RecommendationStatus
+            style={{
+              marginTop: '1rem',
+              marginBottom: 0,
+              marginLeft: '-1rem',
+              marginRight: '-1rem'
+            }}
+            contentType="video"
+            recommendations={recommendations}
+          />
+        )}
         {recommendationInterfaceShown && (
           <RecommendationInterface
             style={{

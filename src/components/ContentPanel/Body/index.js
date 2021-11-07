@@ -511,11 +511,13 @@ export default function Body({
             </div>
           </div>
         )}
-        <RecommendationStatus
-          style={{ marginBottom: '1rem' }}
-          contentType={contentType}
-          recommendations={recommendations}
-        />
+        {false && (
+          <RecommendationStatus
+            style={{ marginBottom: '1rem' }}
+            contentType={contentType}
+            recommendations={recommendations}
+          />
+        )}
         {recommendationInterfaceShown && (
           <RecommendationInterface
             contentId={contentId}

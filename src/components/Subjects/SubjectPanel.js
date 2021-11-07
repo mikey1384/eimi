@@ -388,15 +388,17 @@ export default function SubjectPanel({
                 </Button>
               </div>
             )}
-            <RecommendationStatus
-              style={{
-                marginBottom: '1rem',
-                marginLeft: '-1rem',
-                marginRight: '-1rem'
-              }}
-              contentType="subject"
-              recommendations={recommendations}
-            />
+            {false && (
+              <RecommendationStatus
+                style={{
+                  marginBottom: '1rem',
+                  marginLeft: '-1rem',
+                  marginRight: '-1rem'
+                }}
+                contentType="subject"
+                recommendations={recommendations}
+              />
+            )}
             {recommendationInterfaceShown && (
               <RecommendationInterface
                 contentId={subjectId}

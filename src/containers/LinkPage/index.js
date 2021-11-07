@@ -434,14 +434,16 @@ export default function LinkPage({
             />
           </div>
         )}
-        <RecommendationStatus
-          style={{
-            marginTop: likes.length > 0 ? '0.5rem' : '1rem',
-            marginBottom: recommendationInterfaceShown ? '1rem' : 0
-          }}
-          contentType="url"
-          recommendations={recommendations}
-        />
+        {false && (
+          <RecommendationStatus
+            style={{
+              marginTop: likes.length > 0 ? '0.5rem' : '1rem',
+              marginBottom: recommendationInterfaceShown ? '1rem' : 0
+            }}
+            contentType="url"
+            recommendations={recommendations}
+          />
+        )}
         <RewardStatus
           contentType="url"
           contentId={linkId}
