@@ -135,6 +135,12 @@ export default function Home({ profile, selectedTheme }) {
           />
         </SectionPanel>
       )}
+      <div
+        className={css`
+          display: block;
+          height: 7rem;
+        `}
+      />
     </ErrorBoundary>
   );
 }
