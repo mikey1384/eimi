@@ -538,6 +538,7 @@ export default function ChatReducer(state, action) {
         action.data.vocabActivities.pop();
         vocabActivitiesLoadMoreButton = true;
       }
+      action.data.vocabActivities.reverse();
       let newChannelsObj = {
         ...state.channelsObj,
         ...action.data.channelsObj
