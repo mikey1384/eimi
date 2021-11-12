@@ -197,6 +197,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:spider\:)/gi, '🕷️')
     .replace(/(\:squared\:)/gi, '²')
     .replace(/(\:star\:)/gi, '⭐')
+    .replace(/(\:starstruck\:)/gi, '🤩')
+    .replace(/(\:strawberry\:)/gi, '🍓')
     .replace(/(\:sunglasses\:)/gi, '😎')
     .replace(/(\:swan\:)/gi, '🦢')
     .replace(/(\:taco\:)/gi, '🌮')
