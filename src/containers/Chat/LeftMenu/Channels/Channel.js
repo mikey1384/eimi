@@ -128,10 +128,10 @@ function Channel({
       `}
       style={{
         width: '100%',
-        backgroundColor: selected && Color.highlightGray(),
         cursor: 'pointer',
         padding: '1rem',
-        height: '6.5rem'
+        height: '6.5rem',
+        ...(selected ? { backgroundColor: Color.highlightGray() } : {})
       }}
       onClick={handleChannelClick}
     >
