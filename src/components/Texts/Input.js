@@ -38,7 +38,6 @@ export default function Input({
         {...props}
         type={type}
         style={{
-          border: `1px solid ${Color.darkerBorderGray()}`,
           lineHeight: '2rem',
           padding: '1rem',
           ...style
@@ -49,6 +48,7 @@ export default function Input({
             width: 100%;
           `
         } ${css`
+          border: 1px solid ${Color.darkerBorderGray()};
           font-size: 1.7rem;
           &:focus {
             outline: none;

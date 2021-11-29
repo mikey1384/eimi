@@ -3,6 +3,8 @@ import { charLimit } from 'constants/defaultValues';
 
 const urlRegex =
   /(((http[s]?:\/\/|ftp:\/\/)|www\.)([0-9a-zA-Z\p{L}\-\.])+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])+[^.,;:?!])/giu;
+const urlRegex2 =
+  /(((http[s]?:\/\/|ftp:\/\/)|www\.)([0-9a-zA-Z\p{L}\-\.])+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])+[^.,;:?!])/i;
 
 export function addCommasToNumber(number) {
   const numArray = `${number}`.split('');
@@ -380,12 +382,16 @@ export function isValidSpoiler(content = '') {
 }
 
 export function isValidUrl(url = '') {
-  const regex =
-    /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
-  if (!url.includes('://') && !url.includes('www.')) {
-    url = 'www.' + url;
-  }
-  return regex.test(url);
+  return urlRegex2.test(url);
+}
+
+export function isValidYoutubeUrl(url = '') {
+  let trimOne = url.split('v=')[1];
+  let trimTwo = url.split('youtu.be/')[1];
+  return (
+    urlRegex2.test(url) &&
+    (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
+  );
 }
 
 export function isValidUsername(username) {
@@ -398,28 +404,12 @@ export function isValidUsername(username) {
   );
 }
 
-export function isValidYoutubeUrl(url = '') {
-  const regex =
-    /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
-  if (!url.includes('://') && !url.includes('www.')) {
-    url = 'www.' + url;
-  }
-  let trimOne = url.split('v=')[1];
-  let trimTwo = url.split('youtu.be/')[1];
-  return (
-    regex.test(url) &&
-    (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
-  );
-}
-
 export function isValidYoutubeChannelUrl(url = '') {
-  const regex =
-    /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
   const trim = url.split('youtube.com/')[1];
   if (!url.includes('://') && !url.includes('www.')) {
     url = 'www.' + url;
   }
-  return regex.test(url) && typeof trim !== 'undefined';
+  return urlRegex2.test(url) && typeof trim !== 'undefined';
 }
 
 export function limitBrs(string) {
@@ -896,6 +886,9 @@ export function replaceFakeAtSymbol(string) {
 }
 
 export function stringIsEmpty(string) {
+  if (typeof string === 'string' && string.length > 0) {
+    return false;
+  }
   const checkedString =
     string && typeof string === 'string'
       ? string.replace(/\s/g, '').replace(/\r?\n/g, '')

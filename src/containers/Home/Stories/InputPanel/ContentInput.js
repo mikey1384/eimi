@@ -50,70 +50,94 @@ function ContentInput() {
     }
   } = useInputContext();
   const {
-    alreadyPosted,
-    descriptionFieldShown,
+    alreadyPosted: prevAlreadyPosted,
+    descriptionFieldShown: prevDescriptionFieldShown,
     form,
-    titleFieldShown,
-    urlHelper,
-    urlError,
+    titleFieldShown: prevTitleFieldShown,
+    urlHelper: prevUrlHelper,
+    urlError: prevUrlError,
     ytDetails
   } = content;
+  const alreadyPostedRef = useRef(prevAlreadyPosted);
+  const [alreadyPosted, setAlreadyPosted] = useState(prevAlreadyPosted);
   const titleRef = useRef(form.title);
+  const contentIsVideoRef = useRef(form.isVideo);
+  const [contentIsVideo, setContentIsVideo] = useState(form.isVideo);
   const [title, setTitle] = useState(form.title);
   const descriptionRef = useRef(form.description);
   const [description, setDescription] = useState(form.description);
   const urlRef = useRef(form.url);
   const [url, setUrl] = useState(form.url);
+  const descriptionFieldShownRef = useRef(prevDescriptionFieldShown);
+  const [descriptionFieldShown, setDescriptionFieldShown] = useState(
+    prevDescriptionFieldShown
+  );
+  const titleFieldShownRef = useRef(prevTitleFieldShown);
+  const [titleFieldShown, setTitleFieldShown] = useState(prevTitleFieldShown);
+  const urlErrorRef = useRef(prevUrlError);
+  const [urlError, setUrlError] = useState(prevUrlError);
+  const youTubeVideoDetailsRef = useRef(ytDetails);
+  const [youTubeVideoDetails, setYouTubeVideoDetails] = useState(ytDetails);
   const [submitting, setSubmitting] = useState(false);
+  const urlHelperRef = useRef(prevUrlHelper);
+  const [urlHelper, setUrlHelper] = useState(prevUrlHelper);
   const UrlFieldRef = useRef(null);
   const checkContentExistsTimerRef = useRef(null);
   const showHelperMessageTimerRef = useRef(null);
 
   const loadingYTDetails = useMemo(() => {
-    return form.isVideo && !ytDetails;
-  }, [form.isVideo, ytDetails]);
+    return contentIsVideo && !youTubeVideoDetails && !urlError;
+  }, [contentIsVideo, urlError, youTubeVideoDetails]);
+
+  useEffect(() => {
+    if (contentIsVideo && !isValidYoutubeUrl(url)) {
+      setUrlError('That is not a valid YouTube url');
+    }
+  }, [contentIsVideo, url]);
 
   const descriptionExceedsCharLimit = useMemo(
     () =>
       exceedsCharLimit({
         inputType: 'description',
-        contentType: form.isVideo ? 'video' : 'url',
+        contentType: contentIsVideo ? 'video' : 'url',
         text: description
       }),
-    [description, form.isVideo]
+    [description, contentIsVideo]
   );
 
   const titleExceedsCharLimit = useMemo(
     () =>
       exceedsCharLimit({
         inputType: 'title',
-        contentType: form.isVideo ? 'video' : 'url',
+        contentType: contentIsVideo ? 'video' : 'url',
         text: title
       }),
-    [form.isVideo, title]
+    [contentIsVideo, title]
   );
 
-  const errorInUrlField = useMemo(() => {
-    if (urlError) return { borderColor: 'red', color: 'red' };
-    return exceedsCharLimit({
-      inputType: 'url',
-      contentType: form.isVideo ? 'video' : 'url',
-      text: url
-    })?.style;
-  }, [form.isVideo, url, urlError]);
+  const urlExceedsCharLimit = useMemo(
+    () =>
+      exceedsCharLimit({
+        inputType: 'url',
+        contentType: contentIsVideo ? 'video' : 'url',
+        text: url
+      }),
+    [contentIsVideo, url]
+  );
 
   const buttonDisabled = useMemo(() => {
     if (stringIsEmpty(url) || stringIsEmpty(title)) return true;
-    if (errorInUrlField) return true;
+    if (urlError || urlExceedsCharLimit) return true;
     if (titleExceedsCharLimit) return true;
     if (descriptionExceedsCharLimit) return true;
     return false;
   }, [
     descriptionExceedsCharLimit,
-    errorInUrlField,
     title,
     titleExceedsCharLimit,
-    url
+    url,
+    urlError,
+    urlExceedsCharLimit
   ]);
 
   const rewardLevelDescription = useMemo(() => {
@@ -151,9 +175,16 @@ function ContentInput() {
 
   useEffect(() => {
     return function saveFormBeforeUnmount() {
+      onSetContentAlreadyPosted(alreadyPostedRef.current);
+      onSetContentIsVideo(contentIsVideoRef.current);
       onSetContentDescription(descriptionRef.current);
       onSetContentTitle(titleRef.current);
       onSetContentUrl(urlRef.current);
+      onSetContentTitleFieldShown(titleFieldShownRef.current);
+      onSetContentDescriptionFieldShown(descriptionFieldShownRef.current);
+      onSetContentUrlError(urlErrorRef.current);
+      onSetContentUrlHelper(urlHelperRef.current);
+      onSetYouTubeVideoDetails(youTubeVideoDetailsRef.current);
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -168,9 +199,10 @@ function ContentInput() {
       )}
       <Input
         inputRef={UrlFieldRef}
-        style={errorInUrlField}
+        hasError={!!urlError}
+        style={urlExceedsCharLimit?.style || {}}
         value={url}
-        onChange={onUrlFieldChange}
+        onChange={handleUrlFieldChange}
         placeholder="Copy and paste a URL address here"
       />
       {alreadyPosted && (
@@ -189,11 +221,11 @@ function ContentInput() {
       <Checkbox
         label={'YouTube Video:'}
         onClick={() => {
-          onSetContentIsVideo(!form.isVideo);
-          onSetContentUrlError(urlError);
+          setUrlError('');
+          handleSetContentIsVideo(!contentIsVideo);
         }}
         style={{ marginTop: '1rem' }}
-        checked={form.isVideo}
+        checked={contentIsVideo}
       />
       {!stringIsEmpty(urlHelper) && (
         <span
@@ -212,7 +244,7 @@ function ContentInput() {
           }}
         />
       )}
-      {loadingYTDetails ? (
+      {loadingYTDetails && !stringIsEmpty(url) ? (
         <Loading />
       ) : (
         <div style={{ marginTop: '1.5rem' }}>
@@ -272,35 +304,38 @@ function ContentInput() {
               </>
             )}
           </div>
-          {!buttonDisabled && !urlHelper && form.isVideo && canEditRewardLevel && (
-            <div style={{ marginTop: '1rem' }}>
-              {rewardLevelDescription && (
-                <div style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
-                  {rewardLevelDescription}
+          {!buttonDisabled &&
+            !urlHelper &&
+            contentIsVideo &&
+            canEditRewardLevel && (
+              <div style={{ marginTop: '1rem' }}>
+                {rewardLevelDescription && (
+                  <div style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
+                    {rewardLevelDescription}
+                  </div>
+                )}
+                <div style={{ fontSize: '1.5rem' }}>
+                  For every star you add, the amount of XP viewers earn per
+                  minute rises.
                 </div>
-              )}
-              <div style={{ fontSize: '1.5rem' }}>
-                For every star you add, the amount of XP viewers earn per minute
-                rises.
+                <RewardLevelForm
+                  themed
+                  isFromContentInput
+                  alreadyPosted={!!alreadyPosted.id}
+                  style={{
+                    marginTop: '1rem',
+                    textAlign: 'center',
+                    display: 'flex',
+                    alignItems: 'center',
+                    flexDirection: 'column',
+                    padding: '1rem',
+                    fontSize: '3rem'
+                  }}
+                  rewardLevel={form.rewardLevel}
+                  onSetRewardLevel={onSetContentRewardLevel}
+                />
               </div>
-              <RewardLevelForm
-                themed
-                isFromContentInput
-                alreadyPosted={!!alreadyPosted.id}
-                style={{
-                  marginTop: '1rem',
-                  textAlign: 'center',
-                  display: 'flex',
-                  alignItems: 'center',
-                  flexDirection: 'column',
-                  padding: '1rem',
-                  fontSize: '3rem'
-                }}
-                rewardLevel={form.rewardLevel}
-                onSetRewardLevel={onSetContentRewardLevel}
-              />
-            </div>
-          )}
+            )}
           {descriptionFieldShown && (
             <div className="button-container">
               <Button
@@ -327,28 +362,36 @@ function ContentInput() {
     let urlError;
     event.preventDefault();
     if (!isValidUrl(url)) urlError = 'That is not a valid url';
-    if (form.isVideo && !isValidYoutubeUrl(url)) {
+    if (contentIsVideo && !isValidYoutubeUrl(url)) {
       urlError = 'That is not a valid YouTube url';
     }
     if (urlError) {
-      onSetContentUrlError(urlError);
+      handleSetContentUrlError(urlError);
       UrlFieldRef.current.focus();
       return scrollElementToCenter(UrlFieldRef.current);
     }
     setSubmitting(true);
     try {
       const data = await uploadContent({
-        ...form,
+        isVideo: contentIsVideo,
         url,
+        rewardLevel: form.rewardLevel,
         title: finalizeEmoji(title),
         description: finalizeEmoji(description),
-        ytDetails: form.isVideo ? ytDetails : null
+        ytDetails: contentIsVideo ? youTubeVideoDetails : null
       });
       if (data) {
         onResetContentInput();
         handleSetTitle('');
         handleSetDescription('');
         handleSetUrl('');
+        handleSetContentAlreadyPosted(false);
+        handleSetContentIsVideo(false);
+        handleSetYouTubeVideoDetails(null);
+        handleSetContentTitleFieldShown(false);
+        handleSetContentUrlError('');
+        handleSetContentUrlHelper('');
+        handleSetContentDescriptionFieldShown(false);
         onLoadNewFeeds([data]);
         document.getElementById('App').scrollTop = 0;
         BodyRef.current.scrollTop = 0;
@@ -360,16 +403,17 @@ function ContentInput() {
     }
   }
 
-  function onUrlFieldChange(text) {
-    onSetYouTubeVideoDetails(null);
+  function handleUrlFieldChange(text) {
+    handleSetYouTubeVideoDetails(null);
     const urlIsValid = isValidUrl(text);
-    onSetContentAlreadyPosted(false);
+    handleSetContentAlreadyPosted(false);
     handleSetUrl(text);
-    onSetContentIsVideo(isValidYoutubeUrl(text));
-    onSetContentTitleFieldShown(urlIsValid);
-    onSetContentDescriptionFieldShown(urlIsValid);
-    onSetContentUrlError('');
-    onSetContentUrlHelper('');
+    const isYouTubeVideo = isValidYoutubeUrl(text);
+    handleSetContentIsVideo(isYouTubeVideo);
+    handleSetContentTitleFieldShown(urlIsValid);
+    handleSetContentDescriptionFieldShown(urlIsValid);
+    handleSetContentUrlError('');
+    handleSetContentUrlHelper('');
     if (urlIsValid) {
       clearTimeout(checkContentExistsTimerRef.current);
       checkContentExistsTimerRef.current = setTimeout(
@@ -379,21 +423,15 @@ function ContentInput() {
     }
     clearTimeout(showHelperMessageTimerRef.current);
     showHelperMessageTimerRef.current = setTimeout(() => {
-      onSetContentUrlHelper(
+      handleSetContentUrlHelper(
         urlIsValid || stringIsEmpty(text)
           ? ''
           : `A URL is a website's internet address. Twinkle Website's URL is <a href="https://www.twin-kle.com" target="_blank">www.twin-kle.com</a>. You can find a webpage's URL at the <b>top area of your browser</b>. Copy a URL you want to share and paste it to the box above.`
       );
-      const regex = /\b(http[s]?(www\.)?|ftp:\/\/(www\.)?|www\.){1}/gi;
       handleSetTitle(
-        !urlIsValid &&
-          !stringIsEmpty(text) &&
-          text.length > 3 &&
-          !regex.test(text)
-          ? text
-          : title
+        !urlIsValid && !stringIsEmpty(text) && text.length > 3 ? text : title
       );
-      onSetContentTitleFieldShown(!stringIsEmpty(text));
+      handleSetContentTitleFieldShown(!stringIsEmpty(text));
     }, 300);
   }
 
@@ -411,9 +449,44 @@ function ContentInput() {
       if (!stringIsEmpty(details.ytTitle)) {
         handleSetTitle(details.ytTitle);
       }
-      onSetYouTubeVideoDetails(details);
+      handleSetYouTubeVideoDetails(details);
     }
-    return onSetContentAlreadyPosted(exists ? content : false);
+    return handleSetContentAlreadyPosted(exists ? content : false);
+  }
+
+  function handleSetContentAlreadyPosted(content) {
+    setAlreadyPosted(content);
+    alreadyPostedRef.current = content;
+  }
+
+  function handleSetContentIsVideo(isVideo) {
+    setContentIsVideo(isVideo);
+    contentIsVideoRef.current = isVideo;
+  }
+
+  function handleSetContentTitleFieldShown(shown) {
+    setTitleFieldShown(shown);
+    titleFieldShownRef.current = shown;
+  }
+
+  function handleSetContentDescriptionFieldShown(shown) {
+    setDescriptionFieldShown(shown);
+    descriptionFieldShownRef.current = shown;
+  }
+
+  function handleSetContentUrlError(error) {
+    setUrlError(error);
+    urlErrorRef.current = error;
+  }
+
+  function handleSetContentUrlHelper(helper) {
+    setUrlHelper(helper);
+    urlHelperRef.current = helper;
+  }
+
+  function handleSetYouTubeVideoDetails(details) {
+    setYouTubeVideoDetails(details);
+    youTubeVideoDetailsRef.current = details;
   }
 
   function handleSetTitle(text) {
