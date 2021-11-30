@@ -2,9 +2,9 @@ import { charLimit } from 'constants/defaultValues';
 /* eslint-disable no-useless-escape */
 
 const urlRegex =
-  /(((http[s]?:\/\/|ftp:\/\/)|www\.)([0-9a-zA-Z\p{L}\-\.])+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])+[^.,;:?!])/giu;
+  /(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{2,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?! ])/giu;
 const urlRegex2 =
-  /(((http[s]?:\/\/|ftp:\/\/)|www\.)([0-9a-zA-Z\p{L}\-\.])+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])+[^.,;:?!])/i;
+  /^(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{2,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?! ])/i;
 
 export function addCommasToNumber(number) {
   const numArray = `${number}`.split('');
@@ -382,10 +382,16 @@ export function isValidSpoiler(content = '') {
 }
 
 export function isValidUrl(url = '') {
+  if (!url.includes('://') && !url.includes('www.')) {
+    url = 'www.' + url;
+  }
   return urlRegex2.test(url);
 }
 
 export function isValidYoutubeUrl(url = '') {
+  if (!url.includes('://') && !url.includes('www.')) {
+    url = 'www.' + url;
+  }
   let trimOne = url.split('v=')[1];
   let trimTwo = url.split('youtu.be/')[1];
   return (
@@ -901,6 +907,13 @@ export function translateMBToGB(size) {
     return `${size / 1000} GB`;
   }
   return `${size} MB`;
+}
+
+export function translateMBToGBWithoutSpace(size) {
+  if (size >= 1000) {
+    return `${size / 1000}GB`;
+  }
+  return `${size}MB`;
 }
 
 export function trimUrl(url) {
