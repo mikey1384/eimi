@@ -25,17 +25,11 @@ export default function TwinkleVideo({ imageOnly, onPlay, style, videoId }) {
   const {
     actions: { onInitContent }
   } = useContentContext();
-  const {
-    loaded,
-    notFound,
-    byUser,
-    content,
-    rewardLevel,
-    uploader
-  } = useContentState({
-    contentId: videoId,
-    contentType: 'video'
-  });
+  const { loaded, notFound, byUser, content, rewardLevel, uploader } =
+    useContentState({
+      contentId: videoId,
+      contentType: 'video'
+    });
   useEffect(() => {
     if (!loaded) {
       init();

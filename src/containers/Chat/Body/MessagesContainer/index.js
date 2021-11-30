@@ -1141,9 +1141,11 @@ function MessagesContainer({
 
   function handleScrollToBottom() {
     if (mounted.current && MessagesRef.current) {
-      (MessagesRef.current || {}).scrollTop = 1000;
-      (MessagesRef.current || {}).scrollTop = -1000;
-      (MessagesRef.current || {}).scrollTop = 1000;
+      setTimeout(() => {
+        (MessagesRef.current || {}).scrollTop = 1000;
+        (MessagesRef.current || {}).scrollTop = -1000;
+        (MessagesRef.current || {}).scrollTop = 1000;
+      }, 0);
     }
   }
 
