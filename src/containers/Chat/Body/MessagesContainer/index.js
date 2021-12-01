@@ -44,7 +44,7 @@ MessagesContainer.propTypes = {
 };
 
 const CALL_SCREEN_HEIGHT = '30%';
-const unseenButtonThreshold = -2000;
+const unseenButtonThreshold = -1;
 const deviceIsMobile = isMobile(navigator);
 
 function MessagesContainer({
