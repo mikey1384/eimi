@@ -165,6 +165,18 @@ function Message({
     delay: 1000
   });
   const userIsUploader = useMemo(() => myId === userId, [myId, userId]);
+  useEffect(() => {
+    if (isLastMsg && userIsUploader) {
+      onScrollToBottom();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLastMsg, userIsUploader]);
+  useEffect(() => {
+    if (isLastMsg && isNewMessage && !userIsUploader) {
+      onReceiveNewMessage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLastMsg, isNewMessage, userIsUploader]);
   const userCanEditThis = useMemo(
     () =>
       !invitePath &&
@@ -313,20 +325,6 @@ function Message({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content]);
-
-  useEffect(() => {
-    if (isLastMsg && userIsUploader) {
-      onScrollToBottom();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLastMsg, userIsUploader]);
-
-  useEffect(() => {
-    if (isLastMsg && isNewMessage && !userIsUploader) {
-      onReceiveNewMessage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLastMsg, isNewMessage, userIsUploader]);
 
   const contentShown = useMemo(
     () => inView || isLastMsg || started || visible || !placeholderHeight,

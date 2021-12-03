@@ -107,6 +107,7 @@ function MessagesContainer({
     messagesObj = {},
     messagesLoadMoreButton = false
   } = currentChannel;
+  const scrolledToBottomRef = useRef(true);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
@@ -341,6 +342,8 @@ function MessagesContainer({
     function handleScroll() {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
+        scrolledToBottomRef.current =
+          (MessagesRef.current || {}).scrollTop >= unseenButtonThreshold;
         const scrollThreshold =
           (MessagesRef.current || {}).scrollHeight -
           (MessagesRef.current || {}).offsetHeight;
@@ -352,7 +355,7 @@ function MessagesContainer({
         if (mounted.current && scrollTop >= unseenButtonThreshold) {
           setNewUnseenMessage(false);
         }
-      }, 200);
+      }, 100);
     }
   });
 
@@ -944,7 +947,7 @@ function MessagesContainer({
               </div>
               {messages.map((message, index) => (
                 <Message
-                  key={selectedChannelId + (message.id || 'newMessage' + index)}
+                  key={messageIds[index]}
                   channelId={selectedChannelId}
                   channelName={channelName}
                   chessCountdownNumber={chessCountdownNumber}
@@ -1129,10 +1132,7 @@ function MessagesContainer({
   );
 
   function handleReceiveNewMessage() {
-    if (
-      MessagesRef.current &&
-      (MessagesRef.current || {}).scrollTop < unseenButtonThreshold
-    ) {
+    if (MessagesRef.current && !scrolledToBottomRef.current) {
       setNewUnseenMessage(true);
     } else {
       handleScrollToBottom();
@@ -1141,11 +1141,9 @@ function MessagesContainer({
 
   function handleScrollToBottom() {
     if (mounted.current && MessagesRef.current) {
-      setTimeout(() => {
-        (MessagesRef.current || {}).scrollTop = 1000;
-        (MessagesRef.current || {}).scrollTop = -1000;
-        (MessagesRef.current || {}).scrollTop = 1000;
-      }, 0);
+      (MessagesRef.current || {}).scrollTop = 0;
+      (MessagesRef.current || {}).scrollTop = -1000;
+      (MessagesRef.current || {}).scrollTop = 0;
     }
   }
 

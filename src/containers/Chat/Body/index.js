@@ -43,6 +43,7 @@ function Body({ channelName, chessOpponent, currentChannel, loading }) {
               <Vocabulary />
             ) : (
               <MessagesContainer
+                key={currentChannel.id}
                 loading={loading}
                 channelName={channelName}
                 chessOpponent={chessOpponent}
