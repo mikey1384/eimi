@@ -2,9 +2,9 @@ import { charLimit } from 'constants/defaultValues';
 /* eslint-disable no-useless-escape */
 
 const urlRegex =
-  /(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{2,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\) ])/giu;
+  /(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{2,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\n\) ])/giu;
 const urlRegex2 =
-  /^(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{2,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\) ])/i;
+  /^(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{2,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\n\) ])/i;
 
 export function addCommasToNumber(number) {
   const numArray = `${number}`.split('');
