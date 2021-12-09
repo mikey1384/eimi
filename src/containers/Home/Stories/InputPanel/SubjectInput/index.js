@@ -35,6 +35,7 @@ import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 import localize from 'constants/localize';
 
+const forEveryStarYouAddLabel = localize('forEveryStarYouAdd');
 const postSubjectLabel = localize('postSubject');
 const postSubjectPlaceholder = localize('postSubjectPlaceholder');
 
@@ -267,9 +268,7 @@ function SubjectInput() {
               {canEditRewardLevel && (
                 <div style={{ marginTop: '1rem' }}>
                   <div style={{ fontSize: '1.5rem' }}>
-                    For every star you add, the maximum amount of XP that could
-                    be rewarded to each participant of this subject rises by
-                    2,000 XP.
+                    {forEveryStarYouAddLabel}
                   </div>
                   <RewardLevelForm
                     themed
