@@ -892,6 +892,10 @@ const languageObj = {
     en: 'Please select a smaller image',
     kr: '더 작은 이미지를 선택해주세요'
   },
+  post: {
+    en: 'Post!',
+    kr: '게시하기'
+  },
   posted: {
     en: 'Posted',
     kr: ''
