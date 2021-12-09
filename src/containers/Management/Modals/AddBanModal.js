@@ -11,6 +11,9 @@ import { useSearch, useMyState } from 'helpers/hooks';
 import { useAppContext, useManagementContext } from 'contexts';
 import { isEqual } from 'lodash';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const searchUsersLabel = localize('searchUsers');
 
 AddBanModal.propTypes = {
   onHide: PropTypes.func.isRequired
@@ -78,7 +81,7 @@ export default function AddBanModal({ onHide }) {
               autoFocus
               onChange={handleSearch}
               onSelect={handleSelectUser}
-              placeholder="Search users..."
+              placeholder={`${searchUsersLabel}...`}
               renderItemLabel={(item) => (
                 <span>
                   {item.username} <small>{`(${item.realName})`}</small>

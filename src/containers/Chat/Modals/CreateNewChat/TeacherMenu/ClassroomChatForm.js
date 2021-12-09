@@ -11,6 +11,13 @@ import { socket } from 'constants/io';
 import { mobileMaxWidth } from 'constants/css';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useHistory } from 'react-router-dom';
+import localize from 'constants/localize';
+
+const addMembersOfClassLabel = localize('addMembersOfClass');
+const enterClassNameLabel = localize('enterClassName');
+const membersLabel = localize('members');
+const nameLabel = localize('name');
+const newClassroomLabel = localize('newClassroomChat');
 
 ClassroomChat.propTypes = {
   onBackClick: PropTypes.func,
@@ -42,7 +49,7 @@ export default function ClassroomChat({ onBackClick, onHide }) {
 
   return (
     <ErrorBoundary>
-      <header>New Classroom</header>
+      <header>{newClassroomLabel}</header>
       <main>
         <div
           className={css`
@@ -52,18 +59,18 @@ export default function ClassroomChat({ onBackClick, onHide }) {
             }
           `}
         >
-          <h3>Name</h3>
+          <h3>{nameLabel}</h3>
           <Input
             autoFocus
             style={{ marginTop: '1rem' }}
-            placeholder="Enter the name of your class"
+            placeholder={enterClassNameLabel}
             maxLength="150"
             value={channelName}
             onChange={setChannelName}
           />
         </div>
         <TagForm
-          title="Members"
+          title={membersLabel}
           itemLabel="username"
           searchResults={userSearchResults}
           filter={(result) => result.id !== userId}
@@ -78,7 +85,7 @@ export default function ClassroomChat({ onBackClick, onHide }) {
               {item.realName && <small>{`(${item.realName})`}</small>}
             </span>
           )}
-          searchPlaceholder="Add the members of your class"
+          searchPlaceholder={addMembersOfClassLabel}
           selectedItems={selectedUsers}
           style={{ marginTop: '1.5rem' }}
           className={css`

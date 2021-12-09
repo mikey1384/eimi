@@ -12,7 +12,11 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import XPBar from './XPBar';
 import Link from 'components/Link';
 import playButtonImg from './play-button-image.png';
-import { videoRewardHash, strongColors } from 'constants/defaultValues';
+import {
+  videoRewardHash,
+  strongColors,
+  SELECTED_LANGUAGE
+} from 'constants/defaultValues';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { useContentState, useMyState } from 'helpers/hooks';
@@ -349,6 +353,13 @@ function XPVideoPlayer({
     [handleIncreaseMeter, playing, videoId]
   );
 
+  const thisVideoWasMadeByLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>{uploader?.username}님이 직접 제작한 동영상입니다</>;
+    }
+    return <>This video was made by {uploader?.username}</>;
+  }, [uploader?.username]);
+
   return (
     <ErrorBoundary style={style}>
       {byUser && !isChat && false && (
@@ -385,7 +396,7 @@ function XPVideoPlayer({
                 {`Visit ${uploader.username}'s`} YouTube Channel
               </a>
             ) : (
-              <span>This video was made by {uploader.username}</span>
+              <span>{thisVideoWasMadeByLabel}</span>
             )}
           </div>
         </div>

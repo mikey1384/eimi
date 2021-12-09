@@ -10,6 +10,15 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { useManagementContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const chatLabel = localize('chat');
+const chessLabel = localize('chess');
+const logInLabel = localize('logIn');
+const postingLabel = localize('posting');
+const restrictedAccountsLabel = localize('restrictedAccounts');
+const restrictAccountLabel = localize('restrictAccount');
+const userLabel = localize('user');
 
 BannedUsers.propTypes = {
   canManage: PropTypes.bool
@@ -26,7 +35,7 @@ export default function BannedUsers({ canManage }) {
   return (
     <ErrorBoundary>
       <SectionPanel
-        title="Restricted Accounts"
+        title={restrictedAccountsLabel}
         isEmpty={bannedUsers.length === 0}
         emptyMessage="No Restricted Accounts"
         loaded={bannedUsersLoaded}
@@ -39,7 +48,9 @@ export default function BannedUsers({ canManage }) {
               onClick={() => setNewBanModalShown(true)}
             >
               <Icon icon="plus" />
-              <span style={{ marginLeft: '0.7rem' }}>Restrict Account</span>
+              <span style={{ marginLeft: '0.7rem' }}>
+                {restrictAccountLabel}
+              </span>
             </Button>
           ) : null
         }
@@ -57,11 +68,11 @@ export default function BannedUsers({ canManage }) {
         >
           <thead>
             <tr>
-              <th>Users</th>
-              <th style={{ textAlign: 'center' }}>Log In</th>
-              <th style={{ textAlign: 'center' }}>Chat</th>
-              <th style={{ textAlign: 'center' }}>Chess</th>
-              <th style={{ textAlign: 'center' }}>Posting</th>
+              <th>{userLabel}</th>
+              <th style={{ textAlign: 'center' }}>{logInLabel}</th>
+              <th style={{ textAlign: 'center' }}>{chatLabel}</th>
+              <th style={{ textAlign: 'center' }}>{chessLabel}</th>
+              <th style={{ textAlign: 'center' }}>{postingLabel}</th>
             </tr>
           </thead>
           <tbody>

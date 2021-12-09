@@ -13,6 +13,14 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useExploreContext } from 'contexts';
+import localize from 'constants/localize';
+
+const byLabel = localize('by');
+const changeVideosLabel = localize('changeVideos');
+const editTitleLabel = localize('editTitle');
+const reorderVideosLabel = localize('reorderVideos');
+const removePlaylistLabel = localize('removePlaylist');
+const cellSpacing = 12;
 
 PlaylistCarousel.propTypes = {
   userIsUploader: PropTypes.bool,
@@ -23,8 +31,6 @@ PlaylistCarousel.propTypes = {
   uploader: PropTypes.string.isRequired,
   numPlaylistVids: PropTypes.number.isRequired
 };
-
-const cellSpacing = 12;
 
 export default function PlaylistCarousel({
   id: playlistId,
@@ -103,7 +109,9 @@ export default function PlaylistCarousel({
             <p>
               <Link to={`/playlists/${playlistId}`}>{title}</Link>
               &nbsp;
-              <small>by {uploader}</small>
+              <small>
+                {byLabel} {uploader}
+              </small>
             </p>
           </div>
         )}
@@ -115,22 +123,22 @@ export default function PlaylistCarousel({
             direction="left"
             menuProps={[
               {
-                label: 'Edit Title',
+                label: editTitleLabel,
                 onClick: () => setOnEdit(true)
               },
               {
-                label: 'Change Videos',
+                label: changeVideosLabel,
                 onClick: () => setChangePLVideosModalShown(true)
               },
               {
-                label: 'Reorder Videos',
+                label: reorderVideosLabel,
                 onClick: () => setReorderPLVideosModalShown(true)
               },
               {
                 separator: true
               },
               {
-                label: 'Remove Playlist',
+                label: removePlaylistLabel,
                 onClick: () => setDeleteConfirmModalShown(true)
               }
             ]}
@@ -173,7 +181,7 @@ export default function PlaylistCarousel({
       )}
       {deleteConfirmModalShown && (
         <ConfirmModal
-          title="Remove Playlist"
+          title={removePlaylistLabel}
           onConfirm={handleDeleteConfirm}
           onHide={() => setDeleteConfirmModalShown(false)}
         />

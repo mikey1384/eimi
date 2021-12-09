@@ -28,6 +28,10 @@ import {
   useViewContext,
   useExploreContext
 } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const rewardLabel = localize('reward');
 
 LinkPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -250,6 +254,13 @@ export default function LinkPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
+  const madeByLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>{uploader?.username}님이 직접 제작한 콘텐츠입니다</>;
+    }
+    return <>This was made by {uploader?.username}</>;
+  }, [uploader?.username]);
+
   return loaded ? (
     <div
       className={css`
@@ -319,7 +330,7 @@ export default function LinkPage({
               }
             `}
           >
-            This was made by {uploader.username}
+            {madeByLabel}
           </div>
         )}
         <Embedly
@@ -362,7 +373,7 @@ export default function LinkPage({
                 >
                   <Icon icon="certificate" />
                   <span style={{ marginLeft: '0.7rem' }}>
-                    {xpButtonDisabled || 'Reward'}
+                    {xpButtonDisabled || rewardLabel}
                   </span>
                 </Button>
               )}

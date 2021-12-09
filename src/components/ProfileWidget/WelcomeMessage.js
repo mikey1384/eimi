@@ -1,6 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
+import localize from 'constants/localize';
+
+const logInLabel = localize('logIn2');
+const tapHereLabel = localize('tapHere');
+const toAccessAllFeaturesLabel = localize('toAccessAllFeatures');
 
 WelcomeMessage.propTypes = {
   userId: PropTypes.number,
@@ -20,8 +25,8 @@ export default function WelcomeMessage({ userId, openSigninModal }) {
     >
       {!userId && (
         <>
-          <div className="login-message">Log in</div>
-          <div className="login-message">to access all features</div>
+          <div className="login-message">{logInLabel}</div>
+          <div className="login-message">{toAccessAllFeaturesLabel}</div>
         </>
       )}
       {!userId && (
@@ -31,7 +36,7 @@ export default function WelcomeMessage({ userId, openSigninModal }) {
           style={{ marginTop: '1rem' }}
           onClick={openSigninModal}
         >
-          Tap here!
+          {tapHereLabel}!
         </Button>
       )}
     </div>

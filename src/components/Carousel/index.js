@@ -11,6 +11,9 @@ import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { useExploreContext } from 'contexts';
 import { css } from '@emotion/css';
 import BottomNavButtons from './BottomNavButtons';
+import localize from 'constants/localize';
+
+const showAllLabel = localize('showAll');
 
 Carousel.propTypes = {
   afterSlide: PropTypes.func,
@@ -296,7 +299,7 @@ export default function Carousel({
                   }}
                   onClick={onShowAll}
                 >
-                  Show All
+                  {showAllLabel}
                 </Button>
               ) : (
                 <NavButton

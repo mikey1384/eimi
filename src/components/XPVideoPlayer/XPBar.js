@@ -10,6 +10,12 @@ import { isMobile } from 'helpers';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const deviceIsMobile = isMobile(navigator);
+const continueLabel = localize('continue');
+const watchingLabel = localize('watching');
+const perMinuteLabel = localize('perMinute');
 
 XPBar.propTypes = {
   isChat: PropTypes.bool,
@@ -20,8 +26,6 @@ XPBar.propTypes = {
   userId: PropTypes.number,
   videoId: PropTypes.number.isRequired
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 function XPBar({
   isChat,
@@ -129,7 +133,8 @@ function XPBar({
           <div style={{ marginLeft: '0.7rem' }}>
             {continuingStatusShown && (
               <span>
-                Continue{deviceIsMobile && isChat ? '' : ' watching'} (
+                {continueLabel}
+                {deviceIsMobile && isChat ? '' : ` ${watchingLabel}`} (
               </span>
             )}
             <span>{addCommasToNumber(xpRewardAmount)} XP</span>
@@ -146,7 +151,11 @@ function XPBar({
             ) : (
               ''
             )}
-            {continuingStatusShown ? <span>)</span> : <span> per minute</span>}
+            {continuingStatusShown ? (
+              <span>{`)`}</span>
+            ) : (
+              <span> {perMinuteLabel}</span>
+            )}
           </div>
         </div>
       );

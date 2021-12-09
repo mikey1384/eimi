@@ -71,7 +71,7 @@ export default function TargetMessage({ message }) {
   }, [fileType, message.attachmentHidden, message.content, message.thumbUrl]);
 
   const displayedTime = useMemo(
-    () => unix(message?.timeStamp).format('LLL'),
+    () => unix(message?.timeStamp).format('lll'),
     [message?.timeStamp]
   );
 

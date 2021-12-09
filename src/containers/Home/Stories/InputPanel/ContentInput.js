@@ -21,7 +21,16 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
+import localize from 'constants/localize';
+
+const enterDescriptionOptionalLabel = localize('enterDescriptionOptional');
+const forEveryStarYouAddLabel = localize('forEveryStarYouAdd');
+const enterTitleHereLabel = localize('enterTitleHere');
+const postContentLabel = localize('postContent');
+const copyAndPasteUrlLabel = localize('copyAndPasteUrl');
+const youtubeVideoLabel = localize('youtubeVideo');
 
 function ContentInput() {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
@@ -143,6 +152,15 @@ function ContentInput() {
   const rewardLevelDescription = useMemo(() => {
     switch (form.rewardLevel) {
       case 3:
+        if (SELECTED_LANGUAGE === 'kr') {
+          return (
+            <>
+              이 동영상은{' '}
+              <span style={{ color: Color.pink() }}>흥미 위주의 콘텐츠</span>
+              이지만 영어 듣기에 도움이 됩니다
+            </>
+          );
+        }
         return (
           <>
             This video is{' '}
@@ -153,6 +171,15 @@ function ContentInput() {
           </>
         );
       case 4:
+        if (SELECTED_LANGUAGE === 'kr') {
+          return (
+            <>
+              이 동영상은{' '}
+              <span style={{ color: Color.green() }}>교육적이며</span> 영어
+              듣기에 도움이 됩니다
+            </>
+          );
+        }
         return (
           <>
             This video is{' '}
@@ -161,6 +188,15 @@ function ContentInput() {
           </>
         );
       case 5:
+        if (SELECTED_LANGUAGE === 'kr') {
+          return (
+            <>
+              이 동영상은{' '}
+              <span style={{ color: Color.green() }}>교육적이고</span>, 영어
+              듣기에 도움이 되며, 유저들이 꼭 봐야할 콘텐츠입니다
+            </>
+          );
+        }
         return (
           <>
             This video is{' '}
@@ -191,7 +227,7 @@ function ContentInput() {
 
   return (
     <ErrorBoundary className={PanelStyle}>
-      <p>Share interesting videos or webpages</p>
+      <p>{postContentLabel}</p>
       {urlError && (
         <Banner color="pink" style={{ marginBottom: '1rem' }}>
           {urlError}
@@ -203,7 +239,7 @@ function ContentInput() {
         style={urlExceedsCharLimit?.style || {}}
         value={url}
         onChange={handleUrlFieldChange}
-        placeholder="Copy and paste a URL address here"
+        placeholder={copyAndPasteUrlLabel}
       />
       {alreadyPosted && (
         <div style={{ fontSize: '1.6rem', marginTop: '0.5rem' }}>
@@ -219,7 +255,7 @@ function ContentInput() {
         </div>
       )}
       <Checkbox
-        label={'YouTube Video:'}
+        label={`${youtubeVideoLabel}:`}
         onClick={() => {
           setUrlError('');
           handleSetContentIsVideo(!contentIsVideo);
@@ -262,7 +298,7 @@ function ContentInput() {
                 <Input
                   value={title}
                   onChange={handleSetTitle}
-                  placeholder="Enter Title Here"
+                  placeholder={`${enterTitleHereLabel}...`}
                   onKeyUp={(event) => {
                     if (event.key === ' ') {
                       handleSetTitle(addEmoji(event.target.value));
@@ -284,7 +320,7 @@ function ContentInput() {
                 <Textarea
                   value={description}
                   minRows={4}
-                  placeholder="Enter Description (Optional, you don't need to write this)"
+                  placeholder={enterDescriptionOptionalLabel}
                   onChange={(event) => handleSetDescription(event.target.value)}
                   onKeyUp={(event) => {
                     if (event.key === ' ') {
@@ -315,8 +351,7 @@ function ContentInput() {
                   </div>
                 )}
                 <div style={{ fontSize: '1.5rem' }}>
-                  For every star you add, the amount of XP viewers earn per
-                  minute rises.
+                  {forEveryStarYouAddLabel}
                 </div>
                 <RewardLevelForm
                   themed

@@ -6,6 +6,7 @@ import ProgressBar from 'components/ProgressBar';
 import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 
 ItemPanel.propTypes = {
@@ -48,6 +49,34 @@ export default function ItemPanel({
   const notUpgraded = useMemo(() => {
     return !notUnlocked && isLeveled && currentLvl < maxLvl;
   }, [currentLvl, isLeveled, maxLvl, notUnlocked]);
+  const requirementLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${addCommasToNumber(requiredKarmaPoints)}KP 필요`;
+    }
+    return `Requires ${addCommasToNumber(requiredKarmaPoints)} KP`;
+  }, [requiredKarmaPoints]);
+  const requirementDescriptionLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          본 아이템을 {notUpgraded ? '업그레이드' : '잠금 해제'}하시려면
+          카마포인트 <b>{addCommasToNumber(requiredKarmaPoints)}점</b>이
+          필요합니다. 회원님의 카마포인트는 현재{' '}
+          <b>{addCommasToNumber(karmaPoints)}점</b>입니다
+        </>
+      );
+    }
+    return (
+      <>
+        You need <b>{addCommasToNumber(requiredKarmaPoints)} karma points</b> to{' '}
+        {notUpgraded ? 'upgrade' : 'unlock'} this item. You have{' '}
+        <b>
+          {addCommasToNumber(karmaPoints)} karma point
+          {karmaPoints === 1 ? '' : 's'}
+        </b>
+      </>
+    );
+  }, [karmaPoints, notUpgraded, requiredKarmaPoints]);
 
   return (
     <div
@@ -74,7 +103,7 @@ export default function ItemPanel({
       {locked && (
         <>
           <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>
-            Requires {addCommasToNumber(requiredKarmaPoints)} KP
+            {requirementLabel}
           </p>
           {itemDescription && (
             <div style={{ fontSize: '1.5rem', marginTop: '1rem' }}>
@@ -157,13 +186,7 @@ export default function ItemPanel({
                 textAlign: 'center'
               }}
             >
-              You need{' '}
-              <b>{addCommasToNumber(requiredKarmaPoints)} karma points</b> to{' '}
-              {notUpgraded ? 'upgrade' : 'unlock'} this item. You have{' '}
-              <b>
-                {addCommasToNumber(karmaPoints)} karma point
-                {karmaPoints === 1 ? '' : 's'}
-              </b>
+              {requirementDescriptionLabel}
             </p>
           </>
         ) : (

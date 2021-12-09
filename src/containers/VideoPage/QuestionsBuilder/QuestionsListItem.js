@@ -4,6 +4,9 @@ import Icon from 'components/Icon';
 import { useDrag, useDrop } from 'react-dnd';
 import ItemTypes from 'constants/itemTypes';
 import { Color } from 'constants/css';
+import localize from 'constants/localize';
+
+const untitledQuestionLabel = localize('untitledQuestion');
 
 QuestionsListItem.propTypes = {
   item: PropTypes.object,
@@ -53,7 +56,7 @@ export default function QuestionsListItem({
       <div>
         {listItem.title
           ? `${listItem.title} ${listItem.deleted ? '(removed)' : ''}`
-          : `Untitled Question ${questionId + 1} ${
+          : `${untitledQuestionLabel} ${questionId + 1} ${
               listItem.deleted ? '(removed)' : ''
             }`}
       </div>

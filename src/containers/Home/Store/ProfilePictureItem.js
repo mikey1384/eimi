@@ -1,22 +1,28 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ItemPanel from './ItemPanel';
 import Icon from 'components/Icon';
 import MaxLevelItemInfo from './MaxLevelItemInfo';
 import { useAppContext, useContentContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
-import { karmaPointTable } from 'constants/defaultValues';
+import { karmaPointTable, SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const profilePicturesLabel = localize('profilePictures');
+const postPicturesOnYourProfilePageLabel = localize(
+  'postPicturesOnYourProfilePage'
+);
 
 const item = {
   maxLvl: 7,
   name: [
-    'Post pictures on your profile page',
-    'Post pictures on your profile page (level 2)',
-    'Post pictures on your profile page (level 3)',
-    'Post pictures on your profile page (level 4)',
-    'Post pictures on your profile page (level 5)',
-    'Post pictures on your profile page (level 6)',
-    'Post pictures on your profile page (level 7)'
+    postPicturesOnYourProfilePageLabel,
+    `${postPicturesOnYourProfilePageLabel} (level 2)'`,
+    `${postPicturesOnYourProfilePageLabel} (level 3)'`,
+    `${postPicturesOnYourProfilePageLabel} (level 4)'`,
+    `${postPicturesOnYourProfilePageLabel} (level 5)'`,
+    `${postPicturesOnYourProfilePageLabel} (level 6)'`,
+    `${postPicturesOnYourProfilePageLabel} (level 7)'`
   ]
 };
 
@@ -32,6 +38,29 @@ export default function ProfilePictureItem({ style }) {
   const {
     actions: { onUpdateProfileInfo }
   } = useContentContext();
+  const descriptionLabel = useMemo(() => {
+    if (numPics > 0) {
+      if (SELECTED_LANGUAGE === 'kr') {
+        return `본 아이템을 업그레이드 하시면 프로필 페이지에 사진을 ${
+          numPics + 1
+        }장까지 게시하실 수 있게 됩니다`;
+      }
+      return `Upgrade this item to post up to ${
+        numPics + 1
+      } pictures on you profile page`;
+    }
+    if (SELECTED_LANGUAGE === 'kr') {
+      return '본 아이템을 잠금 해제 하시면 프로필 페이지에 사진을 게시하실 수 있게 됩니다';
+    }
+    return 'Unlock this item to post pictures on your profile page';
+  }, [numPics]);
+  const youCanNowPostUpToLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `이제 프로필 페이지에 사진을 최대 ${numPics}장까지 게시할 수 있습니다`;
+    }
+    return `You can now post up to ${numPics} pictures on your profile page`;
+  }, [numPics]);
+
   return (
     <ItemPanel
       isLeveled
@@ -42,20 +71,14 @@ export default function ProfilePictureItem({ style }) {
       locked={!numPics}
       onUnlock={handleUpgrade}
       itemName={item.name[numPics]}
-      itemDescription={
-        numPics > 0
-          ? `Upgrade this item to post up to ${
-              numPics + 1
-            } pictures on you profile page`
-          : 'Unlock this item to post pictures on your profile page'
-      }
+      itemDescription={descriptionLabel}
       style={style}
       upgradeIcon={<Icon size="3x" icon="image" />}
     >
       <MaxLevelItemInfo
         icon="image"
-        title="Profile Pictures - Level 7"
-        description={`You can now post up to ${numPics} pictures on your profile page`}
+        title={`${profilePicturesLabel} - Level 7`}
+        description={youCanNowPostUpToLabel}
       />
     </ItemPanel>
   );

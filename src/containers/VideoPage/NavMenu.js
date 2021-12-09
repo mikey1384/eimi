@@ -17,6 +17,18 @@ import { socket } from 'constants/io';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
+import localize from 'constants/localize';
+
+const hideWatchedLabel = localize('hideWatched');
+const videosLabel = localize('videos');
+const newsLabel = localize('news');
+const leaderboardLabel = localize('leaderboard');
+const rewardsLabel = localize('rewards');
+const newVideosLabel = localize('newVideos');
+const relatedVideosLabel = localize('relatedVideos');
+const upNextLabel = localize('upNext');
+const uploadedByLabel = localize('uploadedBy');
+const continueWatchingLabel = localize('continueWatching');
 
 NavMenu.propTypes = {
   playlistId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -183,7 +195,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
           className={videoTabActive ? 'active' : ''}
           onClick={() => setVideoTabActive(true)}
         >
-          Videos
+          {videosLabel}
         </nav>
         <nav
           className={`${!videoTabActive ? 'active' : ''} ${
@@ -191,7 +203,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
           }`}
           onClick={() => setVideoTabActive(false)}
         >
-          {rewardsExist ? 'Rewards' : userId ? 'News' : 'Leaderboard'}
+          {rewardsExist ? rewardsLabel : userId ? newsLabel : leaderboardLabel}
         </nav>
       </FilterBar>
       {userId && videoTabActive && playlistId && (
@@ -211,7 +223,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
           )}
           <SwitchButton
             checked={!!hideWatched}
-            label="Hide Watched"
+            label={hideWatchedLabel}
             onChange={handleToggleHideWatched}
             labelStyle={{ fontSize: '1.6rem' }}
           />
@@ -222,7 +234,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
         <>
           {nextVideos.length > 0 && (
             <section key={videoId + 'up next'}>
-              <p>Up Next</p>
+              <p>{upNextLabel}</p>
               {renderVideos({
                 videos: nextVideos,
                 arePlaylistVideos: playlistId && playlistVideos.length > 0
@@ -231,7 +243,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
           )}
           {continueWatchingVideos.length > 0 && (
             <section key={videoId + 'continue watching'}>
-              <p>Continue Watching</p>
+              <p>{continueWatchingLabel}</p>
               {renderVideos({
                 videos: continueWatchingVideos,
                 areContinueWatchingVideos: true
@@ -275,13 +287,13 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
           )}
           {relatedVideos.length > 0 && (
             <section key={videoId + 'related videos'}>
-              <p>Related Videos</p>
+              <p>{relatedVideosLabel}</p>
               {renderVideos({ videos: relatedVideos })}
             </section>
           )}
           {otherVideos.length > 0 && (
             <section key={videoId + 'new videos'}>
-              <p>New Videos</p>
+              <p>{newVideosLabel}</p>
               {renderVideos({ videos: otherVideos })}
             </section>
           )}
@@ -394,7 +406,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
               marginTop: '1rem'
             }}
           >
-            Uploaded by {video.username}
+            {uploadedByLabel} {video.username}
           </small>
         </div>
       </div>

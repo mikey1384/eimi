@@ -1,10 +1,14 @@
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import { useHistory } from 'react-router-dom';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import UserListModal from 'components/Modals/UserListModal';
+import localize from 'constants/localize';
+
+const membersLabel = localize('members');
 
 ChannelDetail.propTypes = {
   invitePath: PropTypes.number.isRequired,
@@ -38,6 +42,18 @@ export default function ChannelDetail({
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [alreadyJoined, invitePath]);
+  const invitationLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${channelName} 대화방에 초대합니다`;
+    }
+    return `Invitation to ${channelName}`;
+  }, [channelName]);
+  const andMoreLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `외 ${more}명`;
+    }
+    return `and ${more} more`;
+  }, [more]);
 
   return (
     <div
@@ -56,7 +72,7 @@ export default function ChannelDetail({
           overflow: hidden;
           white-space: nowrap;
           text-overflow: ellipsis;
-          line-height: 1;
+          line-height: 1.3;
           font-weight: bold;
           font-size: 2.2rem;
           color: ${Color[profileTheme]()};
@@ -67,7 +83,7 @@ export default function ChannelDetail({
         `}
         onClick={handleChannelEnter}
       >
-        Invitation to {channelName}
+        {invitationLabel}
       </p>
       <div
         style={{ marginTop: '0.5rem' }}
@@ -78,7 +94,7 @@ export default function ChannelDetail({
           }
         `}
       >
-        <span style={{ fontWeight: 'bold' }}>members:</span>{' '}
+        <span style={{ fontWeight: 'bold' }}>{membersLabel}:</span>{' '}
         {shownMembers.map((member, index) => (
           <span key={member.id}>
             {member.username}
@@ -96,7 +112,7 @@ export default function ChannelDetail({
             `}
             onClick={() => setUserListModalShown(true)}
           >
-            ...and {more} more
+            ...{andMoreLabel}
           </p>
         )}
       </div>

@@ -11,6 +11,18 @@ import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 import { v1 as uuidv1 } from 'uuid';
 import ErrorBoundary from 'components/ErrorBoundary';
+import localize from 'constants/localize';
+
+const acceptDrawLabel = localize('acceptDraw');
+const cancelMoveLabel = localize('cancelMove');
+const chessLabel = localize('chess');
+const closeLabel = localize('close');
+const doneLabel = localize('done');
+const offerDrawLabel = localize('offerDraw');
+const offeredDrawLabel = localize('offeredDraw');
+const resignLabel = localize('resign');
+const resignChessMatchLabel = localize('resignChessMatch');
+const startNewGameLabel = localize('startNewGame');
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
@@ -148,7 +160,7 @@ export default function ChessModal({
   return (
     <ErrorBoundary>
       <Modal large onHide={onHide}>
-        <header>Chess</header>
+        <header>{chessLabel}</header>
         <main style={{ padding: 0 }}>
           <div
             style={{
@@ -187,7 +199,7 @@ export default function ChessModal({
               color={drawOfferPending ? 'orange' : 'red'}
               onClick={() => setConfirmModalShown(true)}
             >
-              {drawOfferPending ? 'Accept Draw' : 'Resign'}
+              {drawOfferPending ? acceptDrawLabel : resignLabel}
             </Button>
           )}
           {drawButtonShown && (
@@ -196,11 +208,11 @@ export default function ChessModal({
               color="orange"
               onClick={handleOfferDraw}
             >
-              Offer Draw
+              {offerDrawLabel}
             </Button>
           )}
           <Button transparent onClick={onHide}>
-            Close
+            {closeLabel}
           </Button>
           {!!newChessState && (
             <Button
@@ -208,7 +220,7 @@ export default function ChessModal({
               color="pink"
               onClick={() => setNewChessState(undefined)}
             >
-              Cancel Move
+              {cancelMoveLabel}
             </Button>
           )}
           {gameFinished ? (
@@ -220,7 +232,7 @@ export default function ChessModal({
                 setInitialState(undefined);
               }}
             >
-              Start a new game
+              {startNewGameLabel}
             </Button>
           ) : !userMadeLastMove ? (
             <Button
@@ -229,7 +241,7 @@ export default function ChessModal({
               onClick={submitChessMove}
               disabled={!newChessState || !socketConnected || banned?.chess}
             >
-              Done
+              {doneLabel}
               {!socketConnected && (
                 <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
               )}
@@ -239,7 +251,7 @@ export default function ChessModal({
         {confirmModalShown && (
           <ConfirmModal
             modalOverModal
-            title={drawOfferPending ? 'Accept Draw' : 'Resign Chess Match'}
+            title={drawOfferPending ? acceptDrawLabel : resignChessMatchLabel}
             onConfirm={handleGameOver}
             onHide={() => setConfirmModalShown(false)}
           />
@@ -255,7 +267,7 @@ export default function ChessModal({
       message: {
         channelId,
         isDrawOffer: true,
-        content: 'offered a draw',
+        content: offeredDrawLabel,
         userId,
         username,
         profilePicUrl

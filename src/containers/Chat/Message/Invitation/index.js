@@ -5,7 +5,11 @@ import Button from 'components/Button';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { useAppContext, useChatContext } from 'contexts';
+import localize from 'constants/localize';
+
+const alreadyJoinedLabel = localize('alreadyJoined');
 
 Invitation.propTypes = {
   invitationChannelId: PropTypes.number,
@@ -107,6 +111,13 @@ export default function Invitation({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [invitePath]);
 
+  const acceptGroupInvitationLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${sender.username}님의 초대 수락`;
+    }
+    return `Accept ${sender.username}'s Invitation`;
+  }, [sender?.username]);
+
   return (
     <div
       className={css`
@@ -131,9 +142,7 @@ export default function Invitation({
           onClick={handleAcceptGroupInvitation}
           disabled={alreadyJoined}
         >
-          {alreadyJoined
-            ? 'Already Joined'
-            : `Accept ${sender.username}'s Invitation`}
+          {alreadyJoined ? alreadyJoinedLabel : acceptGroupInvitationLabel}
         </Button>
       )}
     </div>

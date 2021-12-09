@@ -7,6 +7,9 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { objectify } from 'helpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useContentContext } from 'contexts';
+import localize from 'constants/localize';
+
+const searchLabel = localize('search');
 
 SelectAttachmentScreen.propTypes = {
   onSelect: PropTypes.func.isRequired,
@@ -64,7 +67,7 @@ export default function SelectAttachmentScreen({
   return (
     <ErrorBoundary style={{ width: '100%' }}>
       <SearchInput
-        placeholder="Search..."
+        placeholder={`${searchLabel}...`}
         autoFocus
         style={{
           marginBottom: '2em',

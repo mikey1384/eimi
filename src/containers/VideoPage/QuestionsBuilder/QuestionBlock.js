@@ -8,6 +8,7 @@ import { borderRadius, innerBorderRadius, Color } from 'constants/css';
 import Banner from 'components/Banner';
 import Icon from 'components/Icon';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
 
 const Styles = {
   content: css`
@@ -64,6 +65,19 @@ const Styles = {
   `
 };
 
+const questionTitleLabel = localize('questionTitle');
+const choiceALabel = localize('choiceA');
+const choiceBLabel = localize('choiceB');
+const choiceCLabel = localize('choiceC');
+const choiceDLabel = localize('choiceD');
+const choiceELabel = localize('choiceE');
+const cancelLabel = localize('cancel');
+const doneLabel = localize('done');
+const enterQuestionLabel = localize('enterQuestion');
+const editQuestionLabel = localize('editQuestion');
+const removeLabel = localize('remove');
+const undoLabel = localize('undo');
+
 QuestionBlock.propTypes = {
   choiceIds: PropTypes.array.isRequired,
   choicesObj: PropTypes.object.isRequired,
@@ -115,11 +129,11 @@ export default function QuestionBlock({
   }, [initialChoices]);
 
   const choicePlaceHolder = [
-    'Choice A',
-    'Choice B',
-    'Choice C (Optional)',
-    'Choice D (Optional)',
-    'Choice E (Optional)'
+    choiceALabel,
+    choiceBLabel,
+    choiceCLabel,
+    choiceDLabel,
+    choiceELabel
   ];
 
   return (
@@ -148,12 +162,12 @@ export default function QuestionBlock({
                 color: !title && '#999'
               }}
             >
-              {title || 'Question Title'}
+              {title || questionTitleLabel}
             </h2>
           ) : (
             <Textarea
               autoFocus
-              placeholder="Enter Question..."
+              placeholder={`${enterQuestionLabel}...`}
               value={editedQuestionTitle}
               onChange={(event) => {
                 hideErrorMsg(questionId);
@@ -165,7 +179,7 @@ export default function QuestionBlock({
         <div>
           {!onEdit && !deleted && (
             <Button color="pink" filled onClick={() => onRemove(questionId)}>
-              Remove
+              {removeLabel}
             </Button>
           )}
           {deleted && (
@@ -174,7 +188,7 @@ export default function QuestionBlock({
               color="darkerGray"
               onClick={() => onUndoRemove(questionId)}
             >
-              Undo
+              {undoLabel}
             </Button>
           )}
         </div>
@@ -224,19 +238,19 @@ export default function QuestionBlock({
             disabled={deleted && true}
           >
             <Icon icon="pencil-alt" />
-            <span style={{ marginLeft: '1.2rem' }}>Edit Questions</span>
+            <span style={{ marginLeft: '1.2rem' }}>{editQuestionLabel}</span>
           </Button>
         ) : (
           <div style={{ display: 'flex' }}>
             <Button transparent onClick={() => handleEditCancel(questionId)}>
-              Cancel
+              {cancelLabel}
             </Button>
             <Button
               color="blue"
               style={{ marginLeft: '1rem' }}
               onClick={handleEditDone}
             >
-              Done
+              {doneLabel}
             </Button>
           </div>
         )}

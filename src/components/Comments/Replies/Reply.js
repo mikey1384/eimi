@@ -28,6 +28,17 @@ import { useContentState, useMyState } from 'helpers/hooks';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 import { getFileInfoFromFileName, stringIsEmpty } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const editLabel = localize('edit');
+const pinLabel = localize('pin');
+const pinnedLabel = localize('pinned');
+const peopleWhoLikeThisReplyLabel = localize('peopleWhoLikeThisReply');
+const unpinLabel = localize('unpin');
+const removeReplyLabel = localize('removeReply');
+const repliesLabel = localize('replies');
+const replyLabel = localize('reply');
+const rewardLabel = localize('reward');
 
 Reply.propTypes = {
   comment: PropTypes.shape({
@@ -239,7 +250,7 @@ function Reply({
         label: (
           <>
             <Icon icon="pencil-alt" />
-            <span style={{ marginLeft: '1rem' }}>Edit</span>
+            <span style={{ marginLeft: '1rem' }}>{editLabel}</span>
           </>
         ),
         onClick: () =>
@@ -259,7 +270,7 @@ function Reply({
           <>
             <Icon icon={['fas', 'thumbtack']} />
             <span style={{ marginLeft: '1rem' }}>
-              {pinnedCommentId === reply.id ? 'Unpin' : 'Pin'}
+              {pinnedCommentId === reply.id ? unpinLabel : pinLabel}
             </span>
           </>
         ),
@@ -272,7 +283,7 @@ function Reply({
         label: (
           <>
             <Icon icon="trash-alt" />
-            <span style={{ marginLeft: '1rem' }}>Remove</span>
+            <span style={{ marginLeft: '1rem' }}>{removeReplyLabel}</span>
           </>
         ),
         onClick: () => setConfirmModalShown(true)
@@ -303,7 +314,7 @@ function Reply({
             }}
           >
             <Icon icon={['fas', 'thumbtack']} />
-            <span style={{ marginLeft: '0.7rem' }}>Pinned</span>
+            <span style={{ marginLeft: '0.7rem' }}>{pinnedLabel}</span>
           </div>
         )}
         <div className="content-wrapper">
@@ -420,8 +431,8 @@ function Reply({
                           <Icon icon="comment-alt" />
                           <span style={{ marginLeft: '0.7rem' }}>
                             {!isExpanded && reply.numReplies > 1
-                              ? 'Replies'
-                              : 'Reply'}
+                              ? repliesLabel
+                              : replyLabel}
                             {loadingReplies ? (
                               <Icon
                                 style={{ marginLeft: '0.7rem' }}
@@ -450,7 +461,7 @@ function Reply({
                           >
                             <Icon icon="certificate" />
                             <span style={{ marginLeft: '0.7rem' }}>
-                              {xpButtonDisabled || 'Reward'}
+                              {xpButtonDisabled || rewardLabel}
                             </span>
                           </Button>
                         )}
@@ -540,7 +551,7 @@ function Reply({
         {userListModalShown && (
           <UserListModal
             onHide={() => setUserListModalShown(false)}
-            title="People who liked this reply"
+            title={peopleWhoLikeThisReplyLabel}
             users={reply.likes}
           />
         )}

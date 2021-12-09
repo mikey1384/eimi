@@ -14,6 +14,12 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const editLabel = localize('edit');
+const revokeLabel = localize('revoke');
+const revokeRewardLabel = localize('revokeReward');
 
 Comment.propTypes = {
   contentType: PropTypes.string,
@@ -44,10 +50,10 @@ function Comment({
     contentId: reward.id
   });
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const userIsUploader = useMemo(() => reward.rewarderId === userId, [
-    reward.rewarderId,
-    userId
-  ]);
+  const userIsUploader = useMemo(
+    () => reward.rewarderId === userId,
+    [reward.rewarderId, userId]
+  );
   const userCanRevokeReward = useMemo(
     () =>
       authLevel > 1 &&
@@ -65,7 +71,7 @@ function Comment({
         label: (
           <>
             <Icon icon="pencil-alt" />
-            <span style={{ marginLeft: '1rem' }}>Edit</span>
+            <span style={{ marginLeft: '1rem' }}>{editLabel}</span>
           </>
         ),
         onClick: () =>
@@ -81,7 +87,7 @@ function Comment({
         label: (
           <>
             <Icon icon="ban" />
-            <span style={{ marginLeft: '1rem' }}>Revoke</span>
+            <span style={{ marginLeft: '1rem' }}>{revokeLabel}</span>
           </>
         ),
         onClick: () => setConfirmModalShown(true)
@@ -90,6 +96,50 @@ function Comment({
     return items;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canEdit, onSetIsEditing, reward.id, userIsUploader]);
+
+  const rewardStatusLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          님이{' '}
+          <span
+            style={{
+              fontWeight: 'bold',
+              color:
+                reward.rewardAmount >= maxRewardables ||
+                reward.rewardAmount >= 10
+                  ? Color.gold()
+                  : reward.rewardAmount >= 5
+                  ? Color.pink()
+                  : Color.logoBlue()
+            }}
+          >
+            트윈클 {reward.rewardAmount}개를 보상했습니다
+          </span>
+        </>
+      );
+    }
+    return (
+      <>
+        {' '}
+        <span
+          style={{
+            fontWeight: 'bold',
+            color:
+              reward.rewardAmount >= maxRewardables || reward.rewardAmount >= 10
+                ? Color.gold()
+                : reward.rewardAmount >= 5
+                ? Color.pink()
+                : Color.logoBlue()
+          }}
+        >
+          rewarded {reward.rewardAmount === 1 ? 'a' : reward.rewardAmount}{' '}
+          Twinkle
+          {reward.rewardAmount > 1 ? 's' : ''}
+        </span>
+      </>
+    );
+  }, [maxRewardables, reward.rewardAmount]);
 
   return (
     <ErrorBoundary>
@@ -145,23 +195,8 @@ function Comment({
                   username: reward.rewarderUsername
                 }}
                 userId={userId}
-              />{' '}
-              <span
-                style={{
-                  fontWeight: 'bold',
-                  color:
-                    reward.rewardAmount >= maxRewardables ||
-                    reward.rewardAmount >= 10
-                      ? Color.gold()
-                      : reward.rewardAmount >= 5
-                      ? Color.pink()
-                      : Color.logoBlue()
-                }}
-              >
-                rewarded {reward.rewardAmount === 1 ? 'a' : reward.rewardAmount}{' '}
-                Twinkle
-                {reward.rewardAmount > 1 ? 's' : ''}
-              </span>{' '}
+              />
+              {rewardStatusLabel}{' '}
               <span style={{ fontSize: '1.2rem', color: Color.gray() }}>
                 ({timeSince(reward.timeStamp)})
               </span>
@@ -210,7 +245,7 @@ function Comment({
       {confirmModalShown && (
         <ConfirmModal
           onHide={() => setConfirmModalShown(false)}
-          title="Revoke Reward"
+          title={revokeRewardLabel}
           onConfirm={handleRevokeReward}
         />
       )}

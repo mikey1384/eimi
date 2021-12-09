@@ -6,6 +6,9 @@ import { limitBrs, processedStringWithURL } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 import { useContentState } from 'helpers/hooks';
 import { useContentContext } from 'contexts';
+import localize from 'constants/localize';
+
+const readMoreLabel = localize('readMore');
 
 LongText.propTypes = {
   children: PropTypes.string,
@@ -134,7 +137,7 @@ export default function LongText({
                       fullTextRef.current = true;
                     }}
                   >
-                    Read More
+                    {readMoreLabel}
                   </a>
                 </>
               )}

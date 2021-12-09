@@ -33,6 +33,10 @@ import {
 } from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
+import localize from 'constants/localize';
+
+const postSubjectLabel = localize('postSubject');
+const postSubjectPlaceholder = localize('postSubjectPlaceholder');
 
 function SubjectInput() {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
@@ -143,7 +147,7 @@ function SubjectInput() {
     <ErrorBoundary className={PanelStyle}>
       {!uploadingFile && (
         <>
-          <p>Post a subject users can talk about</p>
+          <p>{postSubjectLabel}</p>
           <div
             style={{
               display: 'flex',
@@ -154,7 +158,7 @@ function SubjectInput() {
           >
             <div style={{ width: '100%' }}>
               <Input
-                placeholder="A subject Twinkle users can talk about"
+                placeholder={postSubjectPlaceholder}
                 value={title}
                 onChange={handleInputChange}
                 onKeyUp={(event) => {

@@ -5,12 +5,17 @@ import FilterBar from 'components/FilterBar';
 import Loading from 'components/Loading';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import { useAppContext } from 'contexts';
+import localize from 'constants/localize';
 
 const displayedStatus = {
   fail: 'rejected',
   pending: 'pending',
   pass: 'approved'
 };
+
+const pendingLabel = localize('pending');
+const approvedLabel = localize('approved');
+const rejectedLabel = localize('rejected');
 
 Attempts.propTypes = {
   attemptObj: PropTypes.object,
@@ -64,19 +69,19 @@ export default function Attempts({
           className={selectedTab === 'pending' ? 'active' : null}
           onClick={() => onSelectTab('pending')}
         >
-          Pending
+          {pendingLabel}
         </nav>
         <nav
           className={selectedTab === 'pass' ? 'active' : null}
           onClick={() => onSelectTab('pass')}
         >
-          Approved
+          {approvedLabel}
         </nav>
         <nav
           className={selectedTab === 'fail' ? 'active' : null}
           onClick={() => onSelectTab('fail')}
         >
-          Rejected
+          {rejectedLabel}
         </nav>
       </FilterBar>
       {loading ? (

@@ -20,9 +20,16 @@ import {
   useInputContext,
   useNotiContext
 } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const collectingLabel = localize('collecting');
+const loadingLabel = localize('loading');
+const lookingUpLabel = localize('lookingUp');
+const typeWordInBoxBelowLabel = localize('typeWordInBoxBelow');
 
 function Vocabulary() {
   const {
@@ -117,10 +124,33 @@ function Vocabulary() {
     [wordObj.content, wordObj.isNew, inputTextIsEmpty, loading]
   );
 
-  const wordLabel = useMemo(
-    () => (/\s/.test(wordObj.content) ? 'term' : 'word'),
-    [wordObj.content]
-  );
+  const wordLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return /\s/.test(wordObj.content) ? '숙어' : '단어';
+    }
+    return /\s/.test(wordObj.content) ? 'term' : 'word';
+  }, [wordObj.content]);
+
+  const notCollectedYetLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `이 ${wordLabel}는 아직 수집되지 않은 상태입니다. 수집하시면 XP가 올라갑니다!`;
+    }
+    return `This ${wordLabel} has not been collected yet. Collect it and earn XP!`;
+  }, [wordLabel]);
+
+  const alreadyCollectedLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `이 ${wordLabel}는 이미 수집된 상태입니다`;
+    }
+    return `This ${wordLabel} has already been collected`;
+  }, [wordLabel]);
+
+  const notFoundLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `찾을 수 없었습니다: ${`"${inputText}"`}`;
+    }
+    return `${`"${inputText}"`} was not found`;
+  }, [inputText]);
 
   const handleSubmit = useCallback(async () => {
     const { isNew, ...definitions } = wordObj;
@@ -199,7 +229,7 @@ function Vocabulary() {
             `}
           >
             <div>
-              <span>Type a word in the text box below</span>
+              <span>{typeWordInBoxBelowLabel}</span>
               <Icon style={{ marginLeft: '1rem' }} icon="arrow-down" />
             </div>
           </div>
@@ -208,7 +238,7 @@ function Vocabulary() {
           (loading || !socketConnected ? (
             <Loading
               style={{ height: '100%' }}
-              text={socketConnected ? 'Looking up...' : 'Loading...'}
+              text={socketConnected ? lookingUpLabel : `${loadingLabel}...`}
             />
           ) : (
             <div
@@ -261,7 +291,7 @@ function Vocabulary() {
                     fontWeight: 'bold'
                   }}
                 >
-                  {`"${inputText}"`} was not found
+                  {notFoundLabel}
                 </div>
               )}
             </div>
@@ -296,9 +326,9 @@ function Vocabulary() {
           {vocabErrorMessage ||
             (notRegistered
               ? isSubmitting
-                ? 'Collecting...'
-                : `This ${wordLabel} has not been collected yet. Collect it and earn XP!`
-              : `This ${wordLabel} has already been collected`)}
+                ? collectingLabel
+                : notCollectedYetLabel
+              : alreadyCollectedLabel)}
         </div>
       )}
       <div

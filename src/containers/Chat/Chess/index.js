@@ -27,6 +27,9 @@ import {
 import { isMobile } from 'helpers';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+
+const deviceIsMobile = isMobile(navigator);
 
 Chess.propTypes = {
   channelId: PropTypes.number,
@@ -50,8 +53,6 @@ Chess.propTypes = {
   spoilerOff: PropTypes.bool,
   style: PropTypes.object
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 function Chess({
   countdownNumber,
@@ -97,6 +98,23 @@ function Chess({
     () => (initialState ? JSON.parse(initialState) : undefined),
     [initialState]
   );
+
+  const awaitingMoveLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          {opponentName ? <p>{`${opponentName}님의`}</p> : null}
+          <p>회신 대기중</p>
+        </>
+      );
+    }
+    return (
+      <>
+        <p>Awaiting</p>
+        {opponentName ? <p>{`${opponentName}'s move`}</p> : null}
+      </>
+    );
+  }, [opponentName]);
 
   const move = useMemo(() => {
     if (parsedState) {
@@ -915,20 +933,13 @@ function Chess({
             }
           `}
         >
-          {countdownNumber ? (
-            countdownNumber >= 110 ? (
-              `${Math.floor(countdownNumber / 600)}:${String(
-                Math.floor((countdownNumber % 600) / 10)
-              ).padStart(2, '0')}`
-            ) : (
-              Number((countdownNumber % 600) / 10).toFixed(1)
-            )
-          ) : (
-            <>
-              <p>Awaiting</p>
-              <p>{`${opponentName}'s move`}</p>
-            </>
-          )}
+          {countdownNumber
+            ? countdownNumber >= 110
+              ? `${Math.floor(countdownNumber / 600)}:${String(
+                  Math.floor((countdownNumber % 600) / 10)
+                ).padStart(2, '0')}`
+              : Number((countdownNumber % 600) / 10).toFixed(1)
+            : awaitingMoveLabel}
         </div>
       )}
     </div>

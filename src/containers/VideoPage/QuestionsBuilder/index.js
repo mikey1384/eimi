@@ -12,6 +12,7 @@ import { css } from '@emotion/css';
 import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { HTML5Backend } from 'react-dnd-html5-backend';
+import localize from 'constants/localize';
 
 const Styles = {
   Player: css`
@@ -48,6 +49,18 @@ const Styles = {
   `
 };
 
+const addLabel = localize('add');
+const pleaseClickDoneButtonBelowLabel = localize('pleaseClickDoneButtonBelow');
+const pleaseEnterTitleLabel = localize('pleaseEnterTitle');
+const pleaseMarkTheCorrectChoiceLabel = localize('pleaseMarkTheCorrectChoice');
+const reorderLabel = localize('reorder');
+const resetLabel = localize('reset');
+const submitLabel = localize('submit2');
+const thereMustBeAtLeastTwoChoicesLabel = localize(
+  'thereMustBeAtLeastTwoChoices'
+);
+const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
+
 QuestionsBuilder.propTypes = {
   onHide: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired,
@@ -55,8 +68,6 @@ QuestionsBuilder.propTypes = {
   title: PropTypes.string.isRequired,
   videoCode: PropTypes.string.isRequired
 };
-
-const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
 export default function QuestionsBuilder({
   onHide,
@@ -182,19 +193,19 @@ export default function QuestionsBuilder({
                   <ButtonGroup
                     buttons={[
                       {
-                        label: '+ Add',
+                        label: `+ ${addLabel}`,
                         filled: true,
                         onClick: onAddQuestion,
                         color: 'green'
                       },
                       {
-                        label: 'Reorder',
+                        label: reorderLabel,
                         filled: true,
                         onClick: () => setReorderModeOn(true),
                         color: 'lightBlue'
                       },
                       {
-                        label: 'Reset',
+                        label: resetLabel,
                         filled: true,
                         onClick: onReset,
                         color: 'orange'
@@ -214,7 +225,7 @@ export default function QuestionsBuilder({
                       onClick={handleSubmit}
                       style={{ fontSize: '2rem' }}
                     >
-                      Submit
+                      {submitLabel}
                     </Button>
                   </div>
                 </div>
@@ -333,19 +344,19 @@ export default function QuestionsBuilder({
     };
     const errorHash = {
       notDone: {
-        message: 'Please click the "done" button below',
+        message: pleaseClickDoneButtonBelowLabel,
         onEdit: true
       },
       missingTitle: {
-        message: 'Please enter title',
+        message: pleaseEnterTitleLabel,
         onEdit: true
       },
       notEnoughChoices: {
-        message: 'There must be at least 2 choices',
+        message: thereMustBeAtLeastTwoChoicesLabel,
         onEdit: true
       },
       invalidChoice: {
-        message: 'Please mark the correct choice',
+        message: pleaseMarkTheCorrectChoiceLabel,
         onEdit: false
       }
     };

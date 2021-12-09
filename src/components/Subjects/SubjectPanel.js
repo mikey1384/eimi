@@ -25,6 +25,13 @@ import { determineXpButtonDisabled } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const commentLabel = localize('comment');
+const byLabel = localize('by');
+const secretMessageLabel = localize('secretMessage');
+const postedLabel = localize('posted');
 
 SubjectPanel.propTypes = {
   description: PropTypes.string,
@@ -271,7 +278,7 @@ export default function SubjectPanel({
             />
             <div style={{ marginTop: '1rem' }}>
               <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
-                Secret Message
+                {secretMessageLabel}
               </span>
               <Textarea
                 style={{ marginTop: '0.7rem' }}
@@ -337,7 +344,10 @@ export default function SubjectPanel({
                 >
                   <Icon icon="comment-alt" />
                   <span style={{ marginLeft: '1rem' }}>
-                    Comment{!expanded && numComments > 1 ? 's' : ''}
+                    {commentLabel}
+                    {!expanded && SELECTED_LANGUAGE === 'en' && numComments > 1
+                      ? 's'
+                      : ''}
                     {!expanded &&
                     numComments &&
                     numComments > 0 &&
@@ -506,7 +516,7 @@ export default function SubjectPanel({
           </div>
         )}
         <div style={{ marginTop: '1rem' }}>
-          By{' '}
+          {byLabel}{' '}
           <b>
             <UsernameText
               user={{
@@ -515,7 +525,7 @@ export default function SubjectPanel({
               }}
             />
           </b>{' '}
-          &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+          &nbsp;|&nbsp; {postedLabel} {timeSince(timeStamp)}
         </div>
       </div>
       {confirmModalShown && (

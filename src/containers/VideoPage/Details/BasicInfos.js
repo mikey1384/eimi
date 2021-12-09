@@ -7,6 +7,7 @@ import { edit } from 'constants/placeholders';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
 
 BasicInfos.propTypes = {
   className: PropTypes.string,
@@ -28,6 +29,8 @@ BasicInfos.propTypes = {
   uploader: PropTypes.object.isRequired,
   urlExceedsCharLimit: PropTypes.func.isRequired
 };
+
+const addedByLabel = localize('addedBy');
 
 export default function BasicInfos({
   className,
@@ -118,7 +121,7 @@ export default function BasicInfos({
             }
           `}
         >
-          Added by <UsernameText user={uploader} />{' '}
+          {addedByLabel} <UsernameText user={uploader} />{' '}
           <span>{`${timeStamp ? timeSince(timeStamp) : ''}`}</span>
         </div>
       )}

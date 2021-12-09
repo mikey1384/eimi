@@ -5,31 +5,65 @@ import Icon from 'components/Icon';
 import MaxLevelItemInfo from './MaxLevelItemInfo';
 import { useAppContext, useContentContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
-import { translateMBToGB } from 'helpers/stringHelpers';
-import { karmaPointTable, maxSizes } from 'constants/defaultValues';
+import {
+  translateMBToGB,
+  translateMBToGBWithoutSpace
+} from 'helpers/stringHelpers';
+import {
+  karmaPointTable,
+  maxSizes,
+  SELECTED_LANGUAGE
+} from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const expandMaximumUploadSizeLabel = localize('expandMaximumUploadSize');
+const maximumUploadSizeLabel = localize('maximumUploadSize');
 
 const item = {
   maxLvl: 7,
   name: [
-    'Expand maximum upload file size',
-    'Expand maximum upload file size (level 2)',
-    'Expand maximum upload file size (level 3)',
-    'Expand maximum upload file size (level 4)',
-    'Expand maximum upload file size (level 5)',
-    'Expand maximum upload file size (level 6)',
-    'Expand maximum upload file size (level 7)'
+    expandMaximumUploadSizeLabel,
+    `${expandMaximumUploadSizeLabel} (level 2)`,
+    `${expandMaximumUploadSizeLabel} (level 3)`,
+    `${expandMaximumUploadSizeLabel} (level 4)`,
+    `${expandMaximumUploadSizeLabel} (level 5)`,
+    `${expandMaximumUploadSizeLabel} (level 6)`,
+    `${expandMaximumUploadSizeLabel} (level 7)`
   ],
   description: maxSizes.map((currentSize, index) => {
     if (index === 0) {
+      if (SELECTED_LANGUAGE === 'kr') {
+        return `본 아이템을 잠금 해제 하시면 파일 업로드 용량 최대치를 ${translateMBToGBWithoutSpace(
+          maxSizes[1]
+        )}까지 확장하실 수 있습니다 (현재 ${translateMBToGBWithoutSpace(
+          currentSize
+        )})`;
+      }
       return `Unlock this item to expand your maximum upload file size to ${translateMBToGB(
         maxSizes[1]
       )} (from ${translateMBToGB(currentSize)})`;
+    }
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `본 아이템을 업그레이드 하시면 파일 업로드 용량 최대치를 ${translateMBToGBWithoutSpace(
+        maxSizes[index + 1]
+      )}까지 확장하실 수 있습니다 (현재 ${translateMBToGBWithoutSpace(
+        currentSize
+      )})`;
     }
     return `Upgrade this item to expand your maximum upload file size to ${translateMBToGB(
       maxSizes[index + 1]
     )} (from ${translateMBToGB(currentSize)})`;
   })
 };
+
+const youCanNowUploadLabel =
+  SELECTED_LANGUAGE === 'kr'
+    ? `이제 최대 ${translateMBToGBWithoutSpace(
+        maxSizes[maxSizes.length - 1]
+      )}까지 업로드 가능합니다`
+    : `You can now upload files up to ${translateMBToGB(
+        maxSizes[maxSizes.length - 1]
+      )} in size`;
 
 FileSizeItem.propTypes = {
   style: PropTypes.object
@@ -59,10 +93,8 @@ export default function FileSizeItem({ style }) {
     >
       <MaxLevelItemInfo
         icon="upload"
-        title="Maximum upload file size - Level 7"
-        description={`You can now upload files up to ${translateMBToGB(
-          maxSizes[maxSizes.length - 1]
-        )} in size`}
+        title={`${maximumUploadSizeLabel} - Level 7`}
+        description={youCanNowUploadLabel}
       />
     </ItemPanel>
   );

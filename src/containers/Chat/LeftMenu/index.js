@@ -15,6 +15,9 @@ import { css } from '@emotion/css';
 import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { useHistory } from 'react-router-dom';
+import localize from 'constants/localize';
+
+const newChatLabel = localize('newChat');
 
 LeftMenu.propTypes = {
   onNewButtonClick: PropTypes.func.isRequired
@@ -69,7 +72,7 @@ function LeftMenu({ onNewButtonClick }) {
             marginLeft: '0.7rem'
           }}
         >
-          New Chat
+          {newChatLabel}
         </div>
       </div>
       <Vocabulary

@@ -10,6 +10,10 @@ import { mobileMaxWidth } from 'constants/css';
 import { NavLink, useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 import { useManagementContext } from 'contexts';
+import localize from 'constants/localize';
+
+const accountMgmtLabel = localize('accountMgmt');
+const modActivitiesLabel = localize('modActivities');
 
 Management.propTypes = {
   location: PropTypes.object
@@ -33,10 +37,10 @@ export default function Management({ location }) {
     <div>
       <SideMenu style={{ top: 'CALC(50vh - 8rem)' }}>
         <NavLink to="/management" exact activeClassName="active">
-          <span style={{ marginLeft: '1.1rem' }}>Account Mgmt</span>
+          <span style={{ marginLeft: '1.1rem' }}>{accountMgmtLabel}</span>
         </NavLink>
         <NavLink to="/management/mod-activities" activeClassName="active">
-          <span style={{ marginLeft: '1.1rem' }}>Mod Activities</span>
+          <span style={{ marginLeft: '1.1rem' }}>{modActivitiesLabel}</span>
         </NavLink>
       </SideMenu>
       <FilterBar
@@ -52,7 +56,7 @@ export default function Management({ location }) {
           className={location.pathname === `/management` ? 'active' : ''}
           onClick={() => history.push('/management')}
         >
-          Account Mgmt
+          {accountMgmtLabel}
         </nav>
         <nav
           className={
@@ -60,7 +64,7 @@ export default function Management({ location }) {
           }
           onClick={() => history.push('/management/mod-activities')}
         >
-          Mod Activities
+          {modActivitiesLabel}
         </nav>
       </FilterBar>
       <Routes

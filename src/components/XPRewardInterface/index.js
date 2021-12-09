@@ -13,9 +13,17 @@ import {
   stringIsEmpty
 } from 'helpers/stringHelpers';
 import Button from 'components/Button';
-import { returnMaxRewards, priceTable } from 'constants/defaultValues';
+import {
+  returnMaxRewards,
+  priceTable,
+  SELECTED_LANGUAGE
+} from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useInputContext } from 'contexts';
+import localize from 'constants/localize';
+
+const clearLabel = localize('clear');
+const rewardLabel = localize('reward');
 
 XPRewardInterface.propTypes = {
   contentType: PropTypes.string.isRequired,
@@ -137,20 +145,36 @@ export default function XPRewardInterface({
     [comment]
   );
 
-  const rewardStatusText = useMemo(
-    () =>
-      selectedAmount > 0
-        ? `Reward ${selectedAmount} Twinkle${
-            selectedAmount > 1 ? 's' : ''
-          } (${addCommasToNumber(selectedAmount * 200)} XP)`
-        : 'Select reward amount',
-    [selectedAmount]
-  );
+  const rewardStatusText = useMemo(() => {
+    if (selectedAmount > 0) {
+      if (SELECTED_LANGUAGE === 'kr') {
+        return `트윈클 ${selectedAmount}개 (${addCommasToNumber(
+          selectedAmount * 200
+        )} XP)`;
+      }
+      return `Reward ${selectedAmount} Twinkle${
+        selectedAmount > 1 ? 's' : ''
+      } (${addCommasToNumber(selectedAmount * 200)} XP)`;
+    }
+    if (SELECTED_LANGUAGE === 'kr') {
+      return '보상 금액을 선택하세요';
+    }
+    return 'Select reward amount';
+  }, [selectedAmount]);
+
+  const rewardReasonLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `이 활동을 보상하는 이유를 적어주세요 (선택사항)`;
+    }
+    return `Let the recipient know why you are rewarding XP for this ${
+      contentType === 'url' ? 'link' : contentType
+    } (optional)`;
+  }, [contentType]);
 
   const confirmText = useMemo(() => {
     return (
       <>
-        Reward
+        {rewardLabel}
         {requiresPayment ? (
           <>
             <div style={{ marginLeft: '0.7rem' }}>
@@ -237,7 +261,7 @@ export default function XPRewardInterface({
             }}
             onClick={() => handleSetSelectedAmount(0)}
           >
-            clear
+            {clearLabel}
           </a>
         )}
       </section>
@@ -251,9 +275,7 @@ export default function XPRewardInterface({
           onChange={(event) => {
             handleSetComment(addEmoji(event.target.value));
           }}
-          placeholder={`Let the recipient know why you are rewarding XP for this ${
-            contentType === 'url' ? 'link' : contentType
-          } (optional)`}
+          placeholder={rewardReasonLabel}
           style={rewardCommentExceedsCharLimit?.style}
         />
       )}

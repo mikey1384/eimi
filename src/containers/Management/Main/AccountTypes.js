@@ -10,6 +10,19 @@ import EditAccountTypeModal from '../Modals/EditAccountTypeModal';
 import Icon from 'components/Icon';
 import { useMyState } from 'helpers/hooks';
 import { useManagementContext } from 'contexts';
+import localize from 'constants/localize';
+
+const accountTypesLabel = localize('accountTypes');
+const addAccountTypeLabel = localize('addAccountType');
+const authLevelLabel = localize('authLevel');
+const deleteLabel = localize('delete');
+const editLabel = localize('edit');
+const editPlaylistsLabel = localize('editPlaylists');
+const editRewardLevelLabel = localize('editRewardLevel');
+const featureContentsLabel = localize('featureContents');
+const labelLabel = localize('label');
+const rewardLabel = localize('reward');
+const noAccountTypesLabel = localize('noAccountTypes');
 
 AccountTypes.propTypes = {
   canManage: PropTypes.bool.isRequired
@@ -20,17 +33,16 @@ export default function AccountTypes({ canManage }) {
   const {
     state: { accountTypes, accountTypesLoaded }
   } = useManagementContext();
-  const [addAccountTypeModalShown, setAddAccountTypeModalShown] = useState(
-    false
-  );
+  const [addAccountTypeModalShown, setAddAccountTypeModalShown] =
+    useState(false);
   const [accountTypeModalTarget, setAccountTypeModalTarget] = useState(null);
 
   return (
     <ErrorBoundary>
       <SectionPanel
-        title="Account Types"
+        title={accountTypesLabel}
         isEmpty={accountTypes.length === 0}
-        emptyMessage="No Account Types"
+        emptyMessage={noAccountTypesLabel}
         loaded={accountTypesLoaded}
         innerStyle={{ paddingLeft: 0, paddingRight: 0 }}
         button={
@@ -41,7 +53,9 @@ export default function AccountTypes({ canManage }) {
               onClick={() => setAddAccountTypeModalShown(true)}
             >
               <Icon icon="plus" />
-              <span style={{ marginLeft: '0.7rem' }}>Add Account Type</span>
+              <span style={{ marginLeft: '0.7rem' }}>
+                {addAccountTypeLabel}
+              </span>
             </Button>
           ) : null
         }
@@ -62,14 +76,14 @@ export default function AccountTypes({ canManage }) {
         >
           <thead>
             <tr>
-              <th>Label</th>
-              <th style={{ textAlign: 'center' }}>Auth Level</th>
-              <th style={{ textAlign: 'center' }}>Edit</th>
-              <th style={{ textAlign: 'center' }}>Delete</th>
-              <th style={{ textAlign: 'center' }}>Reward</th>
-              <th style={{ textAlign: 'center' }}>Feature Contents</th>
-              <th style={{ textAlign: 'center' }}>Edit Playlists</th>
-              <th style={{ textAlign: 'center' }}>Edit Reward Level</th>
+              <th>{labelLabel}</th>
+              <th style={{ textAlign: 'center' }}>{authLevelLabel}</th>
+              <th style={{ textAlign: 'center' }}>{editLabel}</th>
+              <th style={{ textAlign: 'center' }}>{deleteLabel}</th>
+              <th style={{ textAlign: 'center' }}>{rewardLabel}</th>
+              <th style={{ textAlign: 'center' }}>{featureContentsLabel}</th>
+              <th style={{ textAlign: 'center' }}>{editPlaylistsLabel}</th>
+              <th style={{ textAlign: 'center' }}>{editRewardLevelLabel}</th>
             </tr>
           </thead>
           <tbody>

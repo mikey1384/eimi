@@ -20,6 +20,9 @@ import {
   useInputContext,
   useProfileContext
 } from 'contexts';
+import localize from 'constants/localize';
+
+const doesNotHaveBioLabel = localize('doesNotHaveBio');
 
 UserDetails.propTypes = {
   noLink: PropTypes.bool,
@@ -209,7 +212,8 @@ export default function UserDetails({
             }}
           >
             <span>
-              {profile.username} {`does not have a bio, yet`}
+              {profile.username}
+              {doesNotHaveBioLabel}
             </span>
           </div>
         ))}

@@ -7,6 +7,9 @@ import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from '@emotion/css';
 import LocalContext from '../../Context';
+import localize from 'constants/localize';
+
+const callingLabel = localize('calling');
 
 CallScreen.propTypes = {
   style: PropTypes.object
@@ -100,7 +103,7 @@ export default function CallScreen({ style }) {
             alignItems: 'center'
           }}
         >
-          Calling...
+          {callingLabel}...
         </div>
       )}
     </div>

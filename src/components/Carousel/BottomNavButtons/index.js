@@ -2,6 +2,11 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ConditionalButton from './ConditionalButton';
+import localize from 'constants/localize';
+
+const finishLabel = localize('finish');
+const nextLabel = localize('next');
+const prevLabel = localize('prev');
 
 BottomNavButtons.propTypes = {
   conditionPassStatus: PropTypes.string,
@@ -46,7 +51,7 @@ export default function BottomNavButtons({
             transparent
             disabled={currentSlide === 0}
           >
-            Prev
+            {prevLabel}
           </Button>
           <Button
             filled
@@ -55,7 +60,7 @@ export default function BottomNavButtons({
             onClick={currentSlide + 1 === slideCount ? onFinish : onNext}
             color={currentSlide + 1 === slideCount ? 'brownOrange' : 'green'}
           >
-            {currentSlide + 1 === slideCount ? 'Finish' : 'Next'}
+            {currentSlide + 1 === slideCount ? finishLabel : nextLabel}
           </Button>
         </>
       )}

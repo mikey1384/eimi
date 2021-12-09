@@ -2,10 +2,13 @@ import React, { useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
+import localize from 'constants/localize';
 
 ChangePicture.propTypes = {
   shown: PropTypes.bool
 };
+
+const changePictureLabel = localize('changePicture');
 
 export default function ChangePicture({ shown }) {
   const [opacity, setOpacity] = useState(0);
@@ -40,7 +43,7 @@ export default function ChangePicture({ shown }) {
       >
         <Icon icon="camera-alt" size="lg" />
         <div style={{ fontSize: '1.5rem', marginTop: '0.5rem' }}>
-          Change Picture
+          {changePictureLabel}
         </div>
       </div>
     </div>

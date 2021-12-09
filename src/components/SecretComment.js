@@ -2,6 +2,9 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import { borderRadius, Color, desktopMinWidth } from 'constants/css';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const submitYourResponseLabel = localize('submitYourResponse2');
 
 SecretComment.propTypes = {
   onClick: PropTypes.func,
@@ -30,7 +33,7 @@ export default function SecretComment({ onClick, style }) {
       `}
       onClick={onClick}
     >
-      Submit your own response to view this comment
+      {submitYourResponseLabel}
     </div>
   );
 }

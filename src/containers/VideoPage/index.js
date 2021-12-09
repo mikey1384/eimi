@@ -29,6 +29,12 @@ import {
   useViewContext,
   useExploreContext
 } from 'contexts';
+import localize from 'constants/localize';
+
+const addEditQuestionsLabel = localize('addEditQuestions');
+const addQuestionsLabel = localize('addQuestions');
+const commentOnThisVideoLabel = localize('commentOnThisVideo');
+const thereAreNoQuestionsLabel = localize('thereAreNoQuestions');
 
 VideoPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -315,7 +321,7 @@ export default function VideoPage({
                       }}
                       onClick={() => setQuestionsBuilderShown(true)}
                     >
-                      Add/Edit Questions
+                      {addEditQuestionsLabel}
                     </a>
                   </div>
                 )}
@@ -343,7 +349,7 @@ export default function VideoPage({
                       height: '15rem'
                     }}
                   >
-                    <p>There are no questions yet.</p>
+                    <p>{thereAreNoQuestionsLabel}.</p>
                     {(userIsUploader || userCanEditThis) && (
                       <Button
                         style={{ marginTop: '2rem', fontSize: '2rem' }}
@@ -351,7 +357,7 @@ export default function VideoPage({
                         color="darkerGray"
                         onClick={() => setQuestionsBuilderShown(true)}
                       >
-                        Add Questions
+                        {addQuestionsLabel}
                       </Button>
                     )}
                   </div>
@@ -453,7 +459,7 @@ export default function VideoPage({
                   color: Color.darkerGray()
                 }}
               >
-                Comment on this video
+                {commentOnThisVideoLabel}
               </p>
               <Comments
                 autoExpand

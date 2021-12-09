@@ -5,6 +5,12 @@ import SectionPanel from 'components/SectionPanel';
 import VideoThumb from 'components/VideoThumb';
 import Icon from 'components/Icon';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const continueWatchingLabel = localize('continueWatching');
+const emptyMessageLabel = localize('noVideosToRecommend');
+const loadingLabel = localize('loading');
+const recommendedLabel = localize('recommendedVideos');
 
 export default function ContinueWatchingPanel() {
   const { userId, loaded: profileLoaded } = useMyState();
@@ -70,14 +76,14 @@ export default function ContinueWatchingPanel() {
       <SectionPanel
         loaded={loaded || loadedRef.current}
         innerStyle={{ fontSize: '1.5rem' }}
-        emptyMessage="We don't have any videos to recommend to you at the moment"
+        emptyMessage={emptyMessageLabel}
         isEmpty={continueWatchingVideos.length === 0}
         title={
           loaded || loadedRef.current ? (
             showingRecommendedVideos ? (
-              'Recommended'
+              recommendedLabel
             ) : (
-              'Continue Watching'
+              continueWatchingLabel
             )
           ) : (
             <div
@@ -87,7 +93,7 @@ export default function ContinueWatchingPanel() {
                 verticalAlign: 0
               }}
             >
-              <span>Loading</span>
+              <span>{loadingLabel}</span>
               <Icon style={{ marginLeft: '1rem' }} icon="spinner" pulse />
             </div>
           )

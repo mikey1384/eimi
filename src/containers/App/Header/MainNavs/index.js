@@ -15,6 +15,7 @@ import {
   useViewContext
 } from 'contexts';
 import { socket } from 'constants/io';
+import localize from 'constants/localize';
 
 MainNavs.propTypes = {
   loggedIn: PropTypes.bool,
@@ -26,6 +27,11 @@ MainNavs.propTypes = {
   defaultSearchFilter: PropTypes.string,
   totalRewardAmount: PropTypes.number
 };
+
+const homeLabel = localize('home');
+const exploreLabel = localize('explore');
+const missionsLabel = localize('missions');
+const chatLabel = localize('chat');
 
 function MainNavs({
   loggedIn,
@@ -62,6 +68,11 @@ function MainNavs({
   } = useChatContext();
   const loaded = useRef(false);
   const timerRef = useRef(null);
+
+  const contentLabel = useMemo(() => {
+    if (!contentNav) return null;
+    return localize(contentNav.substring(0, contentNav.length - 1));
+  }, [contentNav]);
 
   const displayedTwinkleCoins = useMemo(() => {
     if (twinkleCoins > 999) {
@@ -326,7 +337,7 @@ function MainNavs({
         imgLabel="home"
         alert={pathname === '/' && !usersMatch && numNewPosts > 0}
       >
-        HOME
+        {homeLabel}
         {pathname === '/' && !usersMatch && numNewPosts > 0
           ? ` (${numNewPosts})`
           : ''}
@@ -338,7 +349,7 @@ function MainNavs({
         style={{ marginLeft: '2rem' }}
         imgLabel="search"
       >
-        EXPLORE
+        {exploreLabel}
       </Nav>
       {contentNav && (
         <Nav
@@ -348,20 +359,18 @@ function MainNavs({
           style={{ marginLeft: '2rem' }}
           imgLabel={contentIconType}
         >
-          {contentNav.substring(0, contentNav.length - 1).toUpperCase()}
+          {contentLabel}
         </Nav>
       )}
-      {false && (
-        <Nav
-          to={`/missions`}
-          pathname={pathname}
-          className="desktop"
-          style={{ marginLeft: '2rem' }}
-          imgLabel="tasks"
-        >
-          MISSIONS
-        </Nav>
-      )}
+      <Nav
+        to={`/missions`}
+        pathname={pathname}
+        className="desktop"
+        style={{ marginLeft: '2rem' }}
+        imgLabel="tasks"
+      >
+        {missionsLabel}
+      </Nav>
       <div
         className={css`
           margin-left: 2rem;
@@ -378,7 +387,7 @@ function MainNavs({
             imgLabel="comments"
             alert={chatAlertShown}
           >
-            CHAT
+            {chatLabel}
           </Nav>
         )}
       </div>

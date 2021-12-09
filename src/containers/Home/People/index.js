@@ -15,6 +15,9 @@ import {
   LAST_ONLINE_FILTER_LABEL,
   RANKING_FILTER_LABEL
 } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const searchUsersLabel = localize('searchUsers');
 
 function People() {
   const {
@@ -107,7 +110,7 @@ function People() {
         style={{ zIndex: 0 }}
         addonColor={profileTheme}
         borderColor={profileTheme}
-        placeholder="Search Users"
+        placeholder={`${searchUsersLabel}...`}
         onChange={handleSearch}
         value={userSearchText}
       />

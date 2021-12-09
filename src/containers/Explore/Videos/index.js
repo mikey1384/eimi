@@ -9,6 +9,10 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import { scrollElementToCenter } from 'helpers';
 import { useMyState, useSearch } from 'helpers/hooks';
 import { useAppContext, useExploreContext, useInputContext } from 'contexts';
+import localize from 'constants/localize';
+
+const addPlaylistLabel = localize('addPlaylist');
+const allPlaylistsLabel = localize('allPlaylists');
 
 Videos.propTypes = {
   history: PropTypes.object.isRequired
@@ -90,7 +94,7 @@ export default function Videos({ history }) {
             }}
             buttons={[
               {
-                label: '+ Add Playlist',
+                label: `+ ${addPlaylistLabel}`,
                 onClick: onOpenAddPlaylistModal,
                 skeuomorphic: true,
                 color: 'darkerGray',
@@ -99,7 +103,7 @@ export default function Videos({ history }) {
             ]}
           />
         )}
-        title="All Playlists"
+        title={allPlaylistsLabel}
         loadMoreButton={
           !stringIsEmpty(playlistSearchText)
             ? loadMoreSearchedPlaylistsButton

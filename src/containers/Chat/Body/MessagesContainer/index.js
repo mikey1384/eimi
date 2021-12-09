@@ -35,6 +35,19 @@ import { socket } from 'constants/io';
 import { isMobile } from 'helpers';
 import { useHistory } from 'react-router-dom';
 import LocalContext from '../../Context';
+import localize from 'constants/localize';
+
+const CALL_SCREEN_HEIGHT = '30%';
+const unseenButtonThreshold = -1;
+const deviceIsMobile = isMobile(navigator);
+const addToFavoritesLabel = localize('addToFavorites');
+const editGroupNameLabel = localize('editGroupName');
+const hideLabel = localize('hide');
+const invitePeopleLabel = localize('invitePeople');
+const leaveChatGroupLabel = localize('leaveChatGroup');
+const leaveLabel = localize('leave');
+const menuLabel = deviceIsMobile ? '' : localize('menu');
+const settingsLabel = localize('settings');
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
@@ -42,10 +55,6 @@ MessagesContainer.propTypes = {
   currentChannel: PropTypes.object.isRequired,
   loading: PropTypes.bool
 };
-
-const CALL_SCREEN_HEIGHT = '30%';
-const unseenButtonThreshold = -1;
-const deviceIsMobile = isMobile(navigator);
 
 function MessagesContainer({
   channelName,
@@ -140,7 +149,6 @@ function MessagesContainer({
   const prevChannelId = useRef(null);
   const prevTopMessageId = useRef(null);
   const prevScrollPosition = useRef(null);
-  const menuLabel = deviceIsMobile ? '' : 'Menu';
   const messages = useMemo(
     () => messageIds.map((messageId) => messagesObj[messageId] || {}),
     [messageIds, messagesObj]
@@ -211,7 +219,7 @@ function MessagesContainer({
           label: (
             <>
               <Icon icon="minus" />
-              <span style={{ marginLeft: '1rem' }}>Hide</span>
+              <span style={{ marginLeft: '1rem' }}>{hideLabel}</span>
             </>
           ),
           onClick: () => setHideModalShown(true)
@@ -224,7 +232,7 @@ function MessagesContainer({
         label: (
           <>
             <Icon icon="users" />
-            <span style={{ marginLeft: '1rem' }}>Invite People</span>
+            <span style={{ marginLeft: '1rem' }}>{invitePeopleLabel}</span>
           </>
         ),
         onClick: () => setInviteUsersModalShown(true)
@@ -236,12 +244,12 @@ function MessagesContainer({
           currentChannel.creatorId === userId ? (
             <>
               <Icon icon="sliders-h" />
-              <span style={{ marginLeft: '1rem' }}>Settings</span>
+              <span style={{ marginLeft: '1rem' }}>{settingsLabel}</span>
             </>
           ) : (
             <>
               <Icon icon="pencil-alt" />
-              <span style={{ marginLeft: '1rem' }}>Edit Group Name</span>
+              <span style={{ marginLeft: '1rem' }}>{editGroupNameLabel}</span>
             </>
           ),
         onClick: () => setSettingsModalShown(true)
@@ -253,7 +261,7 @@ function MessagesContainer({
         label: (
           <>
             <Icon icon="sign-out-alt" />
-            <span style={{ marginLeft: '1rem' }}>Leave</span>
+            <span style={{ marginLeft: '1rem' }}>{leaveLabel}</span>
           </>
         ),
         onClick: () => setLeaveConfirmModalShown(true)
@@ -867,7 +875,7 @@ function MessagesContainer({
               direction="left"
               className="desktop"
               show={addToFavoritesShown && !favorited}
-              text="Add to favorites"
+              text={addToFavoritesLabel}
               style={{
                 marginTop: '0.5rem',
                 fontSize: '1.3rem',
@@ -1101,7 +1109,7 @@ function MessagesContainer({
       )}
       {leaveConfirmModalShown && (
         <ConfirmModal
-          title="Leave Channel"
+          title={leaveChatGroupLabel}
           onHide={() => setLeaveConfirmModalShown(false)}
           onConfirm={handleLeaveConfirm}
           disabled={leaving}

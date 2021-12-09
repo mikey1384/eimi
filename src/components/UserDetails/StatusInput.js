@@ -4,6 +4,7 @@ import Button from 'components/Button';
 import Textarea from 'components/Texts/Textarea';
 import ColorSelector from 'components/ColorSelector';
 import ErrorBoundary from 'components/ErrorBoundary';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { css } from '@emotion/css';
 import { Color } from 'constants/css';
 import { exceedsCharLimit } from 'helpers/stringHelpers';
@@ -39,6 +40,11 @@ export default function StatusInput({
       }),
     [editedStatusMsg]
   );
+  const statusMsgPlaceholder = useMemo(() => {
+    return SELECTED_LANGUAGE === 'kr'
+      ? '상태 메시지를 입력하세요...'
+      : `Enter a ${profile.statusMsg ? 'new ' : ''}status message...`;
+  }, [profile.statusMsg]);
 
   return (
     <ErrorBoundary>
@@ -54,7 +60,7 @@ export default function StatusInput({
         minRows={1}
         value={editedStatusMsg}
         onChange={onTextChange}
-        placeholder={`Enter a ${profile.statusMsg ? 'new ' : ''}status message`}
+        placeholder={statusMsgPlaceholder}
         style={statusExceedsCharLimit?.style}
       />
       <p

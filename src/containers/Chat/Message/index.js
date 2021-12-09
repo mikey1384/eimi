@@ -422,7 +422,7 @@ function Message({
   ]);
 
   const displayedTimeStamp = useMemo(
-    () => unix(timeStamp).format('LLL'),
+    () => unix(timeStamp).format('lll'),
     [timeStamp]
   );
 

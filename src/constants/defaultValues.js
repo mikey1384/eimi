@@ -1,4 +1,6 @@
-export const clientVersion = '1.5.66';
+import localize from 'constants/localize';
+
+export const clientVersion = '1.5.67';
 export const defaultChatSubject = 'Welcome!';
 export const defaultContentState = {
   isEditing: false,
@@ -21,17 +23,18 @@ export const defaultContentState = {
 export const cloudFrontURL = `https://${process.env.REACT_APP_CLOUDFRONT_KEY}.cloudfront.net`;
 export const DEFAULT_PROFILE_THEME = 'logoBlue';
 export const DESCRIPTION_LENGTH_FOR_EXTRA_REWARD_LEVEL = 1000;
-export const FILE_UPLOAD_XP_REQUIREMENT = 5000;
-export const FILE_UPLOAD_XP_REQUIREMENT_FOR_SUBJECT = 100000;
+export const FILE_UPLOAD_XP_REQUIREMENT = 0;
 export const GENERAL_CHAT_ID = 2;
 export const GITHUB_APP_ID = process.env.REACT_APP_GITHUB_CLIENT_ID;
-export const LAST_ONLINE_FILTER_LABEL = 'Last Online';
-export const RANKING_FILTER_LABEL = 'Ranking';
+export const LAST_ONLINE_FILTER_LABEL = localize('lastOnline2');
+export const RANKING_FILTER_LABEL = localize('ranking');
 export const MAX_PROFILE_PIC_SIZE = 10000;
 export const S3URL = `https://${process.env.REACT_APP_AWS_S3_BUCKET_NAME}.s3.amazonaws.com`;
 export const TURN_USERNAME = process.env.REACT_APP_TURN_USERNAME;
 export const TURN_PASSWORD = process.env.REACT_APP_TURN_PASSWORD;
 export const REWARD_VALUE = 200;
+export const SELECTED_LANGUAGE =
+  process.env.REACT_APP_SELECTED_LANGUAGE || 'en';
 export const mb = 1000;
 export const priceTable = {
   chatSubject: 20,

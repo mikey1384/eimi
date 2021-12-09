@@ -4,6 +4,9 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import SectionPanel from 'components/SectionPanel';
 import ContentListItem from 'components/ContentListItem';
 import { useAppContext, useExploreContext } from 'contexts';
+import localize from 'constants/localize';
+
+const recommendedSubjectsLabel = localize('recommendedSubjects');
 
 Recommended.propTypes = {
   expanded: PropTypes.bool,
@@ -39,7 +42,7 @@ export default function Recommended({
     <ErrorBoundary>
       <SectionPanel
         style={style}
-        title="Recommended"
+        title={recommendedSubjectsLabel}
         loadMoreButtonShown={
           (!expanded && subjects.length > 1) || loadMoreButton
         }

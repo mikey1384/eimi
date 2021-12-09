@@ -7,6 +7,9 @@ import { borderRadius, Color, desktopMinWidth } from 'constants/css';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const submitYourResponseLabel = localize('submitYourResponse');
 
 SecretAnswer.propTypes = {
   answer: PropTypes.string,
@@ -129,7 +132,7 @@ function SecretAnswer({
               }
             `}
           >
-            Submit your response to view the secret message
+            {submitYourResponseLabel}
           </span>
         )}
       </div>

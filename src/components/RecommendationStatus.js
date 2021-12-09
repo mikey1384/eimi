@@ -4,6 +4,12 @@ import UsernameText from 'components/Texts/UsernameText';
 import UserListModal from 'components/Modals/UserListModal';
 import { Color } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const recommendedByLabel = localize('recommendedBy');
+const youLabel = localize('you');
+const othersLabel = localize('others');
 
 RecommendationStatus.propTypes = {
   contentType: PropTypes.string.isRequired,
@@ -66,6 +72,16 @@ export default function RecommendationStatus({
     ]
   );
 
+  const andLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      if (recommendationsByUsertypeExceptMe.length > 2) {
+        return '님 외';
+      }
+      return ',';
+    }
+    return ' and';
+  }, [recommendationsByUsertypeExceptMe.length]);
+
   return recommendations.length > 0 ? (
     <div
       style={{
@@ -82,20 +98,22 @@ export default function RecommendationStatus({
       }}
     >
       <div>
-        Recommended by{' '}
+        {recommendedByLabel}{' '}
         {myRecommendation && (
           <b
             style={{
               color: isRewardable ? '#000' : Color.black()
             }}
           >
-            you
+            {youLabel}
           </b>
         )}
         {mostRecentRecommenderOtherThanMe && (
           <>
             {myRecommendation &&
-              (recommendationsByUsertypeExceptMe.length > 1 ? ', ' : ' and ')}
+              (recommendationsByUsertypeExceptMe.length > 1
+                ? ', '
+                : `${andLabel} `)}
             <UsernameText
               color={isRewardable ? '#000' : Color.black()}
               user={{
@@ -107,8 +125,7 @@ export default function RecommendationStatus({
         )}
         {recommendationsByUsertypeExceptMe.length === 2 && (
           <>
-            {' '}
-            and{' '}
+            {andLabel}{' '}
             <UsernameText
               color={isRewardable ? '#000' : Color.black()}
               user={{
@@ -120,13 +137,13 @@ export default function RecommendationStatus({
         )}
         {recommendationsByUsertypeExceptMe.length > 2 && (
           <>
-            {' '}
-            and{' '}
+            {andLabel}{' '}
             <a
               style={{ cursor: 'pointer', fontWeight: 'bold', color: '#000' }}
               onClick={() => setUserListModalShown(true)}
             >
-              {recommendationsByUsertypeExceptMe.length - 1} others
+              {recommendationsByUsertypeExceptMe.length - 1}
+              {othersLabel}
             </a>
           </>
         )}

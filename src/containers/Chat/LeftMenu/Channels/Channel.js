@@ -5,6 +5,7 @@ import { css } from '@emotion/css';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useHistory, useLocation } from 'react-router-dom';
+import localize from 'constants/localize';
 
 Channel.propTypes = {
   channel: PropTypes.object.isRequired,
@@ -59,7 +60,7 @@ function Channel({
     }) {
       const messageSender = senderId
         ? senderId === userId
-          ? 'You'
+          ? localize('You')
           : senderName
         : '';
       if (fileName && stringIsEmpty(content)) {

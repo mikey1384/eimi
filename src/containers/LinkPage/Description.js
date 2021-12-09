@@ -18,6 +18,14 @@ import {
 import { css } from '@emotion/css';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useContentContext, useInputContext } from 'contexts';
+import localize from 'constants/localize';
+
+const addedByLabel = localize('addedBy');
+const editLabel = localize('edit');
+const deleteLabel = localize('delete');
+const enterDescriptionLabel = localize('enterDescription');
+const enterTitleLabel = localize('enterTitle');
+const enterUrlLabel = localize('enterUrl');
 
 Description.propTypes = {
   description: PropTypes.string,
@@ -140,7 +148,7 @@ export default function Description({
     const items = [];
     if (userIsUploader || canEdit) {
       items.push({
-        label: 'Edit',
+        label: editLabel,
         onClick: () =>
           onSetIsEditing({
             contentId: linkId,
@@ -151,7 +159,7 @@ export default function Description({
     }
     if (userIsUploader || canDelete) {
       items.push({
-        label: 'Delete',
+        label: deleteLabel,
         onClick: onDelete
       });
     }
@@ -237,7 +245,7 @@ export default function Description({
                   width: 80%;
                 `}
                 style={titleExceedsCharLimit?.style}
-                placeholder="Enter Title..."
+                placeholder={`${enterTitleLabel}...`}
                 value={editedTitle}
                 onChange={handleTitleChange}
                 onKeyUp={(event) => {
@@ -258,7 +266,8 @@ export default function Description({
         </div>
         <div>
           <small>
-            Added by <UsernameText user={uploader} /> ({timeSince(timeStamp)})
+            {addedByLabel} <UsernameText user={uploader} /> (
+            {timeSince(timeStamp)})
           </small>
         </div>
       </div>
@@ -273,14 +282,14 @@ export default function Description({
         {isEditing ? (
           <div>
             <Input
-              placeholder="Enter URL"
+              placeholder={`${enterUrlLabel}...`}
               style={{ marginBottom: '1rem', ...urlExceedsCharLimit?.style }}
               value={editedUrl}
               onChange={handleUrlChange}
             />
             <Textarea
               minRows={4}
-              placeholder="Enter Description"
+              placeholder={`${enterDescriptionLabel}...`}
               value={editedDescription}
               onChange={(event) => handleDescriptionChange(event.target.value)}
               onKeyUp={(event) => {

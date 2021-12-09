@@ -16,6 +16,7 @@ import { useContentState, useLazyLoad } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { useHistory } from 'react-router-dom';
 import { useInView } from 'react-intersection-observer';
+import localize from 'constants/localize';
 
 ContentPanel.propTypes = {
   autoExpand: PropTypes.bool,
@@ -234,13 +235,13 @@ export default function ContentPanel({
                         action={
                           commentId
                             ? targetObj.comment.notFound
-                              ? 'replied on'
-                              : 'replied to'
+                              ? localize('repliedOn')
+                              : localize('repliedTo')
                             : rootType === 'subject'
-                            ? 'responded to'
+                            ? localize('respondedTo')
                             : rootType === 'user'
-                            ? 'left a message to'
-                            : 'commented on'
+                            ? localize('leftMessageTo')
+                            : localize('commentedOn')
                         }
                       />
                       <div className="body">

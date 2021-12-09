@@ -19,6 +19,10 @@ import Textarea from 'components/Texts/Textarea';
 import AlertModal from 'components/Modals/AlertModal';
 import Attachment from 'components/Attachment';
 import FullTextReveal from 'components/Texts/FullTextReveal';
+import localize from 'constants/localize';
+
+const secretMessageLabel = localize('secretMessage');
+const enterSecretMessageLabel = localize('enterSecretMessage');
 
 SecretMessageInput.propTypes = {
   secretAnswer: PropTypes.string,
@@ -66,7 +70,7 @@ export default function SecretMessageInput({
           color: Color.darkerGray()
         }}
       >
-        Secret Message
+        {secretMessageLabel}
       </span>
       <div style={{ width: '100%', display: 'flex' }}>
         <div style={{ flexGrow: 1 }}>
@@ -78,7 +82,7 @@ export default function SecretMessageInput({
             }}
             value={secretAnswer}
             minRows={4}
-            placeholder="Enter the Secret Message"
+            placeholder={enterSecretMessageLabel}
             onChange={(event) =>
               onSetSecretAnswer(addEmoji(event.target.value))
             }

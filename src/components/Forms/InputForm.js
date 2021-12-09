@@ -31,6 +31,15 @@ import {
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import { useInputContext } from 'contexts';
+import localize from 'constants/localize';
+
+const areYouSureLabel = localize('areYouSure');
+const commentsMightNotBeRewardedLabel = localize('commentsMightNotBeRewarded');
+const tapThisButtonToSubmitLabel = localize('tapThisButtonToSubmit');
+const viewWithoutRespondingLabel = localize('viewWithoutResponding');
+const viewSecretMessageWithoutRespondingLabel = localize(
+  'viewSecretMessageWithoutResponding'
+);
 
 InputForm.propTypes = {
   autoFocus: PropTypes.bool,
@@ -289,7 +298,7 @@ function InputForm({
                   : () => setConfirmModalShown(true)
               }
             >
-              View without responding
+              {viewWithoutRespondingLabel}
             </Button>
           </div>
         )}
@@ -307,7 +316,7 @@ function InputForm({
               disabled={submitDisabled}
               onClick={handleSubmit}
             >
-              Tap This Button to Submit!
+              {tapThisButtonToSubmitLabel}!
             </Button>
           </div>
         )}
@@ -382,8 +391,8 @@ function InputForm({
         <ConfirmModal
           onHide={() => setConfirmModalShown(false)}
           descriptionFontSize="1.7rem"
-          title="View secret message without responding"
-          description="Are you sure? The comments you post on this subject might not be rewarded"
+          title={viewSecretMessageWithoutRespondingLabel}
+          description={`${areYouSureLabel} ${commentsMightNotBeRewardedLabel}`}
           disabled={secretViewMessageSubmitting}
           onConfirm={handleViewAnswer}
         />

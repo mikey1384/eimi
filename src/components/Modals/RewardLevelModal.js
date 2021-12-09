@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -6,6 +6,13 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
 import AlertModal from 'components/Modals/AlertModal';
 import { useAppContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const cancelLabel = localize('cancel');
+const setLabel = localize('set');
+const settingCannotBeChangedLabel = localize('settingCannotBeChanged');
+const setVideoRewardLevelLabel = localize('setVideoRewardLevel');
 
 RewardLevelModal.propTypes = {
   contentId: PropTypes.number.isRequired,
@@ -29,12 +36,27 @@ export default function RewardLevelModal({
   const [cannotChangeModalShown, setCannotChangeModalShown] = useState(false);
   const [disabled, setDisabled] = useState(false);
   const [rewardLevel, setRewardLevel] = useState(initialRewardLevel);
+
+  const moderatorHasDisabledChangeLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <span>
+          <b>{moderatorName}</b>님이 이 설정을 변경하지 못하도록 설정하였습니다
+        </span>
+      );
+    }
+    return (
+      <span>
+        <b>{moderatorName}</b> has disabled users from changing this setting for
+        this post
+      </span>
+    );
+  }, [moderatorName]);
+
   return (
     <Modal onHide={onHide}>
       <ErrorBoundary>
-        <header>
-          Set Reward Level (consider both difficulty and importance)
-        </header>
+        <header>{setVideoRewardLevelLabel}</header>
         <main style={{ fontSize: '3rem', paddingTop: 0 }}>
           <RewardLevelForm
             rewardLevel={rewardLevel}
@@ -48,22 +70,17 @@ export default function RewardLevelModal({
             style={{ marginRight: '0.7rem' }}
             onClick={onHide}
           >
-            Cancel
+            {cancelLabel}
           </Button>
           <Button disabled={disabled} color="blue" onClick={submit}>
-            Set
+            {setLabel}
           </Button>
         </footer>
       </ErrorBoundary>
       {cannotChangeModalShown && (
         <AlertModal
-          title="This setting cannot be changed"
-          content={
-            <span>
-              <b>{moderatorName}</b> has disabled users from changing this
-              setting for this post
-            </span>
-          }
+          title={settingCannotBeChangedLabel}
+          content={moderatorHasDisabledChangeLabel}
           onHide={() => setCannotChangeModalShown(false)}
         />
       )}

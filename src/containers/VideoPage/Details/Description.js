@@ -5,6 +5,11 @@ import LongText from 'components/Texts/LongText';
 import Button from 'components/Button';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { edit } from 'constants/placeholders';
+import localize from 'constants/localize';
+
+const cancelLabel = localize('cancel');
+const doneLabel = localize('done');
+const noDescriptionLabel = localize('noDescription');
 
 Description.propTypes = {
   description: PropTypes.string.isRequired,
@@ -62,7 +67,7 @@ export default function Description({
               style={{ fontSize: '1.7rem', marginRight: '1rem' }}
               onClick={onEditCancel}
             >
-              Cancel
+              {cancelLabel}
             </Button>
             <Button
               color="blue"
@@ -70,7 +75,7 @@ export default function Description({
               onClick={onEditFinish}
               style={{ fontSize: '1.7rem' }}
             >
-              Done
+              {doneLabel}
             </Button>
           </div>
         </>
@@ -85,7 +90,7 @@ export default function Description({
             lineHeight: '2.3rem'
           }}
         >
-          {stringIsEmpty(description) ? 'No Description' : description}
+          {stringIsEmpty(description) ? noDescriptionLabel : description}
         </LongText>
       )}
     </div>

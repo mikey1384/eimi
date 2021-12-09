@@ -7,6 +7,12 @@ import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useChatContext } from 'contexts';
 import { isMobile } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const deviceIsMobile = isMobile(navigator);
+const chatLabel = localize('chat2');
+const deletedLabel = localize('deleted');
+const profileLabel = localize('Profile');
 
 UsernameText.propTypes = {
   className: PropTypes.string,
@@ -16,8 +22,6 @@ UsernameText.propTypes = {
   user: PropTypes.object,
   wordBreakEnabled: PropTypes.bool
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function UsernameText({
   className,
@@ -100,7 +104,7 @@ export default function UsernameText({
           onClick={onUsernameClick}
           onMouseEnter={onMouseEnter}
         >
-          {user.username || '(Deleted)'}
+          {user.username || `(${deletedLabel})`}
         </p>
       </div>
       {menuShown && (
@@ -113,12 +117,12 @@ export default function UsernameText({
               style={{ color: Color.darkerGray(), cursor: 'pointer' }}
               onClick={(e) => e.preventDefault()}
             >
-              Profile
+              {profileLabel}
             </a>
           </li>
           {user.id !== userId && (
             <li onClick={onLinkClick}>
-              <a style={{ color: Color.darkerGray() }}>Chat</a>
+              <a style={{ color: Color.darkerGray() }}>{chatLabel}</a>
             </li>
           )}
           {userXP && (

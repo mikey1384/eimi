@@ -6,6 +6,9 @@ import FileUploadStatusIndicator from 'components/FileUploadStatusIndicator';
 import { useInputContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
 import { v1 as uuidv1 } from 'uuid';
+import localize from 'constants/localize';
+
+const enterReplyLabel = localize('enterReply');
 
 ReplyInputArea.propTypes = {
   rootCommentId: PropTypes.number,
@@ -62,7 +65,7 @@ export default function ReplyInputArea({
             innerRef={innerRef}
             onSubmit={handleSubmit}
             parent={parent}
-            placeholder="Enter your reply..."
+            placeholder={`${enterReplyLabel}...`}
             rows={rows}
             targetCommentId={targetCommentId}
           />

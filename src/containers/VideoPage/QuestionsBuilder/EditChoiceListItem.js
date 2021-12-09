@@ -1,5 +1,5 @@
+import React, { memo, useCallback } from 'react';
 import PropTypes from 'prop-types';
-import React from 'react';
 import Textarea from 'components/Texts/Textarea';
 
 EditChoiceListItem.propTypes = {
@@ -11,7 +11,7 @@ EditChoiceListItem.propTypes = {
   text: PropTypes.string
 };
 
-export default function EditChoiceListItem({
+function EditChoiceListItem({
   checked,
   choiceId,
   onEdit,
@@ -19,11 +19,18 @@ export default function EditChoiceListItem({
   placeholder,
   text
 }) {
+  const handleEdit = useCallback(
+    (event) => {
+      onEdit({ choiceId, text: event.target.value });
+    },
+    [choiceId, onEdit]
+  );
+
   return (
     <nav>
       <main>
         <Textarea
-          onChange={event => onEdit({ choiceId, text: event.target.value })}
+          onChange={handleEdit}
           value={text}
           placeholder={placeholder}
         />
@@ -39,3 +46,5 @@ export default function EditChoiceListItem({
     </nav>
   );
 }
+
+export default memo(EditChoiceListItem);

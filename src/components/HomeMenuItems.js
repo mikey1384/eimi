@@ -8,12 +8,17 @@ import { isMobile } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
 
 HomeMenuItems.propTypes = {
   history: PropTypes.object,
   style: PropTypes.object
 };
 
+const peopleLabel = localize('people');
+const storiesLabel = localize('stories');
+const earnXPLabel = localize('earnXP');
+const storeLabel = localize('store');
 const deviceIsMobile = isMobile(navigator);
 
 export default function HomeMenuItems({ history, style = {} }) {
@@ -155,7 +160,7 @@ export default function HomeMenuItems({ history, style = {} }) {
                   <div className="icon">
                     <Icon icon="book" size="1x" />
                   </div>
-                  <div className="label">Stories</div>
+                  <div className="label">{storiesLabel}</div>
                 </div>
               </a>
             </nav>
@@ -175,7 +180,7 @@ export default function HomeMenuItems({ history, style = {} }) {
                   <div className="icon">
                     <Icon icon="users" size="1x" />
                   </div>
-                  <div className="label">People</div>
+                  <div className="label">{peopleLabel}</div>
                 </div>
               </a>
             </nav>
@@ -196,7 +201,7 @@ export default function HomeMenuItems({ history, style = {} }) {
                     <div className="icon">
                       <Icon icon="bolt" size="1x" />
                     </div>
-                    <div className="label">Earn XP</div>
+                    <div className="label">{earnXPLabel}</div>
                   </div>
                 </a>
               </nav>
@@ -218,7 +223,7 @@ export default function HomeMenuItems({ history, style = {} }) {
                     <div className="icon">
                       <Icon icon="shopping-bag" size="1x" />
                     </div>
-                    <div className="label">Store</div>
+                    <div className="label">{storeLabel}</div>
                   </div>
                 </a>
               </nav>

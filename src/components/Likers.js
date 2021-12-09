@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import UsernameText from 'components/Texts/UsernameText';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 
 Likers.propTypes = {
   className: PropTypes.string,
@@ -44,6 +45,22 @@ export default function Likers({
       if (totalLikes > 0) {
         if (totalLikes === 1) {
           let otherLikes = likes.filter((like) => like?.id !== userId);
+          if (SELECTED_LANGUAGE === 'kr') {
+            return (
+              <div>
+                회원님과{' '}
+                <UsernameText
+                  wordBreakEnabled={wordBreakEnabled}
+                  color={Color.blue()}
+                  user={{
+                    id: otherLikes[0]?.id,
+                    username: otherLikes[0]?.username
+                  }}
+                />
+                님이 이 게시물을 좋아합니다.
+              </div>
+            );
+          }
           return (
             <div>
               You and{' '}
@@ -59,6 +76,20 @@ export default function Likers({
             </div>
           );
         } else {
+          if (SELECTED_LANGUAGE === 'kr') {
+            return (
+              <div>
+                회원님과{' '}
+                <a
+                  style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                  onClick={() => onLinkClick()}
+                >
+                  {totalLikes}
+                </a>
+                명의 회원님들이 이 게시물을 좋아합니다
+              </div>
+            );
+          }
           return (
             <div>
               You and{' '}
@@ -73,9 +104,24 @@ export default function Likers({
           );
         }
       }
+      if (SELECTED_LANGUAGE === 'kr') {
+        return <div>회원님이 이 게시물을 좋아합니다.</div>;
+      }
       return <div>You like {`this${target ? ' ' + target : ''}.`}</div>;
     } else if (totalLikes > 0) {
       if (totalLikes === 1) {
+        if (SELECTED_LANGUAGE === 'kr') {
+          return (
+            <div>
+              <UsernameText
+                wordBreakEnabled={wordBreakEnabled}
+                color={Color.blue()}
+                user={likes[0]}
+              />
+              님이 이 게시물을 좋아합니다.
+            </div>
+          );
+        }
         return (
           <div>
             <UsernameText
@@ -87,6 +133,19 @@ export default function Likers({
           </div>
         );
       } else {
+        if (SELECTED_LANGUAGE === 'kr') {
+          return (
+            <div>
+              <a
+                style={{ cursor: 'pointer', fontWeight: 'bold' }}
+                onClick={() => onLinkClick()}
+              >
+                {totalLikes}
+              </a>
+              명의 회원님들이 이 게시물을 좋아합니다.
+            </div>
+          );
+        }
         return (
           <div>
             <a

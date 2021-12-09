@@ -4,8 +4,54 @@ import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
-import { karmaMultiplier } from 'constants/defaultValues';
+import { karmaMultiplier, SELECTED_LANGUAGE } from 'constants/defaultValues';
 import Loading from 'components/Loading';
+import localize from 'constants/localize';
+
+const karmaCalculationLabel =
+  SELECTED_LANGUAGE === 'kr' ? (
+    <>
+      회원님의 카마포인트 = 회원님이 보상한{' '}
+      <b style={{ color: Color.pink() }}>트윈클 개수</b> + (
+      {karmaMultiplier.recommendation} × 선생님 유저들이 승인한 회원님의{' '}
+      <b style={{ color: Color.brownOrange() }}>추천 개수</b>)
+    </>
+  ) : (
+    <>
+      Your Karma Points = Total number of Twinkles you{' '}
+      <b style={{ color: Color.pink() }}>rewarded</b> + (
+      {karmaMultiplier.recommendation} × total number of your{' '}
+      <b style={{ color: Color.brownOrange() }}>recommendations</b> that were
+      approved by teachers)
+    </>
+  );
+const rewardedTwinklesLabel =
+  SELECTED_LANGUAGE === 'kr' ? (
+    <>
+      회원님이 보상한 <b style={{ color: Color.pink() }}>트윈클 개수</b>
+    </>
+  ) : (
+    <>
+      Total number of Twinkles you{' '}
+      <b style={{ color: Color.pink() }}>rewarded</b>
+    </>
+  );
+
+const approvedRecommendationsLabel =
+  SELECTED_LANGUAGE === 'kr' ? (
+    <>
+      선생님 유저들이 승인한 회원님의{' '}
+      <b style={{ color: Color.brownOrange() }}>추천 개수</b>
+    </>
+  ) : (
+    <>
+      Total number of{' '}
+      <b style={{ color: Color.brownOrange() }}>recommendations</b> approved by
+      teachers
+    </>
+  );
+
+const karmaPointsLabel = localize('karmaPoints');
 
 export default function KarmaStatus() {
   const {
@@ -18,9 +64,8 @@ export default function KarmaStatus() {
   const { authLevel, userType, userId, karmaPoints } = useMyState();
   const [loadingKarma, setLoadingKarma] = useState(false);
   const [numTwinklesRewarded, setNumTwinklesRewarded] = useState(0);
-  const [numApprovedRecommendations, setNumApprovedRecommendations] = useState(
-    0
-  );
+  const [numApprovedRecommendations, setNumApprovedRecommendations] =
+    useState(0);
   const [numPostsRewarded, setNumPostsRewarded] = useState(0);
   useEffect(() => {
     mounted.current = true;
@@ -33,7 +78,6 @@ export default function KarmaStatus() {
     if (userId) {
       handleLoadKarmaPoints();
     }
-
     async function handleLoadKarmaPoints() {
       if (mounted.current) {
         setLoadingKarma(true);
@@ -68,13 +112,13 @@ export default function KarmaStatus() {
 
   const instructionText = useMemo(() => {
     if (authLevel < 2) {
+      return <span>{karmaCalculationLabel}</span>;
+    }
+    if (SELECTED_LANGUAGE === 'kr') {
       return (
         <span>
-          Your Karma Points = Total number of Twinkles you{' '}
-          <b style={{ color: Color.pink() }}>rewarded</b> + (
-          {karmaMultiplier.recommendation} × total number of your{' '}
-          <b style={{ color: Color.brownOrange() }}>recommendations</b> that
-          were approved by teachers)
+          회원님의 카마포인트 = 회원님이 보상한 <b>게시물</b>의 총 개수 ×{' '}
+          {karmaMultiplier.post}
         </span>
       );
     }
@@ -91,21 +135,33 @@ export default function KarmaStatus() {
       return (
         <div style={{ fontSize: '1.5rem', marginTop: '3rem' }}>
           <p>
-            Total number of Twinkles you{' '}
-            <b style={{ color: Color.pink() }}>rewarded</b>:{' '}
-            {addCommasToNumber(numTwinklesRewarded)}
+            {rewardedTwinklesLabel}: {addCommasToNumber(numTwinklesRewarded)}
           </p>
           <p>
-            Total number of{' '}
-            <b style={{ color: Color.brownOrange() }}>recommendations</b>{' '}
-            approved by teachers:{' '}
+            {approvedRecommendationsLabel}:{' '}
             {addCommasToNumber(numApprovedRecommendations)}
           </p>
           <p style={{ marginTop: '1rem', fontSize: '1.7rem' }}>
             {numTwinklesRewarded} + ({karmaMultiplier.recommendation} ×{' '}
             {numApprovedRecommendations}) ={' '}
             <b style={{ color: Color.darkerGray() }}>
-              {addCommasToNumber(karmaPoints)} Karma Points
+              {addCommasToNumber(karmaPoints)} {karmaPointsLabel}
+            </b>
+          </p>
+        </div>
+      );
+    }
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <div style={{ fontSize: '1.5rem', marginTop: '3rem' }}>
+          <p>
+            회원님이 보상한 게시물의 총 개수:{' '}
+            {addCommasToNumber(numPostsRewarded)}
+          </p>
+          <p style={{ marginTop: '1rem', fontSize: '1.7rem' }}>
+            {numPostsRewarded} × {karmaMultiplier.post} ={' '}
+            <b>
+              {addCommasToNumber(karmaPoints)} {karmaPointsLabel}
             </b>
           </p>
         </div>
@@ -119,7 +175,9 @@ export default function KarmaStatus() {
         </p>
         <p style={{ marginTop: '1rem', fontSize: '1.7rem' }}>
           {numPostsRewarded} × {karmaMultiplier.post} ={' '}
-          <b>{addCommasToNumber(karmaPoints)} Karma Points</b>
+          <b>
+            {addCommasToNumber(karmaPoints)} {karmaPointsLabel}
+          </b>
         </p>
       </div>
     );
@@ -130,6 +188,12 @@ export default function KarmaStatus() {
     numPostsRewarded,
     numTwinklesRewarded
   ]);
+
+  const youHaveKarmaPointsText = useMemo(() => {
+    return SELECTED_LANGUAGE === 'kr'
+      ? `회원님의 카마포인트는 ${addCommasToNumber(karmaPoints)}점입니다`
+      : `You have ${addCommasToNumber(karmaPoints)} Karma Points`;
+  }, [karmaPoints]);
 
   if (!userId) return null;
 
@@ -158,7 +222,7 @@ export default function KarmaStatus() {
               color: ${Color.darkerGray()};
             `}
           >
-            You have {addCommasToNumber(karmaPoints)} Karma Points
+            {youHaveKarmaPointsText}
           </p>
           <div
             className={css`
