@@ -36,7 +36,7 @@ import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 import localize from 'constants/localize';
 
 const enterDescriptionOptionalLabel = localize('enterDescriptionOptional');
-const forEveryStarYouAddLabel = localize('forEveryStarYouAdd');
+const forEveryStarYouAddLabel = localize('forEveryStarYouAddSubject');
 const postLabel = localize('post');
 const postSubjectLabel = localize('postSubject');
 const postSubjectPlaceholder = localize('postSubjectPlaceholder');

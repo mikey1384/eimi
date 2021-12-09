@@ -488,6 +488,10 @@ const languageObj = {
     en: 'For every star you add,the amount of XP viewers earn per minute rises.',
     kr: '별 한개를 추가할 때마다, 시청자들이 분당 얻는 XP량이 증가합니다.'
   },
+  forEveryStarYouAddSubject: {
+    en: 'For every star you add, the maximum amount of XP that could be rewarded to each participant of this subject rises by 2,000 XP.',
+    kr: '별 한개를 추가할 때마다, 이 주제의 참가자들에게 보상 가능한 XP량이 2,000씩 증가합니다'
+  },
   fromTwinkleWebsite: {
     en: 'from Twinkle Website',
     kr: '트윈클 웹사이트에서 가져오기'
