@@ -7,6 +7,7 @@ AddButtons.propTypes = {
   disabled: PropTypes.bool,
   onUploadButtonClick: PropTypes.func.isRequired,
   onSelectVideoButtonClick: PropTypes.func.isRequired,
+  onSelectGifButtonClick: PropTypes.func.isRequired,
   profileTheme: PropTypes.string
 };
 
@@ -14,6 +15,7 @@ export default function AddButtons({
   disabled,
   onUploadButtonClick,
   onSelectVideoButtonClick,
+  onSelectGifButtonClick,
   profileTheme
 }) {
   return (
