@@ -1,4 +1,5 @@
 import request from 'axios';
+import { TENOR_KEY } from 'constants/defaultValues';
 import URL from 'constants/URL';
 
 export default function chatRequestHelpers({ auth, handleError }) {
@@ -427,6 +428,15 @@ export default function chatRequestHelpers({ auth, handleError }) {
       } catch (error) {
         return handleError(error);
       }
+    },
+    async searchTenor(text) {
+      const limit = 8;
+      const {
+        data: { results }
+      } = await request.get(
+        `https://g.tenor.com/v1/search?q=${text}&key=${TENOR_KEY}&limit=${limit}`
+      );
+      return Promise.resolve(results);
     },
     async searchUserToInvite(text) {
       try {
