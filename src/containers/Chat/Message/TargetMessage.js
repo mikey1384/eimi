@@ -1,4 +1,4 @@
-import React, { useMemo, useEffect, useState } from 'react';
+import React, { useContext, useMemo, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
@@ -19,20 +19,17 @@ import {
 } from 'helpers/stringHelpers';
 import { css } from '@emotion/css';
 import { cloudFrontURL } from 'constants/defaultValues';
-import { useAppContext, useContentContext } from 'contexts';
+import LocalContext from '../Context';
 
 TargetMessage.propTypes = {
-  message: PropTypes.object.isRequired,
-  onSetScrollToBottom: PropTypes.func.isRequired
+  message: PropTypes.object.isRequired
 };
 
-export default function TargetMessage({ message, onSetScrollToBottom }) {
+export default function TargetMessage({ message }) {
   const {
-    requestHelpers: { uploadThumb }
-  } = useAppContext();
-  const {
+    requests: { uploadThumb },
     actions: { onSetEmbeddedUrl }
-  } = useContentContext();
+  } = useContext(LocalContext);
   const [imageModalShown, setImageModalShown] = useState(false);
 
   useEffect(() => {
@@ -74,7 +71,7 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
   }, [fileType, message.attachmentHidden, message.content, message.thumbUrl]);
 
   const displayedTime = useMemo(
-    () => unix(message?.timeStamp).format('LLL'),
+    () => unix(message?.timeStamp).format('lll'),
     [message?.timeStamp]
   );
 
@@ -113,10 +110,7 @@ export default function TargetMessage({ message, onSetScrollToBottom }) {
           </small>
         </section>
         {isValidSpoiler(message.content) ? (
-          <Spoiler
-            content={message.content}
-            onSpoilerClick={onSetScrollToBottom}
-          />
+          <Spoiler content={message.content} />
         ) : (
           <LongText
             style={{ marginTop: '0.5rem' }}

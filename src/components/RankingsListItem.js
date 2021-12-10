@@ -47,7 +47,7 @@ export default function RankingsListItem({ myId, small, style, user }) {
   }, [small]);
 
   const xpFontSize = useMemo(() => {
-    return small ? '1.3rem' : '1.6rem';
+    return small ? '1.3rem' : '1.5rem';
   }, [small]);
 
   const mobileXpFontSize = useMemo(() => {
@@ -55,7 +55,7 @@ export default function RankingsListItem({ myId, small, style, user }) {
   }, [small]);
 
   const profileSize = useMemo(() => {
-    return small ? '3rem' : '6rem';
+    return small ? '3rem' : '5rem';
   }, [small]);
 
   return (
@@ -69,7 +69,12 @@ export default function RankingsListItem({ myId, small, style, user }) {
         ...style
       }}
     >
-      <div style={{ display: 'flex', alignItems: 'center' }}>
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center'
+        }}
+      >
         <span
           className={css`
             font-weight: bold;
@@ -88,6 +93,7 @@ export default function RankingsListItem({ myId, small, style, user }) {
         </span>
         <div
           style={{
+            marginLeft: '1.3rem',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'center'

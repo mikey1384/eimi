@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { css } from '@emotion/css';
 import { Color, desktopMinWidth, mobileMaxWidth } from 'constants/css';
+import localize from 'constants/localize';
+
+const callLabel = localize('call');
+const hangUpLabel = localize('hangUp');
 
 CallButton.propTypes = {
   callOngoing: PropTypes.bool,
@@ -34,7 +38,7 @@ export default function CallButton({ callOngoing, onCall }) {
     >
       {!callOngoing && <Icon icon="phone-volume" />}
       <span style={{ marginLeft: '1rem' }}>
-        {!callOngoing ? 'Call' : 'Hang Up'}
+        {!callOngoing ? callLabel : hangUpLabel}
       </span>
     </div>
   );

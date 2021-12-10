@@ -11,6 +11,9 @@ import { useSearch, useMyState } from 'helpers/hooks';
 import { useAppContext, useManagementContext } from 'contexts';
 import { Color } from 'constants/css';
 import { capitalize } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const searchUsersLabel = localize('searchUsers');
 
 AddModeratorModal.propTypes = {
   accountTypes: PropTypes.array,
@@ -78,7 +81,6 @@ export default function AddModeratorModal({ accountTypes, onHide }) {
           </td>
           <td style={{ display: 'flex', alignItems: 'center' }}>
             <DropdownButton
-              direction="right"
               style={{ position: 'absolute' }}
               skeuomorphic
               text={user.userType || 'Not Selected'}
@@ -99,7 +101,7 @@ export default function AddModeratorModal({ accountTypes, onHide }) {
           autoFocus
           onChange={handleSearch}
           onSelect={handleSelectUser}
-          placeholder="Search users..."
+          placeholder={`${searchUsersLabel}...`}
           renderItemLabel={(item) => (
             <span>
               {item.username} <small>{`(${item.realName})`}</small>

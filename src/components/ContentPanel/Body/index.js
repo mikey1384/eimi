@@ -27,6 +27,17 @@ import {
 } from 'helpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const commentLabel = localize('comment');
+const copiedLabel = localize('copied');
+const editLabel = localize('edit');
+const removeLabel = localize('remove');
+const replyLabel = localize('reply');
+const respondLabel = localize('respond');
+const rewardLabel = localize('reward');
+const deviceIsMobile = isMobile(navigator);
 
 Body.propTypes = {
   autoExpand: PropTypes.bool,
@@ -36,8 +47,6 @@ Body.propTypes = {
   numPreviewComments: PropTypes.number,
   onChangeSpoilerStatus: PropTypes.func.isRequired
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function Body({
   autoExpand,
@@ -210,14 +219,14 @@ export default function Body({
       !(isSecretAnswerPoster || isHigherAuthThanSecretAnswerPoster);
     if ((userId === uploader.id || canEdit) && !isForSecretSubject) {
       items.push({
-        label: 'Edit',
+        label: editLabel,
         onClick: () =>
           onSetIsEditing({ contentId, contentType, isEditing: true })
       });
     }
     if (userId === uploader.id || canDelete) {
       items.push({
-        label: 'Remove',
+        label: removeLabel,
         onClick: () => setConfirmModalShown(true)
       });
     }
@@ -283,6 +292,18 @@ export default function Body({
     });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
+
+  const viewsLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>조회수 {addCommasToNumber(views)}회</>;
+    }
+    return (
+      <>
+        {addCommasToNumber(views)} view
+        {`${views > 1 ? 's' : ''}`}
+      </>
+    );
+  }, [views]);
 
   return (
     <ErrorBoundary>
@@ -370,10 +391,10 @@ export default function Body({
                       <Icon icon="comment-alt" />
                       <span style={{ marginLeft: '0.7rem' }}>
                         {contentType === 'video' || contentType === 'url'
-                          ? 'Comment'
+                          ? commentLabel
                           : contentType === 'subject'
-                          ? 'Respond'
-                          : 'Reply'}
+                          ? respondLabel
+                          : replyLabel}
                       </span>
                       {(numComments > 0 || numReplies > 0) &&
                         !commentsShown &&
@@ -398,14 +419,13 @@ export default function Body({
                     >
                       <Icon icon="certificate" />
                       <span style={{ marginLeft: '0.7rem' }}>
-                        {xpButtonDisabled || 'Reward'}
+                        {xpButtonDisabled || rewardLabel}
                       </span>
                     </Button>
                   )}
                   {editButtonShown && (
                     <DropdownButton
                       transparent
-                      direction="right"
                       style={{
                         marginLeft: secretHidden ? 0 : '0.5rem',
                         display: 'inline-block'
@@ -443,10 +463,11 @@ export default function Body({
                           background: '#fff',
                           fontSize: '1.2rem',
                           padding: '1rem',
+                          wordBreak: 'keep-all',
                           border: `1px solid ${Color.borderGray()}`
                         }}
                       >
-                        Copied!
+                        {copiedLabel}
                       </div>
                     </div>
                   )}
@@ -457,14 +478,16 @@ export default function Body({
                   className="right"
                   style={{ position: 'relative', marginRight: 0 }}
                 >
-                  <Button
-                    color="brownOrange"
-                    filled={isRecommendedByUser}
-                    disabled={recommendationInterfaceShown}
-                    onClick={() => setRecommendationInterfaceShown(true)}
-                  >
-                    <Icon icon="star" />
-                  </Button>
+                  {false && (
+                    <Button
+                      color="brownOrange"
+                      filled={isRecommendedByUser}
+                      disabled={recommendationInterfaceShown}
+                      onClick={() => setRecommendationInterfaceShown(true)}
+                    >
+                      <Icon icon="star" />
+                    </Button>
+                  )}
                   {(contentType === 'subject' ||
                     contentType === 'video' ||
                     contentType === 'url') && (
@@ -505,18 +528,19 @@ export default function Body({
                     fontSize: '1.7rem'
                   }}
                 >
-                  {addCommasToNumber(views)} view
-                  {`${views > 1 ? 's' : ''}`}
+                  {viewsLabel}
                 </div>
               )}
             </div>
           </div>
         )}
-        <RecommendationStatus
-          style={{ marginBottom: '1rem' }}
-          contentType={contentType}
-          recommendations={recommendations}
-        />
+        {false && (
+          <RecommendationStatus
+            style={{ marginBottom: '1rem' }}
+            contentType={contentType}
+            recommendations={recommendations}
+          />
+        )}
         {recommendationInterfaceShown && (
           <RecommendationInterface
             contentId={contentId}

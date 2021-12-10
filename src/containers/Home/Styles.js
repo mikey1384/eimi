@@ -11,16 +11,22 @@ export const container = css`
 `;
 
 export const Left = css`
-  width: CALC(18vw - 1rem);
+  width: 18vw;
   left: 0;
   display: block;
   position: fixed;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
   }
+  @media (min-width: 2304px) {
+    width: 14vw;
+    left: 12vw;
+  }
 `;
 
 export const Center = css`
+  display: flex;
+  justify-content: center;
   width: 45vw;
   height: 100%;
   margin-left: 23vw;
@@ -40,5 +46,9 @@ export const Right = css`
   position: fixed;
   @media (max-width: ${mobileMaxWidth}) {
     display: none;
+  }
+  @media (min-width: 2304px) {
+    width: 20vw;
+    right: 15vw;
   }
 `;

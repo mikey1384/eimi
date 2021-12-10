@@ -6,18 +6,13 @@ import React, {
   useRef,
   useState
 } from 'react';
-import PropTypes from 'prop-types';
 import Channel from './Channel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { useAppContext, useChatContext } from 'contexts';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
-Channels.propTypes = {
-  onChannelEnter: PropTypes.func.isRequired
-};
-
-function Channels({ onChannelEnter }) {
+function Channels() {
   const {
     requestHelpers: { loadMoreChannels }
   } = useAppContext();
@@ -165,7 +160,6 @@ function Channels({ onChannelEnter }) {
             channel={channel}
             customChannelNames={customChannelNames}
             chatType={chatType}
-            onChannelEnter={onChannelEnter}
             selectedChannelId={selectedChannelId}
           />
         ))}

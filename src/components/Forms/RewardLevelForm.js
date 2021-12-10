@@ -3,6 +3,9 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const clearLabel = localize('clear');
 
 RewardLevelForm.propTypes = {
   alreadyPosted: PropTypes.bool,
@@ -125,7 +128,7 @@ export default function RewardLevelForm({
         }}
         onClick={() => onSetRewardLevel(0)}
       >
-        Clear
+        {clearLabel}
       </a>
     </div>
   );

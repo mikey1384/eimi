@@ -33,6 +33,14 @@ import {
 } from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
+import localize from 'constants/localize';
+
+const enterDescriptionOptionalLabel = localize('enterDescriptionOptional');
+const forEveryStarYouAddLabel = localize('forEveryStarYouAddSubject');
+const postLabel = localize('post');
+const postSubjectLabel = localize('postSubject');
+const postSubjectPlaceholder = localize('postSubjectPlaceholder');
+const secretMessageLabel = localize('secretMessage');
 
 function SubjectInput() {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
@@ -143,7 +151,7 @@ function SubjectInput() {
     <ErrorBoundary className={PanelStyle}>
       {!uploadingFile && (
         <>
-          <p>Post a subject Twinkle users can talk about</p>
+          <p>{postSubjectLabel}</p>
           <div
             style={{
               display: 'flex',
@@ -154,7 +162,7 @@ function SubjectInput() {
           >
             <div style={{ width: '100%' }}>
               <Input
-                placeholder="A subject Twinkle users can talk about"
+                placeholder={postSubjectPlaceholder}
                 value={title}
                 onChange={handleInputChange}
                 onKeyUp={(event) => {
@@ -219,7 +227,7 @@ function SubjectInput() {
                 }}
                 value={description}
                 minRows={4}
-                placeholder="Enter Description (Optional, you don't need to write this)"
+                placeholder={enterDescriptionOptionalLabel}
                 onChange={(event) =>
                   handleSetDescription(addEmoji(event.target.value))
                 }
@@ -263,9 +271,7 @@ function SubjectInput() {
               {canEditRewardLevel && (
                 <div style={{ marginTop: '1rem' }}>
                   <div style={{ fontSize: '1.5rem' }}>
-                    For every star you add, the maximum amount of XP that could
-                    be rewarded to each participant of this subject rises by
-                    2,000 XP.
+                    {forEveryStarYouAddLabel}
                   </div>
                   <RewardLevelForm
                     themed
@@ -288,7 +294,7 @@ function SubjectInput() {
               <div style={{ marginTop: '1rem' }} className="button-container">
                 <SwitchButton
                   checked={hasSecretAnswer}
-                  label="Secret Message"
+                  label={secretMessageLabel}
                   onChange={() => handleSetHasSecretAnswer(!hasSecretAnswer)}
                   style={{ marginRight: '1rem' }}
                 />
@@ -299,7 +305,7 @@ function SubjectInput() {
                   disabled={submittingSubject || buttonDisabled}
                   onClick={handleSubmit}
                 >
-                  Post!
+                  {postLabel}
                 </Button>
               </div>
             </div>

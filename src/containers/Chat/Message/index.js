@@ -1,6 +1,7 @@
 import React, {
   memo,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -30,42 +31,32 @@ import {
   fetchURLFromText,
   getFileInfoFromFileName
 } from 'helpers/stringHelpers';
-import { useMyState, useContentState, useLazyLoad } from 'helpers/hooks';
+import { useContentState, useLazyLoad } from 'helpers/hooks';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-import {
-  useAppContext,
-  useContentContext,
-  useNotiContext,
-  useChatContext
-} from 'contexts';
+import ErrorBoundary from 'components/ErrorBoundary';
+import LocalContext from '../Context';
 
 Message.propTypes = {
-  checkScrollIsAtTheBottom: PropTypes.func.isRequired,
   chessCountdownNumber: PropTypes.number,
   chessOpponent: PropTypes.object,
   channelId: PropTypes.number,
   channelName: PropTypes.string,
   currentChannel: PropTypes.object,
   message: PropTypes.object,
-  style: PropTypes.object,
   onDelete: PropTypes.func,
   index: PropTypes.number,
-  innerRef: PropTypes.func,
   isLastMsg: PropTypes.bool,
   isNotification: PropTypes.bool,
   loading: PropTypes.bool,
   onAcceptGroupInvitation: PropTypes.func.isRequired,
-  onChannelEnter: PropTypes.func,
   onChessBoardClick: PropTypes.func,
   onChessSpoilerClick: PropTypes.func,
   onReceiveNewMessage: PropTypes.func,
   onReplyClick: PropTypes.func,
-  onRewardClick: PropTypes.func,
   onRewardMessageSubmit: PropTypes.func.isRequired,
-  onSetScrollToBottom: PropTypes.func,
+  onScrollToBottom: PropTypes.func.isRequired,
   onShowSubjectMsgsModal: PropTypes.func,
-  recepientId: PropTypes.number,
   zIndex: PropTypes.number
 };
 
@@ -75,7 +66,6 @@ function Message({
   chessCountdownNumber,
   chessOpponent,
   currentChannel,
-  currentChannel: { theme },
   index,
   isLastMsg,
   isNotification,
@@ -91,7 +81,8 @@ function Message({
     filePath,
     fileSize,
     gameWinnerId,
-    inviteFrom,
+    invitePath,
+    invitationChannelId,
     isChessMsg,
     isDraw,
     isDrawOffer,
@@ -113,21 +104,57 @@ function Message({
     isResign
   },
   onAcceptGroupInvitation,
-  onChannelEnter,
   onChessBoardClick,
   onDelete,
   onChessSpoilerClick,
   onReceiveNewMessage,
   onReplyClick,
   onRewardMessageSubmit,
-  onSetScrollToBottom,
+  onScrollToBottom,
   onShowSubjectMsgsModal,
   zIndex
 }) {
+  const {
+    actions: {
+      onEditMessage,
+      onSaveMessage,
+      onSetEmbeddedUrl,
+      onSetActualDescription,
+      onSetActualTitle,
+      onSetIsEditing,
+      onSetSiteUrl,
+      onSetThumbUrl,
+      onSetMediaStarted,
+      onSetReplyTarget,
+      onUpdateChessMoveViewTimeStamp,
+      onUpdateRecentChessMessage
+    },
+    myState: {
+      authLevel,
+      canDelete,
+      canEdit,
+      canReward,
+      isCreator,
+      userId: myId,
+      username: myUsername,
+      profilePicUrl: myProfilePicUrl
+    },
+    requests: { editChatMessage, saveChatMessage, setChessMoveViewTimeStamp },
+    state: { filesBeingUploaded, socketConnected }
+  } = useContext(LocalContext);
+  const {
+    thumbUrl: recentThumbUrl,
+    isEditing,
+    started
+  } = useContentState({
+    contentType: 'chat',
+    contentId: messageId
+  });
   const [ComponentRef, inView] = useInView({
     threshold: 0
   });
   const PanelRef = useRef(null);
+  const DropdownButtonRef = useRef(null);
   const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [visible, setVisible] = useState(true);
   useLazyLoad({
@@ -137,20 +164,22 @@ function Message({
     onSetVisible: setVisible,
     delay: 1000
   });
-  const {
-    authLevel,
-    canDelete,
-    canEdit,
-    canReward,
-    isCreator,
-    userId: myId,
-    username: myUsername,
-    profilePicUrl: myProfilePicUrl
-  } = useMyState();
-  const userIsUploader = myId === userId;
+  const userIsUploader = useMemo(() => myId === userId, [myId, userId]);
+  useEffect(() => {
+    if (isLastMsg && userIsUploader) {
+      onScrollToBottom();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLastMsg, userIsUploader]);
+  useEffect(() => {
+    if (isLastMsg && isNewMessage && !userIsUploader) {
+      onReceiveNewMessage();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [isLastMsg, isNewMessage, userIsUploader]);
   const userCanEditThis = useMemo(
     () =>
-      !inviteFrom &&
+      !invitePath &&
       !isDrawOffer &&
       (((canEdit || canDelete) && authLevel > uploaderAuthLevel) ||
         userIsUploader),
@@ -158,7 +187,7 @@ function Message({
       authLevel,
       canDelete,
       canEdit,
-      inviteFrom,
+      invitePath,
       isDrawOffer,
       uploaderAuthLevel,
       userIsUploader
@@ -168,43 +197,6 @@ function Message({
     () => canReward && authLevel > uploaderAuthLevel && myId !== userId,
     [authLevel, canReward, uploaderAuthLevel, userId, myId]
   );
-  const {
-    requestHelpers: {
-      editChatMessage,
-      saveChatMessage,
-      setChessMoveViewTimeStamp
-    }
-  } = useAppContext();
-  const {
-    actions: {
-      onSetEmbeddedUrl,
-      onSetActualDescription,
-      onSetActualTitle,
-      onSetIsEditing,
-      onSetSiteUrl,
-      onSetThumbUrl,
-      onSetMediaStarted
-    }
-  } = useContentContext();
-  const {
-    thumbUrl: recentThumbUrl,
-    isEditing,
-    started
-  } = useContentState({
-    contentType: 'chat',
-    contentId: messageId
-  });
-
-  const {
-    state: { filesBeingUploaded, reconnecting },
-    actions: {
-      onEditMessage,
-      onSaveMessage,
-      onSetReplyTarget,
-      onUpdateChessMoveViewTimeStamp,
-      onUpdateRecentChessMessage
-    }
-  } = useChatContext();
 
   const [uploadStatus = {}] = useMemo(
     () =>
@@ -213,15 +205,13 @@ function Message({
       ) || [],
     [channelId, filePath, filesBeingUploaded]
   );
-  const {
-    state: { socketConnected }
-  } = useNotiContext();
   let {
     username,
     profilePicUrl,
     targetMessage,
     targetSubject,
     isCallNotification,
+    tempMessageId,
     ...post
   } = message;
   const [messageRewardModalShown, setMessageRewardModalShown] = useState(false);
@@ -235,7 +225,7 @@ function Message({
   }
   useEffect(() => {
     if (!message.id && message.isChessMsg) {
-      onUpdateRecentChessMessage(message);
+      onUpdateRecentChessMessage({ channelId, message });
     }
     if (
       userIsUploader &&
@@ -252,22 +242,29 @@ function Message({
         targetMessageId: targetMessage?.id,
         targetSubject
       });
-      onSaveMessage({ messageId, index });
+      onSaveMessage({
+        messageId,
+        index,
+        channelId,
+        tempMessageId
+      });
+      const messageToSendOverSocket = {
+        ...message,
+        uploaderAuthLevel: authLevel,
+        isNewMessage: true,
+        id: messageId
+      };
+      delete messageToSendOverSocket.tempMessageId;
+      const channelData = {
+        id: currentChannel.id,
+        channelName: currentChannel.channelName,
+        members: currentChannel.members,
+        twoPeople: currentChannel.twoPeople,
+        pathId: currentChannel.pathId
+      };
       socket.emit('new_chat_message', {
-        message: {
-          ...message,
-          uploaderAuthLevel: authLevel,
-          isNewMessage: true,
-          id: messageId
-        },
-        channel: {
-          ...currentChannel,
-          numUnreads: 1,
-          lastMessage: {
-            content,
-            sender: { id: myId, username: myUsername }
-          }
-        }
+        message: messageToSendOverSocket,
+        channel: channelData
       });
     }
 
@@ -291,13 +288,6 @@ function Message({
       setSpoilerOff(true);
     }
   }, [chessState, moveViewTimeStamp, myId]);
-
-  useEffect(() => {
-    if (isLastMsg && (!isNewMessage || userIsUploader)) {
-      handleScrollToBottomBasedComponentHeight();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isEditing, reconnecting]);
 
   useEffect(() => {
     const url = fetchURLFromText(content);
@@ -336,13 +326,6 @@ function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [content]);
 
-  useEffect(() => {
-    if (isLastMsg && isNewMessage && !userIsUploader) {
-      onReceiveNewMessage();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
   const contentShown = useMemo(
     () => inView || isLastMsg || started || visible || !placeholderHeight,
     [inView, isLastMsg, placeholderHeight, started, visible]
@@ -358,11 +341,12 @@ function Message({
           </>
         ),
         onClick: () => {
-          onSetReplyTarget(
-            rewardAmount
+          onSetReplyTarget({
+            channelId: currentChannel.id,
+            target: rewardAmount
               ? targetMessage
               : { ...message, thumbUrl: thumbUrl || recentThumbUrl }
-          );
+          });
           onReplyClick();
         }
       }
@@ -438,7 +422,7 @@ function Message({
   ]);
 
   const displayedTimeStamp = useMemo(
-    () => unix(timeStamp).format('LLL'),
+    () => unix(timeStamp).format('lll'),
     [timeStamp]
   );
 
@@ -453,10 +437,10 @@ function Message({
   );
 
   const handleChessSpoilerClick = useCallback(async () => {
-    onSetReplyTarget(null);
+    onSetReplyTarget({ channelId: currentChannel.id, target: null });
     try {
       await setChessMoveViewTimeStamp({ channelId, message });
-      onUpdateChessMoveViewTimeStamp();
+      onUpdateChessMoveViewTimeStamp(channelId);
       onChessSpoilerClick(userId);
     } catch (error) {
       console.error(error);
@@ -471,13 +455,6 @@ function Message({
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [message]
   );
-
-  const handleSetScrollToBottom = useCallback(() => {
-    if (isLastMsg) {
-      onSetScrollToBottom();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [isLastMsg]);
 
   const handleEditCancel = useCallback(() => {
     onSetIsEditing({
@@ -499,6 +476,7 @@ function Message({
       });
       onEditMessage({
         editedMessage,
+        channelId,
         messageId,
         isSubject: messageIsSubject,
         subjectChanged
@@ -519,12 +497,6 @@ function Message({
     [channelId, isReloadedSubject, isSubject, messageId, subjectId]
   );
 
-  const handleScrollToBottomBasedComponentHeight = useCallback(() => {
-    if (placeholderHeight < 200) {
-      handleSetScrollToBottom();
-    }
-  }, [handleSetScrollToBottom, placeholderHeight]);
-
   if (!chessState && (gameWinnerId || isDraw)) {
     return (
       <GameOverMessage
@@ -538,193 +510,192 @@ function Message({
   }
 
   return (
-    <div
-      ref={ComponentRef}
-      className={MessageStyle.container}
-      style={{
-        width: '100%',
-        zIndex
-      }}
-    >
-      {contentShown ? (
-        <div ref={PanelRef} className={MessageStyle.container}>
-          <div className={MessageStyle.profilePic}>
-            <ProfilePic
-              style={{ width: '100%', height: '100%' }}
-              userId={userId}
-              profilePicUrl={profilePicUrl}
-            />
-          </div>
-          <div
-            className={css`
-              width: CALC(100% - 5vw - 3rem);
-              display: flex;
-              flex-direction: column;
-              margin-left: 2rem;
-              margin-right: 1rem;
-              position: relative;
-              white-space: pre-wrap;
-              overflow-wrap: break-word;
-              word-break: break-word;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-left: 1rem;
-              }
-            `}
-          >
-            <div>
-              <UsernameText
-                className={css`
-                  font-size: 1.8rem;
-                  line-height: 1;
-                  @media (max-width: ${mobileMaxWidth}) {
-                    font-size: 1.6rem;
-                  }
-                `}
-                user={{
-                  id: userId,
-                  username
-                }}
-              />{' '}
-              <span className={MessageStyle.timeStamp}>
-                {displayedTimeStamp}
-              </span>
+    <ErrorBoundary>
+      <div
+        ref={ComponentRef}
+        className={MessageStyle.container}
+        style={{
+          width: '100%',
+          zIndex
+        }}
+      >
+        {contentShown ? (
+          <div ref={PanelRef} className={MessageStyle.container}>
+            <div className={MessageStyle.profilePic}>
+              <ProfilePic
+                style={{ width: '100%', height: '100%' }}
+                userId={userId}
+                profilePicUrl={profilePicUrl}
+              />
             </div>
-            <div style={{ width: '100%' }}>
-              {inviteFrom ? (
-                <Invitation
-                  sender={{ id: userId, username }}
-                  inviteFrom={inviteFrom}
-                  messageId={messageId}
-                  onChannelEnter={onChannelEnter}
-                  onAcceptGroupInvitation={onAcceptGroupInvitation}
+            <div
+              className={css`
+                width: CALC(100% - 5vw - 3rem);
+                display: flex;
+                flex-direction: column;
+                margin-left: 2rem;
+                position: relative;
+                white-space: pre-wrap;
+                overflow-wrap: break-word;
+                word-break: break-word;
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-left: 1rem;
+                }
+              `}
+            >
+              <div>
+                <UsernameText
+                  className={css`
+                    font-size: 1.8rem;
+                    line-height: 1;
+                    @media (max-width: ${mobileMaxWidth}) {
+                      font-size: 1.6rem;
+                    }
+                  `}
+                  user={{
+                    id: userId,
+                    username
+                  }}
+                  dropdownMenuReversed={isLastMsg}
+                />{' '}
+                <span className={MessageStyle.timeStamp}>
+                  {displayedTimeStamp}
+                </span>
+              </div>
+              <div>
+                {invitePath ? (
+                  <Invitation
+                    sender={{ id: userId, username }}
+                    channelId={channelId}
+                    invitationChannelId={invitationChannelId}
+                    invitePath={invitePath}
+                    messageId={messageId}
+                    onAcceptGroupInvitation={onAcceptGroupInvitation}
+                  />
+                ) : isDrawOffer ? (
+                  <DrawOffer
+                    myId={myId}
+                    userId={userId}
+                    username={username}
+                    onClick={onChessBoardClick}
+                  />
+                ) : isChessMsg ? (
+                  <Chess
+                    channelId={channelId}
+                    countdownNumber={chessCountdownNumber}
+                    gameWinnerId={gameWinnerId}
+                    loaded
+                    spoilerOff={spoilerOff}
+                    myId={myId}
+                    initialState={chessState}
+                    moveViewed={!!moveViewTimeStamp}
+                    onBoardClick={onChessBoardClick}
+                    onSpoilerClick={handleChessSpoilerClick}
+                    opponentId={chessOpponent?.id}
+                    opponentName={chessOpponent?.username}
+                    senderId={userId}
+                    style={{ marginTop: '1rem', width: '100%' }}
+                  />
+                ) : fileToUpload && !loading ? (
+                  <FileUploadStatusIndicator
+                    key={channelId}
+                    fileName={fileToUpload.name}
+                    uploadComplete={!!uploadStatus.uploadComplete}
+                    uploadProgress={uploadStatus.uploadProgress}
+                  />
+                ) : (
+                  <>
+                    {targetSubject && <TargetSubject subject={targetSubject} />}
+                    {targetMessage && <TargetMessage message={targetMessage} />}
+                    {filePath && (
+                      <ContentFileViewer
+                        contentId={messageId}
+                        contentType="chat"
+                        content={content}
+                        filePath={filePath}
+                        fileName={fileName}
+                        fileSize={fileSize}
+                        onMediaPlay={() =>
+                          onSetMediaStarted({
+                            contentType: 'chat',
+                            contentId: messageId,
+                            started: true
+                          })
+                        }
+                        thumbUrl={thumbUrl || recentThumbUrl}
+                        style={{
+                          marginTop: '1rem',
+                          marginBottom: fileViewerMarginBottom
+                        }}
+                      />
+                    )}
+                    {rewardAmount ? (
+                      <RewardMessage
+                        rewardAmount={rewardAmount}
+                        rewardReason={rewardReason}
+                      />
+                    ) : (
+                      <TextMessage
+                        attachmentHidden={!!attachmentHidden}
+                        channelId={channelId}
+                        content={content}
+                        extractedUrl={extractedUrl}
+                        myId={myId}
+                        messageId={messageId}
+                        numMsgs={numMsgs}
+                        isNotification={isNotification}
+                        isSubject={!!isSubject}
+                        isReloadedSubject={!!isReloadedSubject}
+                        MessageStyle={MessageStyle}
+                        isEditing={isEditing}
+                        onEditCancel={handleEditCancel}
+                        onEditDone={handleEditDone}
+                        onShowSubjectMsgsModal={onShowSubjectMsgsModal}
+                        socketConnected={socketConnected}
+                        subjectId={subjectId}
+                        targetMessage={targetMessage}
+                        theme={currentChannel.theme}
+                        userCanEditThis={userCanEditThis}
+                      />
+                    )}
+                  </>
+                )}
+              </div>
+              {dropdownButtonShown && (
+                <DropdownButton
+                  skeuomorphic
+                  innerRef={DropdownButtonRef}
+                  color="darkerGray"
+                  icon="chevron-down"
+                  style={{ position: 'absolute', top: 0, right: 0 }}
+                  direction="left"
+                  opacity={0.8}
+                  menuProps={messageMenuItems}
+                  isReversed={isLastMsg}
                 />
-              ) : isDrawOffer ? (
-                <DrawOffer
-                  userId={userId}
-                  username={username}
-                  onClick={onChessBoardClick}
-                />
-              ) : isChessMsg ? (
-                <Chess
-                  channelId={channelId}
-                  countdownNumber={chessCountdownNumber}
-                  gameWinnerId={gameWinnerId}
-                  loaded
-                  spoilerOff={spoilerOff}
-                  myId={myId}
-                  initialState={chessState}
-                  moveViewed={!!moveViewTimeStamp}
-                  onBoardClick={onChessBoardClick}
-                  onSpoilerClick={handleChessSpoilerClick}
-                  opponentId={chessOpponent?.id}
-                  opponentName={chessOpponent?.username}
-                  senderId={userId}
-                  style={{ marginTop: '1rem', width: '100%' }}
-                />
-              ) : fileToUpload && !loading ? (
-                <FileUploadStatusIndicator
-                  key={channelId}
-                  fileName={fileToUpload.name}
-                  uploadComplete={!!uploadStatus.uploadComplete}
-                  uploadProgress={uploadStatus.uploadProgress}
-                />
-              ) : (
-                <>
-                  {targetSubject && <TargetSubject subject={targetSubject} />}
-                  {targetMessage && (
-                    <TargetMessage
-                      message={targetMessage}
-                      onSetScrollToBottom={handleSetScrollToBottom}
-                    />
-                  )}
-                  {filePath && (
-                    <ContentFileViewer
-                      contentId={messageId}
-                      contentType="chat"
-                      content={content}
-                      filePath={filePath}
-                      fileName={fileName}
-                      fileSize={fileSize}
-                      onMediaPlay={() =>
-                        onSetMediaStarted({
-                          contentType: 'chat',
-                          contentId: messageId,
-                          started: true
-                        })
-                      }
-                      thumbUrl={thumbUrl || recentThumbUrl}
-                      style={{
-                        marginTop: '1rem',
-                        marginBottom: fileViewerMarginBottom
-                      }}
-                    />
-                  )}
-                  {rewardAmount ? (
-                    <RewardMessage
-                      rewardAmount={rewardAmount}
-                      rewardReason={rewardReason}
-                    />
-                  ) : (
-                    <TextMessage
-                      attachmentHidden={!!attachmentHidden}
-                      channelId={channelId}
-                      content={content}
-                      extractedUrl={extractedUrl}
-                      myId={myId}
-                      messageId={messageId}
-                      numMsgs={numMsgs}
-                      isNotification={isNotification}
-                      isSubject={!!isSubject}
-                      isReloadedSubject={!!isReloadedSubject}
-                      MessageStyle={MessageStyle}
-                      isEditing={isEditing}
-                      onEditCancel={handleEditCancel}
-                      onEditDone={handleEditDone}
-                      onSetScrollToBottom={handleSetScrollToBottom}
-                      onShowSubjectMsgsModal={onShowSubjectMsgsModal}
-                      socketConnected={socketConnected}
-                      subjectId={subjectId}
-                      targetMessage={targetMessage}
-                      theme={theme}
-                      userCanEditThis={userCanEditThis}
-                    />
-                  )}
-                </>
               )}
             </div>
-            {dropdownButtonShown && (
-              <DropdownButton
-                skeuomorphic
-                color="darkerGray"
-                icon="chevron-down"
-                style={{ position: 'absolute', top: 0, right: '5px' }}
-                direction="left"
-                opacity={0.8}
-                onButtonClick={handleScrollToBottomBasedComponentHeight}
-                menuProps={messageMenuItems}
+            {messageRewardModalShown && (
+              <MessageRewardModal
+                userToReward={{
+                  username,
+                  id: userId
+                }}
+                onSubmit={handleRewardMessageSubmit}
+                onHide={() => setMessageRewardModalShown(false)}
               />
             )}
           </div>
-          {messageRewardModalShown && (
-            <MessageRewardModal
-              userToReward={{
-                username,
-                id: userId
-              }}
-              onSubmit={handleRewardMessageSubmit}
-              onHide={() => setMessageRewardModalShown(false)}
-            />
-          )}
-        </div>
-      ) : (
-        <div
-          style={{
-            width: '100%',
-            height: placeholderHeight
-          }}
-        />
-      )}
-    </div>
+        ) : (
+          <div
+            style={{
+              width: '100%',
+              height: placeholderHeight
+            }}
+          />
+        )}
+      </div>
+    </ErrorBoundary>
   );
 }
 

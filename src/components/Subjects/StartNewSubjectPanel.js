@@ -8,6 +8,12 @@ import { useAppContext, useContentContext } from 'contexts';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
+import localize from 'constants/localize';
+
+const startNewSubjectLabel = localize('startNewSubject');
+const enterSubjectLabel = localize('enterSubject');
+const enterDetailsLabel = localize('enterDetails');
+const optionalLabel = localize('optional');
 
 StartNewSubjectPanel.propTypes = {
   onUploadSubject: PropTypes.func.isRequired,
@@ -62,8 +68,8 @@ export default function StartNewSubjectPanel({
               rows={4}
               titleMaxChar={charLimit.subject.title}
               descriptionMaxChar={charLimit.subject.description}
-              titlePlaceholder="Enter Subject..."
-              descriptionPlaceholder="Enter Details... (Optional)"
+              titlePlaceholder={`${enterSubjectLabel}...`}
+              descriptionPlaceholder={`${enterDetailsLabel}... ${optionalLabel}`}
             />
           </div>
         ) : (
@@ -77,7 +83,7 @@ export default function StartNewSubjectPanel({
               }
             >
               <Icon icon="comment-alt" />
-              <span style={{ marginLeft: '1rem' }}>Start a New Subject</span>
+              <span style={{ marginLeft: '1rem' }}>{startNewSubjectLabel}</span>
             </Button>
           </div>
         )}

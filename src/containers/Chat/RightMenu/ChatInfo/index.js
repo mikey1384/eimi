@@ -7,8 +7,13 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 import { useChatContext } from 'contexts';
 import { socket } from 'constants/io';
+import { v1 as uuidv1 } from 'uuid';
 import { GENERAL_CHAT_ID } from 'constants/defaultValues';
 import CallButton from './CallButton';
+import localize from 'constants/localize';
+
+const madeCallLabel = localize('madeCall');
+const onlineLabel = localize('online');
 
 ChatInfo.propTypes = {
   channelName: PropTypes.string,
@@ -99,9 +104,11 @@ function ChatInfo({
 
   const handleCall = useCallback(async () => {
     if (!channelOnCall.id) {
+      const messageId = uuidv1();
       onSubmitMessage({
+        messageId,
         message: {
-          content: 'made a call',
+          content: madeCallLabel,
           channelId: selectedChannelId,
           profilePicUrl,
           userId: myId,
@@ -122,9 +129,11 @@ function ChatInfo({
       }
       socket.emit('hang_up_call', channelOnCall.id, () => {
         if (selectedChannelId !== channelOnCall.id) {
+          const messageId = uuidv1();
           onSubmitMessage({
+            messageId,
             message: {
-              content: 'made a call',
+              content: madeCallLabel,
               channelId: selectedChannelId,
               profilePicUrl,
               userId: myId,
@@ -192,7 +201,7 @@ function ChatInfo({
               {numOnline}
               {currentChannel.id !== GENERAL_CHAT_ID &&
                 '/' + displayedChannelMembers.length}{' '}
-              online
+              {onlineLabel}
             </div>
           )}
         </div>

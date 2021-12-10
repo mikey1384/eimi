@@ -5,6 +5,9 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth, borderRadius } from 'constants/css';
+import localize from 'constants/localize';
+
+const copiedLabel = localize('copied');
 
 CopyCode.propTypes = {
   className: PropTypes.string,
@@ -66,10 +69,11 @@ export default function CopyCode({ className, codeToCopy, style }) {
             background: '#fff',
             fontSize: '1.2rem',
             padding: '1rem',
+            wordBreak: 'keep-all',
             border: `1px solid ${Color.borderGray()}`
           }}
         >
-          Copied!
+          {copiedLabel}
         </div>
       </div>
     </div>

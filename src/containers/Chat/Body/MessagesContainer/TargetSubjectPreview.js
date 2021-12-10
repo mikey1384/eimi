@@ -1,9 +1,9 @@
-import React from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { defaultChatSubject } from 'constants/defaultValues';
 import { Color, borderRadius } from 'constants/css';
-import { useChatContext } from 'contexts';
+import LocalContext from '../../Context';
 
 TargetSubjectPreview.propTypes = {
   channelId: PropTypes.number,
@@ -13,9 +13,12 @@ TargetSubjectPreview.propTypes = {
 export default function TargetSubjectPreview({ channelId, onClose }) {
   const {
     state: { subjectObj }
-  } = useChatContext();
+  } = useContext(LocalContext);
 
-  const { content = defaultChatSubject } = subjectObj[channelId] || {};
+  const { content = defaultChatSubject } = useMemo(
+    () => subjectObj[channelId] || {},
+    [channelId, subjectObj]
+  );
 
   return (
     <div

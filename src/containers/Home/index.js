@@ -55,35 +55,37 @@ function Home({ history, location, onFileUpload }) {
             />
           </div>
           <div className={Center}>
-            <Switch>
-              <Route
-                path="/users"
-                render={({ history, location }) => (
-                  <People location={location} history={history} />
-                )}
-              />
-              <Route
-                exact
-                path="/earn"
-                render={({ location, history }) => (
-                  <Earn location={location} history={history} />
-                )}
-              />
-              <Route
-                exact
-                path="/store"
-                render={({ location, history }) => (
-                  <Store location={location} history={history} />
-                )}
-              />
-              <Route
-                exact
-                path="/"
-                render={({ location, history }) => (
-                  <Stories location={location} history={history} />
-                )}
-              />
-            </Switch>
+            <div style={{ maxWidth: '700px', width: '100%' }}>
+              <Switch>
+                <Route
+                  path="/users"
+                  render={({ history, location }) => (
+                    <People location={location} history={history} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/earn"
+                  render={({ location, history }) => (
+                    <Earn location={location} history={history} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/store"
+                  render={({ location, history }) => (
+                    <Store location={location} history={history} />
+                  )}
+                />
+                <Route
+                  exact
+                  path="/"
+                  render={({ location, history }) => (
+                    <Stories location={location} history={history} />
+                  )}
+                />
+              </Switch>
+            </div>
           </div>
           <Notification className={Right} location="home" />
           {imageEditModalShown && (

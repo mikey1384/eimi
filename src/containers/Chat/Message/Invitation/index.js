@@ -4,93 +4,119 @@ import ChannelDetail from './ChannelDetail';
 import Button from 'components/Button';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-import { useContentState, useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import { useAppContext, useChatContext } from 'contexts';
+import localize from 'constants/localize';
+
+const alreadyJoinedLabel = localize('alreadyJoined');
 
 Invitation.propTypes = {
-  inviteFrom: PropTypes.number.isRequired,
+  invitationChannelId: PropTypes.number,
+  invitePath: PropTypes.number.isRequired,
+  channelId: PropTypes.number.isRequired,
   messageId: PropTypes.number.isRequired,
   onAcceptGroupInvitation: PropTypes.func.isRequired,
-  onChannelEnter: PropTypes.func,
   sender: PropTypes.object.isRequired
 };
 
 export default function Invitation({
-  inviteFrom,
+  invitationChannelId,
+  invitePath,
+  channelId: currentChannelId,
   messageId,
   onAcceptGroupInvitation,
-  onChannelEnter,
   sender
 }) {
   const { userId, profileTheme } = useMyState();
-  const { invitationDetail } = useContentState({
-    contentType: 'chat',
-    contentId: messageId
-  });
   const {
-    requestHelpers: { loadChatChannel }
+    requestHelpers: { loadChatChannel, parseChannelPath }
   } = useAppContext();
   const {
-    actions: { onSetChatInvitationDetail }
-  } = useContentContext();
+    state: { channelPathIdHash, channelsObj },
+    actions: { onSetChatInvitationDetail, onUpdateChannelPathIdHash }
+  } = useChatContext();
   useEffect(() => {
-    if (!invitationDetail) {
+    if (!invitationChannelId) {
       init();
     }
     async function init() {
+      const channelId =
+        channelPathIdHash[invitePath] || (await parseChannelPath(invitePath));
+      if (!channelPathIdHash[invitePath]) {
+        onUpdateChannelPathIdHash({
+          channelId,
+          pathId: invitePath
+        });
+      }
       const { channel } = await loadChatChannel({
-        channelId: inviteFrom,
+        channelId,
+        isForInvitation: true,
         skipUpdateChannelId: true
       });
-      onSetChatInvitationDetail({ messageId, detail: channel });
+      onSetChatInvitationDetail({
+        channel,
+        messageId,
+        channelId: currentChannelId
+      });
     }
-    return function cleanUp() {
-      onSetChatInvitationDetail({ messageId, detail: null });
-    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [invitationChannelId]);
+
+  const invitationChannel = useMemo(
+    () => channelsObj[invitationChannelId],
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [invitationChannelId]
+  );
 
   const alreadyJoined = useMemo(() => {
-    const memberIds = invitationDetail?.members.map((member) => member.id);
+    const memberIds = invitationChannel?.members.map((member) => member.id);
     return memberIds?.includes(userId);
-  }, [invitationDetail, userId]);
+  }, [invitationChannel, userId]);
 
   const desktopHeight = useMemo(() => {
     if (userId === sender.id) {
-      if (!invitationDetail || invitationDetail.members?.length > 3) {
+      if (!invitationChannel || invitationChannel.members?.length > 3) {
         return '9rem';
       } else {
         return '7rem';
       }
     } else {
-      if (!invitationDetail || invitationDetail.members?.length > 3) {
+      if (!invitationChannel || invitationChannel.members?.length > 3) {
         return '14rem';
       } else {
         return '12rem';
       }
     }
-  }, [invitationDetail, sender.id, userId]);
+  }, [invitationChannel, sender.id, userId]);
 
   const mobileHeight = useMemo(() => {
     if (userId === sender.id) {
-      if (!invitationDetail || invitationDetail.members?.length > 3) {
+      if (!invitationChannel || invitationChannel.members?.length > 3) {
         return '7rem';
       } else {
         return '5rem';
       }
     } else {
-      if (!invitationDetail || invitationDetail.members?.length > 3) {
+      if (!invitationChannel || invitationChannel.members?.length > 3) {
         return '12rem';
       } else {
         return '10rem';
       }
     }
-  }, [invitationDetail, sender.id, userId]);
+  }, [invitationChannel, sender.id, userId]);
 
   const handleAcceptGroupInvitation = useCallback(() => {
-    onAcceptGroupInvitation(inviteFrom);
+    onAcceptGroupInvitation(invitePath);
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [inviteFrom]);
+  }, [invitePath]);
+
+  const acceptGroupInvitationLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${sender.username}님의 초대 수락`;
+    }
+    return `Accept ${sender.username}'s Invitation`;
+  }, [sender?.username]);
 
   return (
     <div
@@ -101,13 +127,12 @@ export default function Invitation({
         }
       `}
     >
-      {invitationDetail && (
+      {invitationChannel && (
         <ChannelDetail
-          inviteFrom={inviteFrom}
+          invitePath={invitePath}
           alreadyJoined={alreadyJoined}
-          channelName={invitationDetail.channelName}
-          onChannelEnter={onChannelEnter}
-          members={invitationDetail.members}
+          channelName={invitationChannel.channelName}
+          members={invitationChannel.members}
         />
       )}
       {userId !== sender.id && (
@@ -117,9 +142,7 @@ export default function Invitation({
           onClick={handleAcceptGroupInvitation}
           disabled={alreadyJoined}
         >
-          {alreadyJoined
-            ? 'Already Joined'
-            : `Accept ${sender.username}'s Invitation`}
+          {alreadyJoined ? alreadyJoinedLabel : acceptGroupInvitationLabel}
         </Button>
       )}
     </div>

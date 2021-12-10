@@ -70,19 +70,15 @@ export default function ChatActions(dispatch) {
         channelId
       });
     },
-    onChannelLoadingDone() {
-      return dispatch({
-        type: 'CHANNEL_LOADING_DONE'
-      });
-    },
     onClearNumUnreads() {
       return dispatch({
         type: 'CLEAR_NUM_UNREADS'
       });
     },
-    onClearRecentChessMessage() {
+    onClearRecentChessMessage(channelId) {
       return dispatch({
-        type: 'CLEAR_RECENT_CHESS_MESSAGE'
+        type: 'CLEAR_RECENT_CHESS_MESSAGE',
+        channelId
       });
     },
     onClearChatSearchResults() {
@@ -106,9 +102,10 @@ export default function ChatActions(dispatch) {
         data
       });
     },
-    onDeleteMessage(messageId) {
+    onDeleteMessage({ messageId, channelId }) {
       return dispatch({
         type: 'DELETE_MESSAGE',
+        channelId,
         messageId
       });
     },
@@ -150,10 +147,18 @@ export default function ChatActions(dispatch) {
         theme
       });
     },
-    onEditMessage({ editedMessage, messageId, isSubject, subjectChanged }) {
+    onEditMessage({
+      editedMessage,
+      channelId,
+      messageId,
+      isSubject,
+      subjectChanged
+    }) {
       return dispatch({
         type: 'EDIT_MESSAGE',
-        data: { editedMessage, messageId },
+        channelId,
+        editedMessage,
+        messageId,
         isSubject,
         subjectChanged
       });
@@ -206,9 +211,10 @@ export default function ChatActions(dispatch) {
         peerId
       });
     },
-    onHideAttachment(messageId) {
+    onHideAttachment({ messageId, channelId }) {
       return dispatch({
         type: 'HIDE_ATTACHMENT',
+        channelId,
         messageId
       });
     },
@@ -249,10 +255,11 @@ export default function ChatActions(dispatch) {
         channels
       });
     },
-    onLoadMoreMessages({ messages, loadedChannelId }) {
+    onLoadMoreMessages({ messageIds, messagesObj, loadedChannelId }) {
       return dispatch({
         type: 'LOAD_MORE_MESSAGES',
-        messages,
+        messageIds,
+        messagesObj,
         loadedChannelId
       });
     },
@@ -275,14 +282,6 @@ export default function ChatActions(dispatch) {
       return dispatch({
         type: 'NOTIFY_MEMBER_LEFT',
         data
-      });
-    },
-    onOpenDirectMessageChannel({ user, recepient, channelData }) {
-      return dispatch({
-        type: 'OPEN_DM',
-        user,
-        recepient,
-        ...channelData
       });
     },
     onOpenNewChatTab({ user, recepient }) {
@@ -310,9 +309,16 @@ export default function ChatActions(dispatch) {
         }
       });
     },
-    onPostUploadComplete({ channelId, messageId, path, result }) {
+    onPostUploadComplete({
+      channelId,
+      tempMessageId,
+      messageId,
+      path,
+      result
+    }) {
       return dispatch({
         type: 'POST_UPLOAD_COMPLETE',
+        tempMessageId,
         channelId,
         messageId,
         path,
@@ -331,21 +337,30 @@ export default function ChatActions(dispatch) {
         newMembers
       });
     },
-    onReceiveFirstMsg({ message, isClass, duplicate, pageVisible }) {
+    onReceiveFirstMsg({ message, isClass, duplicate, pageVisible, pathId }) {
       return dispatch({
         type: 'RECEIVE_FIRST_MSG',
         message,
         duplicate,
         isClass,
-        pageVisible
+        pageVisible,
+        pathId
       });
     },
-    onReceiveMessageOnDifferentChannel({ channel, pageVisible, usingChat }) {
+    onReceiveMessageOnDifferentChannel({
+      message,
+      channel,
+      pageVisible,
+      usingChat,
+      isMyMessage
+    }) {
       return dispatch({
         type: 'RECEIVE_MSG_ON_DIFF_CHANNEL',
+        message,
         channel,
         pageVisible,
-        usingChat
+        usingChat,
+        isMyMessage
       });
     },
     onReceiveVocabActivity({ activity, usingVocabSection }) {
@@ -380,11 +395,13 @@ export default function ChatActions(dispatch) {
         type: 'RESET_CHAT'
       });
     },
-    onSaveMessage({ index, messageId }) {
+    onSaveMessage({ index, messageId, channelId, tempMessageId }) {
       return dispatch({
         type: 'ADD_ID_TO_NEW_MESSAGE',
+        channelId,
         messageIndex: index,
-        messageId
+        messageId,
+        tempMessageId
       });
     },
     onSearchChat(data) {
@@ -418,6 +435,14 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onSetChatInvitationDetail({ messageId, channelId, channel }) {
+      return dispatch({
+        type: 'SET_CHAT_INVITATION_DETAIL',
+        messageId,
+        channelId,
+        channel
+      });
+    },
     onSetChessModalShown(shown) {
       return dispatch({
         type: 'SET_CHESS_MODAL_SHOWN',
@@ -443,9 +468,10 @@ export default function ChatActions(dispatch) {
         favorited
       });
     },
-    onSetIsRespondingToSubject(isResponding) {
+    onSetIsRespondingToSubject({ channelId, isResponding }) {
       return dispatch({
         type: 'SET_IS_RESPONDING_TO_SUBJECT',
+        channelId,
         isResponding
       });
     },
@@ -459,6 +485,14 @@ export default function ChatActions(dispatch) {
       return dispatch({
         type: 'SET_MEMBERS_ON_CALL',
         members
+      });
+    },
+    onSetMessageState({ channelId, messageId, newState }) {
+      return dispatch({
+        type: 'SET_MESSAGE_STATE',
+        channelId,
+        messageId,
+        newState
       });
     },
     onSetMyStream(stream) {
@@ -479,9 +513,10 @@ export default function ChatActions(dispatch) {
         type: 'SET_RECONNECTING'
       });
     },
-    onSetReplyTarget(target) {
+    onSetReplyTarget({ channelId, target }) {
       return dispatch({
         type: 'SET_REPLY_TARGET',
+        channelId,
         target
       });
     },
@@ -522,6 +557,7 @@ export default function ChatActions(dispatch) {
     onSubmitMessage({
       isRespondingToSubject,
       message,
+      messageId,
       replyTarget,
       rewardReason,
       rewardAmount
@@ -529,6 +565,7 @@ export default function ChatActions(dispatch) {
       return dispatch({
         type: 'SUBMIT_MESSAGE',
         isRespondingToSubject,
+        messageId,
         message: {
           ...message,
           rewardReason,
@@ -538,14 +575,23 @@ export default function ChatActions(dispatch) {
         replyTarget
       });
     },
-    onTrimMessages() {
+    onTrimMessages(channelId) {
       return dispatch({
-        type: 'TRIM_MESSAGES'
+        type: 'TRIM_MESSAGES',
+        channelId
       });
     },
-    onUpdateChessMoveViewTimeStamp() {
+    onUpdateChannelPathIdHash({ channelId, pathId }) {
       return dispatch({
-        type: 'UPDATE_CHESS_MOVE_VIEW_STAMP'
+        type: 'UPDATE_CHANNEL_PATH_ID_HASH',
+        channelId,
+        pathId
+      });
+    },
+    onUpdateChessMoveViewTimeStamp(channelId) {
+      return dispatch({
+        type: 'UPDATE_CHESS_MOVE_VIEW_STAMP',
+        channelId
       });
     },
     onUpdateCollectorsRankings(data) {
@@ -562,17 +608,10 @@ export default function ChatActions(dispatch) {
         path
       });
     },
-    onUpdateLastMessages({ channels, message, sender }) {
-      return dispatch({
-        type: 'UPDATE_LAST_MESSAGE',
-        channels,
-        message,
-        sender
-      });
-    },
-    onUpdateRecentChessMessage(message) {
+    onUpdateRecentChessMessage({ channelId, message }) {
       return dispatch({
         type: 'UPDATE_RECENT_CHESS_MESSAGE',
+        channelId,
         message
       });
     },

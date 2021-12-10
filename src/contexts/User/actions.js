@@ -63,6 +63,12 @@ export default function UserActions(dispatch) {
         data
       });
     },
+    onSetLastChatPath(lastChatPath) {
+      return dispatch({
+        type: 'SET_LAST_CHAT_PATH',
+        lastChatPath
+      });
+    },
     onSetOrderUsersBy(label) {
       return dispatch({
         type: 'SET_ORDER_USERS_BY',

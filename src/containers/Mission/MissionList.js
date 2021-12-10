@@ -9,6 +9,11 @@ import { mobileMaxWidth } from 'constants/css';
 import { checkMultiMissionPassStatus } from 'helpers/userDataHelpers';
 import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const allMissionsLabel = localize('allMissions');
+const completeLabel = localize('complete');
+const inProgressLabel = localize('inProgress');
 
 MissionList.propTypes = {
   style: PropTypes.object,
@@ -44,11 +49,7 @@ export default function MissionList({
     if (selectedMissionListTab) {
       return;
     }
-    if (ongoingMissions.length === 0) {
-      onSetSelectedMissionListTab('complete');
-    } else {
-      onSetSelectedMissionListTab('ongoing');
-    }
+    onSetSelectedMissionListTab('ongoing');
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [ongoingMissions.length, selectedMissionListTab]);
   let displayedMissions = useMemo(() => {
@@ -73,7 +74,9 @@ export default function MissionList({
   return (
     <ErrorBoundary>
       <div style={style} className={className}>
-        <p style={{ fontWeight: 'bold', fontSize: '2.5rem' }}>All Missions</p>
+        <p style={{ fontWeight: 'bold', fontSize: '2.5rem' }}>
+          {allMissionsLabel}
+        </p>
         {userId && (
           <FilterBar
             className={css`
@@ -89,13 +92,13 @@ export default function MissionList({
               className={selectedMissionListTab === 'ongoing' ? 'active' : ''}
               onClick={() => onSetSelectedMissionListTab('ongoing')}
             >
-              In Progress
+              {inProgressLabel}
             </nav>
             <nav
               className={selectedMissionListTab === 'complete' ? 'active' : ''}
               onClick={() => onSetSelectedMissionListTab('complete')}
             >
-              Complete
+              {completeLabel}
             </nav>
           </FilterBar>
         )}

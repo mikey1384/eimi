@@ -605,22 +605,26 @@ function Comment({
                           onLinkClick={() => setUserListModalShown(true)}
                         />
                       </div>
-                      <div>
-                        <Button
-                          color="brownOrange"
-                          filled={isRecommendedByUser}
-                          disabled={recommendationInterfaceShown}
-                          onClick={() => setRecommendationInterfaceShown(true)}
-                        >
-                          <Icon icon="star" />
-                        </Button>
-                      </div>
+                      {false && (
+                        <div>
+                          <Button
+                            color="brownOrange"
+                            filled={isRecommendedByUser}
+                            disabled={recommendationInterfaceShown}
+                            onClick={() =>
+                              setRecommendationInterfaceShown(true)
+                            }
+                          >
+                            <Icon icon="star" />
+                          </Button>
+                        </div>
+                      )}
                     </div>
                   )}
                 </div>
               )}
             </div>
-            {!isPreview && (
+            {!isPreview && false && (
               <RecommendationStatus
                 style={{ marginTop: likes.length > 0 ? '0.5rem' : '1rem' }}
                 contentType="comment"

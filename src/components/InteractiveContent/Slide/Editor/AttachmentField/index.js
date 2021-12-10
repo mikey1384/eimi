@@ -80,7 +80,6 @@ export default function AttachmentField({
         <DropdownButton
           skeuomorphic
           color="darkerGray"
-          direction="right"
           icon="caret-down"
           text={type}
           style={{ marginLeft: '1rem' }}

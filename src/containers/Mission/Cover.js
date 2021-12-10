@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useMyState } from 'helpers/hooks';
 import { useHistory } from 'react-router-dom';
@@ -6,7 +6,12 @@ import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext } from 'contexts';
 import { checkMultiMissionPassStatus } from 'helpers/userDataHelpers';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import ProfilePic from 'components/ProfilePic';
+import localize from 'constants/localize';
+
+const completedLabel = localize('completed');
+const grammarRankLabel = localize('grammarRank');
 
 Cover.propTypes = {
   missionIds: PropTypes.array.isRequired,
@@ -49,6 +54,22 @@ export default function Cover({ missionIds, missionObj, myAttempts }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [missionObj, missionIds]);
+
+  const completedStatusLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          {missionIds.length} 미션 중 {numComplete} 완료
+        </>
+      );
+    }
+    return (
+      <>
+        Completed {numComplete} out of {missionIds.length} mission
+        {missionIds.length > 1 ? 's' : ''}
+      </>
+    );
+  }, [missionIds?.length, numComplete]);
 
   return (
     <div
@@ -115,12 +136,9 @@ export default function Cover({ missionIds, missionObj, myAttempts }) {
         {numComplete > 0 && (
           <div>
             <span className="mobile">
-              Completed: {numComplete}/{missionIds.length}
+              {completedLabel}: {numComplete}/{missionIds.length}
             </span>
-            <span className="desktop">
-              Completed {numComplete} out of {missionIds.length} mission
-              {missionIds.length > 1 ? 's' : ''}
-            </span>
+            <span className="desktop">{completedStatusLabel}</span>
           </div>
         )}
         {!!myGrammarRank && myGrammarRank < 31 && (
@@ -139,7 +157,7 @@ export default function Cover({ missionIds, missionObj, myAttempts }) {
             onClick={() => history.push('/missions/grammar')}
             style={{ color: myGrammarRank === 1 ? Color.gold() : '#fff' }}
           >
-            Grammar Rank #{myGrammarRank}
+            {grammarRankLabel} #{myGrammarRank}
           </div>
         )}
       </div>

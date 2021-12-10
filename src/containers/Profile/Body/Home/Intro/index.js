@@ -56,6 +56,7 @@ export default function Intro({ profile, selectedTheme }) {
   }, [userId]);
 
   const {
+    authLevel,
     email,
     id,
     verifiedEmail,
@@ -207,6 +208,7 @@ export default function Intro({ profile, selectedTheme }) {
           </div>
           {userId ? (
             <BasicInfos
+              authLevel={authLevel}
               profileTheme={profileTheme}
               className={css`
                 font-size: 1.7rem;

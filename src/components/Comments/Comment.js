@@ -43,6 +43,19 @@ import { getFileInfoFromFileName, stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 import { useInView } from 'react-intersection-observer';
 import LocalContext from './Context';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const commentWasDeletedLabel = localize('commentWasDeleted');
+const editLabel = localize('edit');
+const pinLabel = localize('pin');
+const pinnedLabel = localize('pinned');
+const peopleWhoLikeThisCommentLabel = localize('peopleWhoLikeThisComment');
+const unpinLabel = localize('unpin');
+const removeCommentLabel = localize('removeComment');
+const repliesLabel = localize('replies');
+const replyLabel = localize('reply');
+const rewardLabel = localize('reward');
 
 Comment.propTypes = {
   comment: PropTypes.shape({
@@ -126,6 +139,7 @@ function Comment({
   } = useAppContext();
   const {
     authLevel,
+    banned,
     canDelete,
     canEdit,
     canReward,
@@ -354,7 +368,7 @@ function Comment({
         label: (
           <>
             <Icon icon="pencil-alt" />
-            <span style={{ marginLeft: '1rem' }}>Edit</span>
+            <span style={{ marginLeft: '1rem' }}>{editLabel}</span>
           </>
         ),
         onClick: () =>
@@ -367,14 +381,15 @@ function Comment({
     }
     if (
       (userIsParentUploader || userIsRootUploader || isCreator) &&
-      !isNotification
+      !isNotification &&
+      !banned?.posting
     ) {
       items.push({
         label: (
           <>
             <Icon icon={['fas', 'thumbtack']} />
             <span style={{ marginLeft: '1rem' }}>
-              {pinnedCommentId === comment.id ? 'Unpin' : 'Pin'}
+              {pinnedCommentId === comment.id ? unpinLabel : pinLabel}
             </span>
           </>
         ),
@@ -387,7 +402,7 @@ function Comment({
         label: (
           <>
             <Icon icon="trash-alt" />
-            <span style={{ marginLeft: '1rem' }}>Remove</span>
+            <span style={{ marginLeft: '1rem' }}>{removeCommentLabel}</span>
           </>
         ),
         onClick: () => setConfirmModalShown(true)
@@ -513,6 +528,13 @@ function Comment({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const viewedTheSecretMessageLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${uploader?.username}님이 비밀 메시지를 조회했습니다`;
+    }
+    return `${uploader?.username} viewed the secret message`;
+  }, [uploader?.username]);
+
   return !isDeleted && !comment.isDeleted ? (
     <div ref={ComponentRef}>
       <div
@@ -536,7 +558,7 @@ function Comment({
                 }}
               >
                 <Icon icon={['fas', 'thumbtack']} />
-                <span style={{ marginLeft: '0.7rem' }}>Pinned</span>
+                <span style={{ marginLeft: '0.7rem' }}>{pinnedLabel}</span>
               </div>
             )}
             <div className="content-wrapper">
@@ -603,6 +625,7 @@ function Comment({
                       </span>
                     )}
                   {filePath &&
+                    !isDeleteNotification &&
                     (userId ? (
                       <div style={{ width: '100%', paddingTop: '3rem' }}>
                         <ContentFileViewer
@@ -664,8 +687,8 @@ function Comment({
                           }}
                         >
                           {isNotification
-                            ? `${uploader?.username} viewed the secret message`
-                            : 'this comment was deleted'}
+                            ? viewedTheSecretMessageLabel
+                            : commentWasDeletedLabel}
                         </div>
                       ) : (
                         !commentIsEmpty && (
@@ -709,8 +732,8 @@ function Comment({
                                   <span style={{ marginLeft: '1rem' }}>
                                     {numReplies > 1 &&
                                     parent.contentType === 'comment'
-                                      ? 'Replies'
-                                      : 'Reply'}
+                                      ? repliesLabel
+                                      : replyLabel}
                                     {loadingReplies ? (
                                       <Icon
                                         style={{ marginLeft: '0.7rem' }}
@@ -740,7 +763,7 @@ function Comment({
                                   >
                                     <Icon icon="certificate" />
                                     <span style={{ marginLeft: '0.7rem' }}>
-                                      {xpButtonDisabled || 'Reward'}
+                                      {xpButtonDisabled || rewardLabel}
                                     </span>
                                   </Button>
                                 )}
@@ -752,24 +775,26 @@ function Comment({
                                 onLinkClick={() => setUserListModalShown(true)}
                               />
                             </div>
-                            <div>
-                              <Button
-                                color="brownOrange"
-                                filled={isRecommendedByUser}
-                                disabled={recommendationInterfaceShown}
-                                onClick={() =>
-                                  setRecommendationInterfaceShown(true)
-                                }
-                              >
-                                <Icon icon="star" />
-                              </Button>
-                            </div>
+                            {false && (
+                              <div>
+                                <Button
+                                  color="brownOrange"
+                                  filled={isRecommendedByUser}
+                                  disabled={recommendationInterfaceShown}
+                                  onClick={() =>
+                                    setRecommendationInterfaceShown(true)
+                                  }
+                                >
+                                  <Icon icon="star" />
+                                </Button>
+                              </div>
+                            )}
                           </div>
                         )}
                     </div>
                   )}
                 </div>
-                {!isPreview && (
+                {!isPreview && false && (
                   <RecommendationStatus
                     style={{ marginTop: likes.length > 0 ? '0.5rem' : '1rem' }}
                     contentType="comment"
@@ -856,7 +881,7 @@ function Comment({
         {userListModalShown && (
           <UserListModal
             onHide={() => setUserListModalShown(false)}
-            title="People who liked this comment"
+            title={peopleWhoLikeThisCommentLabel}
             users={likes}
           />
         )}
@@ -864,7 +889,7 @@ function Comment({
       {confirmModalShown && (
         <ConfirmModal
           onHide={() => setConfirmModalShown(false)}
-          title="Remove Comment"
+          title={removeCommentLabel}
           onConfirm={async () => {
             await onDelete(comment.id);
             if (mounted.current) {

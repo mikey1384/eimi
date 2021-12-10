@@ -5,25 +5,21 @@ import SearchInput from 'components/Texts/SearchInput';
 import { useMyState, useSearch } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
 import { Color } from 'constants/css';
+import { useHistory } from 'react-router-dom';
 
 ChatSearchBox.propTypes = {
   style: PropTypes.object
 };
 
 function ChatSearchBox({ style }) {
+  const history = useHistory();
   const {
-    requestHelpers: { loadChatChannel, searchChat }
+    requestHelpers: { searchChat }
   } = useAppContext();
   const { profilePicUrl, userId, username, authLevel } = useMyState();
   const {
     state: { chatSearchResults, selectedChannelId },
-    actions: {
-      onClearChatSearchResults,
-      onEnterChannelWithId,
-      onOpenNewChatTab,
-      onSearchChat,
-      onUpdateSelectedChannelId
-    }
+    actions: { onClearChatSearchResults, onOpenNewChatTab, onSearchChat }
   } = useChatContext();
   const [searchText, setSearchText] = useState('');
   const handleSearchChat = useCallback(async (text) => {
@@ -38,17 +34,8 @@ function ChatSearchBox({ style }) {
   });
   const handleSelect = useCallback(
     async (item) => {
-      if (item.primary || !!item.channelId) {
-        if (item.channelId === selectedChannelId) {
-          setSearchText('');
-          onClearChatSearchResults();
-          return;
-        }
-        onUpdateSelectedChannelId(item.channelId);
-        const data = await loadChatChannel({
-          channelId: item.channelId
-        });
-        onEnterChannelWithId({ data });
+      if (item.primary || !!item.pathId) {
+        history.push(`/chat/${item.pathId}`);
       } else {
         onOpenNewChatTab({
           user: { username, id: userId, profilePicUrl, authLevel },
@@ -59,6 +46,7 @@ function ChatSearchBox({ style }) {
             authLevel: item.authLevel
           }
         });
+        history.push(`/chat/new`);
       }
       setSearchText('');
       onClearChatSearchResults();

@@ -28,6 +28,7 @@ export const initialUserState = {
   defaultSearchFilter: '',
   hideWatched: false,
   isCreator: false,
+  lastChatPath: '',
   loaded: false,
   loadMoreButton: false,
   loggedIn: false,

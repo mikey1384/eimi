@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Questions from './Questions';
 import StartScreen from './StartScreen';
@@ -21,6 +21,8 @@ export default function Grammar({ isRepeating, mission }) {
     state: { myAttempts },
     actions: { onSetMissionState, onSetMyMissionAttempts }
   } = useMissionContext();
+  const [loading, setLoading] = useState(false);
+  const loadingRef = useRef(false);
   useEffect(() => {
     mounted.current = true;
     return function onUnmount() {
@@ -44,6 +46,7 @@ export default function Grammar({ isRepeating, mission }) {
           mission={mission}
           myAttempts={myAttempts}
           onInitMission={handleInitMission}
+          loading={loading}
           onStartButtonClick={() =>
             onSetMissionState({
               missionId: mission.id,
@@ -88,7 +91,9 @@ export default function Grammar({ isRepeating, mission }) {
   );
 
   async function handleInitMission() {
-    if (userId) {
+    if (userId && !loadingRef.current) {
+      loadingRef.current = true;
+      setLoading(true);
       const { page, myAttempts } = await loadMission({ missionId: mission.id });
       if (mounted.current) {
         onSetMissionState({
@@ -101,6 +106,10 @@ export default function Grammar({ isRepeating, mission }) {
       }
       if (mounted.current) {
         onSetMyMissionAttempts(myAttempts);
+      }
+      if (mounted.current) {
+        setLoading(false);
+        loadingRef.current = false;
       }
     }
   }

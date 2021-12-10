@@ -197,6 +197,15 @@ export default function Posts({
                 filled
               />
             )}
+            <div
+              className={css`
+                display: ${loadMoreButton ? 'none' : 'block'};
+                height: 7rem;
+                @media (max-width: ${mobileMaxWidth}) {
+                  display: block;
+                }
+              `}
+            />
           </div>
         )}
         {!['likes', 'watched'].includes(section) && (

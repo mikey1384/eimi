@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Button from 'components/Button';
@@ -6,6 +6,18 @@ import Input from 'components/Texts/Input';
 import SwitchButton from 'components/Buttons/SwitchButton';
 import { Color } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const backLabel = localize('back');
+const cancelLabel = localize('cancel');
+const createLabel = localize('create');
+const enterGroupNameLabel = localize('enterGroupName');
+const newGroupLabel = localize('newGroup');
+const groupNameLabel = localize('groupName');
+const youCanChangeThisSettingLaterLabel = localize(
+  'youCanChangeThisSettingLater'
+);
 
 RegularMenu.propTypes = {
   creatingChat: PropTypes.bool,
@@ -24,16 +36,33 @@ export default function RegularMenu({
   const [channelName, setChannelName] = useState('');
   const [isClosed, setIsClosed] = useState(false);
 
+  const anyoneCanInviteLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          <span style={{ color: Color.logoBlue() }}>누구나</span> 새로운 멤버
+          초대 가능:
+        </>
+      );
+    }
+    return (
+      <>
+        <span style={{ color: Color.logoBlue() }}>Anyone</span> can invite new
+        members:
+      </>
+    );
+  }, []);
+
   return (
     <ErrorBoundary>
-      <header>New Chat</header>
+      <header>{newGroupLabel}</header>
       <main>
         <div style={{ width: '100%' }}>
           <div style={{ marginTop: '1.5rem' }}>
-            <h3>Group name</h3>
+            <h3>{groupNameLabel}</h3>
             <Input
               style={{ marginTop: '1rem' }}
-              placeholder="Enter group name"
+              placeholder={enterGroupNameLabel}
               maxLength="150"
               value={channelName}
               onChange={setChannelName}
@@ -42,16 +71,11 @@ export default function RegularMenu({
           <div style={{ marginTop: '1.5rem' }}>
             <SwitchButton
               labelStyle={{ fontSize: '1.7rem', fontWeight: 'bold' }}
-              label={
-                <>
-                  <span style={{ color: Color.logoBlue() }}>Anyone</span> can
-                  invite new members:
-                </>
-              }
+              label={anyoneCanInviteLabel}
               checked={!isClosed}
               onChange={() => setIsClosed((isClosed) => !isClosed)}
             />
-            <p>(You can change this setting later)</p>
+            <p>({youCanChangeThisSettingLaterLabel})</p>
           </div>
         </div>
       </main>
@@ -61,14 +85,14 @@ export default function RegularMenu({
           transparent
           onClick={onBackClick || onHide}
         >
-          {onBackClick ? 'Back' : 'Cancel'}
+          {onBackClick ? backLabel : cancelLabel}
         </Button>
         <Button
           color="blue"
           onClick={handleDone}
           disabled={creatingChat || !channelName}
         >
-          Create
+          {createLabel}
         </Button>
       </footer>
     </ErrorBoundary>

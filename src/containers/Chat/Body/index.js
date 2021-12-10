@@ -1,31 +1,24 @@
-import React, { memo, useEffect } from 'react';
+import React, { memo, useContext } from 'react';
 import PropTypes from 'prop-types';
 import MessagesContainer from './MessagesContainer';
 import Vocabulary from './Vocabulary';
 import Loading from 'components/Loading';
 import ErrorBoundary from 'components/ErrorBoundary';
+import LocalContext from '../Context';
 import { phoneMaxWidth, Color } from 'constants/css';
 import { css } from '@emotion/css';
-import { useChatContext } from 'contexts';
 
 Body.propTypes = {
   channelName: PropTypes.string,
   chessOpponent: PropTypes.object,
   currentChannel: PropTypes.object,
-  onChannelEnter: PropTypes.func
+  loading: PropTypes.bool
 };
 
-function Body({ channelName, chessOpponent, currentChannel, onChannelEnter }) {
+function Body({ channelName, chessOpponent, currentChannel, loading }) {
   const {
-    state: { chatType, loadingVocabulary, selectedChannelId },
-    actions: { onSetReplyTarget, onSetIsRespondingToSubject }
-  } = useChatContext();
-
-  useEffect(() => {
-    onSetReplyTarget(null);
-    onSetIsRespondingToSubject(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChannelId]);
+    state: { chatType, loadingVocabulary }
+  } = useContext(LocalContext);
 
   return (
     <ErrorBoundary>
@@ -50,10 +43,11 @@ function Body({ channelName, chessOpponent, currentChannel, onChannelEnter }) {
               <Vocabulary />
             ) : (
               <MessagesContainer
+                key={currentChannel.id}
+                loading={loading}
                 channelName={channelName}
                 chessOpponent={chessOpponent}
                 currentChannel={currentChannel}
-                onChannelEnter={onChannelEnter}
               />
             )}
           </>

@@ -10,6 +10,14 @@ import { css } from '@emotion/css';
 import { socket } from 'constants/io';
 import { mobileMaxWidth } from 'constants/css';
 import { stringIsEmpty } from 'helpers/stringHelpers';
+import { useHistory } from 'react-router-dom';
+import localize from 'constants/localize';
+
+const addMembersOfClassLabel = localize('addMembersOfClass');
+const enterClassNameLabel = localize('enterClassName');
+const membersLabel = localize('members');
+const nameLabel = localize('name');
+const newClassroomLabel = localize('newClassroomChat');
 
 ClassroomChat.propTypes = {
   onBackClick: PropTypes.func,
@@ -17,6 +25,7 @@ ClassroomChat.propTypes = {
 };
 
 export default function ClassroomChat({ onBackClick, onHide }) {
+  const history = useHistory();
   const {
     requestHelpers: { createNewChat, searchUserToInvite }
   } = useAppContext();
@@ -40,7 +49,7 @@ export default function ClassroomChat({ onBackClick, onHide }) {
 
   return (
     <ErrorBoundary>
-      <header>New Classroom</header>
+      <header>{newClassroomLabel}</header>
       <main>
         <div
           className={css`
@@ -50,18 +59,18 @@ export default function ClassroomChat({ onBackClick, onHide }) {
             }
           `}
         >
-          <h3>Name</h3>
+          <h3>{nameLabel}</h3>
           <Input
             autoFocus
             style={{ marginTop: '1rem' }}
-            placeholder="Enter the name of your class"
+            placeholder={enterClassNameLabel}
             maxLength="150"
             value={channelName}
             onChange={setChannelName}
           />
         </div>
         <TagForm
-          title="Members"
+          title={membersLabel}
           itemLabel="username"
           searchResults={userSearchResults}
           filter={(result) => result.id !== userId}
@@ -76,7 +85,7 @@ export default function ClassroomChat({ onBackClick, onHide }) {
               {item.realName && <small>{`(${item.realName})`}</small>}
             </span>
           )}
-          searchPlaceholder="Add the members of your class"
+          searchPlaceholder={addMembersOfClassLabel}
           selectedItems={selectedUsers}
           style={{ marginTop: '1.5rem' }}
           className={css`
@@ -117,22 +126,30 @@ export default function ClassroomChat({ onBackClick, onHide }) {
 
   async function handleDone() {
     setCreatingChat(true);
-    const { message, members } = await createNewChat({
+    const { message, members, pathId } = await createNewChat({
       userId,
       channelName,
       isClass: true,
       isClosed: true,
       selectedUsers
     });
-    onCreateNewChannel({ message, isClass: true, isClosed: true, members });
+    onCreateNewChannel({
+      message,
+      isClass: true,
+      isClosed: true,
+      members,
+      pathId
+    });
     const users = selectedUsers.map((user) => user.id);
     socket.emit('join_chat_group', message.channelId);
     socket.emit('send_group_chat_invitation', users, {
       message,
       isClass: true,
       isClosed: true,
-      members
+      members,
+      pathId
     });
+    history.push(`/chat/${pathId}`);
     onHide();
   }
 }

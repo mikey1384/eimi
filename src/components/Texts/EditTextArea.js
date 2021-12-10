@@ -8,7 +8,8 @@ import {
   exceedsCharLimit,
   stringIsEmpty,
   addEmoji,
-  finalizeEmoji
+  finalizeEmoji,
+  replaceFakeAtSymbol
 } from 'helpers/stringHelpers';
 
 EditTextArea.propTypes = {
@@ -61,7 +62,7 @@ export default function EditTextArea({
 
   useEffect(() => {
     if (!editText) {
-      handleSetEditText(text);
+      handleSetEditText(replaceFakeAtSymbol(text));
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [text]);

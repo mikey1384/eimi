@@ -7,6 +7,7 @@ import { addCommasToNumber } from 'helpers/stringHelpers';
 import { isMobile } from 'helpers';
 import { css } from '@emotion/css';
 import Icon from 'components/Icon';
+import localize from 'constants/localize';
 
 Collector.propTypes = {
   myId: PropTypes.number,
@@ -15,6 +16,7 @@ Collector.propTypes = {
 };
 
 const deviceIsMobile = isMobile(navigator);
+const collectedLabel = localize('collected');
 
 export default function Collector({ myId, style, user }) {
   const rankColor = useMemo(() => {
@@ -113,7 +115,7 @@ export default function Collector({ myId, style, user }) {
           `}
         >
           {addCommasToNumber(user.numWordsCollected || 0)}
-          {!deviceIsMobile && <span> collected</span>}
+          {!deviceIsMobile && <span>{collectedLabel}</span>}
         </span>
       </div>
     </nav>

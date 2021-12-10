@@ -61,7 +61,7 @@ export default function FilterBar({
         height: 100%;
         width: ${!dropdownButton ? '100%' : '70%'};
         > nav {
-          font-family: sans-serif, Arial, Helvetica;
+          font-family: 'Ubuntu', sans-serif, Arial, Helvetica;
           font-weight: bold;
           cursor: pointer;
           display: flex;

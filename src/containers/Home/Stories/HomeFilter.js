@@ -9,18 +9,28 @@ import { css } from '@emotion/css';
 import { isMobile } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
+import localize from 'constants/localize';
 
+const allPostsLabel = localize('allPosts');
+const subjectsLabel = localize('subjects');
+const postsLabel = localize('posts');
+const newToOldLabel = localize('newToOld');
+const oldToNewLabel = localize('oldToNew');
+const recommendedLabel = localize('recommended');
+const recommendedPostsLabel = localize('recommendedPosts');
+const xpVideosLabel = localize('xpVideos');
+const hideWatchedLabel = localize('hideWatched');
 const categoryObj = {
   uploads: {
-    label: 'Posts',
-    desc: 'New to Old',
-    asc: 'Old to New'
+    label: postsLabel,
+    desc: newToOldLabel,
+    asc: oldToNewLabel
   },
   recommended: {
-    label: isMobile(navigator) ? 'Recommended' : 'Recommended Posts'
+    label: isMobile(navigator) ? recommendedLabel : recommendedPostsLabel
   },
   videos: {
-    label: 'XP Videos'
+    label: xpVideosLabel
   }
 };
 
@@ -72,7 +82,7 @@ export default function HomeFilter({
           fontSize: '1.6rem'
         }}
       >
-        {['uploads', 'recommended', 'videos'].map((elem) => (
+        {['uploads', 'videos'].map((elem) => (
           <nav
             key={elem}
             className={activeTab === elem ? 'active' : ''}
@@ -132,7 +142,7 @@ export default function HomeFilter({
               >
                 {['all', 'subject'].map((type) => {
                   const displayLabel =
-                    type === 'all' ? 'All Posts' : 'Subjects';
+                    type === 'all' ? allPostsLabel : subjectsLabel;
                   return (
                     <nav
                       key={type}
@@ -168,7 +178,7 @@ export default function HomeFilter({
                 {userId && (
                   <SwitchButton
                     checked={!!hideWatched}
-                    label="Hide Watched"
+                    label={hideWatchedLabel}
                     onChange={handleToggleHideWatched}
                     labelStyle={{ fontSize: '1.6rem' }}
                   />

@@ -5,14 +5,17 @@ import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import SelectNewOwnerModal from '../SelectNewOwnerModal';
 import SwitchButton from 'components/Buttons/SwitchButton';
-import ConfirmModal from 'components/Modals/ConfirmModal';
-import FullTextReveal from 'components/Texts/FullTextReveal';
-import Icon from 'components/Icon';
-import ColorSelector from './ColorSelector';
-import { priceTable } from 'constants/defaultValues';
-import { useMyState } from 'helpers/hooks';
+// import ConfirmModal from 'components/Modals/ConfirmModal';
+// import FullTextReveal from 'components/Texts/FullTextReveal';
+// import Icon from 'components/Icon';
+// import ColorSelector from './ColorSelector';
+// import { priceTable } from 'constants/defaultValues';
+// import { useMyState } from 'helpers/hooks';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext, useChatContext, useContentContext } from 'contexts';
+// eslint-disable-next-line standard/object-curly-even-spacing
+import {
+  /* useAppContext, */ useChatContext /* useContentContext */
+} from 'contexts';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 
@@ -26,11 +29,11 @@ SettingsModal.propTypes = {
   isClass: PropTypes.bool,
   isClosed: PropTypes.bool,
   userIsChannelOwner: PropTypes.bool,
-  onSelectNewOwner: PropTypes.func,
-  onSetScrollToBottom: PropTypes.func,
-  onPurchaseSubject: PropTypes.func,
-  theme: PropTypes.string,
-  unlockedThemes: PropTypes.array
+  onSelectNewOwner: PropTypes.func
+  // onScrollToBottom: PropTypes.func,
+  // onPurchaseSubject: PropTypes.func,
+  // theme: PropTypes.string
+  // unlockedThemes: PropTypes.array
 };
 
 export default function SettingsModal({
@@ -42,39 +45,45 @@ export default function SettingsModal({
   members,
   onDone,
   onHide,
-  onPurchaseSubject,
+  // onPurchaseSubject,
   onSelectNewOwner,
-  onSetScrollToBottom,
-  theme,
-  unlockedThemes,
+  // onScrollToBottom,
+  // theme,
+  // unlockedThemes,
   userIsChannelOwner
 }) {
+  /*
   const {
     requestHelpers: { buyChatSubject, buyChatTheme }
   } = useAppContext();
+  */
   const {
-    state: { customChannelNames },
-    actions: { onEnableChatSubject, onEnableTheme }
+    state: { customChannelNames }
+    // actions: { onEnableChatSubject, onEnableTheme }
   } = useChatContext();
+  /*
   const {
     actions: { onUpdateUserCoins }
   } = useContentContext();
-  const { twinkleCoins, userId } = useMyState();
-  const [hovered, setHovered] = useState(false);
+  */
+  // const { twinkleCoins, userId } = useMyState();
+  // const [hovered, setHovered] = useState(false);
   const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] =
     useState(false);
-  const [confirmModalShown, setConfirmModalShown] = useState(false);
+  // const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [editedChannelName, setEditedChannelName] = useState(channelName);
   const [editedIsClosed, setEditedIsClosed] = useState(isClosed);
   const [editedCanChangeSubject, setEditedCanChangeSubject] =
     useState(canChangeSubject);
-  const currentTheme = theme || 'green';
-  const [selectedTheme, setSelectedTheme] = useState(currentTheme);
-  const [themeToPurchase, setThemeToPurchase] = useState('');
+  // const currentTheme = theme || 'green';
+  // const [selectedTheme, setSelectedTheme] = useState(currentTheme);
+  // const [themeToPurchase, setThemeToPurchase] = useState('');
+  /*
   const insufficientFunds = useMemo(
     () => twinkleCoins < priceTable.chatSubject,
     [twinkleCoins]
   );
+  */
   const disabled = useMemo(() => {
     const customChannelName = customChannelNames[channelId];
     let channelNameDidNotChange = editedChannelName === channelName;
@@ -88,20 +97,18 @@ export default function SettingsModal({
     return (
       (stringIsEmpty(editedChannelName) || channelNameDidNotChange) &&
       isClosed === editedIsClosed &&
-      editedCanChangeSubject === canChangeSubject &&
-      currentTheme === selectedTheme
+      editedCanChangeSubject === canChangeSubject /* &&
+      currentTheme === selectedTheme */
     );
   }, [
     canChangeSubject,
     channelId,
     channelName,
-    currentTheme,
     customChannelNames,
     editedCanChangeSubject,
     editedChannelName,
     editedIsClosed,
-    isClosed,
-    selectedTheme
+    isClosed
   ]);
 
   return (
@@ -130,7 +137,7 @@ export default function SettingsModal({
               onChange={setEditedChannelName}
             />
           </div>
-          {userIsChannelOwner && !isClass && (
+          {userIsChannelOwner && !isClass && false && (
             <div
               style={{
                 display: 'flex',
@@ -180,7 +187,7 @@ export default function SettingsModal({
                   }
                 />
               </div>
-              {!canChangeSubject && (
+              {/* !canChangeSubject && false && (
                 <div>
                   <Button
                     onClick={() =>
@@ -193,7 +200,7 @@ export default function SettingsModal({
                     style={{
                       fontSize: '1.2rem',
                       display: 'flex',
-                      alignItems: 'center',
+                      alignItems: 'center'
                       background: insufficientFunds ? Color.logoBlue(0.2) : '',
                       cursor: insufficientFunds ? 'default' : 'pointer',
                       boxShadow: insufficientFunds ? 'none' : '',
@@ -210,15 +217,15 @@ export default function SettingsModal({
                       direction="left"
                       style={{ color: '#000', marginTop: '0.5rem' }}
                       text={`You need ${
-                        priceTable.chatSubject - twinkleCoins
+                        priceTable.chatSubject // - twinkleCoins
                       } more Twinkle Coins`}
                     />
                   )}
                 </div>
-              )}
+              ) */}
             </div>
           )}
-          {!!canChangeSubject && userIsChannelOwner && (
+          {/* !!canChangeSubject && userIsChannelOwner && false && (
             <div
               style={{
                 width: '100%',
@@ -257,7 +264,7 @@ export default function SettingsModal({
                 }}
               />
             </div>
-          )}
+          ) */}
           <div
             style={{
               display: 'flex',
@@ -296,7 +303,7 @@ export default function SettingsModal({
               editedChannelName,
               editedIsClosed,
               editedCanChangeSubject,
-              editedTheme: selectedTheme
+              editedTheme: 'green' // selectedTheme
             })
           }
         >
@@ -315,7 +322,7 @@ export default function SettingsModal({
           isClass={isClass}
         />
       )}
-      {confirmModalShown && (
+      {/* confirmModalShown && (
         <ConfirmModal
           modalOverModal
           onHide={() => setConfirmModalShown(false)}
@@ -324,8 +331,8 @@ export default function SettingsModal({
           descriptionFontSize="2rem"
           onConfirm={handlePurchaseSubject}
         />
-      )}
-      {themeToPurchase && (
+      ) */}
+      {/* themeToPurchase && (
         <ConfirmModal
           modalOverModal
           onHide={() => setThemeToPurchase('')}
@@ -340,17 +347,20 @@ export default function SettingsModal({
           descriptionFontSize="2rem"
           onConfirm={handlePurchaseTheme}
         />
-      )}
+      ) */}
     </Modal>
   );
 
+  /*
   function handleSetColor(color) {
     if (unlockedThemes.includes(color) || color === 'green') {
       return setSelectedTheme(color);
     }
     setThemeToPurchase(color);
   }
+  */
 
+  /*
   async function handlePurchaseSubject() {
     try {
       const { coins } = await buyChatSubject(channelId);
@@ -358,14 +368,16 @@ export default function SettingsModal({
       onUpdateUserCoins({ coins, userId });
       onPurchaseSubject();
       setEditedCanChangeSubject('owner');
-      onSetScrollToBottom();
+      onScrollToBottom();
       setConfirmModalShown(false);
     } catch (error) {
       console.error(error);
       setConfirmModalShown(false);
     }
   }
+  */
 
+  /*
   async function handlePurchaseTheme() {
     try {
       const { coins } = await buyChatTheme({
@@ -380,4 +392,5 @@ export default function SettingsModal({
       setThemeToPurchase('');
     }
   }
+  */
 }

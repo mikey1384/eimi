@@ -4,11 +4,10 @@ import { processedStringWithURL } from 'helpers/stringHelpers';
 import { Color } from 'constants/css';
 
 Spoiler.propTypes = {
-  content: PropTypes.string,
-  onSpoilerClick: PropTypes.func
+  content: PropTypes.string
 };
 
-export default function Spoiler({ content, onSpoilerClick }) {
+export default function Spoiler({ content }) {
   const [spoilerShown, setSpoilerShown] = useState(false);
   const [grayness, setGrayness] = useState(105);
   const displayedContent = useMemo(() => {
@@ -55,6 +54,5 @@ export default function Spoiler({ content, onSpoilerClick }) {
 
   function handleSpoilerClick() {
     setSpoilerShown(true);
-    onSpoilerClick();
   }
 }

@@ -9,6 +9,20 @@ import { Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
+import { v1 as uuidv1 } from 'uuid';
+import ErrorBoundary from 'components/ErrorBoundary';
+import localize from 'constants/localize';
+
+const acceptDrawLabel = localize('acceptDraw');
+const cancelMoveLabel = localize('cancelMove');
+const chessLabel = localize('chess');
+const closeLabel = localize('close');
+const doneLabel = localize('done');
+const offerDrawLabel = localize('offerDraw');
+const offeredDrawLabel = localize('offeredDraw');
+const resignLabel = localize('resign');
+const resignChessMatchLabel = localize('resignChessMatch');
+const startNewGameLabel = localize('startNewGame');
 
 ChessModal.propTypes = {
   channelId: PropTypes.number,
@@ -40,7 +54,6 @@ export default function ChessModal({
     requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
   } = useAppContext();
   const {
-    state: { recentChessMessage },
     actions: { onSubmitMessage, onUpdateChessMoveViewTimeStamp }
   } = useChatContext();
   const [initialState, setInitialState] = useState();
@@ -61,7 +74,7 @@ export default function ChessModal({
       loading.current = true;
       const chessMessage = await fetchCurrentChessState({
         channelId,
-        recentChessMessage
+        recentChessMessage: currentChannel.recentChessMessage
       });
       setUserMadeLastMove(chessMessage?.userId === myId);
       setMessage(chessMessage);
@@ -145,112 +158,116 @@ export default function ChessModal({
   }, [drawOffererId, myId]);
 
   return (
-    <Modal large onHide={onHide}>
-      <header>Chess</header>
-      <main style={{ padding: 0 }}>
-        <div
-          style={{
-            backgroundColor: Color.lightGray(),
-            position: 'relative',
-            width: '100%'
-          }}
-        >
-          <Chess
-            isFromModal
-            channelId={channelId}
-            countdownNumber={countdownNumber}
-            interactable={!parsedState?.isDraw}
-            initialState={initialState}
-            loaded={loaded}
-            myId={myId}
-            newChessState={newChessState}
-            onChessMove={setNewChessState}
-            opponentId={opponentId}
-            opponentName={opponentName}
-            senderId={uploaderId}
-            spoilerOff={
-              spoilerOff ||
-              (!loading.current && !initialState) ||
-              !!userMadeLastMove ||
-              !!viewTimeStamp
-            }
-            onSpoilerClick={handleSpoilerClick}
-          />
-        </div>
-      </main>
-      <footer style={{ border: 0 }}>
-        {gameEndButtonShown && (
-          <Button
-            style={{ marginRight: '1rem' }}
-            color={drawOfferPending ? 'orange' : 'red'}
-            onClick={() => setConfirmModalShown(true)}
-          >
-            {drawOfferPending ? 'Accept Draw' : 'Resign'}
-          </Button>
-        )}
-        {drawButtonShown && (
-          <Button
-            style={{ marginRight: '1rem' }}
-            color="orange"
-            onClick={handleOfferDraw}
-          >
-            Offer Draw
-          </Button>
-        )}
-        <Button transparent onClick={onHide}>
-          Close
-        </Button>
-        {!!newChessState && (
-          <Button
-            style={{ marginLeft: '1rem' }}
-            color="pink"
-            onClick={() => setNewChessState(undefined)}
-          >
-            Cancel Move
-          </Button>
-        )}
-        {gameFinished ? (
-          <Button
-            style={{ marginLeft: '1rem' }}
-            color="orange"
-            onClick={() => {
-              setUserMadeLastMove(false);
-              setInitialState(undefined);
+    <ErrorBoundary>
+      <Modal large onHide={onHide}>
+        <header>{chessLabel}</header>
+        <main style={{ padding: 0 }}>
+          <div
+            style={{
+              backgroundColor: Color.lightGray(),
+              position: 'relative',
+              width: '100%'
             }}
           >
-            Start a new game
+            <Chess
+              isFromModal
+              channelId={channelId}
+              countdownNumber={countdownNumber}
+              interactable={!parsedState?.isDraw}
+              initialState={initialState}
+              loaded={loaded}
+              myId={myId}
+              newChessState={newChessState}
+              onChessMove={setNewChessState}
+              opponentId={opponentId}
+              opponentName={opponentName}
+              senderId={uploaderId}
+              spoilerOff={
+                spoilerOff ||
+                (!loading.current && !initialState) ||
+                !!userMadeLastMove ||
+                !!viewTimeStamp
+              }
+              onSpoilerClick={handleSpoilerClick}
+            />
+          </div>
+        </main>
+        <footer style={{ border: 0 }}>
+          {gameEndButtonShown && (
+            <Button
+              style={{ marginRight: '1rem' }}
+              color={drawOfferPending ? 'orange' : 'red'}
+              onClick={() => setConfirmModalShown(true)}
+            >
+              {drawOfferPending ? acceptDrawLabel : resignLabel}
+            </Button>
+          )}
+          {drawButtonShown && (
+            <Button
+              style={{ marginRight: '1rem' }}
+              color="orange"
+              onClick={handleOfferDraw}
+            >
+              {offerDrawLabel}
+            </Button>
+          )}
+          <Button transparent onClick={onHide}>
+            {closeLabel}
           </Button>
-        ) : !userMadeLastMove ? (
-          <Button
-            color="blue"
-            style={{ marginLeft: '1rem' }}
-            onClick={submitChessMove}
-            disabled={!newChessState || !socketConnected || banned?.chess}
-          >
-            Done
-            {!socketConnected && (
-              <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
-            )}
-          </Button>
-        ) : null}
-      </footer>
-      {confirmModalShown && (
-        <ConfirmModal
-          modalOverModal
-          title={drawOfferPending ? 'Accept Draw' : 'Resign Chess Match'}
-          onConfirm={handleGameOver}
-          onHide={() => setConfirmModalShown(false)}
-        />
-      )}
-    </Modal>
+          {!!newChessState && (
+            <Button
+              style={{ marginLeft: '1rem' }}
+              color="pink"
+              onClick={() => setNewChessState(undefined)}
+            >
+              {cancelMoveLabel}
+            </Button>
+          )}
+          {gameFinished ? (
+            <Button
+              style={{ marginLeft: '1rem' }}
+              color="orange"
+              onClick={() => {
+                setUserMadeLastMove(false);
+                setInitialState(undefined);
+              }}
+            >
+              {startNewGameLabel}
+            </Button>
+          ) : !userMadeLastMove ? (
+            <Button
+              color="blue"
+              style={{ marginLeft: '1rem' }}
+              onClick={submitChessMove}
+              disabled={!newChessState || !socketConnected || banned?.chess}
+            >
+              {doneLabel}
+              {!socketConnected && (
+                <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
+              )}
+            </Button>
+          ) : null}
+        </footer>
+        {confirmModalShown && (
+          <ConfirmModal
+            modalOverModal
+            title={drawOfferPending ? acceptDrawLabel : resignChessMatchLabel}
+            onConfirm={handleGameOver}
+            onHide={() => setConfirmModalShown(false)}
+          />
+        )}
+      </Modal>
+    </ErrorBoundary>
   );
 
   async function handleOfferDraw() {
+    const messageId = uuidv1();
     onSubmitMessage({
+      messageId,
       message: {
         channelId,
         isDrawOffer: true,
-        content: 'offered a draw',
+        content: offeredDrawLabel,
         userId,
         username,
         profilePicUrl
@@ -263,7 +280,7 @@ export default function ChessModal({
     try {
       await setChessMoveViewTimeStamp({ channelId, message });
       setSpoilerOff(true);
-      onUpdateChessMoveViewTimeStamp();
+      onUpdateChessMoveViewTimeStamp(channelId);
       onSpoilerClick(message.userId);
     } catch (error) {
       console.error(error);
@@ -277,7 +294,13 @@ export default function ChessModal({
 
   function handleGameOver() {
     socket.emit('end_chess_game', {
-      channel: currentChannel,
+      channel: {
+        id: currentChannel.id,
+        channelName: currentChannel.channelName,
+        members: currentChannel.members,
+        twoPeople: currentChannel.twoPeople,
+        pathId: currentChannel.pathId
+      },
       channelId,
       targetUserId: myId,
       ...(drawOfferPending

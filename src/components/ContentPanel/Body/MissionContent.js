@@ -5,6 +5,11 @@ import UsernameText from 'components/Texts/UsernameText';
 import ContentLink from 'components/ContentLink';
 import { borderRadius, Color } from 'constants/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const taskCompleteLabel = localize('taskComplete');
+const missionAccomplishedLabel = localize('missionAccomplished');
 
 MissionContent.propTypes = {
   uploader: PropTypes.object.isRequired,
@@ -20,31 +25,70 @@ export default function MissionContent({ uploader, rootObj: mission }) {
           color: Color.black()
         }}
       >
-        <UsernameText user={uploader} color={Color.blue()} /> was rewarded{' '}
-        {mission.xpReward ? (
-          <span style={{ color: Color.logoGreen(), fontWeight: 'bold' }}>
-            {addCommasToNumber(mission.xpReward)}{' '}
-          </span>
-        ) : null}
-        {mission.xpReward && mission.coinReward ? (
-          <>
-            <span style={{ color: Color.gold(), fontWeight: 'bold' }}>XP</span>{' '}
-            and{' '}
-          </>
-        ) : null}
-        {mission.coinReward ? (
-          <>
-            <Icon
-              style={{ color: Color.brownOrange(), fontWeight: 'bold' }}
-              icon={['far', 'badge-dollar']}
-            />{' '}
-            <span style={{ color: Color.brownOrange(), fontWeight: 'bold' }}>
-              {mission.coinReward}
-            </span>
-          </>
-        ) : null}
+        {SELECTED_LANGUAGE === 'kr' ? renderKorean() : renderEnglish()}
       </div>
     ) : null;
+
+    function renderEnglish() {
+      return (
+        <>
+          <UsernameText user={uploader} color={Color.blue()} /> was rewarded{' '}
+          {mission.xpReward ? (
+            <>
+              <span style={{ color: Color.logoGreen(), fontWeight: 'bold' }}>
+                {addCommasToNumber(mission.xpReward)}{' '}
+              </span>
+              <span style={{ color: Color.gold(), fontWeight: 'bold' }}>
+                XP
+              </span>
+            </>
+          ) : null}
+          {mission.xpReward && mission.coinReward ? ' and ' : null}
+          {mission.coinReward ? (
+            <>
+              <Icon
+                style={{ color: Color.brownOrange(), fontWeight: 'bold' }}
+                icon={['far', 'badge-dollar']}
+              />{' '}
+              <span style={{ color: Color.brownOrange(), fontWeight: 'bold' }}>
+                {mission.coinReward}
+              </span>
+            </>
+          ) : null}
+        </>
+      );
+    }
+    function renderKorean() {
+      return (
+        <>
+          <UsernameText user={uploader} color={Color.blue()} />
+          님에게{' '}
+          {mission.xpReward ? (
+            <>
+              <span style={{ color: Color.logoGreen(), fontWeight: 'bold' }}>
+                {addCommasToNumber(mission.xpReward)}{' '}
+              </span>{' '}
+              <span style={{ color: Color.gold(), fontWeight: 'bold' }}>
+                XP
+              </span>
+            </>
+          ) : null}
+          {mission.xpReward && mission.coinReward ? <>와 </> : null}
+          {mission.coinReward ? (
+            <>
+              <Icon
+                style={{ color: Color.brownOrange(), fontWeight: 'bold' }}
+                icon={['far', 'badge-dollar']}
+              />{' '}
+              <span style={{ color: Color.brownOrange(), fontWeight: 'bold' }}>
+                {mission.coinReward}
+              </span>
+            </>
+          ) : null}
+          {mission.coinReward ? '이' : '가'} 지급됐습니다
+        </>
+      );
+    }
   }, [mission.coinReward, mission.xpReward, uploader]);
 
   return (
@@ -86,7 +130,7 @@ export default function MissionContent({ uploader, rootObj: mission }) {
           color: '#fff'
         }}
       >
-        {mission.isTask ? 'Task Complete' : 'Mission Accomplished'}
+        {mission.isTask ? taskCompleteLabel : missionAccomplishedLabel}
       </div>
       {rewardDetails}
     </div>

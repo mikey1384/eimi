@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Modal from 'components/Modal';
 import Button from 'components/Button';
@@ -30,13 +30,12 @@ export default function UserListModal({
 }) {
   const history = useHistory();
   const {
-    requestHelpers: { loadChat, loadDMChannel }
+    requestHelpers: { loadDMChannel }
   } = useAppContext();
-  const { userId, username } = useMyState();
   const {
-    state: { loaded },
-    actions: { onInitChat, onOpenDirectMessageChannel }
+    actions: { onOpenNewChatTab }
   } = useChatContext();
+  const { userId, username, profilePicUrl, authLevel } = useMyState();
   const allUsers = useMemo(() => {
     const otherUsers = users.filter((user) => user.id !== userId);
     let userArray = [];
@@ -45,6 +44,14 @@ export default function UserListModal({
     }
     return userArray.concat(otherUsers);
   }, [userId, users]);
+  const mounted = useRef(true);
+
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, []);
 
   return (
     <Modal small onHide={onHide}>
@@ -118,18 +125,21 @@ export default function UserListModal({
 
   async function handleTalkClick(user) {
     if (user.id !== userId) {
-      onHide();
-      if (!loaded) {
-        const initialData = await loadChat();
-        onInitChat(initialData);
+      const { pathId } = await loadDMChannel({ recepient: user });
+      if (mounted.current) {
+        if (!pathId) {
+          onOpenNewChatTab({
+            user: { username, id: userId, profilePicUrl, authLevel },
+            recepient: {
+              username: user.username,
+              id: user.id,
+              profilePicUrl: user.profilePicUrl,
+              authLevel: user.authLevel
+            }
+          });
+        }
+        history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
       }
-      const data = await loadDMChannel({ recepient: user });
-      onOpenDirectMessageChannel({
-        user: { id: userId, username },
-        recepient: user,
-        channelData: data
-      });
-      history.push('/chat');
     }
   }
 }

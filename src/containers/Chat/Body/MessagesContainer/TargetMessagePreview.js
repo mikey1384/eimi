@@ -4,19 +4,16 @@ import Icon from 'components/Icon';
 import ExtractedThumb from 'components/ExtractedThumb';
 import Image from 'components/Image';
 import FileIcon from 'components/FileIcon';
-import { useChatContext } from 'contexts';
 import { Color, borderRadius } from 'constants/css';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { cloudFrontURL } from 'constants/defaultValues';
 
 TargetMessagePreview.propTypes = {
-  onClose: PropTypes.func.isRequired
+  onClose: PropTypes.func.isRequired,
+  replyTarget: PropTypes.object
 };
 
-export default function TargetMessagePreview({ onClose }) {
-  const {
-    state: { replyTarget }
-  } = useChatContext();
+export default function TargetMessagePreview({ onClose, replyTarget }) {
   const fileType = useMemo(() => {
     return replyTarget.fileName
       ? getFileInfoFromFileName(replyTarget.fileName)?.fileType

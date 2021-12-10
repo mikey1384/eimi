@@ -9,6 +9,10 @@ import { container } from './Styles';
 import { defaultChatSubject } from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useNotiContext } from 'contexts';
+import localize from 'constants/localize';
+
+const newsLabel = localize('news');
+const rankingsLabel = localize('rankings');
 
 Notification.propTypes = {
   className: PropTypes.string,
@@ -131,7 +135,7 @@ function Notification({ className, location, style }) {
             flexDirection: 'column'
           }}
         >
-          {loaded && location === 'home' && (
+          {loaded && location === 'home' && false && (
             <ChatFeeds
               myId={userId}
               content={content}
@@ -160,7 +164,7 @@ function Notification({ className, location, style }) {
                   setActiveTab('notification');
                 }}
               >
-                News
+                {newsLabel}
               </nav>
               <nav
                 className={activeTab === 'rankings' ? 'active' : undefined}
@@ -169,7 +173,7 @@ function Notification({ className, location, style }) {
                   setActiveTab('rankings');
                 }}
               >
-                Rankings
+                {rankingsLabel}
               </nav>
               {rewardTabShown && (
                 <nav

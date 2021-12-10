@@ -9,10 +9,15 @@ import RewardItem from './RewardItem';
 import MyRank from 'components/MyRank';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Loading from 'components/Loading';
-import { REWARD_VALUE } from 'constants/defaultValues';
+import { REWARD_VALUE, SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useNotiContext } from 'contexts';
+import localize from 'constants/localize';
+
+const tapToCollectRewardsLabel = localize('tapToCollectRewards');
+const yourXPLabel = localize('yourXP');
+const yourTwinkleCoinsLabel = localize('yourTwinkleCoins');
 
 MainFeeds.propTypes = {
   loadingNotifications: PropTypes.bool.isRequired,
@@ -79,6 +84,12 @@ function MainFeeds({
     };
   }, []);
 
+  const twinkleLabel = useMemo(() => {
+    return SELECTED_LANGUAGE === 'kr'
+      ? `트윈클 ${totalTwinkles}개`
+      : `${totalTwinkles} Twinkle${totalTwinkles > 0 ? 's' : ''}`;
+  }, [totalTwinkles]);
+
   const totalRewardAmount = useMemo(
     () => totalRewardedTwinkles + totalRewardedTwinkleCoins,
     [totalRewardedTwinkleCoins, totalRewardedTwinkles]
@@ -119,11 +130,10 @@ function MainFeeds({
         >
           {totalRewardAmount > 0 && (
             <>
-              <p>Tap to collect all your rewards</p>
+              <p>{tapToCollectRewardsLabel}</p>
               {totalTwinkles > 0 && (
                 <p style={{ fontSize: '1.5rem' }}>
-                  * {totalTwinkles} Twinkle{totalTwinkles > 0 ? 's' : ''} (
-                  {totalTwinkles} * {REWARD_VALUE} ={' '}
+                  {twinkleLabel} ({totalTwinkles} * {REWARD_VALUE} ={' '}
                   {addCommasToNumber(totalTwinkles * REWARD_VALUE)} XP)
                 </p>
               )}
@@ -138,7 +148,7 @@ function MainFeeds({
           {totalRewardAmount === 0 && totalTwinkles > 0 && (
             <div style={{ fontSize: '1.7rem' }}>
               <p>
-                Your XP: {addCommasToNumber(originalTwinkleXP)} XP {'=>'}{' '}
+                {yourXPLabel}: {addCommasToNumber(originalTwinkleXP)} XP {'=>'}{' '}
                 {addCommasToNumber(
                   originalTwinkleXP + totalTwinkles * REWARD_VALUE
                 )}{' '}
@@ -157,8 +167,9 @@ function MainFeeds({
               }}
             >
               <p>
-                Your Twinkle Coins: {addCommasToNumber(originalTwinkleCoins)}{' '}
-                {'=>'} {addCommasToNumber(originalTwinkleCoins + totalCoins)}
+                {yourTwinkleCoinsLabel}:{' '}
+                {addCommasToNumber(originalTwinkleCoins)} {'=>'}{' '}
+                {addCommasToNumber(originalTwinkleCoins + totalCoins)}
               </p>
               <p style={{ fontSize: '1.5rem' }}>
                 (+ {addCommasToNumber(totalCoins)})

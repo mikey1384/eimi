@@ -1,10 +1,22 @@
+import localize from './localize';
+
+const enterCommentLabel = localize('enterComment');
+const enterDescriptionLabel = localize('enterDescription');
+const optionalLabel = localize('optional');
+const enterHeadingLabel = localize('enterHeading');
+const enterTitleLabel = localize('enterTitle');
+const enterUrlLabel = localize('enterUrl');
+const enterSecretMessageLabel = localize('enterSecretMessage');
+const enterSubjectLabel = localize('enterSubject');
+const enterYoutubeUrlLabel = localize('enterYoutubeUrl');
+
 export const edit = {
-  comment: 'Enter Comment...',
-  description: 'Enter Description... (Optional)',
-  heading: 'Enter Heading... (Optional)',
-  title: 'Enter Title...',
-  url: 'Enter URL...',
-  secretAnswer: 'Enter Secret Message...',
-  subject: 'Enter Subject...',
-  video: 'Enter YouTube URL...'
+  comment: `${enterCommentLabel}...`,
+  description: `${enterDescriptionLabel}... ${optionalLabel}`,
+  heading: `${enterHeadingLabel}... ${optionalLabel}`,
+  title: `${enterTitleLabel}...`,
+  url: `${enterUrlLabel}...`,
+  secretAnswer: `${enterSecretMessageLabel}...`,
+  subject: `${enterSubjectLabel}...`,
+  video: `${enterYoutubeUrlLabel}...`
 };

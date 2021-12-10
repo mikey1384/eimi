@@ -7,6 +7,7 @@ import { borderRadius, Color } from 'constants/css';
 
 StartScreen.propTypes = {
   isRepeating: PropTypes.bool,
+  loading: PropTypes.bool,
   mission: PropTypes.object.isRequired,
   myAttempts: PropTypes.object.isRequired,
   onInitMission: PropTypes.func.isRequired,
@@ -15,6 +16,7 @@ StartScreen.propTypes = {
 
 export default function StartScreen({
   isRepeating,
+  loading,
   mission,
   myAttempts,
   onInitMission,
@@ -125,6 +127,7 @@ export default function StartScreen({
         <Button
           color="green"
           filled
+          disabled={loading}
           style={{ fontSize: '2.3rem' }}
           onClick={onStartButtonClick}
         >

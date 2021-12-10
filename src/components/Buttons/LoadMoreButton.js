@@ -4,6 +4,10 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const loadMoreLabel = localize('loadMore');
+const loadingLabel = localize('loading');
 
 LoadMoreButton.propTypes = {
   label: PropTypes.string,
@@ -24,7 +28,7 @@ export default function LoadMoreButton({ label, loading, ...props }) {
         `}
       >
         <Button disabled={!!loading} {...props}>
-          {loading ? 'Loading' : label || 'Load More'}
+          {loading ? loadingLabel : label || loadMoreLabel}
           {loading && (
             <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
           )}

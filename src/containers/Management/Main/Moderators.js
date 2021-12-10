@@ -10,14 +10,24 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { useManagementContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { isMobile } from 'helpers';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import Icon from 'components/Icon';
+import localize from 'constants/localize';
+
+const accountTypeLabel = localize('accountType');
+const changeAccountTypeLabel = localize('changeAccountType');
+const moderatorsLabel = localize('moderators');
+const nowLabel = localize('now');
+const noModeratorsLabel = localize('noModerators');
+const onlineLabel = localize('online');
+const searchModeratorsLabel = localize('searchModerators');
+const userLabel = localize('user');
+const deviceIsMobile = isMobile(navigator);
 
 Moderators.propTypes = {
   canManage: PropTypes.bool.isRequired
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function Moderators({ canManage }) {
   const { userId, profileTheme } = useMyState();
@@ -35,14 +45,20 @@ export default function Moderators({ canManage }) {
         : moderator
     );
   }, [moderators, searchQuery]);
+  const addLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>{deviceIsMobile ? '' : '관리자 '}등록</>;
+    }
+    return <>Add{deviceIsMobile ? '' : ' Moderators'}</>;
+  }, []);
 
   return (
     <ErrorBoundary>
       <SectionPanel
-        title="Moderators"
+        title={moderatorsLabel}
         isEmpty={moderators.length === 0}
-        emptyMessage="No Moderators"
-        searchPlaceholder="Search Moderators"
+        emptyMessage={noModeratorsLabel}
+        searchPlaceholder={searchModeratorsLabel}
         onSearch={setSearchQuery}
         searchQuery={searchQuery}
         loaded={moderatorsLoaded}
@@ -55,9 +71,7 @@ export default function Moderators({ canManage }) {
               onClick={() => setAddModeratorModalShown(true)}
             >
               <Icon icon="plus" />
-              <span style={{ marginLeft: '0.7rem' }}>
-                Add{deviceIsMobile ? '' : ' Moderators'}
-              </span>
+              <span style={{ marginLeft: '0.7rem' }}>{addLabel}</span>
             </Button>
           ) : null
         }
@@ -73,9 +87,9 @@ export default function Moderators({ canManage }) {
         >
           <thead>
             <tr>
-              <th>User</th>
-              <th>Online</th>
-              <th>Account Type</th>
+              <th>{userLabel}</th>
+              <th>{onlineLabel}</th>
+              <th>{accountTypeLabel}</th>
               {canManage && <th></th>}
             </tr>
           </thead>
@@ -95,7 +109,7 @@ export default function Moderators({ canManage }) {
                   </td>
                   <td>
                     {userId === moderator.id || moderator.online
-                      ? 'now'
+                      ? nowLabel
                       : timeSince(moderator.lastActive)}
                   </td>
                   <td
@@ -108,7 +122,7 @@ export default function Moderators({ canManage }) {
                   </td>
                   {canManage && (
                     <td style={{ display: 'flex', justifyContent: 'center' }}>
-                      <a>Change Account Type</a>
+                      <a>{changeAccountTypeLabel}</a>
                     </td>
                   )}
                 </tr>

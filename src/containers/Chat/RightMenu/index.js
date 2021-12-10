@@ -1,11 +1,10 @@
-import React, { memo, useCallback, useRef, useEffect } from 'react';
+import React, { memo, useContext, useCallback, useRef, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import ChatInfo from './ChatInfo';
 import VocabInfo from './VocabInfo';
-import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
 import { Color, phoneMaxWidth } from 'constants/css';
-import { useAppContext, useChatContext, useNotiContext } from 'contexts';
+import LocalContext from '../Context';
 
 RightMenu.propTypes = {
   channelName: PropTypes.string,
@@ -23,15 +22,11 @@ function RightMenu({
   selectedChannelId
 }) {
   const {
-    requestHelpers: { loadRankings }
-  } = useAppContext();
-  const { userId, twinkleXP } = useMyState();
-  const {
+    actions: { onGetRanks },
+    myState: { userId, twinkleXP },
+    requests: { loadRankings },
     state: { chatType }
-  } = useChatContext();
-  const {
-    actions: { onGetRanks }
-  } = useNotiContext();
+  } = useContext(LocalContext);
   const MenuRef = useRef(null);
   const prevTwinkleXP = useRef(twinkleXP);
 

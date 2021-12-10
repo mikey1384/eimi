@@ -94,4 +94,7 @@ export const container = css`
       }
     }
   }
+  @media (min-width: 2304px) {
+    border-left: 1px solid ${Color.borderGray()};
+  }
 `;

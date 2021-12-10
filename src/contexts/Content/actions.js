@@ -368,14 +368,6 @@ export default function ContentActions(dispatch) {
         contentType
       });
     },
-    onSetChatInvitationDetail({ messageId, detail }) {
-      return dispatch({
-        type: 'SET_CHAT_INVITATION_DETAIL',
-        contentId: messageId,
-        contentType: 'chat',
-        detail
-      });
-    },
     onSetCommentFileUploadComplete({ contentId, contentType }) {
       return dispatch({
         type: 'SET_COMMENT_FILE_UPLOAD_COMPLETE',

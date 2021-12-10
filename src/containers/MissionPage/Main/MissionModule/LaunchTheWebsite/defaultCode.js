@@ -10,7 +10,7 @@ const defaultCode = ({ username }) => `function HomePage() {
       }}
     >
       <h1 style={{ fontFamily: 'fantasy', color: '#4b9be1' }}>
-        ${username}'s website
+        ${'{`' + `${username}'s website` + '`}'}
       </h1>
       <h2
         style={{

@@ -1,6 +1,7 @@
 import React, {
   memo,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -32,62 +33,38 @@ import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { css } from '@emotion/css';
 import { Color } from 'constants/css';
 import { socket } from 'constants/io';
-import { useMyState } from 'helpers/hooks';
-import { useAppContext, useChatContext, useNotiContext } from 'contexts';
-import { checkScrollIsAtTheBottom, isMobile } from 'helpers';
+import { isMobile } from 'helpers';
+import { useHistory } from 'react-router-dom';
+import LocalContext from '../../Context';
+import localize from 'constants/localize';
+
+const CALL_SCREEN_HEIGHT = '30%';
+const unseenButtonThreshold = -1;
+const deviceIsMobile = isMobile(navigator);
+const addToFavoritesLabel = localize('addToFavorites');
+const editGroupNameLabel = localize('editGroupName');
+const hideLabel = localize('hide');
+const invitePeopleLabel = localize('invitePeople');
+const leaveChatGroupLabel = localize('leaveChatGroup');
+const leaveLabel = localize('leave');
+const menuLabel = deviceIsMobile ? '' : localize('menu');
+const settingsLabel = localize('settings');
 
 MessagesContainer.propTypes = {
   channelName: PropTypes.string,
   chessOpponent: PropTypes.object,
   currentChannel: PropTypes.object.isRequired,
-  onChannelEnter: PropTypes.func
+  loading: PropTypes.bool
 };
-
-const CALL_SCREEN_HEIGHT = '30%';
-const deviceIsMobile = isMobile(navigator);
 
 function MessagesContainer({
   channelName,
   chessOpponent,
   currentChannel,
-  onChannelEnter
+  loading: channelLoading
 }) {
+  const history = useHistory();
   const {
-    requestHelpers: {
-      acceptInvitation,
-      changeChannelOwner,
-      deleteChatMessage,
-      editChannelSettings,
-      hideChat,
-      leaveChannel,
-      loadChatChannel,
-      loadMoreChatMessages,
-      putFavoriteChannel,
-      sendInvitationMessage,
-      startNewDMChannel,
-      updateUserXP
-    }
-  } = useAppContext();
-  const {
-    state: { socketConnected }
-  } = useNotiContext();
-  const {
-    state: {
-      channelOnCall,
-      channelLoading,
-      chessModalShown,
-      creatingNewDMChannel,
-      allFavoriteChannelIds,
-      isRespondingToSubject,
-      messagesLoadMoreButton,
-      messages,
-      messagesLoaded,
-      recepientId,
-      reconnecting,
-      replyTarget,
-      selectedChannelId,
-      subjectObj
-    },
     actions: {
       onDeleteMessage,
       onEditChannelSettings,
@@ -95,18 +72,52 @@ function MessagesContainer({
       onHideChat,
       onLeaveChannel,
       onLoadMoreMessages,
-      onChannelLoadingDone,
+      onReceiveMessageOnDifferentChannel,
       onSendFirstDirectMessage,
       onSetChessModalShown,
       onSetCreatingNewDMChannel,
       onSetFavoriteChannel,
       onSetReplyTarget,
       onSubmitMessage,
-      onUpdateSelectedChannelId,
-      onUpdateLastMessages
+      onUpdateChannelPathIdHash
+    },
+    myState: { banned, profilePicUrl, userId, username },
+    requests: {
+      acceptInvitation,
+      changeChannelOwner,
+      deleteChatMessage,
+      editChannelSettings,
+      hideChat,
+      leaveChannel,
+      loadChatChannel,
+      loadGeneralChatPathId,
+      loadMoreChatMessages,
+      parseChannelPath,
+      putFavoriteChannel,
+      sendInvitationMessage,
+      startNewDMChannel,
+      updateUserXP
+    },
+    state: {
+      allFavoriteChannelIds,
+      channelPathIdHash,
+      channelOnCall,
+      chessModalShown,
+      creatingNewDMChannel,
+      recepientId,
+      reconnecting,
+      selectedChannelId,
+      socketConnected,
+      subjectObj
     }
-  } = useChatContext();
-  const { banned, profilePicUrl, userId, username } = useMyState();
+  } = useContext(LocalContext);
+  const {
+    isRespondingToSubject = false,
+    messageIds = [],
+    messagesObj = {},
+    messagesLoadMoreButton = false
+  } = currentChannel;
+  const scrolledToBottomRef = useRef(true);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
@@ -128,21 +139,22 @@ function MessagesContainer({
   });
   const [settingsModalShown, setSettingsModalShown] = useState(false);
   const [leaveConfirmModalShown, setLeaveConfirmModalShown] = useState(false);
-  const [scrollAtBottom, setScrollAtBottom] = useState(true);
   const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] =
     useState(false);
-  const [placeholderHeight, setPlaceholderHeight] = useState(0);
   const [hideModalShown, setHideModalShown] = useState(false);
   const [addToFavoritesShown, setAddToFavoritesShown] = useState(false);
-
-  const ContentRef = useRef(null);
   const MessagesRef = useRef(null);
   const mounted = useRef(true);
-  const MessagesContainerRef = useRef({});
   const ChatInputRef = useRef(null);
   const favoritingRef = useRef(false);
   const timerRef = useRef(null);
-  const menuLabel = deviceIsMobile ? '' : 'Menu';
+  const prevChannelId = useRef(null);
+  const prevTopMessageId = useRef(null);
+  const prevScrollPosition = useRef(null);
+  const messages = useMemo(
+    () => messageIds.map((messageId) => messagesObj[messageId] || {}),
+    [messageIds, messagesObj]
+  );
 
   const favorited = useMemo(() => {
     return allFavoriteChannelIds[selectedChannelId];
@@ -167,7 +179,7 @@ function MessagesContainer({
 
   useEffect(() => {
     if (selectedChannelId === channelOnCall.id) {
-      handleSetScrollToBottom();
+      handleScrollToBottom();
     }
   }, [channelOnCall, selectedChannelId]);
 
@@ -179,14 +191,14 @@ function MessagesContainer({
     }${
       socketConnected && isRespondingToSubject
         ? ' - 8rem - 2px'
-        : replyTarget
+        : currentChannel.replyTarget
         ? ' - 12rem - 2px'
         : ''
     }
     ${selectedChannelIsOnCall ? ` - ${CALL_SCREEN_HEIGHT}` : ''})`;
   }, [
     isRespondingToSubject,
-    replyTarget,
+    currentChannel.replyTarget,
     selectedChannelIsOnCall,
     socketConnected,
     textAreaHeight
@@ -197,6 +209,11 @@ function MessagesContainer({
     [channelLoading, creatingNewDMChannel, reconnecting]
   );
 
+  const chessCountdownNumber = useMemo(
+    () => chessCountdownObj[selectedChannelId],
+    [chessCountdownObj, selectedChannelId]
+  );
+
   const menuProps = useMemo(() => {
     if (currentChannel.twoPeople) {
       return [
@@ -204,7 +221,7 @@ function MessagesContainer({
           label: (
             <>
               <Icon icon="minus" />
-              <span style={{ marginLeft: '1rem' }}>Hide</span>
+              <span style={{ marginLeft: '1rem' }}>{hideLabel}</span>
             </>
           ),
           onClick: () => setHideModalShown(true)
@@ -217,7 +234,7 @@ function MessagesContainer({
         label: (
           <>
             <Icon icon="users" />
-            <span style={{ marginLeft: '1rem' }}>Invite People</span>
+            <span style={{ marginLeft: '1rem' }}>{invitePeopleLabel}</span>
           </>
         ),
         onClick: () => setInviteUsersModalShown(true)
@@ -229,12 +246,12 @@ function MessagesContainer({
           currentChannel.creatorId === userId ? (
             <>
               <Icon icon="sliders-h" />
-              <span style={{ marginLeft: '1rem' }}>Settings</span>
+              <span style={{ marginLeft: '1rem' }}>{settingsLabel}</span>
             </>
           ) : (
             <>
               <Icon icon="pencil-alt" />
-              <span style={{ marginLeft: '1rem' }}>Edit Group Name</span>
+              <span style={{ marginLeft: '1rem' }}>{editGroupNameLabel}</span>
             </>
           ),
         onClick: () => setSettingsModalShown(true)
@@ -246,7 +263,7 @@ function MessagesContainer({
         label: (
           <>
             <Icon icon="sign-out-alt" />
-            <span style={{ marginLeft: '1rem' }}>Leave</span>
+            <span style={{ marginLeft: '1rem' }}>{leaveLabel}</span>
           </>
         ),
         onClick: () => setLeaveConfirmModalShown(true)
@@ -269,20 +286,27 @@ function MessagesContainer({
   }, [currentChannel.canChangeSubject, selectedChannelId]);
 
   useEffect(() => {
-    setTimeout(() => {
-      if (mounted.current) {
-        setPlaceholderHeight(
-          `CALC(100vh - 10rem - ${MessagesRef.current?.offsetHeight || 0}px)`
-        );
-        if (
-          MessagesRef.current?.offsetHeight <
-          MessagesContainerRef.current?.offsetHeight + 30
-        ) {
-          handleSetScrollToBottom();
-        }
-      }
-    }, 0);
-  }, [loading, messages]);
+    handleScrollToBottom();
+    prevChannelId.current = selectedChannelId;
+    prevTopMessageId.current = null;
+  }, [selectedChannelId]);
+
+  useEffect(() => {
+    const topMessageId = messageIds[messageIds.length - 1];
+    if (
+      prevChannelId.current === selectedChannelId &&
+      prevTopMessageId.current &&
+      topMessageId !== prevTopMessageId.current
+    ) {
+      (MessagesRef.current || {}).scrollTop = prevScrollPosition.current;
+      (MessagesRef.current || {}).scrollTop = prevScrollPosition.current + 1000;
+      (MessagesRef.current || {}).scrollTop = prevScrollPosition.current;
+    }
+    if (messageIds.length > 1) {
+      // prevent scroll event from being triggered by a preview message
+      prevTopMessageId.current = topMessageId;
+    }
+  }, [messageIds, selectedChannelId]);
 
   useEffect(() => {
     socket.on('chess_countdown_number_received', onReceiveCountdownNumber);
@@ -318,7 +342,7 @@ function MessagesContainer({
   });
 
   useEffect(() => {
-    const MessagesContainer = MessagesContainerRef.current;
+    const MessagesContainer = MessagesRef.current;
     addEvent(MessagesContainer, 'scroll', handleScroll);
 
     return function cleanUp() {
@@ -328,26 +352,22 @@ function MessagesContainer({
     function handleScroll() {
       clearTimeout(timerRef.current);
       timerRef.current = setTimeout(() => {
-        if (mounted.current && MessagesContainerRef.current?.scrollTop === 0) {
+        scrolledToBottomRef.current =
+          (MessagesRef.current || {}).scrollTop >= unseenButtonThreshold;
+        const scrollThreshold =
+          (MessagesRef.current || {}).scrollHeight -
+          (MessagesRef.current || {}).offsetHeight;
+        const scrollTop = (MessagesRef.current || {}).scrollTop;
+        const distanceFromTop = scrollThreshold + scrollTop;
+        if (mounted.current && distanceFromTop < 3) {
           handleLoadMore();
         }
-      }, 200);
+        if (mounted.current && scrollTop >= unseenButtonThreshold) {
+          setNewUnseenMessage(false);
+        }
+      }, 100);
     }
   });
-
-  useEffect(() => {
-    if (messagesLoaded && mounted.current) {
-      setTimeout(() => {
-        if (mounted.current && MessagesContainerRef.current) {
-          MessagesContainerRef.current.scrollTop =
-            ContentRef.current?.offsetHeight || 0;
-        }
-        onChannelLoadingDone();
-      }, 0);
-      setScrollAtBottom(true);
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [messagesLoaded, reconnecting]);
 
   useEffect(() => {
     favoritingRef.current = false;
@@ -360,7 +380,7 @@ function MessagesContainer({
     }
     const channelId = currentChannel?.id;
     if (chessCountdownObj[channelId] !== 0) {
-      onSetReplyTarget(null);
+      onSetReplyTarget({ channelId, target: null });
       onSetChessModalShown(true);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -404,7 +424,9 @@ function MessagesContainer({
       const content = 'Made a chess move';
       try {
         if (selectedChannelId) {
+          const messageId = uuidv1();
           onSubmitMessage({
+            messageId,
             message: {
               ...params,
               profilePicUrl,
@@ -413,20 +435,31 @@ function MessagesContainer({
               channelId: selectedChannelId
             }
           });
-          onSetReplyTarget(null);
+          onSetReplyTarget({ channelId: selectedChannelId, target: null });
           socket.emit('user_made_a_move', {
             userId,
             channelId: selectedChannelId
           });
         } else {
-          const { channel, message } = await startNewDMChannel({
-            ...params,
-            content,
-            recepientId
-          });
+          const { alreadyExists, channel, message, pathId } =
+            await startNewDMChannel({
+              ...params,
+              content,
+              recepientId
+            });
+          if (alreadyExists) {
+            return window.location.reload();
+          }
           socket.emit('join_chat_group', message.channelId);
-          socket.emit('send_bi_chat_invitation', recepientId, message);
+          socket.emit('send_bi_chat_invitation', {
+            userId: recepientId,
+            members: currentChannel.members,
+            pathId,
+            message
+          });
+          onUpdateChannelPathIdHash({ channelId: channel.id, pathId });
           onSendFirstDirectMessage({ channel, message });
+          history.replace(`/chat/${pathId}`);
           return;
         }
       } catch (error) {
@@ -440,7 +473,7 @@ function MessagesContainer({
   const handleDelete = useCallback(async () => {
     const { fileName, filePath, messageId } = deleteModal;
     await deleteChatMessage({ fileName, filePath, messageId });
-    onDeleteMessage(messageId);
+    onDeleteMessage({ channelId: selectedChannelId, messageId });
     setDeleteModal({
       shown: false,
       fileName: '',
@@ -493,20 +526,17 @@ function MessagesContainer({
   const handleInviteUsersDone = useCallback(
     async ({ users, message, isClass }) => {
       if (isClass) {
+        const channelData = {
+          id: selectedChannelId,
+          channelName,
+          pathId: currentChannel.pathId
+        };
         socket.emit('new_chat_message', {
           message: {
             ...message,
             channelId: message.channelId
           },
-          channel: {
-            ...currentChannel,
-            numUnreads: 1,
-            lastMessage: {
-              content: message.content,
-              sender: { id: userId, username }
-            },
-            channelName
-          },
+          channel: channelData,
           newMembers: users
         });
         socket.emit(
@@ -514,25 +544,31 @@ function MessagesContainer({
           users.map((user) => user.id),
           {
             message: { ...message, messageId: message.id },
-            isClass
+            isClass,
+            pathId: currentChannel.pathId
           }
         );
       } else {
         const recepientIds = users.map((user) => user.id);
-        const { invitationMessage, channels } = await sendInvitationMessage({
+        const { channels, messages } = await sendInvitationMessage({
           recepients: recepientIds,
           origin: currentChannel.id
         });
-
-        onUpdateLastMessages({
-          channels,
-          message: invitationMessage,
-          sender: { id: userId, username }
-        });
+        for (let i = 0; i < channels.length; i++) {
+          onReceiveMessageOnDifferentChannel({
+            message: messages[i],
+            channel: channels[i].channel,
+            pageVisible: true,
+            usingChat: true,
+            isMyMessage: true
+          });
+        }
       }
       setInviteUsersModalShown(false);
       if (!isClass) {
+        const messageId = uuidv1();
         onSubmitMessage({
+          messageId,
           message: {
             channelId: selectedChannelId,
             userId,
@@ -572,8 +608,8 @@ function MessagesContainer({
           username,
           profilePicUrl
         });
-        const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
-        onEnterChannelWithId({ data });
+        const pathId = await loadGeneralChatPathId();
+        history.push(`/chat/${pathId}`);
         setLeaveConfirmModalShown(false);
         setLeaving(false);
       } catch (error) {
@@ -604,23 +640,21 @@ function MessagesContainer({
 
   const handleLoadMore = useCallback(async () => {
     if (messagesLoadMoreButton) {
-      const messageId = messages[0].id;
-      const prevContentHeight = ContentRef.current?.offsetHeight || 0;
+      const messageId = messages[messages.length - 1].id;
       if (!loadMoreButtonLock) {
         setLoadMoreButtonLock(true);
+        prevScrollPosition.current =
+          ((MessagesRef.current || {}).scrollHeight -
+            (MessagesRef.current || {}).offsetHeight) *
+          -1;
         try {
-          const { messages, loadedChannelId } = await loadMoreChatMessages({
-            userId,
-            messageId,
-            channelId: selectedChannelId
-          });
-          onLoadMoreMessages({ messages, loadedChannelId });
-          if (MessagesContainerRef.current) {
-            MessagesContainerRef.current.scrollTop = Math.max(
-              MessagesContainerRef.current.scrollTop,
-              (ContentRef.current?.offsetHeight || 0) - prevContentHeight
-            );
-          }
+          const { messageIds, messagesObj, loadedChannelId } =
+            await loadMoreChatMessages({
+              userId,
+              messageId,
+              channelId: selectedChannelId
+            });
+          onLoadMoreMessages({ messageIds, messagesObj, loadedChannelId });
           setLoadMoreButtonLock(false);
         } catch (error) {
           console.error(error);
@@ -638,19 +672,31 @@ function MessagesContainer({
   ]);
 
   const handleAcceptGroupInvitation = useCallback(
-    async (invitationChannelId) => {
-      onUpdateSelectedChannelId(invitationChannelId);
-      const { channel, messages, joinMessage } = await acceptInvitation(
+    async (invitationChannelPath) => {
+      const invitationChannelId =
+        channelPathIdHash[invitationChannelPath] ||
+        (await parseChannelPath(invitationChannelPath));
+      if (!channelPathIdHash[invitationChannelPath]) {
+        onUpdateChannelPathIdHash({
+          channelId: invitationChannelId,
+          pathId: invitationChannelPath
+        });
+      }
+      const { channel, joinMessage } = await acceptInvitation(
         invitationChannelId
       );
       if (channel.id === invitationChannelId) {
         socket.emit('join_chat_group', channel.id);
-        onEnterChannelWithId({ data: { channel, messages }, showOnTop: true });
         socket.emit('new_chat_message', {
           message: joinMessage,
-          channel,
+          channel: {
+            id: channel.id,
+            channelName: channel.channelName,
+            pathId: channel.pathId
+          },
           newMembers: [{ id: userId, username, profilePicUrl }]
         });
+        history.push(`/chat/${invitationChannelPath}`);
       }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -680,15 +726,26 @@ function MessagesContainer({
         if (creatingNewDMChannel) return;
         onSetCreatingNewDMChannel(true);
         try {
-          const { channel, message } = await startNewDMChannel({
-            content,
-            userId,
-            recepientId
-          });
+          const { alreadyExists, channel, message, pathId } =
+            await startNewDMChannel({
+              content,
+              userId,
+              recepientId
+            });
+          if (alreadyExists) {
+            return window.location.reload();
+          }
           socket.emit('join_chat_group', message.channelId);
-          socket.emit('send_bi_chat_invitation', recepientId, message);
+          socket.emit('send_bi_chat_invitation', {
+            userId: recepientId,
+            members: currentChannel.members,
+            pathId,
+            message
+          });
+          onUpdateChannelPathIdHash({ channelId: channel.id, pathId });
           onSendFirstDirectMessage({ channel, message });
           onSetCreatingNewDMChannel(false);
+          history.replace(`/chat/${pathId}`);
           return Promise.resolve();
         } catch (error) {
           return Promise.reject(error);
@@ -702,14 +759,16 @@ function MessagesContainer({
         channelId: selectedChannelId,
         subjectId: isRespondingToSubject ? subjectId : null
       };
+      const messageId = uuidv1();
       onSubmitMessage({
+        messageId,
         message,
         replyTarget: target,
         rewardReason,
         rewardAmount,
         isRespondingToSubject
       });
-      onSetReplyTarget(null);
+      onSetReplyTarget({ channelId: selectedChannelId, target: null });
       return Promise.resolve();
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -818,7 +877,7 @@ function MessagesContainer({
               direction="left"
               className="desktop"
               show={addToFavoritesShown && !favorited}
-              text="Add to favorites"
+              text={addToFavoritesLabel}
               style={{
                 marginTop: '0.5rem',
                 fontSize: '1.3rem',
@@ -839,103 +898,13 @@ function MessagesContainer({
           display: flex;
           flex-direction: column;
           width: 100%;
+          height: 100%;
           position: relative;
-          -webkit-overflow-scrolling: touch;
         `}
         style={{
           height: containerHeight
         }}
       >
-        {loading && <Loading />}
-        <div
-          ref={MessagesContainerRef}
-          style={{
-            position: 'absolute',
-            left: '1rem',
-            right: '0',
-            bottom: '0',
-            opacity: loading ? 0 : 1,
-            top: channelHeaderShown ? '7rem' : 0,
-            overflowY: 'scroll'
-          }}
-          onScroll={() => {
-            if (
-              checkScrollIsAtTheBottom({
-                content: ContentRef.current,
-                container: MessagesContainerRef.current
-              })
-            ) {
-              setScrollAtBottom(true);
-              setNewUnseenMessage(false);
-            } else {
-              setScrollAtBottom(false);
-            }
-          }}
-        >
-          <div ref={ContentRef} style={{ width: '100%' }}>
-            {!loading && messagesLoadMoreButton ? (
-              <div
-                style={{
-                  marginTop: '1rem',
-                  marginBottom: '1rem',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  width: '100%'
-                }}
-              >
-                <LoadMoreButton
-                  filled
-                  color="lightBlue"
-                  loading={loadMoreButtonLock}
-                  onClick={handleLoadMore}
-                />
-              </div>
-            ) : (
-              <div
-                style={{
-                  minHeight: placeholderHeight
-                }}
-              />
-            )}
-            <div ref={MessagesRef}>
-              {messages.map((message, index) => (
-                <Message
-                  key={selectedChannelId + (message.id || 'newMessage' + index)}
-                  zIndex={messages.length - index}
-                  channelId={selectedChannelId}
-                  channelName={channelName}
-                  chessCountdownNumber={chessCountdownObj[selectedChannelId]}
-                  chessOpponent={chessOpponent}
-                  checkScrollIsAtTheBottom={() =>
-                    checkScrollIsAtTheBottom({
-                      content: ContentRef.current,
-                      container: MessagesContainerRef.current
-                    })
-                  }
-                  currentChannel={currentChannel}
-                  index={index}
-                  isLastMsg={index === messages.length - 1}
-                  isNotification={!!message.isNotification}
-                  loading={loading}
-                  message={message}
-                  onAcceptGroupInvitation={handleAcceptGroupInvitation}
-                  onChannelEnter={onChannelEnter}
-                  onChessBoardClick={handleChessModalShown}
-                  onChessSpoilerClick={handleChessSpoilerClick}
-                  onDelete={handleShowDeleteModal}
-                  onReceiveNewMessage={handleReceiveNewMessage}
-                  onReplyClick={() => ChatInputRef.current.focus()}
-                  onRewardMessageSubmit={handleRewardMessageSubmit}
-                  onSetScrollToBottom={handleSetScrollToBottom}
-                  recepientId={recepientId}
-                  onShowSubjectMsgsModal={({ subjectId, content }) =>
-                    setSubjectMsgsModal({ shown: true, subjectId, content })
-                  }
-                />
-              ))}
-            </div>
-          </div>
-        </div>
         {!loading && channelHeaderShown && (
           <ChannelHeader
             currentChannel={currentChannel}
@@ -948,59 +917,124 @@ function MessagesContainer({
           />
         )}
         <div
-          style={{
-            position: 'absolute',
-            bottom: '1rem',
-            display: 'flex',
-            justifyContent: 'center',
-            width: '100%',
-            zIndex: 1000
-          }}
+          className={css`
+            padding: 0 1rem;
+            height: 100%;
+            display: flex;
+            flex-direction: column-reverse;
+            overflow-y: scroll;
+            -webkit-overflow-scrolling: touch;
+          `}
+          ref={MessagesRef}
         >
-          {newUnseenMessage && (
-            <Button
-              filled
-              color="orange"
-              style={{ opacity: 0.9 }}
-              onClick={() => {
-                setNewUnseenMessage(false);
-                handleSetScrollToBottom();
-              }}
-            >
-              New Message
-            </Button>
+          {loading ? (
+            <Loading style={{ position: 'absolute', top: '5rem' }} />
+          ) : (
+            <>
+              <div
+                style={{
+                  position: 'absolute',
+                  bottom: '1rem',
+                  display: 'flex',
+                  justifyContent: 'center',
+                  width: '100%',
+                  zIndex: 1000
+                }}
+              >
+                {newUnseenMessage && (
+                  <Button
+                    filled
+                    color="orange"
+                    style={{ opacity: 0.9 }}
+                    onClick={() => {
+                      setNewUnseenMessage(false);
+                      handleScrollToBottom();
+                    }}
+                  >
+                    New Message
+                  </Button>
+                )}
+              </div>
+              {messages.map((message, index) => (
+                <Message
+                  key={messageIds[index]}
+                  channelId={selectedChannelId}
+                  channelName={channelName}
+                  chessCountdownNumber={chessCountdownNumber}
+                  chessOpponent={chessOpponent}
+                  currentChannel={currentChannel}
+                  index={index}
+                  isLastMsg={index === 0}
+                  isNotification={!!message.isNotification}
+                  loading={loading}
+                  message={message}
+                  onAcceptGroupInvitation={handleAcceptGroupInvitation}
+                  onChessBoardClick={handleChessModalShown}
+                  onChessSpoilerClick={handleChessSpoilerClick}
+                  onDelete={handleShowDeleteModal}
+                  onReceiveNewMessage={handleReceiveNewMessage}
+                  onReplyClick={() => ChatInputRef.current.focus()}
+                  onRewardMessageSubmit={handleRewardMessageSubmit}
+                  onScrollToBottom={handleScrollToBottom}
+                  recepientId={recepientId}
+                  onShowSubjectMsgsModal={({ subjectId, content }) =>
+                    setSubjectMsgsModal({ shown: true, subjectId, content })
+                  }
+                />
+              ))}
+              {!loading && messagesLoadMoreButton && (
+                <div>
+                  <div style={{ width: '100%', height: '1rem' }} />
+                  <div
+                    style={{
+                      marginBottom: '1rem',
+                      display: 'flex',
+                      justifyContent: 'center',
+                      width: '100%'
+                    }}
+                  >
+                    <LoadMoreButton
+                      filled
+                      color="lightBlue"
+                      loading={loadMoreButtonLock}
+                      onClick={handleLoadMore}
+                    />
+                  </div>
+                </div>
+              )}
+            </>
           )}
         </div>
-        {hideModalShown && (
-          <ConfirmModal
-            onHide={() => setHideModalShown(false)}
-            title="Hide Chat"
-            onConfirm={handleHideChat}
-          />
-        )}
-        {deleteModal.shown && (
-          <ConfirmModal
-            onHide={() =>
-              setDeleteModal({ shown: false, filePath: '', messageId: null })
-            }
-            title="Remove Message"
-            onConfirm={handleDelete}
-          />
-        )}
-        {subjectMsgsModal.shown && (
-          <SubjectMsgsModal
-            subjectId={subjectMsgsModal.subjectId}
-            subjectTitle={subjectMsgsModal.content}
-            onHide={() =>
-              setSubjectMsgsModal({
-                shown: false,
-                subjectId: null,
-                content: ''
-              })
-            }
-          />
-        )}
       </div>
+      {hideModalShown && (
+        <ConfirmModal
+          onHide={() => setHideModalShown(false)}
+          title="Hide Chat"
+          onConfirm={handleHideChat}
+        />
+      )}
+      {deleteModal.shown && (
+        <ConfirmModal
+          onHide={() =>
+            setDeleteModal({ shown: false, filePath: '', messageId: null })
+          }
+          title="Remove Message"
+          onConfirm={handleDelete}
+        />
+      )}
+      {subjectMsgsModal.shown && (
+        <SubjectMsgsModal
+          subjectId={subjectMsgsModal.subjectId}
+          subjectTitle={subjectMsgsModal.content}
+          onHide={() =>
+            setSubjectMsgsModal({
+              shown: false,
+              subjectId: null,
+              content: ''
+            })
+          }
+        />
+      )}
       <div
         style={{
           background: Color.inputGray(),
@@ -1013,12 +1047,13 @@ function MessagesContainer({
           loading={loading}
           socketConnected={socketConnected}
           myId={userId}
+          isRespondingToSubject={currentChannel.isRespondingToSubject}
           isTwoPeopleChannel={currentChannel.twoPeople}
           currentChannelId={selectedChannelId}
           currentChannel={currentChannel}
           onChessButtonClick={handleChessModalShown}
           onMessageSubmit={(content) =>
-            handleMessageSubmit({ content, target: replyTarget })
+            handleMessageSubmit({ content, target: currentChannel.replyTarget })
           }
           onHeightChange={(height) => {
             if (height !== textAreaHeight) {
@@ -1028,6 +1063,7 @@ function MessagesContainer({
           onSelectGifButtonClick={() => setGifModalShown(true)}
           onSelectVideoButtonClick={() => setSelectVideoModalShown(true)}
           recepientId={recepientId}
+          replyTarget={currentChannel.replyTarget}
           subjectId={subjectId}
         />
       </div>
@@ -1068,7 +1104,7 @@ function MessagesContainer({
             socket.emit('purchased_chat_subject', selectedChannelId)
           }
           onSelectNewOwner={handleSelectNewOwner}
-          onSetScrollToBottom={handleSetScrollToBottom}
+          onScrollToBottom={handleScrollToBottom}
           theme={currentChannel.theme}
           unlockedThemes={currentChannel.unlockedThemes}
           userIsChannelOwner={currentChannel.creatorId === userId}
@@ -1076,7 +1112,7 @@ function MessagesContainer({
       )}
       {leaveConfirmModalShown && (
         <ConfirmModal
-          title="Leave Channel"
+          title={leaveChatGroupLabel}
           onHide={() => setLeaveConfirmModalShown(false)}
           onConfirm={handleLeaveConfirm}
           disabled={leaving}
@@ -1094,7 +1130,7 @@ function MessagesContainer({
           onSend={(videoId) => {
             handleMessageSubmit({
               content: `https://www.twin-kle.com/videos/${videoId}`,
-              target: replyTarget
+              target: currentChannel.replyTarget
             });
             setSelectVideoModalShown(false);
           }}
@@ -1113,26 +1149,18 @@ function MessagesContainer({
   );
 
   function handleReceiveNewMessage() {
-    if (scrollAtBottom) {
-      handleSetScrollToBottom();
-    } else {
+    if (MessagesRef.current && !scrolledToBottomRef.current) {
       setNewUnseenMessage(true);
+    } else {
+      handleScrollToBottom();
     }
   }
 
-  function handleSetScrollToBottom() {
-    if (mounted.current && MessagesContainerRef.current) {
-      MessagesContainerRef.current.scrollTop =
-        ContentRef.current?.offsetHeight || 0;
-      setTimeout(() => {
-        if (mounted.current && MessagesContainerRef.current) {
-          MessagesContainerRef.current.scrollTop =
-            ContentRef.current?.offsetHeight || 0;
-        }
-      }, 10);
-      if (ContentRef.current?.offsetHeight) {
-        setScrollAtBottom(true);
-      }
+  function handleScrollToBottom() {
+    if (mounted.current && MessagesRef.current) {
+      (MessagesRef.current || {}).scrollTop = 0;
+      (MessagesRef.current || {}).scrollTop = -1000;
+      (MessagesRef.current || {}).scrollTop = 0;
     }
   }
 

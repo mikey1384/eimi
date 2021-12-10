@@ -8,6 +8,11 @@ import RankingsListItem from 'components/RankingsListItem';
 import { Color, borderRadius } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 import { useNotiContext } from 'contexts';
+import localize from 'constants/localize';
+
+const myRankingLabel = localize('myRanking');
+const top30Label = localize('top30');
+const notRankedDescriptionLabel = localize('notRankedDescription');
 
 export default function Rankings() {
   const { rank, twinkleXP, userId } = useMyState();
@@ -31,11 +36,10 @@ export default function Rankings() {
     setAllSelected(!!userId);
   }, [userId]);
 
-  const users = useMemo(() => (allSelected ? allRanks : top30s), [
-    allRanks,
-    allSelected,
-    top30s
-  ]);
+  const users = useMemo(
+    () => (allSelected ? allRanks : top30s),
+    [allRanks, allSelected, top30s]
+  );
 
   return (
     <ErrorBoundary>
@@ -54,7 +58,7 @@ export default function Rankings() {
               setAllSelected(true);
             }}
           >
-            My Ranking
+            {myRankingLabel}
           </nav>
           <nav
             className={allSelected ? '' : 'active'}
@@ -63,7 +67,7 @@ export default function Rankings() {
               setAllSelected(false);
             }}
           >
-            Top 30
+            {top30Label}
           </nav>
         </FilterBar>
       )}
@@ -80,8 +84,7 @@ export default function Rankings() {
             border: `1px solid ${Color.borderGray()}`
           }}
         >
-          You are not ranked. To get ranked, earn XP by watching a starred video
-          or leaving comments
+          {notRankedDescriptionLabel}
         </div>
       )}
       {rankingsLoaded && users.length > 0 && (

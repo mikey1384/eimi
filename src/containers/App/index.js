@@ -36,7 +36,7 @@ import { socket } from 'constants/io';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { finalizeEmoji } from 'helpers/stringHelpers';
 import { useMyState, useScrollPosition } from 'helpers/hooks';
-import { isMobile } from 'helpers';
+import { isMobile, getSectionFromPathname } from 'helpers';
 import { v1 as uuidv1 } from 'uuid';
 import {
   useAppContext,
@@ -54,6 +54,7 @@ App.propTypes = {
 };
 
 const deviceIsMobile = isMobile(navigator);
+const userIsUsingIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 function App({ location, history }) {
   const {
@@ -76,7 +77,6 @@ function App({ location, history }) {
       channelOnCall,
       channelsObj,
       currentChannelName,
-      replyTarget,
       selectedChannelId
     },
     actions: {
@@ -86,6 +86,7 @@ function App({ location, history }) {
       onPostUploadComplete,
       onResetChat,
       onSendFirstDirectMessage,
+      onUpdateChannelPathIdHash,
       onUpdateChatUploadProgress
     }
   } = useChatContext();
@@ -123,6 +124,10 @@ function App({ location, history }) {
   const hiddenRef = useRef(null);
   const authRef = useRef(null);
   const mounted = useRef(true);
+  const usingChat = useMemo(
+    () => getSectionFromPathname(location?.pathname)?.section === 'chat',
+    [location?.pathname]
+  );
 
   useScrollPosition({
     onRecordScrollPosition,
@@ -217,6 +222,7 @@ function App({ location, history }) {
       filePath,
       fileToUpload,
       recepientId,
+      messageId: tempMessageId,
       targetMessageId,
       subjectId
     }) => {
@@ -228,19 +234,24 @@ function App({ location, history }) {
         fileToUpload,
         recepientId
       });
-      const { channel, message, messageId } = await uploadFileOnChat({
-        channelId,
-        content,
-        selectedFile: fileToUpload,
-        onUploadProgress: handleUploadProgress,
-        recepientId,
-        path: filePath,
-        targetMessageId,
-        subjectId
-      });
+      const { channel, message, messageId, alreadyExists } =
+        await uploadFileOnChat({
+          channelId,
+          content,
+          selectedFile: fileToUpload,
+          onUploadProgress: handleUploadProgress,
+          recepientId,
+          path: filePath,
+          targetMessageId,
+          subjectId
+        });
+      if (alreadyExists) {
+        return window.location.reload();
+      }
       onPostUploadComplete({
         path: filePath,
         channelId,
+        tempMessageId,
         messageId: messageId,
         result: !!messageId
       });
@@ -255,28 +266,37 @@ function App({ location, history }) {
         userId,
         username,
         profilePicUrl,
-        targetMessage: replyTarget
+        targetMessage: currentChannel.replyTarget
       };
       onDisplayAttachedFile(params);
       if (channelId) {
+        const channelData = {
+          id: channelId,
+          channelName: currentChannelName,
+          members: currentChannel.members,
+          twoPeople: currentChannel.twoPeople,
+          pathId: currentChannel.pathId
+        };
         socket.emit('new_chat_message', {
           message: { ...params, isNewMessage: true },
-          channel: {
-            ...currentChannel,
-            numUnreads: 1,
-            lastMessage: {
-              fileName: params.fileName,
-              sender: { id: userId, username }
-            },
-            channelName: currentChannelName
-          }
+          channel: channelData
         });
       }
-      onSetReplyTarget(null);
+      onSetReplyTarget({ channelId, target: null });
       if (channel) {
+        onUpdateChannelPathIdHash({
+          channelId: channel.id,
+          pathId: channel.pathId
+        });
         onSendFirstDirectMessage({ channel, message });
+        history.replace(`/chat/${channel.pathId}`);
         socket.emit('join_chat_group', message.channelId);
-        socket.emit('send_bi_chat_invitation', recepientId, message);
+        socket.emit('send_bi_chat_invitation', {
+          userId: recepientId,
+          members: currentChannel.members,
+          pathId: channel.pathId,
+          message
+        });
       }
       function handleUploadProgress({ loaded, total }) {
         onUpdateChatUploadProgress({
@@ -292,7 +312,7 @@ function App({ location, history }) {
       currentChannel,
       currentChannelName,
       profilePicUrl,
-      replyTarget,
+      currentChannel.replyTarget,
       userId,
       username
     ]
@@ -448,15 +468,14 @@ function App({ location, history }) {
       />
       <div
         id="App"
-        className={css`
+        className={`${userIsUsingIOS && !usingChat ? 'ios ' : ''}${css`
           margin-top: 4.5rem;
           height: 100%;
           @media (max-width: ${mobileMaxWidth}) {
             margin-top: 0;
             padding-top: 0;
-            padding-bottom: 5rem;
           }
-        `}
+        `}`}
       >
         <Switch>
           <Route

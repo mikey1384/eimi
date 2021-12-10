@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AccountMenu from './AccountMenu';
 import MainNavs from './MainNavs';
@@ -34,14 +34,20 @@ Header.propTypes = {
 export default function Header({ onMobileMenuOpen, style = {} }) {
   const { pathname } = useLocation();
   const history = useHistory();
-  const usingChat = getSectionFromPathname(pathname)?.section === 'chat';
+  const usingChat = useMemo(
+    () => getSectionFromPathname(pathname)?.section === 'chat',
+    [pathname]
+  );
   const {
+    user: {
+      actions: { onSetLastChatPath }
+    },
     requestHelpers: {
       checkIfHomeOutdated,
       checkVersion,
       fetchNotifications,
       getNumberOfUnreadMessages,
-      loadChatChannel,
+      loadGeneralChatPathId,
       loadChat,
       loadRankings,
       loadCoins,
@@ -74,7 +80,6 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       onHideAttachment,
       onCallReceptionConfirm,
       onDeleteMessage,
-      onEnterChannelWithId,
       onEditMessage,
       onLeaveChannel,
       onGetNumberOfUnreadMessages,
@@ -92,6 +97,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       onSetPeerStreams,
       onShowIncoming,
       onShowOutgoing,
+      onUpdateSelectedChannelId,
       onUpdateCollectorsRankings
     }
   } = useChatContext();
@@ -176,7 +182,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     socket.on('chat_message_deleted', onDeleteMessage);
     socket.on('chat_message_edited', onEditMessage);
     socket.on('chat_subject_purchased', onEnableChatSubject);
-    socket.on('channel_owner_changed', onChangeChannelOwner);
+    socket.on('channel_owner_changed', handleChangeChannelOwner);
     socket.on('channel_settings_changed', onChangeChannelSettings);
     socket.on('connect', handleConnect);
     socket.on('disconnect', handleDisconnect);
@@ -211,7 +217,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       socket.removeListener('chat_message_deleted', onDeleteMessage);
       socket.removeListener('chat_message_edited', onEditMessage);
       socket.removeListener('chat_subject_purchased', onEnableChatSubject);
-      socket.removeListener('channel_owner_changed', onChangeChannelOwner);
+      socket.removeListener('channel_owner_changed', handleChangeChannelOwner);
       socket.removeListener(
         'channel_settings_changed',
         onChangeChannelSettings
@@ -248,9 +254,14 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       onUpdateProfileInfo({ userId, banned: banStatus });
     }
 
+    function handleChangeChannelOwner({ channelId, message, newOwner }) {
+      updateChatLastRead(channelId);
+      onChangeChannelOwner({ channelId, message, newOwner });
+    }
+
     async function handleConnect() {
       console.log('connected to socket');
-      onClearRecentChessMessage();
+      onClearRecentChessMessage(selectedChannelId);
       onChangeSocketStatus(true);
       handleCheckVersion();
       handleCheckOutdated();
@@ -348,7 +359,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       }
     }
 
-    function handleChatInvitation({ message, members, isClass }) {
+    function handleChatInvitation({ message, members, isClass, pathId }) {
       let duplicate = false;
       if (selectedChannelId === 0) {
         if (
@@ -361,7 +372,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
         }
       }
       socket.emit('join_chat_group', message.channelId);
-      onReceiveFirstMsg({ message, duplicate, isClass, pageVisible });
+      onReceiveFirstMsg({ message, duplicate, isClass, pageVisible, pathId });
     }
 
     function handleDisconnect(reason) {
@@ -372,8 +383,13 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     async function handleLeftChatFromAnotherTab(channelId) {
       if (selectedChannelId === channelId) {
         onLeaveChannel(channelId);
-        const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
-        onEnterChannelWithId({ data });
+        const pathId = await loadGeneralChatPathId();
+        if (usingChat) {
+          history.push(`/chat/${pathId}`);
+        } else {
+          onUpdateSelectedChannelId(GENERAL_CHAT_ID);
+          onSetLastChatPath(`/${pathId}`);
+        }
       } else {
         onLeaveChannel(channelId);
       }
@@ -518,10 +534,10 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       const messageIsForCurrentChannel =
         message.channelId === selectedChannelId;
       const senderIsUser = message.userId === userId;
-      if (senderIsUser) return;
+      if (senderIsUser && pageVisible) return;
       if (messageIsForCurrentChannel) {
         if (usingChat) {
-          await updateChatLastRead(message.channelId);
+          updateChatLastRead(message.channelId);
         }
         onReceiveMessage({
           message,
@@ -532,6 +548,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       }
       if (!messageIsForCurrentChannel) {
         onReceiveMessageOnDifferentChannel({
+          message,
           channel,
           pageVisible,
           usingChat
@@ -660,9 +677,9 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     <ErrorBoundary>
       <nav
         className={`unselectable ${css`
-          z-index: 30000;
+          z-index: 99999;
           position: relative;
-          font-family: sans-serif, Arial, Helvetica;
+          font-family: 'Ubuntu', sans-serif, Arial, Helvetica;
           font-size: 1.7rem;
           background: #fff;
           display: flex;
@@ -677,7 +694,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
           @media (max-width: ${mobileMaxWidth}) {
             bottom: 0;
             box-shadow: none;
-            height: 5rem;
+            height: 7rem;
             border-top: 1px solid ${Color.borderGray()};
           }
         `}`}

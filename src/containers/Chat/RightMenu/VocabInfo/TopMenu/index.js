@@ -4,6 +4,11 @@ import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import Collector from './Collector';
 import FilterBar from 'components/FilterBar';
+import localize from 'constants/localize';
+
+const collectorsOfHighLevelWordsLabel = localize('collectorsOfHighLevelWords');
+const rankingsLabel = localize('rankings');
+const top30Label = localize('top30');
 
 export default function TopMenu() {
   const { numWordsCollected } = useMyState();
@@ -13,11 +18,10 @@ export default function TopMenu() {
     }
   } = useChatContext();
   const [allSelected, setAllSelected] = useState(numWordsCollected > 0);
-  const wordCollectors = useMemo(() => (allSelected ? all : top30s), [
-    all,
-    allSelected,
-    top30s
-  ]);
+  const wordCollectors = useMemo(
+    () => (allSelected ? all : top30s),
+    [all, allSelected, top30s]
+  );
   const prevNumWordsCollectedRef = useRef(0);
 
   useEffect(() => {
@@ -45,7 +49,7 @@ export default function TopMenu() {
           color: '#fff'
         }}
       >
-        Collectors of High Level Words
+        {collectorsOfHighLevelWordsLabel}
       </div>
       {numWordsCollected > 0 && (
         <FilterBar style={{ fontSize: '1.5rem', height: '4rem' }}>
@@ -53,20 +57,20 @@ export default function TopMenu() {
             onClick={() => setAllSelected(true)}
             className={allSelected ? 'active' : ''}
           >
-            Rankings
+            {rankingsLabel}
           </nav>
           <nav
             onClick={() => setAllSelected(false)}
             className={!allSelected ? 'active' : ''}
           >
-            Top 30s
+            {top30Label}
           </nav>
         </FilterBar>
       )}
       <div style={{ marginTop: '1rem' }}>
         {wordCollectors
-          .filter(collector => collector.numWordsCollected > 0)
-          .map(collector => (
+          .filter((collector) => collector.numWordsCollected > 0)
+          .map((collector) => (
             <Collector
               key={collector.username}
               style={{ padding: '1rem' }}

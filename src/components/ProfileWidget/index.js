@@ -10,6 +10,10 @@ import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
+import localize from 'constants/localize';
+
+const viewProfileLabel = localize('viewProfile');
+const changePictureLabel = localize('changePicture');
 
 ProfileWidget.propTypes = {
   history: PropTypes.object,
@@ -70,14 +74,14 @@ export default function ProfileWidget({ history, onLoadImage, onShowAlert }) {
                 transparent
                 onClick={() => history.push(`/users/${username}`)}
               >
-                View Profile
+                {viewProfileLabel}
               </Button>
               <Button
                 style={{ width: '100%' }}
                 transparent
                 onClick={() => FileInputRef.current.click()}
               >
-                Change Picture
+                {changePictureLabel}
               </Button>
             </div>
           )}

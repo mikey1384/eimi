@@ -1,9 +1,9 @@
-/* eslint-disable no-useless-escape */
-import React, { useRef, useMemo } from 'react';
+import React, { useRef, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import ReactPlayer from 'react-player';
 import ExtractedThumb from 'components/ExtractedThumb';
+import ImageModal from 'components/Modals/ImageModal';
 import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 
@@ -13,7 +13,8 @@ FileViewer.propTypes = {
   src: PropTypes.string.isRequired,
   style: PropTypes.object,
   onThumbnailLoad: PropTypes.func,
-  thumbUrl: PropTypes.string
+  thumbUrl: PropTypes.string,
+  showImageModalOnClick: PropTypes.bool
 };
 
 export default function FileViewer({
@@ -22,8 +23,10 @@ export default function FileViewer({
   small,
   src,
   style,
-  thumbUrl
+  thumbUrl,
+  showImageModalOnClick
 }) {
+  const [imageModalShown, setImageModalShown] = useState(false);
   const PlayerRef = useRef(null);
   const { fileType } = useMemo(() => getFileInfoFromFileName(src), [src]);
   const fileName = useMemo(() => src.split('/').pop(), [src]);
@@ -51,8 +54,12 @@ export default function FileViewer({
             width: small ? '40rem' : '100%',
             height: small ? '20rem' : '100%',
             objectFit: 'contain',
-            maxHeight: '50vh'
+            maxHeight: '50vh',
+            cursor: showImageModalOnClick ? 'pointer' : 'default'
           }}
+          onClick={
+            showImageModalOnClick ? () => setImageModalShown(true) : null
+          }
           src={`${cloudFrontURL}${filePath}`}
         />
       ) : fileType === 'video' || fileType === 'audio' ? (
@@ -104,6 +111,13 @@ export default function FileViewer({
           fileName={fileName}
           fileSize={fileSize}
           src={`${cloudFrontURL}${src}`}
+        />
+      )}
+      {imageModalShown && (
+        <ImageModal
+          downloadable={false}
+          onHide={() => setImageModalShown(false)}
+          src={`${cloudFrontURL}${filePath}`}
         />
       )}
     </div>

@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo, useRef, useState } from 'react';
+import React, { useContext, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
@@ -18,8 +18,22 @@ import {
 } from 'constants/defaultValues';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-import { useInterval, useMyState } from 'helpers/hooks';
-import { useAppContext, useChatContext } from 'contexts';
+import { useInterval } from 'helpers/hooks';
+import LocalContext from '../../../Context';
+import localize from 'constants/localize';
+
+const deviceIsMobile = isMobile(navigator);
+
+const addToFavoritesLabel = localize('addToFavorites');
+const broughtBackByLabel = localize('broughtBackBy');
+const changeTopicLabel = localize('changeTopic');
+const editGroupNameLabel = localize('editGroupName');
+const invitePeopleLabel = localize('invitePeople');
+const leaveLabel = localize('leave');
+const loadingSubjectLabel = localize('loadingSubject');
+const menuLabel = deviceIsMobile ? '' : localize('menu');
+const settingsLabel = localize('settings');
+const startedByLabel = localize('startedBy');
 
 ChannelHeader.propTypes = {
   currentChannel: PropTypes.object.isRequired,
@@ -30,8 +44,6 @@ ChannelHeader.propTypes = {
   onSetSettingsModalShown: PropTypes.func,
   selectedChannelId: PropTypes.number
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function ChannelHeader({
   currentChannel,
@@ -44,16 +56,6 @@ export default function ChannelHeader({
   selectedChannelId
 }) {
   const {
-    requestHelpers: {
-      loadChatSubject,
-      reloadChatSubject,
-      searchChatSubject,
-      uploadChatSubject
-    }
-  } = useAppContext();
-  const { authLevel, banned, profilePicUrl, userId, username } = useMyState();
-  const {
-    state: { allFavoriteChannelIds, subjectObj, subjectSearchResults },
     actions: {
       onClearSubjectSearchResults,
       onLoadChatSubject,
@@ -61,8 +63,16 @@ export default function ChannelHeader({
       onSearchChatSubject,
       onSetIsRespondingToSubject,
       onUploadChatSubject
-    }
-  } = useChatContext();
+    },
+    requests: {
+      loadChatSubject,
+      reloadChatSubject,
+      searchChatSubject,
+      uploadChatSubject
+    },
+    state: { allFavoriteChannelIds, subjectObj, subjectSearchResults },
+    myState: { authLevel, banned, profilePicUrl, userId, username }
+  } = useContext(LocalContext);
   const [onEdit, setOnEdit] = useState(false);
   const [onHover, setOnHover] = useState(false);
   const [submitting, setSubmitting] = useState(false);
@@ -71,7 +81,6 @@ export default function ChannelHeader({
     return allFavoriteChannelIds[selectedChannelId];
   }, [allFavoriteChannelIds, selectedChannelId]);
   const reloadingChatSubject = useRef(false);
-  const menuLabel = deviceIsMobile ? '' : 'Menu';
 
   const {
     content = defaultChatSubject,
@@ -116,7 +125,7 @@ export default function ChannelHeader({
     if (uploader.id && timeSincePost) {
       posterString = (
         <span>
-          Started by <UsernameText user={uploader} />{' '}
+          {startedByLabel} <UsernameText user={uploader} />{' '}
           <span className="desktop">{timeSincePost}</span>
         </span>
       );
@@ -124,10 +133,10 @@ export default function ChannelHeader({
     if (isReloaded && timeSinceReload) {
       posterString = (
         <span>
-          Brought back by <UsernameText user={reloader} />{' '}
+          {broughtBackByLabel} <UsernameText user={reloader} />{' '}
           <span className="desktop">{timeSinceReload}</span>{' '}
           <span className="desktop">
-            (started by {<UsernameText user={uploader} />})
+            ({startedByLabel} {<UsernameText user={uploader} />})
           </span>
         </span>
       );
@@ -147,7 +156,7 @@ export default function ChannelHeader({
         label: (
           <>
             <Icon icon="exchange-alt" />
-            <span style={{ marginLeft: '1rem' }}>Change Topic</span>
+            <span style={{ marginLeft: '1rem' }}>{changeTopicLabel}</span>
           </>
         ),
         onClick: () => setOnEdit(true)
@@ -159,7 +168,7 @@ export default function ChannelHeader({
           label: (
             <>
               <Icon icon="users" />
-              <span style={{ marginLeft: '1rem' }}>Invite People</span>
+              <span style={{ marginLeft: '1rem' }}>{invitePeopleLabel}</span>
             </>
           ),
           onClick: () => onSetInviteUsersModalShown(true)
@@ -170,12 +179,12 @@ export default function ChannelHeader({
           currentChannel.creatorId === userId ? (
             <>
               <Icon icon="sliders-h" />
-              <span style={{ marginLeft: '1rem' }}>Settings</span>
+              <span style={{ marginLeft: '1rem' }}>{settingsLabel}</span>
             </>
           ) : (
             <>
               <Icon icon="pencil-alt" />
-              <span style={{ marginLeft: '1rem' }}>Edit Group Name</span>
+              <span style={{ marginLeft: '1rem' }}>{editGroupNameLabel}</span>
             </>
           ),
         onClick: () => onSetSettingsModalShown(true)
@@ -187,7 +196,7 @@ export default function ChannelHeader({
         label: (
           <>
             <Icon icon="sign-out-alt" />
-            <span style={{ marginLeft: '1rem' }}>Leave</span>
+            <span style={{ marginLeft: '1rem' }}>{leaveLabel}</span>
           </>
         ),
         onClick: () => onSetLeaveConfirmModalShown(true)
@@ -289,7 +298,10 @@ export default function ChannelHeader({
                   color={theme || 'green'}
                   filled
                   onClick={() => {
-                    onSetIsRespondingToSubject(true);
+                    onSetIsRespondingToSubject({
+                      channelId: selectedChannelId,
+                      isResponding: true
+                    });
                     onInputFocus();
                   }}
                 >
@@ -335,7 +347,7 @@ export default function ChannelHeader({
                     direction="left"
                     className="desktop"
                     show={addToFavoritesShown && !favorited}
-                    text="Add to favorites"
+                    text={addToFavoritesLabel}
                     style={{
                       marginTop: '0.7rem',
                       width: 'auto',
@@ -373,7 +385,7 @@ export default function ChannelHeader({
           style={{
             color: Color[theme || 'green']()
           }}
-          text="Loading Subject..."
+          text={`${loadingSubjectLabel}...`}
         />
       )}
     </ErrorBoundary>

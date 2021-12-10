@@ -22,7 +22,6 @@ export default function SideMenu({ children, className, style }) {
         justify-content: center;
         flex-direction: column;
         font-size: 2rem;
-        font-family: sans-serif, Arial, Helvetica;
         > a {
           padding: 1.5rem;
           cursor: pointer;

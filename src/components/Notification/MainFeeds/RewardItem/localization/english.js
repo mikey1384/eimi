@@ -1,36 +1,24 @@
 import React from 'react';
-import PropTypes from 'prop-types';
-import ContentLink from 'components/ContentLink';
 import UsernameText from 'components/Texts/UsernameText';
+import ContentLink from 'components/ContentLink';
 import { Color } from 'constants/css';
-import { timeSince } from 'helpers/timeStampHelpers';
-import { notiFeedListItem } from '../Styles';
 import { truncateText } from 'helpers/stringHelpers';
 
-RewardItem.propTypes = {
-  reward: PropTypes.object.isRequired
-};
-
-export default function RewardItem({
-  reward: {
-    id,
-    isTask,
-    contentId,
-    contentType,
-    rootId,
-    rootType,
-    rootMissionType,
-    rewardAmount,
-    rewardType,
-    rewarderId,
-    rewarderUsername,
-    targetObj,
-    timeStamp
-  }
+export default function renderEnglishText({
+  contentId,
+  contentType,
+  isTask,
+  rewardType,
+  rewardAmount,
+  rewarderId,
+  rewarderUsername,
+  rootId,
+  rootType,
+  rootMissionType,
+  targetObj
 }) {
-  let notiText = '';
   if (rewardType === 'Twinkle') {
-    notiText = (
+    return (
       <div>
         <UsernameText
           user={{ id: rewarderId, username: rewarderUsername }}
@@ -77,37 +65,29 @@ export default function RewardItem({
         />
       </div>
     );
-  } else {
-    notiText = (
-      <div>
-        <UsernameText
-          user={{ id: rewarderId, username: rewarderUsername }}
-          color={Color.blue()}
-        />{' '}
-        <b style={{ color: Color.pink() }}>also recommended</b>{' '}
-        <ContentLink
-          style={{ color: Color.green() }}
-          content={{
-            id: rootId,
-            title: `this ${
-              rootType === 'pass' ? (isTask ? 'task' : 'mission') : rootType
-            }`,
-            missionType: rootMissionType
-          }}
-          contentType={rootType === 'pass' ? 'mission' : rootType}
-        />{' '}
-        <p style={{ fontWeight: 'bold', color: Color.brownOrange() }}>
-          You earn {rewardAmount} Twinkle Coin
-          {rewardAmount > 1 ? 's' : ''}!
-        </p>
-      </div>
-    );
   }
-
   return (
-    <nav style={{ background: '#fff' }} className={notiFeedListItem} key={id}>
-      {notiText}
-      <small>{timeSince(timeStamp)}</small>
-    </nav>
+    <div>
+      <UsernameText
+        user={{ id: rewarderId, username: rewarderUsername }}
+        color={Color.blue()}
+      />{' '}
+      <b style={{ color: Color.pink() }}>also recommended</b>{' '}
+      <ContentLink
+        style={{ color: Color.green() }}
+        content={{
+          id: rootId,
+          title: `this ${
+            rootType === 'pass' ? (isTask ? 'task' : 'mission') : rootType
+          }`,
+          missionType: rootMissionType
+        }}
+        contentType={rootType === 'pass' ? 'mission' : rootType}
+      />{' '}
+      <p style={{ fontWeight: 'bold', color: Color.brownOrange() }}>
+        You earn {rewardAmount} Twinkle Coin
+        {rewardAmount > 1 ? 's' : ''}!
+      </p>
+    </div>
   );
 }

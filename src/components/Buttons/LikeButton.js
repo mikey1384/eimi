@@ -5,6 +5,10 @@ import Icon from 'components/Icon';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { useAppContext, useContentContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const likeLabel = localize('like');
+const likedLabel = localize('liked');
 
 LikeButton.propTypes = {
   className: PropTypes.string,
@@ -13,8 +17,7 @@ LikeButton.propTypes = {
   filled: PropTypes.bool,
   likes: PropTypes.array,
   onClick: PropTypes.func,
-  style: PropTypes.object,
-  targetLabel: PropTypes.string
+  style: PropTypes.object
 };
 
 function LikeButton({
@@ -24,8 +27,7 @@ function LikeButton({
   filled,
   likes,
   style,
-  onClick = () => {},
-  targetLabel
+  onClick = () => {}
 }) {
   const {
     requestHelpers: { likeContent }
@@ -71,9 +73,7 @@ function LikeButton({
       >
         <Icon icon="thumbs-up" />
         <span style={{ marginLeft: '0.7rem' }}>
-          {liked
-            ? `${targetLabel ? targetLabel + ' ' : ''}Liked!`
-            : `Like${targetLabel ? ' ' + targetLabel : ''}`}
+          {liked ? `${likedLabel}!` : likeLabel}
         </span>
       </Button>
     </ErrorBoundary>

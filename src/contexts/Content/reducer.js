@@ -900,6 +900,7 @@ export default function ContentReducer(state, action) {
                       reply.id === action.replyId
                         ? {
                             ...reply,
+                            isExpanded: true,
                             numReplies: 0
                           }
                         : reply
@@ -922,6 +923,7 @@ export default function ContentReducer(state, action) {
               );
               replies[replies.length - 1] = {
                 ...replies[replies.length - 1],
+                isExpanded: true,
                 numReplies: 0
               };
               return {
@@ -931,6 +933,7 @@ export default function ContentReducer(state, action) {
                     reply.id === action.replyId
                       ? {
                           ...reply,
+                          isExpanded: true,
                           numReplies: 0
                         }
                       : reply
@@ -1280,14 +1283,6 @@ export default function ContentReducer(state, action) {
           ...prevContentState,
           [action.contentType === 'url' ? 'actualTitle' : 'linkTitle']:
             action.title
-        }
-      };
-    case 'SET_CHAT_INVITATION_DETAIL':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          invitationDetail: action.detail
         }
       };
     case 'SET_BY_USER_STATUS':

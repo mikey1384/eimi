@@ -11,7 +11,9 @@ DropdownButton.propTypes = {
   buttonStyle: PropTypes.object,
   icon: PropTypes.string,
   iconSize: PropTypes.string,
+  isReversed: PropTypes.bool,
   direction: PropTypes.string,
+  innerRef: PropTypes.object,
   onButtonClick: PropTypes.func,
   onOutsideClick: PropTypes.func,
   listStyle: PropTypes.object,
@@ -35,6 +37,7 @@ export default function DropdownButton({
   style,
   icon = 'pencil-alt',
   iconSize = '1x',
+  isReversed,
   listStyle = {},
   menuProps,
   noBorderRadius,
@@ -42,6 +45,7 @@ export default function DropdownButton({
   onOutsideClick,
   text = '',
   stretch,
+  innerRef,
   ...props
 }) {
   const [menuDisplayed, setMenuDisplayed] = useState(false);
@@ -54,7 +58,10 @@ export default function DropdownButton({
   });
 
   return (
-    <ErrorBoundary style={{ position: 'relative', ...style }}>
+    <ErrorBoundary
+      innerRef={innerRef}
+      style={{ position: 'relative', ...style }}
+    >
       <div ref={ButtonRef}>
         <Button
           {...props}
@@ -84,6 +91,7 @@ export default function DropdownButton({
               minWidth: '12rem',
               ...listStyle
             }}
+            isReversed={isReversed}
             direction={direction}
           >
             {renderMenu()}
@@ -95,7 +103,7 @@ export default function DropdownButton({
 
   function onClick() {
     if (typeof onButtonClick === 'function') {
-      onButtonClick(menuDisplayed);
+      onButtonClick(!menuDisplayed);
     }
     setMenuDisplayed(!menuDisplayed);
   }

@@ -7,6 +7,8 @@ import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
 
 Categories.propTypes = {
   filter: PropTypes.string.isRequired,
@@ -75,11 +77,23 @@ export default function Categories({
           }
         `}
       >
-        {['subjects', 'videos', 'links'].map((contentType) =>
-          filter === contentType ? (
+        {['subjects', 'videos', 'links'].map((contentType) => {
+          const exploreLabel =
+            SELECTED_LANGUAGE === 'kr' ? (
+              <>{localize(contentType.slice(0, -1))} 탐색</>
+            ) : (
+              <>Explore {contentType}</>
+            );
+          const alwaysExploreFirstLabel =
+            SELECTED_LANGUAGE === 'kr'
+              ? `항상 ${localize(contentType.slice(0, -1))} 먼저 탐색하기:`
+              : `Always explore ${contentType} first:`;
+
+          return filter === contentType ? (
             <nav key={contentType}>
               <p style={{ display: 'flex', alignItems: 'center' }}>
-                {returnIcon(contentType)}Explore {contentType}
+                {returnIcon(contentType)}
+                {exploreLabel}
               </p>
               <div
                 style={{
@@ -99,7 +113,7 @@ export default function Categories({
                 >
                   <Checkbox
                     backgroundColor="#fff"
-                    label={`Always explore ${contentType} first:`}
+                    label={alwaysExploreFirstLabel}
                     textIsClickable
                     style={{
                       width: 'auto',
@@ -125,10 +139,11 @@ export default function Categories({
               key={contentType}
               to={contentType}
             >
-              {returnIcon(contentType)}Explore {contentType}
+              {returnIcon(contentType)}
+              {exploreLabel}
             </Link>
-          )
-        )}
+          );
+        })}
       </div>
     </div>
   );

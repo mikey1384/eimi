@@ -38,7 +38,7 @@ export default function ImageModal({
       large
       onHide={onHide}
     >
-      <header>{fileName}</header>
+      {fileName && <header>{fileName}</header>}
       <main>
         <img
           style={{ maxWidth: '100%', maxHeight: '80vh', objectFit: 'contain' }}

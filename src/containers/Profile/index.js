@@ -43,7 +43,10 @@ export default function Profile({ history, location, match }) {
         const { pageNotExists, user } = await loadProfileViaUsername(
           match.params.username
         );
-        if (pageNotExists) return onUserNotExist(match.params.username);
+        if (pageNotExists) {
+          setLoading(false);
+          return onUserNotExist(match.params.username);
+        }
         onSetProfileId({ username: match.params.username, profileId: user.id });
         onInitContent({
           contentType: 'user',
@@ -64,13 +67,19 @@ export default function Profile({ history, location, match }) {
     if (
       match.params.username === 'undefined' &&
       userId &&
-      profile.unavailable
+      profile?.unavailable
     ) {
       history.push(`/${username}`);
     }
     setSelectedTheme(profile?.profileTheme || 'logoBlue');
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [
+    history,
+    match.params.username,
+    profile?.profileTheme,
+    profile?.unavailable,
+    userId,
+    username
+  ]);
 
   return (
     <ErrorBoundary style={{ minHeight: '10rem' }}>

@@ -1,8 +1,12 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const chessEndedInDrawLabel = localize('chessEndedInDraw');
 
 GameOverMessage.propTypes = {
   opponentName: PropTypes.string,
@@ -13,6 +17,64 @@ GameOverMessage.propTypes = {
 };
 
 function GameOverMessage({ myId, opponentName, winnerId, isDraw, isResign }) {
+  const failedToMakeMoveInTimeLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return myId === winnerId ? (
+        <div style={{ textAlign: 'center' }}>
+          <p>{opponentName}님이 제한시간 안에 회신하지 못했습니다...</p>
+          <p style={{ fontWeight: 'bold' }}>
+            축하합니다. 회원님이 승리했습니다
+          </p>
+        </div>
+      ) : (
+        <div style={{ textAlign: 'center' }}>
+          <p>회원님은 제한시간 안에 회신하지 못했습니다...</p>
+          <p>{opponentName}님이 승리했습니다</p>
+        </div>
+      );
+    }
+    return myId === winnerId ? (
+      <div style={{ textAlign: 'center' }}>
+        <p>{opponentName} failed to make a move in time...</p>
+        <p style={{ fontWeight: 'bold' }}>You win!</p>
+      </div>
+    ) : (
+      <div style={{ textAlign: 'center' }}>
+        <p>You failed to make a move in time...</p>
+        <p>{opponentName} wins</p>
+      </div>
+    );
+  }, [myId, opponentName, winnerId]);
+
+  const resignLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return myId === winnerId ? (
+        <div style={{ textAlign: 'center' }}>
+          <p>{opponentName}님이 기권했습니다</p>
+          <p style={{ fontWeight: 'bold' }}>
+            축하합니다. 회원님이 승리했습니다
+          </p>
+        </div>
+      ) : (
+        <div style={{ textAlign: 'center' }}>
+          <p>회원님은 기권하셨습니다...</p>
+          <p>{opponentName}님이 승리했습니다</p>
+        </div>
+      );
+    }
+    return myId === winnerId ? (
+      <div style={{ textAlign: 'center' }}>
+        <p>{opponentName} resigned!</p>
+        <p style={{ fontWeight: 'bold' }}>You win!</p>
+      </div>
+    ) : (
+      <div style={{ textAlign: 'center' }}>
+        <p>You resigned...</p>
+        <p>{opponentName} wins</p>
+      </div>
+    );
+  }, [myId, opponentName, winnerId]);
+
   return (
     <ErrorBoundary>
       <div
@@ -40,31 +102,11 @@ function GameOverMessage({ myId, opponentName, winnerId, isDraw, isResign }) {
           `}
         >
           {isDraw ? (
-            <div style={{ textAlign: 'center' }}>
-              The chess match ended in a draw
-            </div>
+            <div style={{ textAlign: 'center' }}>{chessEndedInDrawLabel}</div>
           ) : isResign ? (
-            myId === winnerId ? (
-              <div style={{ textAlign: 'center' }}>
-                <p>{opponentName} resigned!</p>
-                <p style={{ fontWeight: 'bold' }}>You win!</p>
-              </div>
-            ) : (
-              <div style={{ textAlign: 'center' }}>
-                <p>You resigned...</p>
-                <p>{opponentName} wins</p>
-              </div>
-            )
-          ) : myId === winnerId ? (
-            <div style={{ textAlign: 'center' }}>
-              <p>{opponentName} failed to make a move in time...</p>
-              <p style={{ fontWeight: 'bold' }}>You win!</p>
-            </div>
+            resignLabel
           ) : (
-            <div style={{ textAlign: 'center' }}>
-              <p>You failed to make a move in time...</p>
-              <p>{opponentName} wins</p>
-            </div>
+            failedToMakeMoveInTimeLabel
           )}
         </div>
       </div>

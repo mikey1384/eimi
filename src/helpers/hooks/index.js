@@ -74,6 +74,7 @@ export function useMyState() {
     user: {
       state: {
         hideWatched,
+        lastChatPath,
         loaded,
         numWordsCollected,
         userId,
@@ -90,6 +91,7 @@ export function useMyState() {
   return myState.loaded
     ? {
         ...myState,
+        lastChatPath,
         loaded,
         numWordsCollected,
         userId,
@@ -101,7 +103,13 @@ export function useMyState() {
         signinModalShown,
         xpThisMonth
       }
-    : { loaded, rewardBoostLvl: 0, profileTheme: 'logoBlue', signinModalShown };
+    : {
+        loaded,
+        lastChatPath: '',
+        rewardBoostLvl: 0,
+        profileTheme: 'logoBlue',
+        signinModalShown
+      };
 }
 
 export function useOutsideClick(ref, callback) {

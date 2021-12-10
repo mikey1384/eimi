@@ -1,6 +1,11 @@
 import { charLimit } from 'constants/defaultValues';
 /* eslint-disable no-useless-escape */
 
+const urlRegex =
+  /(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{1,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\n\) ])/giu;
+const urlRegex2 =
+  /^(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{1,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\n\) ])/i;
+
 export function addCommasToNumber(number) {
   const numArray = `${number}`.split('');
   let result = '';
@@ -16,6 +21,9 @@ export function addCommasToNumber(number) {
 }
 
 export function addEmoji(string) {
+  if (!string) {
+    return '';
+  }
   let firstPart = string.substring(0, string.length - 3);
   let lastPart = addTwoLetterEmoji(string.slice(-3));
   let firstResult = `${firstPart}${lastPart}`;
@@ -47,7 +55,8 @@ export function addThreeLetterEmoji(string) {
     .replace(/(X-D )/g, '😆 ')
     .replace(/(:-D )/g, '😄 ')
     .replace(/(:-P )/gi, '😛 ')
-    .replace(/(:-\( )/g, '🙁 ')
+    .replace(/(:-\\ )/g, '😕 ')
+    .replace(/(:-\( )/g, '😕 ')
     .replace(/(:-O )/gi, '😲 ')
     .replace(/(O_O )/gi, '😳 ');
 }
@@ -74,6 +83,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(O_O )/gi, '😳 ')
     .replace(/(\:alien\:)/gi, '👽')
     .replace(/(\:america\:)/gi, '🇺🇸')
+    .replace(/(\:agony\:)/gi, '😩')
     .replace(/(\:angel\:)/gi, '😇')
     .replace(/(\:angry\:)/gi, '😡')
     .replace(/(\:ant\:)/gi, '🐜')
@@ -98,6 +108,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:clap\:)/gi, '👏')
     .replace(/(\:colored pencil\:)/gi, '🖍️')
     .replace(/(\:computer\:)/gi, '🖥')
+    .replace(/(\:confused\:)/gi, '😕')
     .replace(/(\:cow\:)/gi, '🐮')
     .replace(/(\:crayon\:)/gi, '🖍️')
     .replace(/(\:curious\:)/gi, '🤔')
@@ -188,6 +199,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:spider\:)/gi, '🕷️')
     .replace(/(\:squared\:)/gi, '²')
     .replace(/(\:star\:)/gi, '⭐')
+    .replace(/(\:starstruck\:)/gi, '🤩')
+    .replace(/(\:strawberry\:)/gi, '🍓')
     .replace(/(\:sunglasses\:)/gi, '😎')
     .replace(/(\:swan\:)/gi, '🦢')
     .replace(/(\:taco\:)/gi, '🌮')
@@ -209,7 +222,10 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:ufo\:)/gi, '🛸')
     .replace(/(\:usa\:)/gi, '🇺🇸')
     .replace(/(\:volcano\:)/gi, '🌋')
+    .replace(/(\:vomit\:)/gi, '🤮')
     .replace(/(\:wave\:)/gi, '👋')
+    .replace(/(\:weary\:)/gi, '😩')
+    .replace(/(\:wink\:)/gi, '😉')
     .replace(/(\:wow\:)/gi, '😲')
     .replace(/(\:yep\:)/gi, '👌')
     .replace(/(\:yes\:)/gi, '👌')
@@ -271,9 +287,8 @@ export function exceedsCharLimit({ inputType, contentType, text }) {
 }
 
 export function fetchURLFromText(text) {
-  const regex =
-    /(\b(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-.,;:?@%_\+~#=\/])+(\.[A-Z])?([^\s-.,;:?'"()]|(\([a-zA-Z]*?\)))+)/gi;
-  let url = text.match(regex)?.[0] || '';
+  if (!text) return '';
+  let url = text.match(urlRegex)?.[0] || '';
   const processedURL =
     (url.split('.')[0] || '').toLowerCase() + (url.split('.')[1] || '');
   if (
@@ -305,7 +320,7 @@ export function finalizeEmoji(string) {
   if (finalizedString[finalizedString.length - 1] === ' ') {
     finalizedString = finalizedString.slice(0, -1);
   }
-  return finalizedString;
+  return finalizedString || '';
 }
 
 export function getFileInfoFromFileName(fileName) {
@@ -367,12 +382,22 @@ export function isValidSpoiler(content = '') {
 }
 
 export function isValidUrl(url = '') {
-  const regex =
-    /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
   if (!url.includes('://') && !url.includes('www.')) {
     url = 'www.' + url;
   }
-  return regex.test(url);
+  return urlRegex2.test(url);
+}
+
+export function isValidYoutubeUrl(url = '') {
+  if (!url.includes('://') && !url.includes('www.')) {
+    url = 'www.' + url;
+  }
+  let trimOne = url.split('v=')[1];
+  let trimTwo = url.split('youtu.be/')[1];
+  return (
+    urlRegex2.test(url) &&
+    (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
+  );
 }
 
 export function isValidUsername(username) {
@@ -385,28 +410,12 @@ export function isValidUsername(username) {
   );
 }
 
-export function isValidYoutubeUrl(url = '') {
-  const regex =
-    /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
-  if (!url.includes('://') && !url.includes('www.')) {
-    url = 'www.' + url;
-  }
-  let trimOne = url.split('v=')[1];
-  let trimTwo = url.split('youtu.be/')[1];
-  return (
-    regex.test(url) &&
-    (typeof trimOne !== 'undefined' || typeof trimTwo !== 'undefined')
-  );
-}
-
 export function isValidYoutubeChannelUrl(url = '') {
-  const regex =
-    /^(http[s]?:\/\/(www\.)?|ftp:\/\/(www\.)?|www\.){1}([0-9A-Za-z-\.@:%_\+~#=]+)+((\.[a-zA-Z]{2,3})+)(\/(.)*)?(\?(.)*)?/g;
   const trim = url.split('youtube.com/')[1];
   if (!url.includes('://') && !url.includes('www.')) {
     url = 'www.' + url;
   }
-  return regex.test(url) && typeof trim !== 'undefined';
+  return urlRegex2.test(url) && typeof trim !== 'undefined';
 }
 
 export function limitBrs(string) {
@@ -431,8 +440,6 @@ export function processedStringWithURL(string) {
   const maxChar = 100;
   const trimmedString = (string) =>
     string.length > maxChar ? `${string.substring(0, maxChar)}...` : string;
-  const urlRegex =
-    /(((http[s]?:\/\/|ftp:\/\/)|www\.)([0-9\p{L}/])+([0-9\p{L}/\-.,;:?!&@%_\+~#=\/])+([0-9\p{L}_/]|(\([a-zA-Z]*?\)))+)/giu;
   let tempString = string
     .replace(/&/g, '&amp')
     .replace(/</g, '&lt')
@@ -536,6 +543,8 @@ export function processedStringWithURL(string) {
     const linethroughWordRegex = /(--[^\s-]+--)/gi;
     const lineThroughSentenceRegex =
       /(--[^\s-]){1}((?!(-))[^\n])+([^\s-]--){1}/gi;
+    const fakeAtSymbolRegex = /＠/gi;
+    const mentionRegex = /((?!([a-zA-Z1-9])).|^|\n)@[a-zA-Z0-9_]{3,}/gi;
 
     return string
       .replace(/(<br>)/gi, '\n')
@@ -819,7 +828,13 @@ export function processedStringWithURL(string) {
         lineThroughSentenceRegex,
         (string) => `<s>${string.substring(2, string.length - 2)}</s>`
       )
-      .replace(/\n/g, '<br>');
+      .replace(mentionRegex, (string) => {
+        const path = string.split('@')?.[1];
+        const firstChar = string.split('@')?.[0];
+        return `${firstChar}<a class="mention" href="/users/${path}">@${path}</a>`;
+      })
+      .replace(/\n/g, '<br>')
+      .replace(fakeAtSymbolRegex, '@');
   }
 }
 
@@ -871,7 +886,15 @@ export function renderText(text) {
   return newText;
 }
 
+export function replaceFakeAtSymbol(string) {
+  if (stringIsEmpty(string)) return string;
+  return string.replace(/＠/g, '@');
+}
+
 export function stringIsEmpty(string) {
+  if (typeof string === 'string' && string.length > 0) {
+    return false;
+  }
   const checkedString =
     string && typeof string === 'string'
       ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
@@ -884,6 +907,13 @@ export function translateMBToGB(size) {
     return `${size / 1000} GB`;
   }
   return `${size} MB`;
+}
+
+export function translateMBToGBWithoutSpace(size) {
+  if (size >= 1000) {
+    return `${size / 1000}GB`;
+  }
+  return `${size}MB`;
 }
 
 export function trimUrl(url) {

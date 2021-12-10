@@ -140,7 +140,7 @@ function ActivitiesContainer({ style }) {
       ContentRef.current?.offsetHeight || 0;
     setTimeout(
       () =>
-        (ActivitiesContainerRef.current.scrollTop =
+        ((ActivitiesContainerRef.current || {}).scrollTop =
           ContentRef.current?.offsetHeight || 0),
       100
     );

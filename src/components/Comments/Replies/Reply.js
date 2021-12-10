@@ -28,6 +28,17 @@ import { useContentState, useMyState } from 'helpers/hooks';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 import { getFileInfoFromFileName, stringIsEmpty } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const editLabel = localize('edit');
+const pinLabel = localize('pin');
+const pinnedLabel = localize('pinned');
+const peopleWhoLikeThisReplyLabel = localize('peopleWhoLikeThisReply');
+const unpinLabel = localize('unpin');
+const removeReplyLabel = localize('removeReply');
+const repliesLabel = localize('replies');
+const replyLabel = localize('reply');
+const rewardLabel = localize('reward');
 
 Reply.propTypes = {
   comment: PropTypes.shape({
@@ -43,6 +54,7 @@ Reply.propTypes = {
   reply: PropTypes.shape({
     commentId: PropTypes.number.isRequired,
     content: PropTypes.string.isRequired,
+    isExpanded: PropTypes.bool,
     isDeleted: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
     filePath: PropTypes.string,
     fileName: PropTypes.string,
@@ -79,6 +91,7 @@ function Reply({
   pinnedCommentId,
   reply,
   reply: {
+    isExpanded,
     likes = [],
     recommendations = [],
     rewards = [],
@@ -96,6 +109,7 @@ function Reply({
   } = useAppContext();
   const {
     authLevel,
+    banned,
     canDelete,
     canEdit,
     canReward,
@@ -236,7 +250,7 @@ function Reply({
         label: (
           <>
             <Icon icon="pencil-alt" />
-            <span style={{ marginLeft: '1rem' }}>Edit</span>
+            <span style={{ marginLeft: '1rem' }}>{editLabel}</span>
           </>
         ),
         onClick: () =>
@@ -247,13 +261,16 @@ function Reply({
           })
       });
     }
-    if (userIsParentUploader || userIsRootUploader || isCreator) {
+    if (
+      (userIsParentUploader || userIsRootUploader || isCreator) &&
+      !banned?.posting
+    ) {
       items.push({
         label: (
           <>
             <Icon icon={['fas', 'thumbtack']} />
             <span style={{ marginLeft: '1rem' }}>
-              {pinnedCommentId === reply.id ? 'Unpin' : 'Pin'}
+              {pinnedCommentId === reply.id ? unpinLabel : pinLabel}
             </span>
           </>
         ),
@@ -266,7 +283,7 @@ function Reply({
         label: (
           <>
             <Icon icon="trash-alt" />
-            <span style={{ marginLeft: '1rem' }}>Remove</span>
+            <span style={{ marginLeft: '1rem' }}>{removeReplyLabel}</span>
           </>
         ),
         onClick: () => setConfirmModalShown(true)
@@ -297,7 +314,7 @@ function Reply({
             }}
           >
             <Icon icon={['fas', 'thumbtack']} />
-            <span style={{ marginLeft: '0.7rem' }}>Pinned</span>
+            <span style={{ marginLeft: '0.7rem' }}>{pinnedLabel}</span>
           </div>
         )}
         <div className="content-wrapper">
@@ -413,14 +430,16 @@ function Reply({
                         >
                           <Icon icon="comment-alt" />
                           <span style={{ marginLeft: '0.7rem' }}>
-                            {reply.numReplies > 1 ? 'Replies' : 'Reply'}
+                            {!isExpanded && reply.numReplies > 1
+                              ? repliesLabel
+                              : replyLabel}
                             {loadingReplies ? (
                               <Icon
                                 style={{ marginLeft: '0.7rem' }}
                                 icon="spinner"
                                 pulse
                               />
-                            ) : reply.numReplies > 0 ? (
+                            ) : !isExpanded && reply.numReplies > 0 ? (
                               ` (${reply.numReplies})`
                             ) : (
                               ''
@@ -442,7 +461,7 @@ function Reply({
                           >
                             <Icon icon="certificate" />
                             <span style={{ marginLeft: '0.7rem' }}>
-                              {xpButtonDisabled || 'Reward'}
+                              {xpButtonDisabled || rewardLabel}
                             </span>
                           </Button>
                         )}
@@ -456,16 +475,18 @@ function Reply({
                         />
                       </small>
                     </div>
-                    <div>
-                      <Button
-                        color="brownOrange"
-                        filled={isRecommendedByUser}
-                        disabled={recommendationInterfaceShown}
-                        onClick={() => setRecommendationInterfaceShown(true)}
-                      >
-                        <Icon icon="star" />
-                      </Button>
-                    </div>
+                    {false && (
+                      <div>
+                        <Button
+                          color="brownOrange"
+                          filled={isRecommendedByUser}
+                          disabled={recommendationInterfaceShown}
+                          onClick={() => setRecommendationInterfaceShown(true)}
+                        >
+                          <Icon icon="star" />
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               )}
@@ -530,7 +551,7 @@ function Reply({
         {userListModalShown && (
           <UserListModal
             onHide={() => setUserListModalShown(false)}
-            title="People who liked this reply"
+            title={peopleWhoLikeThisReplyLabel}
             users={reply.likes}
           />
         )}
@@ -575,6 +596,9 @@ function Reply({
   }
 
   async function handleReplyClick() {
+    if (isExpanded) {
+      return;
+    }
     ReplyInputAreaRef.current.focus();
     setLoadingReplies(true);
     if (reply.numReplies > 0) {

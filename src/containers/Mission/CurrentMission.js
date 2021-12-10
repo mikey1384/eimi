@@ -3,11 +3,14 @@ import PropTypes from 'prop-types';
 import MissionItem from 'components/MissionItem';
 import { css } from '@emotion/css';
 import { useMissionContext } from 'contexts';
+import localize from 'constants/localize';
 
 CurrentMission.propTypes = {
   style: PropTypes.object,
   missionId: PropTypes.number
 };
+
+const currentMissionLabel = localize('currentMission');
 
 export default function CurrentMission({ style, missionId }) {
   const {
@@ -26,7 +29,7 @@ export default function CurrentMission({ style, missionId }) {
           font-weight: bold;
         `}
       >
-        Current Mission
+        {currentMissionLabel}
       </p>
       <MissionItem
         showStatus={false}

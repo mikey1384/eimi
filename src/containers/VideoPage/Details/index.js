@@ -24,7 +24,8 @@ import {
   exceedsCharLimit,
   stringIsEmpty,
   finalizeEmoji,
-  isValidYoutubeUrl
+  isValidYoutubeUrl,
+  replaceFakeAtSymbol
 } from 'helpers/stringHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import {
@@ -33,6 +34,14 @@ import {
   useInputContext
 } from 'contexts';
 import { css } from '@emotion/css';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const deleteLabel = localize('delete');
+const editLabel = localize('edit');
+const editOrDeleteLabel = localize('editOrDelete');
+const rewardLabel = localize('reward');
+const deviceIsMobile = isMobile(navigator);
 
 Details.propTypes = {
   addTags: PropTypes.func.isRequired,
@@ -56,8 +65,6 @@ Details.propTypes = {
   videoId: PropTypes.oneOfType([PropTypes.string, PropTypes.number]).isRequired,
   videoViews: PropTypes.number.isRequired
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function Details({
   addTags,
@@ -120,7 +127,7 @@ export default function Details({
         contentId: videoId,
         contentType: 'video',
         form: {
-          editedDescription: description || '',
+          editedDescription: replaceFakeAtSymbol(description || ''),
           editedTitle: title || '',
           editedUrl: `https://www.youtube.com/watch?v=${content}`
         }
@@ -234,13 +241,13 @@ export default function Details({
     const items = [];
     if (userIsUploader || canEdit) {
       items.push({
-        label: 'Edit',
+        label: editLabel,
         onClick: handleEditStart
       });
     }
     if (userIsUploader || canDelete) {
       items.push({
-        label: 'Delete',
+        label: deleteLabel,
         onClick: onDelete
       });
     }
@@ -270,6 +277,18 @@ export default function Details({
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const viewsLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>조회수 {addCommasToNumber(videoViews)}회</>;
+    }
+    return (
+      <>
+        {addCommasToNumber(videoViews)} view
+        {`${videoViews > 1 ? 's' : ''}`}
+      </>
+    );
+  }, [videoViews]);
 
   return (
     <div style={{ width: '100%' }}>
@@ -404,8 +423,7 @@ export default function Details({
                   color: Color.darkerGray()
                 }}
               >
-                {addCommasToNumber(videoViews)} view
-                {`${videoViews > 1 ? 's' : ''}`}
+                {viewsLabel}
               </div>
             )}
             <div style={{ display: 'flex', marginTop: '1rem' }}>
@@ -414,8 +432,7 @@ export default function Details({
                   skeuomorphic
                   color="darkerGray"
                   style={{ marginRight: '1rem' }}
-                  direction="left"
-                  text="Edit or Delete"
+                  text={editOrDeleteLabel}
                   menuProps={editMenuItems}
                 />
               )}
@@ -438,33 +455,37 @@ export default function Details({
                 >
                   <Icon icon="certificate" />
                   <span style={{ marginLeft: '0.7rem' }}>
-                    {xpButtonDisabled || 'Reward'}
+                    {xpButtonDisabled || rewardLabel}
                   </span>
                 </Button>
               )}
-              <Button
-                color="brownOrange"
-                style={{ marginLeft: '1rem' }}
-                skeuomorphic
-                filled={isRecommendedByUser}
-                disabled={recommendationInterfaceShown}
-                onClick={() => setRecommendationInterfaceShown(true)}
-              >
-                <Icon icon="star" />
-              </Button>
+              {false && (
+                <Button
+                  color="brownOrange"
+                  style={{ marginLeft: '1rem' }}
+                  skeuomorphic
+                  filled={isRecommendedByUser}
+                  disabled={recommendationInterfaceShown}
+                  onClick={() => setRecommendationInterfaceShown(true)}
+                >
+                  <Icon icon="star" />
+                </Button>
+              )}
             </div>
           </div>
         </div>
-        <RecommendationStatus
-          style={{
-            marginTop: '1rem',
-            marginBottom: 0,
-            marginLeft: '-1rem',
-            marginRight: '-1rem'
-          }}
-          contentType="video"
-          recommendations={recommendations}
-        />
+        {false && (
+          <RecommendationStatus
+            style={{
+              marginTop: '1rem',
+              marginBottom: 0,
+              marginLeft: '-1rem',
+              marginRight: '-1rem'
+            }}
+            contentType="video"
+            recommendations={recommendations}
+          />
+        )}
         {recommendationInterfaceShown && (
           <RecommendationInterface
             style={{

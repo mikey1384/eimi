@@ -2,6 +2,8 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
 
 RewardLevelExpectation.propTypes = {
   rewardLevel: PropTypes.number.isRequired
@@ -14,15 +16,30 @@ export default function RewardLevelExpectation({ rewardLevel }) {
   const rewardLevelExpectation = useMemo(() => {
     switch (rewardLevel) {
       case 3:
-        return 'Moderate Effort';
+        return localize('moderateEffort');
       case 4:
-        return 'a Lot of Effort';
+        return localize('aLotOfEffort');
       case 5:
-        return 'Huge Effort';
+        return localize('hugeEffort');
       default:
         return '';
     }
   }, [rewardLevel]);
+  const rewardLevelExpectationLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          선생님 유저분들의 추천을 받으려면 {rewardLevelExpectation}을 기울여야
+          합니다
+        </>
+      );
+    }
+    return (
+      <>
+        Put {rewardLevelExpectation} Into Your Response to Get Recommendations
+      </>
+    );
+  }, [rewardLevelExpectation]);
   const rewardColor = useMemo(
     () =>
       rewardLevel === 5
@@ -45,14 +62,17 @@ export default function RewardLevelExpectation({ rewardLevel }) {
           }
         `}
       >
-        <b style={{ color: rewardColor }}>Lvl {rewardLevel}:</b>
-        <span style={{ color: '#fff' }}>
-          {' '}
-          Put {rewardLevelExpectation} Into Your Response to Get Recommendations
-        </span>
+        <b style={{ color: rewardColor }}>Lvl {rewardLevel}:</b>{' '}
+        <span style={{ color: '#fff' }}>{rewardLevelExpectationLabel}</span>
       </div>
     );
-  }, [rewardLevel, rewardLevelExpectation, rewardColor]);
+  }, [
+    rewardLevelExpectation,
+    rewardColor,
+    rewardLevel,
+    rewardLevelExpectationLabel
+  ]);
+
   if (!rewardLevelExpectation) return null;
   return (
     <div

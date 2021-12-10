@@ -6,6 +6,9 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const copiedLabel = localize('copied');
 
 UpdateYourRepl.propTypes = {
   code: PropTypes.string,
@@ -88,10 +91,11 @@ export default function UpdateYourRepl({ code, index }) {
               background: '#fff',
               fontSize: '1.2rem',
               padding: '1rem',
+              wordBreak: 'keep-all',
               border: `1px solid ${Color.borderGray()}`
             }}
           >
-            Copied!
+            {copiedLabel}
           </div>
         </div>
         <div

@@ -7,6 +7,11 @@ import SelectFeaturedSubjects from '../Modals/SelectFeaturedSubjects';
 import ReorderFeaturedSubjects from '../Modals/ReorderFeaturedSubjects';
 import Button from 'components/Button';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const featuredLabel = localize('featuredSubjects');
+const reorderLabel = localize('reorder');
+const selectLabel = localize('select');
 
 Featured.propTypes = {
   loaded: PropTypes.bool,
@@ -35,7 +40,7 @@ export default function Featured({
   return (
     <ErrorBoundary>
       <SectionPanel
-        title="Featured"
+        title={featuredLabel}
         loadMoreButtonShown={!expanded && subjects.length > 1}
         onLoadMore={onExpand}
         button={
@@ -47,7 +52,7 @@ export default function Featured({
                 style={{ marginLeft: 'auto' }}
                 onClick={() => setSelectModalShown(true)}
               >
-                Select
+                {selectLabel}
               </Button>
               <Button
                 skeuomorphic
@@ -55,7 +60,7 @@ export default function Featured({
                 style={{ marginLeft: '1rem' }}
                 onClick={() => setReorderModalShown(true)}
               >
-                Reorder
+                {reorderLabel}
               </Button>
             </div>
           ) : null

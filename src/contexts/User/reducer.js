@@ -101,6 +101,11 @@ export default function UserReducer(state, action) {
         ...action.data,
         signinModalShown: false
       };
+    case 'SET_LAST_CHAT_PATH':
+      return {
+        ...state,
+        lastChatPath: action.lastChatPath
+      };
     case 'SET_ORDER_USERS_BY':
       return {
         ...state,

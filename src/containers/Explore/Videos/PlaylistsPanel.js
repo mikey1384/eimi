@@ -4,6 +4,11 @@ import PlaylistCarousel from '../PlaylistCarousel';
 import SectionPanel from 'components/SectionPanel';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useExploreContext } from 'contexts';
+import localize from 'constants/localize';
+
+const noPlaylistsLabel = localize('noPlaylists');
+const searchPlaylistsLabel = localize('searchPlaylists');
+const allPlaylistsLabel = localize('allPlaylists');
 
 PlaylistsPanel.propTypes = {
   buttonGroup: PropTypes.func,
@@ -31,7 +36,7 @@ export default function PlaylistsPanel({
   playlists,
   searchQuery,
   style,
-  title = 'All Playlists',
+  title = allPlaylistsLabel,
   userId
 }) {
   const {
@@ -47,8 +52,8 @@ export default function PlaylistsPanel({
       style={style}
       title={title}
       button={buttonGroupShown ? buttonGroup() : null}
-      searchPlaceholder="Search playlists"
-      emptyMessage="No Playlists"
+      searchPlaceholder={`${searchPlaylistsLabel}...`}
+      emptyMessage={noPlaylistsLabel}
       isEmpty={playlists.length === 0}
       loaded={loaded}
       loadMoreButtonShown={!isSearching && loadMoreButton}

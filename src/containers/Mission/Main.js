@@ -93,6 +93,7 @@ export default function Main({
             )}
           </div>
         )}
+        <div className="mobile" style={{ height: '7rem', width: '100%' }} />
       </div>
     </div>
   ) : null;

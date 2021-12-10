@@ -32,7 +32,14 @@ import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useInputContext } from 'contexts';
 import { useHistory } from 'react-router-dom';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { v1 as uuidv1 } from 'uuid';
+import localize from 'constants/localize';
+
+const commentRemovedLabel = localize('commentRemoved');
+const replyLabel = localize('reply');
+const rewardLabel = localize('reward');
+const deviceIsMobile = isMobile(navigator);
 
 TargetContent.propTypes = {
   className: PropTypes.string,
@@ -44,8 +51,6 @@ TargetContent.propTypes = {
   style: PropTypes.object,
   targetObj: PropTypes.object
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function TargetContent({
   className,
@@ -178,6 +183,63 @@ export default function TargetContent({
     [comment, finalRewardLevel, userId, xpRewardInterfaceShown]
   );
 
+  const DetailText = useMemo(() => {
+    return (
+      <div>
+        {SELECTED_LANGUAGE === 'kr' ? renderKoreanText() : renderEnglishText()}
+      </div>
+    );
+
+    function renderEnglishText() {
+      return (
+        <>
+          <UsernameText user={comment.uploader} color={Color.blue()} />{' '}
+          <ContentLink
+            content={{
+              id: comment.id,
+              title: `${
+                type === 'reply'
+                  ? 'replied'
+                  : type === 'comment'
+                  ? rootType === 'user'
+                    ? 'left a message'
+                    : 'commented'
+                  : 'responded'
+              }:`
+            }}
+            contentType="comment"
+            style={{ color: Color.green() }}
+          />
+        </>
+      );
+    }
+    function renderKoreanText() {
+      return (
+        <>
+          <UsernameText user={comment.uploader} color={Color.blue()} />
+          님이{' '}
+          <ContentLink
+            content={{
+              id: comment.id,
+              title: `${
+                type === 'reply'
+                  ? '답글을 남겼습니다'
+                  : type === 'comment'
+                  ? rootType === 'user'
+                    ? '메시지를 남겼습니다'
+                    : '댓글을 남겼습니다'
+                  : '댓글을 남겼습니다'
+              }`
+            }}
+            contentType="comment"
+            style={{ color: Color.green() }}
+          />
+          :
+        </>
+      );
+    }
+  }, [comment.id, comment.uploader, rootType, type]);
+
   useEffect(() => {
     onSetXpRewardInterfaceShown({
       contentType: 'comment',
@@ -251,7 +313,7 @@ export default function TargetContent({
         {comment &&
           (!!comment.notFound || !!comment.isDeleted ? (
             <div style={{ textAlign: 'center', padding: '2rem 0' }}>
-              <span>Comment removed / no longer available</span>
+              <span>{commentRemovedLabel}</span>
             </div>
           ) : (
             <div style={{ marginTop: 0 }}>
@@ -263,28 +325,7 @@ export default function TargetContent({
                   }}
                 >
                   <div className="detail-block">
-                    <div>
-                      <UsernameText
-                        user={comment.uploader}
-                        color={Color.blue()}
-                      />{' '}
-                      <ContentLink
-                        content={{
-                          id: comment.id,
-                          title: `${
-                            type === 'reply'
-                              ? 'replied'
-                              : type === 'comment'
-                              ? rootType === 'user'
-                                ? 'left a message'
-                                : 'commented'
-                              : 'responded'
-                          }:`
-                        }}
-                        contentType="comment"
-                        style={{ color: Color.green() }}
-                      />
-                    </div>
+                    {DetailText}
                     <div>
                       <span
                         className={`timestamp ${css`
@@ -368,7 +409,9 @@ export default function TargetContent({
                           onClick={handleReplyClick}
                         >
                           <Icon icon="comment-alt" />
-                          <span style={{ marginLeft: '0.7rem' }}>Reply</span>
+                          <span style={{ marginLeft: '0.7rem' }}>
+                            {replyLabel}
+                          </span>
                         </Button>
                         {userCanRewardThis && (
                           <Button
@@ -379,7 +422,7 @@ export default function TargetContent({
                           >
                             <Icon icon="certificate" />
                             <span style={{ marginLeft: '0.7rem' }}>
-                              {xpButtonDisabled || 'Reward'}
+                              {xpButtonDisabled || rewardLabel}
                             </span>
                           </Button>
                         )}
@@ -396,23 +439,25 @@ export default function TargetContent({
                         onLinkClick={() => setUserListModalShown(true)}
                       />
                     </div>
-                    <div
-                      style={{ display: 'flex', alignItems: 'center' }}
-                      className="right"
-                    >
-                      <Button
-                        color="brownOrange"
-                        filled={isRecommendedByUser}
-                        disabled={recommendationInterfaceShown}
-                        onClick={() => setRecommendationInterfaceShown(true)}
+                    {false && (
+                      <div
+                        style={{ display: 'flex', alignItems: 'center' }}
+                        className="right"
                       >
-                        <Icon icon="star" />
-                      </Button>
-                    </div>
+                        <Button
+                          color="brownOrange"
+                          filled={isRecommendedByUser}
+                          disabled={recommendationInterfaceShown}
+                          onClick={() => setRecommendationInterfaceShown(true)}
+                        >
+                          <Icon icon="star" />
+                        </Button>
+                      </div>
+                    )}
                   </ErrorBoundary>
                 )}
               </div>
-              {comment && (
+              {comment && false && (
                 <RecommendationStatus
                   style={{
                     marginTop: 0,
@@ -585,7 +630,7 @@ export default function TargetContent({
             contentId: comment.id
           });
           setUploadingFile(false);
-          onUploadTargetComment({ ...data, contentId, contentType });
+          onUploadTargetComment({ ...data.comment, contentId, contentType });
           onClearCommentFileUploadProgress({
             contentType: 'comment',
             contentId: comment.id
@@ -611,7 +656,7 @@ export default function TargetContent({
           },
           targetCommentId: comment.id
         });
-        onUploadTargetComment({ ...data, contentId, contentType });
+        onUploadTargetComment({ ...data.comment, contentId, contentType });
       }
     } catch (error) {
       console.error(error);

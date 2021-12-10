@@ -25,6 +25,13 @@ import { determineXpButtonDisabled } from 'helpers';
 import { timeSince } from 'helpers/timeStampHelpers';
 import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const commentLabel = localize('comment');
+const byLabel = localize('by');
+const secretMessageLabel = localize('secretMessage');
+const postedLabel = localize('posted');
 
 SubjectPanel.propTypes = {
   description: PropTypes.string,
@@ -63,7 +70,7 @@ export default function SubjectPanel({
   subjectId
 }) {
   const {
-    requestHelpers: { deleteSubject, editSubject, loadComments }
+    requestHelpers: { deleteSubject, editContent, loadComments }
   } = useAppContext();
   const {
     actions: {
@@ -271,7 +278,7 @@ export default function SubjectPanel({
             />
             <div style={{ marginTop: '1rem' }}>
               <span style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
-                Secret Message
+                {secretMessageLabel}
               </span>
               <Textarea
                 style={{ marginTop: '0.7rem' }}
@@ -337,7 +344,10 @@ export default function SubjectPanel({
                 >
                   <Icon icon="comment-alt" />
                   <span style={{ marginLeft: '1rem' }}>
-                    Comment{!expanded && numComments > 1 ? 's' : ''}
+                    {commentLabel}
+                    {!expanded && SELECTED_LANGUAGE === 'en' && numComments > 1
+                      ? 's'
+                      : ''}
                     {!expanded &&
                     numComments &&
                     numComments > 0 &&
@@ -376,27 +386,31 @@ export default function SubjectPanel({
                     </span>
                   </Button>
                 )}
-                <Button
-                  color="brownOrange"
-                  style={{ fontSize: '2rem', marginLeft: '1rem' }}
-                  skeuomorphic
-                  filled={isRecommendedByUser}
-                  disabled={recommendationInterfaceShown}
-                  onClick={() => setRecommendationInterfaceShown(true)}
-                >
-                  <Icon icon="star" />
-                </Button>
+                {false && (
+                  <Button
+                    color="brownOrange"
+                    style={{ fontSize: '2rem', marginLeft: '1rem' }}
+                    skeuomorphic
+                    filled={isRecommendedByUser}
+                    disabled={recommendationInterfaceShown}
+                    onClick={() => setRecommendationInterfaceShown(true)}
+                  >
+                    <Icon icon="star" />
+                  </Button>
+                )}
               </div>
             )}
-            <RecommendationStatus
-              style={{
-                marginBottom: '1rem',
-                marginLeft: '-1rem',
-                marginRight: '-1rem'
-              }}
-              contentType="subject"
-              recommendations={recommendations}
-            />
+            {false && (
+              <RecommendationStatus
+                style={{
+                  marginBottom: '1rem',
+                  marginLeft: '-1rem',
+                  marginRight: '-1rem'
+                }}
+                contentType="subject"
+                recommendations={recommendations}
+              />
+            )}
             {recommendationInterfaceShown && (
               <RecommendationInterface
                 contentId={subjectId}
@@ -502,7 +516,7 @@ export default function SubjectPanel({
           </div>
         )}
         <div style={{ marginTop: '1rem' }}>
-          By{' '}
+          {byLabel}{' '}
           <b>
             <UsernameText
               user={{
@@ -511,7 +525,7 @@ export default function SubjectPanel({
               }}
             />
           </b>{' '}
-          &nbsp;|&nbsp; Published {timeSince(timeStamp)}
+          &nbsp;|&nbsp; {postedLabel} {timeSince(timeStamp)}
         </div>
       </div>
       {confirmModalShown && (
@@ -591,8 +605,9 @@ export default function SubjectPanel({
   }
 
   async function handleEditDone() {
-    const editedSubject = await editSubject({
-      subjectId,
+    const editedSubject = await editContent({
+      contentId: subjectId,
+      contentType: 'subject',
       editedTitle: finalizeEmoji(editedTitle),
       editedDescription: finalizeEmoji(editedDescription),
       editedSecretAnswer: finalizeEmoji(editedSecretAnswer)

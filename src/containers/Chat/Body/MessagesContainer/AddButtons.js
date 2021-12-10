@@ -2,22 +2,20 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import { useMyState } from 'helpers/hooks';
 
 AddButtons.propTypes = {
   disabled: PropTypes.bool,
   onUploadButtonClick: PropTypes.func.isRequired,
-  onSelectGifButtonClick: PropTypes.func.isRequired,
-  onSelectVideoButtonClick: PropTypes.func.isRequired
+  onSelectVideoButtonClick: PropTypes.func.isRequired,
+  profileTheme: PropTypes.string
 };
 
 export default function AddButtons({
   disabled,
   onUploadButtonClick,
-  onSelectGifButtonClick,
-  onSelectVideoButtonClick
+  onSelectVideoButtonClick,
+  profileTheme
 }) {
-  const { profileTheme } = useMyState();
   return (
     <div
       style={{

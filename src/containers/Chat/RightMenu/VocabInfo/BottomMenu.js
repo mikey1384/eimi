@@ -1,14 +1,16 @@
 import React from 'react';
+import PropTypes from 'prop-types';
 import MyRank from 'components/MyRank';
 import RankingsListItem from 'components/RankingsListItem';
-import { useNotiContext } from 'contexts';
-import { useMyState } from 'helpers/hooks';
 
-export default function BottomMenu() {
-  const {
-    state: { allRanks }
-  } = useNotiContext();
-  const { rank, twinkleXP, userId } = useMyState();
+BottomMenu.propTypes = {
+  rank: PropTypes.number,
+  allRanks: PropTypes.array.isRequired,
+  twinkleXP: PropTypes.number,
+  userId: PropTypes.number.isRequired
+};
+
+export default function BottomMenu({ rank, allRanks, twinkleXP, userId }) {
   return (
     <div style={{ height: '50%', overflow: 'scroll' }}>
       <MyRank

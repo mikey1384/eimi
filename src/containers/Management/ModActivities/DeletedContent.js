@@ -12,6 +12,12 @@ import { css } from '@emotion/css';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
+import localize from 'constants/localize';
+
+const deletedByLabel = localize('deletedBy');
+const deleteLabel = localize('delete');
+const deletePermanentlyLabel = localize('deletePermanently');
+const undoLabel = localize('undo');
 
 DeletedContent.propTypes = {
   contentId: PropTypes.number,
@@ -376,7 +382,7 @@ export default function DeletedContent({
                 </div>
               ) : (
                 <div>
-                  Deleted by{' '}
+                  {deletedByLabel}{' '}
                   <UsernameText
                     color="#fff"
                     style={{ fontSize: '1.5rem' }}
@@ -391,7 +397,7 @@ export default function DeletedContent({
                     color="red"
                     skeuomorphic
                   >
-                    Delete Permanently
+                    {deletePermanentlyLabel}
                   </Button>
                 )}
                 <Button
@@ -400,7 +406,7 @@ export default function DeletedContent({
                   style={{ marginLeft: '1rem' }}
                   skeuomorphic
                 >
-                  {isRecovered ? 'Delete' : 'Undo'}
+                  {isRecovered ? deleteLabel : undoLabel}
                 </Button>
               </div>
             </div>
@@ -410,7 +416,7 @@ export default function DeletedContent({
       {confirmModalShown && (
         <ConfirmModal
           onHide={() => setConfirmModalShown(false)}
-          title="Delete Content Permanently"
+          title={deletePermanentlyLabel}
           onConfirm={handleDeletePermanently}
         />
       )}

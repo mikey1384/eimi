@@ -1,4 +1,4 @@
-import React, { memo, useCallback } from 'react';
+import React, { memo } from 'react';
 import PropTypes from 'prop-types';
 import ChatSearchBox from './ChatSearchBox';
 import Channels from './Channels';
@@ -12,31 +12,23 @@ import {
   phoneMaxWidth
 } from 'constants/css';
 import { css } from '@emotion/css';
+import { useChatContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useChatContext } from 'contexts';
+import { useHistory } from 'react-router-dom';
+import localize from 'constants/localize';
+
+const newChatLabel = localize('newChat');
 
 LeftMenu.propTypes = {
-  onChannelEnter: PropTypes.func.isRequired,
   onNewButtonClick: PropTypes.func.isRequired
 };
 
-function LeftMenu({ onChannelEnter, onNewButtonClick }) {
-  const {
-    requestHelpers: { loadVocabulary }
-  } = useAppContext();
-  const {
-    state: { loadingVocabulary, chatType },
-    actions: { onLoadVocabulary, onSetLoadingVocabulary }
-  } = useChatContext();
+function LeftMenu({ onNewButtonClick }) {
+  const history = useHistory();
   const { profileTheme } = useMyState();
-  const handleEnterVocabulary = useCallback(async () => {
-    onSetLoadingVocabulary(true);
-    const { vocabActivities, wordsObj, wordCollectors } =
-      await loadVocabulary();
-    onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors });
-    onSetLoadingVocabulary(false);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  const {
+    state: { chatType, loadingVocabulary }
+  } = useChatContext();
 
   return (
     <div
@@ -80,12 +72,12 @@ function LeftMenu({ onChannelEnter, onNewButtonClick }) {
             marginLeft: '0.7rem'
           }}
         >
-          New Chat
+          {newChatLabel}
         </div>
       </div>
       <Vocabulary
         selected={chatType === 'vocabulary' || loadingVocabulary}
-        onClick={handleEnterVocabulary}
+        onClick={() => history.push('/chat/vocabulary')}
       />
       <ChatSearchBox
         style={{
@@ -107,7 +99,7 @@ function LeftMenu({ onChannelEnter, onNewButtonClick }) {
         >
           <div style={{ width: '100%', height: '100%', display: 'flex' }}>
             <Tabs />
-            <Channels onChannelEnter={onChannelEnter} />
+            <Channels />
           </div>
         </div>
       </div>

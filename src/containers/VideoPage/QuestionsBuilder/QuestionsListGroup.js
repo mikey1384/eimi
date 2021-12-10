@@ -4,6 +4,9 @@ import QuestionsListItem from './QuestionsListItem';
 import RoundList from 'components/RoundList';
 import Button from 'components/Button';
 import { Color } from 'constants/css';
+import localize from 'constants/localize';
+
+const reorderQuestionsLabel = localize('reorderQuestions');
 
 QuestionsListGroup.propTypes = {
   questionIds: PropTypes.array.isRequired,
@@ -27,9 +30,9 @@ export default function QuestionsListGroup({
         alignItems: 'center'
       }}
     >
-      <h3 style={{ color: Color.darkerGray() }}>Reorder Questions</h3>
+      <h3 style={{ color: Color.darkerGray() }}>{reorderQuestionsLabel}</h3>
       <RoundList style={{ marginTop: '2rem' }}>
-        {questionIds.map(questionId => (
+        {questionIds.map((questionId) => (
           <QuestionsListItem
             key={questionId}
             item={questions[questionId]}

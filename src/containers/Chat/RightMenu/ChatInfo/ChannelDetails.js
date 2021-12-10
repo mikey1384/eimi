@@ -52,7 +52,7 @@ export default function ChannelDetails({ channelId, channelName, style }) {
         style={{ width: '100%', fontSize: '1.5rem' }}
         show={channelNameHovered}
         direction="left"
-        text={channelName || ''}
+        text={customChannelNames[channelId] || channelName || ''}
       />
     </div>
   );

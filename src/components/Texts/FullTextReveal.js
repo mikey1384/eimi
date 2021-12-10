@@ -38,6 +38,7 @@ export default function FullTextReveal({
           boxShadow: `0 0 1px ${Color.black(0.9)}`,
           fontWeight: 'normal',
           lineHeight: 1.5,
+          wordBreak: 'keep-all',
           whiteSpace: 'pre-wrap',
           overflowWrap: 'break-word',
           ...style

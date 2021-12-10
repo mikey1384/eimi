@@ -1,4 +1,4 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useContext, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
@@ -7,9 +7,9 @@ import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
 import { Color } from 'constants/css';
 import { isValidSpoiler } from 'helpers/stringHelpers';
-import { useAppContext, useChatContext } from 'contexts';
 import { socket } from 'constants/io';
 import Spoiler from './Spoiler';
+import LocalContext from '../Context';
 
 TextMessage.propTypes = {
   attachmentHidden: PropTypes.bool,
@@ -25,7 +25,6 @@ TextMessage.propTypes = {
   isEditing: PropTypes.bool,
   onEditCancel: PropTypes.func.isRequired,
   onEditDone: PropTypes.func.isRequired,
-  onSetScrollToBottom: PropTypes.func.isRequired,
   onShowSubjectMsgsModal: PropTypes.func.isRequired,
   socketConnected: PropTypes.bool,
   subjectId: PropTypes.number,
@@ -47,7 +46,6 @@ function TextMessage({
   isEditing,
   onEditCancel,
   onEditDone,
-  onSetScrollToBottom,
   subjectId,
   onShowSubjectMsgsModal,
   socketConnected,
@@ -55,14 +53,12 @@ function TextMessage({
   theme
 }) {
   const {
+    requests: { hideChatAttachment },
     actions: { onHideAttachment }
-  } = useChatContext();
-  const {
-    requestHelpers: { hideChatAttachment }
-  } = useAppContext();
+  } = useContext(LocalContext);
 
   const Prefix = useMemo(() => {
-    let prefix = '';
+    let prefix = null;
     if (isSubject) {
       prefix = (
         <span style={{ fontWeight: 'bold', color: Color[theme || 'green']() }}>
@@ -82,7 +78,7 @@ function TextMessage({
 
   const handleHideAttachment = useCallback(async () => {
     await hideChatAttachment(messageId);
-    onHideAttachment(messageId);
+    onHideAttachment({ messageId, channelId });
     socket.emit('hide_message_attachment', { channelId, messageId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelId, messageId]);
@@ -103,14 +99,11 @@ function TextMessage({
             onEditDone={onEditDone}
           />
         ) : (
-          <div>
+          <>
             <div className={MessageStyle.messageWrapper}>
               {Prefix}
               {isValidSpoiler(content) ? (
-                <Spoiler
-                  content={content}
-                  onSpoilerClick={onSetScrollToBottom}
-                />
+                <Spoiler content={content} />
               ) : (
                 <LongText
                   style={{
@@ -128,13 +121,14 @@ function TextMessage({
                 <Button
                   filled
                   color="logoBlue"
+                  skeuomorphic
                   onClick={() => onShowSubjectMsgsModal({ subjectId, content })}
                 >
-                  Show related conversations
+                  Show responses
                 </Button>
               </div>
             )}
-          </div>
+          </>
         )}
         {extractedUrl && messageId && !attachmentHidden && (
           <Embedly

@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { css } from '@emotion/css';
 import { Color } from 'constants/css';
+import localize from 'constants/localize';
+
+const missionsLabel = localize('missions2');
+const manageLabel = localize('manage');
 
 RightMenu.propTypes = {
   className: PropTypes.string,
@@ -60,7 +64,7 @@ export default function RightMenu({
           }}
         >
           <Icon icon="clipboard-check" />
-          <span style={{ marginLeft: '1.5rem' }}>Missions</span>
+          <span style={{ marginLeft: '1.5rem' }}>{missionsLabel}</span>
         </nav>
         <nav
           onClick={() => onSelectTab('management')}
@@ -73,7 +77,7 @@ export default function RightMenu({
           }}
         >
           <Icon icon="tasks" />
-          <span style={{ marginLeft: '1.5rem' }}>Manage</span>
+          <span style={{ marginLeft: '1.5rem' }}>{manageLabel}</span>
         </nav>
       </div>
     </div>

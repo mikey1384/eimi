@@ -1,12 +1,15 @@
-import React, { useMemo } from 'react';
+import React, { useContext, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import ProfilePic from 'components/ProfilePic';
-import { useChatContext } from 'contexts';
 import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from '@emotion/css';
+import LocalContext from '../../Context';
+import localize from 'constants/localize';
+
+const callingLabel = localize('calling');
 
 CallScreen.propTypes = {
   style: PropTypes.object
@@ -16,7 +19,7 @@ export default function CallScreen({ style }) {
   const {
     state: { channelOnCall, chatStatus },
     actions: { onShowIncoming }
-  } = useChatContext();
+  } = useContext(LocalContext);
 
   const calling = useMemo(() => {
     return !channelOnCall.callReceived && channelOnCall.imCalling;
@@ -100,7 +103,7 @@ export default function CallScreen({ style }) {
             alignItems: 'center'
           }}
         >
-          Calling...
+          {callingLabel}...
         </div>
       )}
     </div>

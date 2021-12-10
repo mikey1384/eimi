@@ -6,6 +6,10 @@ import { useAppContext } from 'contexts';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const myRankingLabel = localize('myRanking');
+const top30Label = localize('top30');
 
 GrammarRankings.propTypes = {
   mission: PropTypes.object.isRequired,
@@ -44,11 +48,10 @@ export default function GrammarRankings({ mission, myAttempts }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const rankers = useMemo(() => (allSelected ? all : top30s), [
-    all,
-    allSelected,
-    top30s
-  ]);
+  const rankers = useMemo(
+    () => (allSelected ? all : top30s),
+    [all, allSelected, top30s]
+  );
 
   return (
     <div>
@@ -58,13 +61,13 @@ export default function GrammarRankings({ mission, myAttempts }) {
             onClick={() => setAllSelected(true)}
             className={allSelected ? 'active' : ''}
           >
-            My Ranking
+            {myRankingLabel}
           </nav>
           <nav
             onClick={() => setAllSelected(false)}
             className={!allSelected ? 'active' : ''}
           >
-            Top 30s
+            {top30Label}
           </nav>
         </FilterBar>
       )}

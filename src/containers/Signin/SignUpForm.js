@@ -7,6 +7,26 @@ import Banner from 'components/Banner';
 import { css } from '@emotion/css';
 import { isValidUsername, stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useContentContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const createMyAccountLabel = localize('createMyAccount');
+const emailIsNeededInCaseLabel = localize('emailIsNeededInCase');
+const emailYoursOrYourParentsLabel = localize('emailYoursOrYourParents');
+const iAlreadyHaveAnAccountLabel = localize('iAlreadyHaveAnAccount');
+const firstNameLabel = localize('firstName');
+const letsSetUpYourAccountLabel = localize('letsSetUpYourAccount');
+const passwordLabel = localize('password');
+const passwordsNeedToBeAtLeastLabel = localize('passwordsNeedToBeAtLeast');
+const usernameLabel = localize('username');
+const enterTheUsernameYouWishToUseLabel = localize(
+  'enterTheUsernameYouWishToUse'
+);
+const lastNameLabel = localize('lastName');
+const passphraseLabel = localize('passphrase');
+const setUpPasswordLabel = localize('setUpPassword');
+const whatIsYourFirstNameLabel = localize('whatIsYourFirstName');
+const whatIsYourLastNameLabel = localize('whatIsYourLastName');
 
 SignUpForm.propTypes = {
   username: PropTypes.string,
@@ -44,10 +64,38 @@ export default function SignUpForm({
       errorMessage,
     [errorMessage, firstname, keyphrase, lastname, password, username]
   );
+  const usernameErrorMsgLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `"${username}" - 유효하지 않은 아이디입니다.${
+        username.length < 3 ? ' 아이디는 3글자 이상이어야 합니다.' : ''
+      }`;
+    }
+    return `${username} is not a valid username.${
+      username.length < 3 ? ' Make sure it is at least 3 characters long.' : ''
+    }`;
+  }, [username]);
+  const notValidFirstNameLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${firstname}는 유효한 이름이 아닙니다. 영문자로 입력해 주세요`;
+    }
+    return `${firstname} is not a valid first name. Your first name should consist of english letters only`;
+  }, [firstname]);
+  const notValidLastNameLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${lastname}는 유효한 성이 아닙니다. 영문자로 입력해 주세요`;
+    }
+    return `${lastname} is not a valid last name. Your last name should consist of english letters only`;
+  }, [lastname]);
+  const notValidEmailLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${email}는 유효한 이메일 주소가 아닙니다`;
+    }
+    return `${email} is not a valid email address`;
+  }, [email]);
 
   return (
     <ErrorBoundary>
-      <header>{`Welcome to Twinkle! Let's set up your account`}</header>
+      <header>{letsSetUpYourAccountLabel}</header>
       {errorMessage && <Banner>{errorMessage}</Banner>}
       <main>
         <div
@@ -69,10 +117,10 @@ export default function SignUpForm({
           `}
         >
           <section>
-            <label>Username</label>
+            <label>{usernameLabel}</label>
             <Input
               value={username}
-              placeholder="Enter the username you wish to use. It has to be at least 3 characters long"
+              placeholder={enterTheUsernameYouWishToUseLabel}
               onChange={(text) => {
                 setErrorMessage('');
                 onSetUsername(text.trim());
@@ -85,10 +133,10 @@ export default function SignUpForm({
             />
           </section>
           <section>
-            <label>Password</label>
+            <label>{passwordLabel}</label>
             <Input
               value={password}
-              placeholder="Password (You MUST remember your password. Write it down somewhere!)"
+              placeholder={setUpPasswordLabel}
               onChange={(text) => {
                 setErrorMessage('');
                 setPassword(text.trim());
@@ -102,11 +150,11 @@ export default function SignUpForm({
             />
           </section>
           <section>
-            <label>First Name</label>
+            <label>{firstNameLabel}</label>
             <Input
               maxLength={30}
               value={firstname}
-              placeholder="What is your first name?"
+              placeholder={whatIsYourFirstNameLabel}
               onChange={(text) => {
                 setErrorMessage('');
                 setFirstname(text.trim());
@@ -119,11 +167,11 @@ export default function SignUpForm({
             />
           </section>
           <section>
-            <label>Last Name</label>
+            <label>{lastNameLabel}</label>
             <Input
               maxLength={30}
               value={lastname}
-              placeholder="What is your last name?"
+              placeholder={whatIsYourLastNameLabel}
               onChange={(text) => {
                 setErrorMessage('');
                 setLastname(text.trim());
@@ -136,10 +184,10 @@ export default function SignUpForm({
             />
           </section>
           <section>
-            <label>{`Who is the Big Bad Wolf's brother?`}</label>
+            <label>{passphraseLabel}</label>
             <Input
               value={keyphrase}
-              placeholder="Who is the Big Bad Wolf's brother?"
+              placeholder={passphraseLabel}
               onChange={(text) => {
                 setErrorMessage('');
                 setKeyphrase(text);
@@ -152,10 +200,10 @@ export default function SignUpForm({
             />
           </section>
           <section style={{ marginTop: '2rem' }}>
-            <label>{"Email (yours or your parent's)"}</label>
+            <label>{emailYoursOrYourParentsLabel}</label>
             <Input
               value={email}
-              placeholder="Email is needed in case you forget your password"
+              placeholder={emailIsNeededInCaseLabel}
               onChange={(text) => {
                 setErrorMessage('');
                 setEmail(text);
@@ -180,7 +228,7 @@ export default function SignUpForm({
           }}
           onClick={onShowLoginForm}
         >
-          I already have an account
+          {iAlreadyHaveAnAccountLabel}
         </Button>
         <Button
           color="blue"
@@ -188,7 +236,7 @@ export default function SignUpForm({
           onClick={onSubmit}
           style={{ fontSize: '2.5rem' }}
         >
-          Create my account!
+          {createMyAccountLabel}
         </Button>
       </footer>
     </ErrorBoundary>
@@ -196,29 +244,19 @@ export default function SignUpForm({
 
   async function onSubmit() {
     if (!isValidUsername(username)) {
-      return setErrorMessage(
-        `${username} is not a valid username.${
-          username.length < 3
-            ? ' Make sure it is at least 3 characters long.'
-            : ''
-        }`
-      );
+      return setErrorMessage(usernameErrorMsgLabel);
     }
     if (!isValidPassword(password)) {
-      return setErrorMessage('Passwords need to be at least 5 characters long');
+      return setErrorMessage(passwordsNeedToBeAtLeastLabel);
     }
     if (!isValidRealname(firstname)) {
-      return setErrorMessage(
-        `${firstname} is not a valid first name. Your first name should consist of english letters only`
-      );
+      return setErrorMessage(notValidFirstNameLabel);
     }
     if (!isValidRealname(lastname)) {
-      return setErrorMessage(
-        `${lastname} is not a valid last name. Your last name should consist of english letters only`
-      );
+      return setErrorMessage(notValidLastNameLabel);
     }
     if (email && !isValidEmailAddress(email)) {
-      return setErrorMessage(`${email} is not a valid email address`);
+      return setErrorMessage(notValidEmailLabel);
     }
 
     try {

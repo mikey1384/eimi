@@ -158,23 +158,6 @@ export default function contentRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async editSubject({
-      subjectId,
-      editedTitle,
-      editedDescription,
-      editedSecretAnswer
-    }) {
-      try {
-        const { data } = await request.put(
-          `${URL}/content/subjects`,
-          { subjectId, editedTitle, editedDescription, editedSecretAnswer },
-          auth()
-        );
-        return Promise.resolve(data);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
     async fetchPlaylistsContaining({ videoId }) {
       try {
         const { data: playlists } = await request.get(
@@ -655,12 +638,14 @@ export default function contentRequestHelpers({ auth, handleError }) {
     },
     async updateRewardLevel({ rewardLevel, contentId, contentType }) {
       try {
-        await request.put(
+        const {
+          data: { cannotChange, success, moderatorName }
+        } = await request.put(
           `${URL}/content/rewardLevel`,
           { rewardLevel, contentId, contentType },
           auth()
         );
-        return Promise.resolve();
+        return Promise.resolve({ cannotChange, success, moderatorName });
       } catch (error) {
         return handleError(error);
       }

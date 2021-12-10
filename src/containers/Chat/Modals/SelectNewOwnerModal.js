@@ -6,6 +6,9 @@ import SearchInput from 'components/Texts/SearchInput';
 import { useMyState } from 'helpers/hooks';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import CheckListGroup from 'components/CheckListGroup';
+import localize from 'constants/localize';
+
+const searchUsersLabel = localize('searchUsers');
 
 SelectNewOwnerModal.propTypes = {
   andLeave: PropTypes.bool,
@@ -45,7 +48,7 @@ export default function SelectNewOwnerModal({
             <SearchInput
               autoFocus
               onChange={(text) => setSearchText(text)}
-              placeholder="Search users..."
+              placeholder={`${searchUsersLabel}...`}
               value={searchText}
             />
             <CheckListGroup

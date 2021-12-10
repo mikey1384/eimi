@@ -6,6 +6,11 @@ import SelectFeaturedPlaylists from '../Modals/SelectFeaturedPlaylists';
 import ReorderFeaturedPlaylists from '../Modals/ReorderFeaturedPlaylists';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useExploreContext } from 'contexts';
+import localize from 'constants/localize';
+
+const featuredPlaylistsLabel = localize('featuredPlaylists');
+const selectLabel = localize('select');
+const reorderLabel = localize('reorder');
 
 export default function FeaturedPlaylistsPanel() {
   const {
@@ -49,7 +54,7 @@ export default function FeaturedPlaylistsPanel() {
   const menuButtons = useMemo(() => {
     const buttons = [
       {
-        label: 'Select',
+        label: selectLabel,
         onClick: handleOpenSelectPlaylistsToPinModal,
         skeuomorphic: true,
         color: 'darkerGray'
@@ -57,7 +62,7 @@ export default function FeaturedPlaylistsPanel() {
     ];
     if (featuredPlaylists.length > 0) {
       buttons.push({
-        label: 'Reorder',
+        label: reorderLabel,
         onClick: onOpenReorderFeaturedPlaylists,
         skeuomorphic: true,
         color: 'darkerGray'
@@ -74,7 +79,7 @@ export default function FeaturedPlaylistsPanel() {
         buttonGroup={() => (
           <ButtonGroup style={{ marginLeft: 'auto' }} buttons={menuButtons} />
         )}
-        title="Featured Playlists"
+        title={featuredPlaylistsLabel}
         userId={userId}
         playlists={featuredPlaylists}
         loaded={featuredPlaylistsLoaded || loadedRef.current}

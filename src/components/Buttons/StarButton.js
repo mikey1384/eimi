@@ -8,7 +8,14 @@ import RewardLevelModal from 'components/Modals/RewardLevelModal';
 import ErrorBoundary from 'components/ErrorBoundary';
 import AlertModal from 'components/Modals/AlertModal';
 import { useAppContext } from 'contexts';
-import { DESCRIPTION_LENGTH_FOR_EXTRA_REWARD_LEVEL } from 'constants/defaultValues';
+import {
+  DESCRIPTION_LENGTH_FOR_EXTRA_REWARD_LEVEL,
+  SELECTED_LANGUAGE
+} from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const setRewardLevelLabel = localize('setRewardLevel');
+const settingCannotBeChangedLabel = localize('settingCannotBeChanged');
 
 StarButton.propTypes = {
   byUser: PropTypes.bool,
@@ -69,9 +76,48 @@ export default function StarButton({
   }, [contentType, filePath, uploader, writtenByButtonShown]);
   const StarButtonRef = useRef(null);
   useOutsideClick(StarButtonRef, () => setMenuShown(false));
-  const makerLabel = useMemo(() => {
-    return uploader?.id === userId ? 'me' : uploader?.username;
-  }, [uploader?.id, uploader?.username, userId]);
+  const byUserLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      const makerLabel =
+        uploader?.id === userId ? '내가' : `${uploader?.username}님이`;
+      return (
+        <>
+          {byUser
+            ? `${makerLabel} ${
+                writtenByButtonShown ? '작성하지' : '제작하지'
+              } 않았음`
+            : `${makerLabel} ${writtenByButtonShown ? '작성했음' : '제작함'}`}
+        </>
+      );
+    }
+    const makerLabel = uploader?.id === userId ? 'me' : uploader?.username;
+    return (
+      <>
+        {byUser
+          ? `This wasn't ${
+              writtenByButtonShown ? 'written' : 'made'
+            } by ${makerLabel}`
+          : `This was ${
+              writtenByButtonShown ? 'written' : 'made'
+            } by ${makerLabel}`}
+      </>
+    );
+  }, [byUser, uploader?.id, uploader?.username, userId, writtenByButtonShown]);
+  const moderatorHasDisabledChangeLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <span>
+          <b>{moderatorName}</b>님이 이 설정을 변경하지 못하도록 설정하였습니다
+        </span>
+      );
+    }
+    return (
+      <span>
+        <b>{moderatorName}</b> has disabled users from changing this setting for
+        this post
+      </span>
+    );
+  }, [moderatorName]);
   const buttonShown = useMemo(() => {
     return (
       canEditRewardLevel ||
@@ -87,7 +133,7 @@ export default function StarButton({
 
   return buttonShown ? (
     <ErrorBoundary>
-      <div ref={StarButtonRef}>
+      <div style={{ position: 'relative' }} ref={StarButtonRef}>
         <Button
           style={style}
           skeuomorphic={!(!!rewardLevel || byUser || filled) && skeuomorphic}
@@ -109,17 +155,11 @@ export default function StarButton({
           >
             {(contentType === 'video' || contentType === 'subject') &&
               canEditRewardLevel && (
-                <li onClick={handleShowRewardLevelModal}>Set Reward Level</li>
+                <li onClick={handleShowRewardLevelModal}>
+                  {setRewardLevelLabel}
+                </li>
               )}
-            <li onClick={toggleByUser}>
-              {byUser
-                ? `This wasn't ${
-                    writtenByButtonShown ? 'written' : 'made'
-                  } by ${makerLabel}`
-                : `This was ${
-                    writtenByButtonShown ? 'written' : 'made'
-                  } by ${makerLabel}`}
-            </li>
+            <li onClick={toggleByUser}>{byUserLabel}</li>
           </DropdownList>
         )}
       </div>
@@ -137,13 +177,8 @@ export default function StarButton({
       )}
       {cannotChangeModalShown && (
         <AlertModal
-          title="This setting cannot be changed"
-          content={
-            <span>
-              <b>{moderatorName}</b> has disabled users from changing this
-              setting for this post
-            </span>
-          }
+          title={settingCannotBeChangedLabel}
+          content={moderatorHasDisabledChangeLabel}
           onHide={() => setCannotChangeModalShown(false)}
         />
       )}
@@ -163,7 +198,11 @@ export default function StarButton({
   }
 
   async function toggleByUser() {
-    const { byUser, cannotChange, moderatorName: modName } = await setByUser({
+    const {
+      byUser,
+      cannotChange,
+      moderatorName: modName
+    } = await setByUser({
       contentType,
       contentId
     });

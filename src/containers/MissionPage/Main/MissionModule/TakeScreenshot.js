@@ -37,6 +37,7 @@ export default function TakeScreenshot({
   } = useMissionContext();
   const [screenshotTaken, setScreenshotTaken] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(false);
+  const [buttonShown, setButtonShown] = useState(false);
   const { fileUploadLvl, username } = useMyState();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [uploadingFile, setUploadingFile] = useState(false);
@@ -50,6 +51,7 @@ export default function TakeScreenshot({
 
   useEffect(() => {
     mounted.current = true;
+    setTimeout(() => setButtonShown(true), 3200);
     return function onUnmount() {
       mounted.current = false;
     };
@@ -83,7 +85,7 @@ export default function TakeScreenshot({
           </div>
           <div>
             <b>1.</b> Take a screenshot of{' '}
-            <b style={{ color: Color.red() }}>
+            <b style={{ color: Color.green() }}>
               this <Icon icon="arrow-down" />
             </b>
             <div
@@ -104,6 +106,15 @@ export default function TakeScreenshot({
             >
               <div
                 className={css`
+                  animation: fadeIn 3s;
+                  @keyframes fadeIn {
+                    0% {
+                      opacity: 0;
+                    }
+                    100% {
+                      opacity: 1;
+                    }
+                  }
                   border: 1px solid ${Color.borderGray()};
                   border-radius: ${borderRadius};
                   text-align: center;
@@ -130,8 +141,7 @@ export default function TakeScreenshot({
                     }
                   `}
                 >
-                  Your screenshot{' '}
-                  <b style={{ color: Color.red() }}>must include</b> this
+                  Screenshot this
                 </p>
                 <p style={{ marginTop: '1.5rem' }}>
                   <b>{username}</b> captured this screenshot on {returnNow()}
@@ -233,23 +243,35 @@ export default function TakeScreenshot({
             alignItems: 'center'
           }}
         >
-          <div
-            style={{
-              marginTop: '1rem',
-              width: '50%',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center'
-            }}
-          >
-            <Button
-              skeuomorphic
-              color="logoBlue"
-              onClick={() => setScreenshotTaken(true)}
+          {buttonShown && (
+            <div
+              className={css`
+                margin-top: 1rem;
+                width: 50%;
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                animation: fadeIn 3s;
+                @keyframes fadeIn {
+                  0% {
+                    opacity: 0;
+                  }
+                  100% {
+                    opacity: 1;
+                  }
+                }
+              `}
             >
-              I took the screenshot
-            </Button>
-          </div>
+              <Button
+                skeuomorphic
+                color="logoBlue"
+                onClick={() => setScreenshotTaken(true)}
+              >
+                I took the screenshot of that{' '}
+                <Icon style={{ marginLeft: '0.7rem' }} icon="arrow-up" />
+              </Button>
+            </div>
+          )}
           <div style={{ marginTop: '5rem' }}>
             <span>
               {`If you don't know what the word "screenshot" means, `}

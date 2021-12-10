@@ -4,6 +4,12 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
+import localize from 'constants/localize';
+
+const cancelLabel = localize('cancel');
+const classroomChatLabel = localize('classroomChat');
+const regularChatLabel = localize('regularChat');
+const startNewChatLabel = localize('startNewChat');
 
 SelectScreen.propTypes = {
   onHide: PropTypes.func.isRequired,
@@ -13,7 +19,7 @@ SelectScreen.propTypes = {
 export default function SelectScreen({ onHide, onSetSection }) {
   return (
     <ErrorBoundary>
-      <header>Start a New Chat</header>
+      <header>{startNewChatLabel}</header>
       <main>
         <div
           style={{
@@ -37,7 +43,7 @@ export default function SelectScreen({ onHide, onSetSection }) {
                 color: Color.black()
               }}
             >
-              Regular Chat
+              {regularChatLabel}
             </div>
             <div
               style={{
@@ -74,7 +80,7 @@ export default function SelectScreen({ onHide, onSetSection }) {
                 color: Color.black()
               }}
             >
-              Classroom
+              {classroomChatLabel}
             </div>
             <div
               style={{
@@ -99,7 +105,7 @@ export default function SelectScreen({ onHide, onSetSection }) {
       </main>
       <footer>
         <Button transparent onClick={onHide}>
-          Cancel
+          {cancelLabel}
         </Button>
       </footer>
     </ErrorBoundary>

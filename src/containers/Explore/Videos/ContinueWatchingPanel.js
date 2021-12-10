@@ -5,6 +5,12 @@ import SectionPanel from 'components/SectionPanel';
 import VideoThumb from 'components/VideoThumb';
 import Icon from 'components/Icon';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const continueWatchingLabel = localize('continueWatching');
+const emptyMessageLabel = localize('noVideosToRecommend');
+const loadingLabel = localize('loading');
+const recommendedLabel = localize('recommendedVideos');
 
 export default function ContinueWatchingPanel() {
   const { userId, loaded: profileLoaded } = useMyState();
@@ -26,6 +32,8 @@ export default function ContinueWatchingPanel() {
   const [loaded, setLoaded] = useState(continueWatchingLoaded);
   const loadingRef = useRef(false);
   const loadedRef = useRef(false);
+  const mounted = useRef(true);
+
   useEffect(() => {
     if (
       !loadingRef.current &&
@@ -37,37 +45,45 @@ export default function ContinueWatchingPanel() {
 
     async function init() {
       loadingRef.current = true;
-      const {
-        videos,
-        loadMoreButton,
-        noVideosToContinue
-      } = await loadContinueWatching();
-      onLoadContinueWatching({
-        videos,
-        loadMoreButton,
-        showingRecommendedVideos: !!noVideosToContinue
-      });
+      const { videos, loadMoreButton, noVideosToContinue } =
+        await loadContinueWatching();
+      if (mounted.current) {
+        onLoadContinueWatching({
+          videos,
+          loadMoreButton,
+          showingRecommendedVideos: !!noVideosToContinue
+        });
+      }
       loadedRef.current = true;
-      setLoaded(true);
+      if (mounted.current) {
+        setLoaded(true);
+      }
       loadingRef.current = false;
     }
 
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [continueWatchingLoaded, userId, prevUserId, profileLoaded]);
 
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanUp() {
+      mounted.current = false;
+    };
+  }, []);
+
   return (
     <ErrorBoundary>
       <SectionPanel
         loaded={loaded || loadedRef.current}
         innerStyle={{ fontSize: '1.5rem' }}
-        emptyMessage="We don't have any videos to recommend to you at the moment"
+        emptyMessage={emptyMessageLabel}
         isEmpty={continueWatchingVideos.length === 0}
         title={
           loaded || loadedRef.current ? (
             showingRecommendedVideos ? (
-              'Recommended'
+              recommendedLabel
             ) : (
-              'Continue Watching'
+              continueWatchingLabel
             )
           ) : (
             <div
@@ -77,7 +93,7 @@ export default function ContinueWatchingPanel() {
                 verticalAlign: 0
               }}
             >
-              <span>Loading</span>
+              <span>{loadingLabel}</span>
               <Icon style={{ marginLeft: '1rem' }} icon="spinner" pulse />
             </div>
           )
@@ -118,6 +134,8 @@ export default function ContinueWatchingPanel() {
     const { videos, loadMoreButton } = await loadContinueWatching(
       continueWatchingVideos[continueWatchingVideos.length - 1]?.viewTimeStamp
     );
-    onLoadMoreContinueWatching({ videos, loadMoreButton });
+    if (mounted.current) {
+      onLoadMoreContinueWatching({ videos, loadMoreButton });
+    }
   }
 }

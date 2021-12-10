@@ -43,7 +43,7 @@ export default function SubjectItem({
   }, []);
 
   const displayedTime = useMemo(
-    () => unix(timeStamp).format('LLL'),
+    () => unix(timeStamp).format('lll'),
     [timeStamp]
   );
 

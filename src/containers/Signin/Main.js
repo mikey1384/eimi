@@ -2,6 +2,12 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/ErrorBoundary';
+import localize from 'constants/localize';
+
+const iForgotMyPasswordLabel = localize('iForgotMyPassword');
+const noIDontHaveAnAccountLabel = localize('noIDontHaveAnAccount');
+const welcomeLabel = localize('welcomeToTwinkle');
+const yesIHaveAnAccountLabel = localize('yesIHaveAnAccount');
 
 Main.propTypes = {
   onShowForgotPasswordForm: PropTypes.func.isRequired,
@@ -16,21 +22,21 @@ export default function Main({
 }) {
   return (
     <ErrorBoundary>
-      <header>Welcome to Twinkle. Do you have a Twinkle account?</header>
+      <header>{welcomeLabel}</header>
       <main>
         <Button
           color="logoBlue"
           style={{ display: 'block', fontSize: '2.7rem', padding: '1rem' }}
           onClick={onShowLoginForm}
         >
-          Yes, I have an account
+          {yesIHaveAnAccountLabel}
         </Button>
         <Button
           color="pink"
           style={{ marginTop: '1rem', fontSize: '2.5rem', padding: '1rem' }}
           onClick={onShowSignUpForm}
         >
-          {"No, I don't have an account"}
+          {noIDontHaveAnAccountLabel}
         </Button>
         <Button
           color="purple"
@@ -42,7 +48,7 @@ export default function Main({
           }}
           onClick={onShowForgotPasswordForm}
         >
-          {'I forgot my password'}
+          {iForgotMyPasswordLabel}
         </Button>
       </main>
     </ErrorBoundary>

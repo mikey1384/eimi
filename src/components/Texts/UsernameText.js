@@ -7,20 +7,26 @@ import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext, useChatContext } from 'contexts';
 import { isMobile } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const deviceIsMobile = isMobile(navigator);
+const chatLabel = localize('chat2');
+const deletedLabel = localize('deleted');
+const profileLabel = localize('Profile');
 
 UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
+  dropdownMenuReversed: PropTypes.bool,
   style: PropTypes.object,
   user: PropTypes.object,
   wordBreakEnabled: PropTypes.bool
 };
 
-const deviceIsMobile = isMobile(navigator);
-
 export default function UsernameText({
   className,
   color,
+  dropdownMenuReversed,
   style = {},
   user = {},
   wordBreakEnabled
@@ -30,7 +36,7 @@ export default function UsernameText({
   const timerRef = useRef(null);
   const mouseEntered = useRef(false);
   const {
-    requestHelpers: { loadChat, loadDMChannel, loadProfile }
+    requestHelpers: { loadDMChannel, loadProfile }
   } = useAppContext();
   const {
     actions: { onInitContent }
@@ -39,10 +45,9 @@ export default function UsernameText({
     contentType: 'user',
     contentId: user.id
   });
-  const { userId, username } = useMyState();
+  const { userId, username, profilePicUrl, authLevel } = useMyState();
   const {
-    state: { loaded },
-    actions: { onInitChat, onOpenDirectMessageChannel }
+    actions: { onOpenNewChatTab }
   } = useChatContext();
   const [menuShown, setMenuShown] = useState(false);
   const userXP = useMemo(() => {
@@ -99,22 +104,25 @@ export default function UsernameText({
           onClick={onUsernameClick}
           onMouseEnter={onMouseEnter}
         >
-          {user.username || '(Deleted)'}
+          {user.username || `(${deletedLabel})`}
         </p>
       </div>
       {menuShown && (
-        <DropdownList style={{ width: '100%' }}>
+        <DropdownList
+          isReversed={dropdownMenuReversed}
+          style={{ width: '100%' }}
+        >
           <li onClick={() => history.push(`/users/${user.username}`)}>
             <a
               style={{ color: Color.darkerGray(), cursor: 'pointer' }}
               onClick={(e) => e.preventDefault()}
             >
-              Profile
+              {profileLabel}
             </a>
           </li>
           {user.id !== userId && (
             <li onClick={onLinkClick}>
-              <a style={{ color: Color.darkerGray() }}>Chat</a>
+              <a style={{ color: Color.darkerGray() }}>{chatLabel}</a>
             </li>
           )}
           {userXP && (
@@ -186,21 +194,21 @@ export default function UsernameText({
   async function onLinkClick() {
     setMenuShown(false);
     if (user.id !== userId) {
-      if (!loaded) {
-        const initialData = await loadChat();
-        if (mounted.current) {
-          onInitChat(initialData);
-        }
-      }
-      const data = await loadDMChannel({ recepient: user });
+      const { pathId } = await loadDMChannel({ recepient: user });
       if (mounted.current) {
-        onOpenDirectMessageChannel({
-          user: { id: userId, username },
-          recepient: data.partner,
-          channelData: data
-        });
+        if (!pathId) {
+          onOpenNewChatTab({
+            user: { username, id: userId, profilePicUrl, authLevel },
+            recepient: {
+              username: user.username,
+              id: user.id,
+              profilePicUrl: user.profilePicUrl,
+              authLevel: user.authLevel
+            }
+          });
+        }
+        history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
       }
-      history.push('/chat');
     }
   }
 

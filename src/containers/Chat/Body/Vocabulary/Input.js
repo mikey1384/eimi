@@ -10,6 +10,11 @@ import {
   truncateText
 } from 'helpers/stringHelpers';
 import { useChatContext, useInputContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const deviceIsMobile = isMobile(navigator);
+const typeWordLabel = localize('typeWord');
 
 Input.propTypes = {
   innerRef: PropTypes.object,
@@ -19,8 +24,6 @@ Input.propTypes = {
   onSubmit: PropTypes.func.isRequired,
   isSubmitting: PropTypes.bool
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function Input({
   innerRef,
@@ -66,7 +69,7 @@ export default function Input({
         <Textarea
           innerRef={innerRef}
           minRows={1}
-          placeholder="Type a word..."
+          placeholder={typeWordLabel}
           onKeyDown={handleKeyDown}
           value={text}
           onChange={handleChange}
@@ -94,6 +97,14 @@ export default function Input({
     const regex = /[^a-zA-Z\-'\s]/gi;
     const isInvalid = regex.test(event.target.value.trim());
     if (isInvalid) {
+      if (SELECTED_LANGUAGE === 'kr') {
+        return onSetVocabErrorMessage(
+          `허용되지 않는 문자가 포함되어 있습니다: "${truncateText({
+            text: event.target.value,
+            limit: 20
+          })}"`
+        );
+      }
       return onSetVocabErrorMessage(
         `"${truncateText({
           text: event.target.value,

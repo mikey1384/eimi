@@ -18,8 +18,13 @@ import {
   finalizeEmoji,
   stringIsEmpty,
   isValidUrl,
-  isValidYoutubeUrl
+  isValidYoutubeUrl,
+  replaceFakeAtSymbol
 } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const cancelLabel = localize('cancel');
+const doneLabel = localize('done');
 
 ContentEditor.propTypes = {
   comment: PropTypes.string,
@@ -51,10 +56,10 @@ function ContentEditor({
   const { banned } = useMyState();
   const defaultInputState = useMemo(
     () => ({
-      editedContent: content || '',
-      editedComment: comment || '',
-      editedDescription: description || '',
-      editedSecretAnswer: secretAnswer || '',
+      editedContent: replaceFakeAtSymbol(content || ''),
+      editedComment: replaceFakeAtSymbol(comment || ''),
+      editedDescription: replaceFakeAtSymbol(description || ''),
+      editedSecretAnswer: replaceFakeAtSymbol(secretAnswer || ''),
       editedTitle: title || '',
       editedUrl:
         contentType === 'video'
@@ -342,14 +347,14 @@ function ContentEditor({
           }}
         >
           <Button color="blue" type="submit" disabled={editButtonDisabled}>
-            Done
+            {doneLabel}
           </Button>
           <Button
             transparent
             style={{ marginRight: '1rem' }}
             onClick={handleDismiss}
           >
-            Cancel
+            {cancelLabel}
           </Button>
         </div>
       </form>

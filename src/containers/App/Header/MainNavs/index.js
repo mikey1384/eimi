@@ -8,8 +8,14 @@ import { css } from '@emotion/css';
 import { getSectionFromPathname } from 'helpers';
 import { addCommasToNumber, truncateText } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useHomeContext, useViewContext } from 'contexts';
+import {
+  useAppContext,
+  useChatContext,
+  useHomeContext,
+  useViewContext
+} from 'contexts';
 import { socket } from 'constants/io';
+import localize from 'constants/localize';
 
 MainNavs.propTypes = {
   loggedIn: PropTypes.bool,
@@ -22,6 +28,11 @@ MainNavs.propTypes = {
   totalRewardAmount: PropTypes.number
 };
 
+const homeLabel = localize('home');
+const exploreLabel = localize('explore');
+const missionsLabel = localize('missions');
+const chatLabel = localize('chat');
+
 function MainNavs({
   loggedIn,
   numChatUnreads,
@@ -33,7 +44,7 @@ function MainNavs({
   totalRewardAmount
 }) {
   const [twinkleCoinsHovered, setTwinkleCoinsHovered] = useState(false);
-  const { twinkleCoins, userId, banned } = useMyState();
+  const { twinkleCoins, userId, banned, lastChatPath } = useMyState();
   const {
     state: { exploreCategory, contentPath, contentNav, profileNav, homeNav },
     actions: {
@@ -45,10 +56,23 @@ function MainNavs({
     }
   } = useViewContext();
   const {
+    user: {
+      actions: { onSetLastChatPath }
+    }
+  } = useAppContext();
+  const {
     state: { feedsOutdated }
   } = useHomeContext();
+  const {
+    state: { chatType, loaded: chatLoaded }
+  } = useChatContext();
   const loaded = useRef(false);
   const timerRef = useRef(null);
+
+  const contentLabel = useMemo(() => {
+    if (!contentNav) return null;
+    return localize(contentNav.substring(0, contentNav.length - 1));
+  }, [contentNav]);
 
   const displayedTwinkleCoins = useMemo(() => {
     if (twinkleCoins > 999) {
@@ -67,8 +91,7 @@ function MainNavs({
   const chatMatch = useMemo(
     () =>
       matchPath(pathname, {
-        path: '/chat',
-        exact: true
+        path: '/chat'
       }),
     [pathname]
   );
@@ -160,6 +183,11 @@ function MainNavs({
       onSetHomeNav('/store');
     }
 
+    if (chatMatch) {
+      const lastChatPath = pathname.split('chat')[1];
+      onSetLastChatPath(lastChatPath);
+    }
+
     if (contentPageMatch) {
       if (contentNav !== section) {
         onSetContentNav(section);
@@ -209,6 +237,16 @@ function MainNavs({
     () => loggedIn && !chatMatch && numChatUnreads > 0,
     [chatMatch, loggedIn, numChatUnreads]
   );
+
+  const chatButtonPath = useMemo(() => {
+    return `/chat${
+      chatLoaded
+        ? chatType === 'vocabulary'
+          ? '/vocabulary'
+          : lastChatPath
+        : ''
+    }`;
+  }, [chatLoaded, chatType, lastChatPath]);
 
   useEffect(() => {
     socket.emit('change_busy_status', !chatMatch);
@@ -263,15 +301,17 @@ function MainNavs({
           imgLabel={contentIconType}
         />
       )}
-      <Nav
-        to={`/missions`}
-        pathname={pathname}
-        className="mobile"
-        imgLabel="tasks"
-      />
+      {false && (
+        <Nav
+          to={`/missions`}
+          pathname={pathname}
+          className="mobile"
+          imgLabel="tasks"
+        />
+      )}
       {!banned?.chat && (
         <Nav
-          to="/chat"
+          to={chatButtonPath}
           pathname={pathname}
           className="mobile"
           imgLabel="comments"
@@ -297,7 +337,7 @@ function MainNavs({
         imgLabel="home"
         alert={pathname === '/' && !usersMatch && numNewPosts > 0}
       >
-        HOME
+        {homeLabel}
         {pathname === '/' && !usersMatch && numNewPosts > 0
           ? ` (${numNewPosts})`
           : ''}
@@ -309,7 +349,7 @@ function MainNavs({
         style={{ marginLeft: '2rem' }}
         imgLabel="search"
       >
-        EXPLORE
+        {exploreLabel}
       </Nav>
       {contentNav && (
         <Nav
@@ -319,7 +359,7 @@ function MainNavs({
           style={{ marginLeft: '2rem' }}
           imgLabel={contentIconType}
         >
-          {contentNav.substring(0, contentNav.length - 1).toUpperCase()}
+          {contentLabel}
         </Nav>
       )}
       <Nav
@@ -329,7 +369,7 @@ function MainNavs({
         style={{ marginLeft: '2rem' }}
         imgLabel="tasks"
       >
-        MISSIONS
+        {missionsLabel}
       </Nav>
       <div
         className={css`
@@ -341,17 +381,17 @@ function MainNavs({
       >
         {!banned?.chat && (
           <Nav
-            to="/chat"
+            to={chatButtonPath}
             pathname={pathname}
             className="desktop"
             imgLabel="comments"
             alert={chatAlertShown}
           >
-            CHAT
+            {chatLabel}
           </Nav>
         )}
       </div>
-      {userId && typeof twinkleCoins === 'number' && (
+      {false && userId && typeof twinkleCoins === 'number' && (
         <div
           className={`mobile ${css`
             @media (max-width: ${mobileMaxWidth}) {

@@ -26,7 +26,7 @@ export default function TwinkleLogo({ style }) {
         className={css`
           font-size: 2rem;
           font-weight: bold;
-          font-family: sans-serif, Arial, Helvetica;
+          font-family: 'Ubuntu', sans-serif, Arial, Helvetica;
           line-height: 0.9;
           color: ${Color.gray()};
           > .logo {

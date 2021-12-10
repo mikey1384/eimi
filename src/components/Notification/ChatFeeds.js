@@ -9,8 +9,12 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 import { useHistory } from 'react-router-dom';
-import { useAppContext, useChatContext } from 'contexts';
-import { GENERAL_CHAT_ID } from 'constants/defaultValues';
+import { useAppContext } from 'contexts';
+import localize from 'constants/localize';
+
+const joinConversationLabel = localize('joinConversation');
+const broughtBackByLabel = localize('broughtBackBy');
+const startedByLabel = localize('startedBy');
 
 ChatFeeds.propTypes = {
   content: PropTypes.string,
@@ -39,11 +43,8 @@ function ChatFeeds({
   const [loadingChat, setLoadingChat] = useState(false);
   const history = useHistory();
   const {
-    requestHelpers: { loadChatChannel }
+    requestHelpers: { loadGeneralChatPathId }
   } = useAppContext();
-  const {
-    actions: { onEnterChannelWithId }
-  } = useChatContext();
   const [timeSincePost, setTimeSincePost] = useState(timeSince(timeStamp));
   const [timeSinceReload, setTimeSinceReload] = useState(
     timeSince(reloadTimeStamp)
@@ -55,13 +56,13 @@ function ChatFeeds({
   const Details = useMemo(() => {
     const posterString = (
       <>
-        Started by <UsernameText user={{ id: userId, username }} />
+        {startedByLabel} <UsernameText user={{ id: userId, username }} />
         {timeStamp ? ` ${timeSincePost}` : ''}
       </>
     );
     const reloaderString = (
       <div style={{ marginTop: '0.5rem' }}>
-        Brought back by{' '}
+        {broughtBackByLabel}{' '}
         <UsernameText user={{ id: reloadedBy, username: reloaderName }} />
         {reloadTimeStamp ? ` ${timeSinceReload}` : ''}
       </div>
@@ -133,7 +134,7 @@ function ChatFeeds({
           onClick={initChatFromThis}
         >
           <Icon icon="comments" />
-          <span style={{ marginLeft: '1rem' }}>Join Conversation</span>
+          <span style={{ marginLeft: '1rem' }}>{joinConversationLabel}</span>
           {loadingChat && (
             <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
           )}
@@ -145,10 +146,8 @@ function ChatFeeds({
   async function initChatFromThis() {
     if (myId) {
       setLoadingChat(true);
-      const data = await loadChatChannel({ channelId: GENERAL_CHAT_ID });
-      if (mounted.current) {
-        onEnterChannelWithId({ data });
-      }
+      const pathId = await loadGeneralChatPathId();
+      return history.push(`/chat/${pathId}`);
     }
     history.push('/chat');
   }

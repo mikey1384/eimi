@@ -1,6 +1,7 @@
 import React, {
   memo,
   useCallback,
+  useContext,
   useEffect,
   useMemo,
   useRef,
@@ -23,13 +24,13 @@ import {
   finalizeEmoji,
   exceedsCharLimit
 } from 'helpers/stringHelpers';
-import { useMyState } from 'helpers/hooks';
 import { mb, returnMaxUploadSize } from 'constants/defaultValues';
-import { useChatContext, useInputContext } from 'contexts';
+import LocalContext from '../../Context';
 
 MessageInput.propTypes = {
   currentChannelId: PropTypes.number,
   innerRef: PropTypes.object,
+  isRespondingToSubject: PropTypes.bool,
   isTwoPeopleChannel: PropTypes.oneOfType([PropTypes.number, PropTypes.bool]),
   loading: PropTypes.bool,
   onChessButtonClick: PropTypes.func.isRequired,
@@ -37,6 +38,7 @@ MessageInput.propTypes = {
   onMessageSubmit: PropTypes.func.isRequired,
   onSelectGifButtonClick: PropTypes.func.isRequired,
   onSelectVideoButtonClick: PropTypes.func.isRequired,
+  replyTarget: PropTypes.object,
   recepientId: PropTypes.number,
   socketConnected: PropTypes.bool,
   subjectId: PropTypes.number
@@ -47,6 +49,7 @@ const deviceIsMobile = isMobile(navigator);
 function MessageInput({
   currentChannelId = 0,
   innerRef,
+  isRespondingToSubject,
   isTwoPeopleChannel,
   loading,
   onChessButtonClick,
@@ -54,24 +57,21 @@ function MessageInput({
   onMessageSubmit,
   onSelectGifButtonClick,
   onSelectVideoButtonClick,
+  replyTarget,
   recepientId,
   socketConnected,
   subjectId
 }) {
+  const {
+    actions: { onEnterComment, onSetIsRespondingToSubject, onSetReplyTarget },
+    inputState,
+    myState: { banned, profileTheme, fileUploadLvl }
+  } = useContext(LocalContext);
   const FileInputRef = useRef(null);
-  const { banned, profileTheme, fileUploadLvl } = useMyState();
-  const {
-    state: { isRespondingToSubject, replyTarget },
-    actions: { onSetIsRespondingToSubject, onSetReplyTarget }
-  } = useChatContext();
-  const {
-    state,
-    actions: { onEnterComment }
-  } = useInputContext();
   const prevChannelId = useRef(currentChannelId);
   const textForThisChannel = useMemo(
-    () => state['chat' + currentChannelId]?.text || '',
-    [currentChannelId, state]
+    () => inputState['chat' + currentChannelId]?.text || '',
+    [currentChannelId, inputState]
   );
   const maxSize = useMemo(
     () => returnMaxUploadSize(fileUploadLvl),
@@ -263,10 +263,20 @@ function MessageInput({
       {isRespondingToSubject ? (
         <TargetSubjectPreview
           channelId={currentChannelId}
-          onClose={() => onSetIsRespondingToSubject(false)}
+          onClose={() =>
+            onSetIsRespondingToSubject({
+              channelId: currentChannelId,
+              isResponding: false
+            })
+          }
         />
       ) : replyTarget ? (
-        <TargetMessagePreview onClose={() => onSetReplyTarget(null)} />
+        <TargetMessagePreview
+          replyTarget={replyTarget}
+          onClose={() =>
+            onSetReplyTarget({ channelId: currentChannelId, target: null })
+          }
+        />
       ) : null}
       <div style={{ display: 'flex' }}>
         {!!isTwoPeopleChannel && (
@@ -328,6 +338,7 @@ function MessageInput({
           onUploadButtonClick={() => FileInputRef.current.click()}
           onSelectGifButtonClick={onSelectGifButtonClick}
           onSelectVideoButtonClick={onSelectVideoButtonClick}
+          profileTheme={profileTheme}
         />
         {!socketConnected && (
           <Loading
@@ -364,9 +375,10 @@ function MessageInput({
           channelId={currentChannelId}
           fileObj={fileObj}
           onUpload={() => {
-            setText('');
+            handleSetText('');
             setUploadModalShown(false);
           }}
+          replyTarget={replyTarget}
           onHide={() => setUploadModalShown(false)}
         />
       )}

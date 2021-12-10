@@ -18,6 +18,11 @@ import Icon from 'components/Icon';
 import Videos from './Videos';
 import Links from './Links';
 import Subjects from './Subjects';
+import localize from 'constants/localize';
+
+const subjectsLabel = localize('subjects');
+const videosLabel = localize('videos2');
+const linksLabel = localize('links');
 
 Explore.propTypes = {
   history: PropTypes.object.isRequired,
@@ -80,15 +85,15 @@ export default function Explore({ history, location }) {
         <SideMenu>
           <NavLink to="/subjects" activeClassName="active">
             <Icon icon="bolt" />
-            <span style={{ marginLeft: '1.1rem' }}>Subjects</span>
+            <span style={{ marginLeft: '1.1rem' }}>{subjectsLabel}</span>
           </NavLink>
           <NavLink to="/videos" activeClassName="active">
             <Icon icon="film" />
-            <span style={{ marginLeft: '1.1rem' }}>Videos</span>
+            <span style={{ marginLeft: '1.1rem' }}>{videosLabel}</span>
           </NavLink>
           <NavLink to="/links" activeClassName="active">
             <Icon icon="book" />
-            <span style={{ marginLeft: '1.1rem' }}>Links</span>
+            <span style={{ marginLeft: '1.1rem' }}>{linksLabel}</span>
           </NavLink>
         </SideMenu>
         <div

@@ -11,6 +11,13 @@ import { priceTable } from 'constants/defaultValues';
 import { useAppContext, useContentContext } from 'contexts';
 import { css } from '@emotion/css';
 import SwitchButton from './Buttons/SwitchButton';
+import localize from 'constants/localize';
+
+const recommendLabel = localize('recommendQ');
+const yesLabel = localize('yes');
+const noLabel = localize('no');
+const rewardableLabel = localize('rewardable');
+const deviceIsMobile = isMobile(navigator);
 
 RecommendationInterface.propTypes = {
   contentId: PropTypes.number.isRequired,
@@ -21,8 +28,6 @@ RecommendationInterface.propTypes = {
   uploaderId: PropTypes.number
 };
 
-const deviceIsMobile = isMobile(navigator);
-
 export default function RecommendationInterface({
   contentId,
   contentType,
@@ -31,9 +36,11 @@ export default function RecommendationInterface({
   style,
   uploaderId
 }) {
-  const { userId, twinkleCoins, authLevel } = useMyState();
+  const { userId, twinkleCoins, authLevel, userType } = useMyState();
   const [recommending, setRecommending] = useState(false);
-  const [rewardDisabled, setRewardDisabled] = useState(false);
+  const [rewardDisabled, setRewardDisabled] = useState(
+    userType?.toLowerCase() === 'staff'
+  );
   const [hidden, setHidden] = useState(false);
   const mounted = useRef(true);
 
@@ -147,7 +154,7 @@ export default function RecommendationInterface({
                     your recommendation?
                   </>
                 ) : (
-                  `Recommend?`
+                  recommendLabel
                 )}
               </span>
             </div>
@@ -166,7 +173,7 @@ export default function RecommendationInterface({
               <SwitchButton
                 small={deviceIsMobile}
                 checked={!rewardDisabled}
-                label="Rewardable"
+                label={rewardableLabel}
                 onChange={() => setRewardDisabled((disabled) => !disabled)}
               />
             )}
@@ -180,7 +187,7 @@ export default function RecommendationInterface({
               color="darkBlue"
               skeuomorphic
             >
-              Yes
+              {yesLabel}
             </Button>
             <Button
               onClick={onHide}
@@ -188,7 +195,7 @@ export default function RecommendationInterface({
               color="rose"
               skeuomorphic
             >
-              No
+              {noLabel}
             </Button>
           </div>
         )}

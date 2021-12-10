@@ -142,9 +142,10 @@ function Replies({
     onReplySubmit(params);
   }
 
-  function handleSubmitWithAttachment(params) {
+  async function handleSubmitWithAttachment(params) {
     setReplying(true);
-    onSubmitWithAttachment(params);
+    // this "await" here is very important!!
+    await onSubmitWithAttachment(params);
   }
 }
 

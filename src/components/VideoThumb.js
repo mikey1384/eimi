@@ -10,6 +10,9 @@ import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 import { textIsOverflown } from 'helpers';
 import { useContentState, useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const addedByLabel = localize('addedBy');
 
 VideoThumb.propTypes = {
   className: PropTypes.string,
@@ -118,7 +121,7 @@ function VideoThumb({ className, clickSafe, style, to, user, video }) {
             }}
           >
             <div style={{ display: 'inline' }}>
-              Added by <UsernameText user={user} />
+              {addedByLabel} <UsernameText user={user} />
             </div>
             {video.likes?.length > 0 && (
               <div style={{ marginTop: '0.5rem' }}>

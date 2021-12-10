@@ -10,6 +10,10 @@ import SecretMessageInput from 'components/Forms/SecretMessageInput';
 import FileUploadStatusIndicator from 'components/FileUploadStatusIndicator';
 import { useAppContext, useInputContext } from 'contexts';
 import { v1 as uuidv1 } from 'uuid';
+import localize from 'constants/localize';
+
+const cancelLabel = localize('cancel');
+const submitLabel = localize('submit3');
 
 SubjectInputForm.propTypes = {
   autoFocus: PropTypes.bool,
@@ -61,9 +65,8 @@ export default function SubjectInputForm({
   const descriptionRef = useRef(prevDescription);
   const [secretAnswer, setSecretAnswer] = useState(prevSecretAnswer);
   const secretAnswerRef = useRef(prevSecretAnswer);
-  const [secretAttachment, setSecretAttachment] = useState(
-    prevSecretAttachment
-  );
+  const [secretAttachment, setSecretAttachment] =
+    useState(prevSecretAttachment);
   const [uploadProgress, setUploadProgress] = useState(0);
   const [uploadingFile, setUploadingFile] = useState(false);
   const [uploadComplete, setUploadComplete] = useState(false);
@@ -182,7 +185,7 @@ export default function SubjectInputForm({
               style={{ fontSize: '1.7rem', marginRight: '1rem' }}
               onClick={handleCancel}
             >
-              Cancel
+              {cancelLabel}
             </Button>
             <Button
               color="blue"
@@ -197,7 +200,7 @@ export default function SubjectInputForm({
                 secretAnswer.length > descriptionMaxChar
               }
             >
-              Submit
+              {submitLabel}
             </Button>
           </div>
         )}

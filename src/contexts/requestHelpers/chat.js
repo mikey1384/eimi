@@ -59,6 +59,19 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
+    async checkChatAccessible(pathId) {
+      try {
+        const {
+          data: { isAccessible, generalChatPathId }
+        } = await request.get(
+          `${URL}/chat/check/accessible?pathId=${pathId}`,
+          auth()
+        );
+        return Promise.resolve({ isAccessible, generalChatPathId });
+      } catch (error) {
+        return handleError(error);
+      }
+    },
     async createNewChat({
       channelName,
       isClass,
@@ -211,12 +224,22 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadChatChannel({ channelId, skipUpdateChannelId }) {
+    async loadGeneralChatPathId() {
+      try {
+        const {
+          data: { pathId }
+        } = await request.get(`${URL}/chat/pathId/general`, auth());
+        return Promise.resolve(pathId);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async loadChatChannel({ channelId, isForInvitation, skipUpdateChannelId }) {
       try {
         const { data } = await request.get(
           `${URL}/chat/channel?channelId=${channelId}${
             skipUpdateChannelId ? '&skipUpdateChannelId=1' : ''
-          }`,
+          }${isForInvitation ? '&isForInvitation=1' : ''}`,
           auth()
         );
         return Promise.resolve(data);
@@ -259,12 +282,12 @@ export default function chatRequestHelpers({ auth, handleError }) {
     async loadMoreChatMessages({ userId, messageId, channelId }) {
       try {
         const {
-          data: { messages, loadedChannelId }
+          data: { messageIds, messagesObj, loadedChannelId }
         } = await request.get(
           `${URL}/chat/more/messages?userId=${userId}&messageId=${messageId}&channelId=${channelId}`,
           auth()
         );
-        return Promise.resolve({ messages, loadedChannelId });
+        return Promise.resolve({ messageIds, messagesObj, loadedChannelId });
       } catch (error) {
         return handleError(error);
       }
@@ -331,6 +354,16 @@ export default function chatRequestHelpers({ auth, handleError }) {
           auth()
         );
         return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async parseChannelPath(pathId) {
+      try {
+        const {
+          data: { channelId }
+        } = await request.get(`${URL}/chat/parse?pathId=${pathId}`, auth());
+        return Promise.resolve(channelId);
       } catch (error) {
         return handleError(error);
       }
@@ -418,13 +451,13 @@ export default function chatRequestHelpers({ auth, handleError }) {
     async sendInvitationMessage({ origin, recepients }) {
       try {
         const {
-          data: { invitationMessage, channels }
+          data: { invitationMessage, channels, messages }
         } = await request.post(
           `${URL}/chat/invitation`,
           { origin, recepients },
           auth()
         );
-        return Promise.resolve({ invitationMessage, channels });
+        return Promise.resolve({ invitationMessage, channels, messages });
       } catch (error) {
         return handleError(error);
       }
@@ -443,12 +476,18 @@ export default function chatRequestHelpers({ auth, handleError }) {
     },
     async startNewDMChannel(params) {
       try {
-        const { data } = await request.post(
-          `${URL}/chat/channel/twoPeople`,
-          params,
-          auth()
-        );
-        return Promise.resolve(data);
+        const {
+          data: { alreadyExists, channel, message, pathId }
+        } = await request.post(`${URL}/chat/channel/twoPeople`, params, auth());
+        return Promise.resolve({ alreadyExists, channel, message, pathId });
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async updateLastChannelId(channelId) {
+      try {
+        await request.put(`${URL}/chat/lastChannelId`, { channelId }, auth());
+        return Promise.resolve();
       } catch (error) {
         return handleError(error);
       }
@@ -496,7 +535,7 @@ export default function chatRequestHelpers({ auth, handleError }) {
           onUploadProgress
         });
         const {
-          data: { channel, message, messageId }
+          data: { channel, message, messageId, alreadyExists }
         } = await request.post(
           `${URL}/chat/file`,
           {
@@ -511,7 +550,7 @@ export default function chatRequestHelpers({ auth, handleError }) {
           },
           auth()
         );
-        return Promise.resolve({ channel, message, messageId });
+        return Promise.resolve({ channel, message, messageId, alreadyExists });
       } catch (error) {
         return handleError(error);
       }

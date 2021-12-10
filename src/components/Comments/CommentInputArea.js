@@ -6,6 +6,7 @@ import LocalContext from './Context';
 import { useInputContext } from 'contexts';
 import { useContentState } from 'helpers/hooks';
 import { v1 as uuidv1 } from 'uuid';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import RewardLevelExpectation from './RewardLevelExpectation';
 
 CommentInputArea.propTypes = {
@@ -41,6 +42,12 @@ export default function CommentInputArea({
   subjectRewardLevel,
   targetCommentId
 }) {
+  const placeholderLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return '댓글을 입력하세요...';
+    }
+    return `Enter your ${inputTypeLabel} here...`;
+  }, [inputTypeLabel]);
   const contentType = useMemo(
     () =>
       targetCommentId ? 'comment' : subjectId ? 'subject' : parent.contentType,
@@ -72,20 +79,7 @@ export default function CommentInputArea({
       {!!subjectRewardLevel && (
         <RewardLevelExpectation rewardLevel={subjectRewardLevel} />
       )}
-      {!uploadingFile && (
-        <InputForm
-          innerRef={innerRef}
-          clickListenerState={clickListenerState}
-          autoFocus={autoFocus}
-          onSubmit={handleSubmit}
-          onViewSecretAnswer={onViewSecretAnswer}
-          parent={{ contentId, contentType }}
-          rows={numInputRows}
-          placeholder={`Enter your ${inputTypeLabel} here...`}
-          targetCommentId={targetCommentId}
-        />
-      )}
-      {uploadingFile && (
+      {uploadingFile ? (
         <FileUploadStatusIndicator
           style={{
             fontSize: '1.7rem',
@@ -96,6 +90,18 @@ export default function CommentInputArea({
           fileName={attachment?.file?.name}
           uploadComplete={fileUploadComplete}
           uploadProgress={fileUploadProgress}
+        />
+      ) : (
+        <InputForm
+          innerRef={innerRef}
+          clickListenerState={clickListenerState}
+          autoFocus={autoFocus}
+          onSubmit={handleSubmit}
+          onViewSecretAnswer={onViewSecretAnswer}
+          parent={{ contentId, contentType }}
+          rows={numInputRows}
+          placeholder={placeholderLabel}
+          targetCommentId={targetCommentId}
         />
       )}
     </div>
@@ -120,7 +126,6 @@ export default function CommentInputArea({
         contentType,
         contentId
       });
-      setUploadingFile(false);
     } else {
       await onSubmit({
         content: text,
@@ -128,7 +133,8 @@ export default function CommentInputArea({
         subjectId,
         targetCommentId
       });
-      return Promise.resolve();
     }
+    setUploadingFile(false);
+    return Promise.resolve();
   }
 }

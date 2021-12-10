@@ -7,6 +7,7 @@ import AlertModal from 'components/Modals/AlertModal';
 import ImageEditModal from 'components/Modals/ImageEditModal';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/ErrorBoundary';
+import { useSpring, animated } from 'react-spring';
 import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
@@ -19,7 +20,13 @@ MobileMenu.propTypes = {
 };
 
 export default function MobileMenu({ location, history, onClose }) {
+  const styles = useSpring({
+    to: { marginLeft: '0' },
+    from: { marginLeft: '-100%' }
+  });
+
   const mounted = useRef(true);
+  const displayedRef = useRef(false);
   const {
     user: {
       actions: { onLogout }
@@ -32,18 +39,20 @@ export default function MobileMenu({ location, history, onClose }) {
     actions: { onUploadProfilePic, onSetOnline }
   } = useContentContext();
   const { username, userId } = useMyState();
-  const [marginLeft, setMarginLeft] = useState('-100%');
+  const [alertModalShown, setAlertModalShown] = useState(false);
+  const [imageEditStatus, setImageEditStatus] = useState({
+    imageEditModalShown: false,
+    imageUri: null
+  });
+  const { imageEditModalShown, imageUri } = imageEditStatus;
 
   useEffect(() => {
-    if (marginLeft !== '-100%') {
+    if (displayedRef.current) {
       onClose();
     }
+    displayedRef.current = true;
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [location]);
-
-  useEffect(() => {
-    setMarginLeft(0);
-  }, []);
 
   useEffect(() => {
     mounted.current = true;
@@ -51,13 +60,6 @@ export default function MobileMenu({ location, history, onClose }) {
       mounted.current = false;
     };
   }, []);
-
-  const [alertModalShown, setAlertModalShown] = useState(false);
-  const [imageEditStatus, setImageEditStatus] = useState({
-    imageEditModalShown: false,
-    imageUri: null
-  });
-  const { imageEditModalShown, imageUri } = imageEditStatus;
 
   return (
     <ErrorBoundary
@@ -67,19 +69,18 @@ export default function MobileMenu({ location, history, onClose }) {
         left: 0;
         right: 0;
         position: fixed;
-        z-index: 40000;
+        z-index: 999999;
         background: rgba(0, 0, 0, 0.5);
         display: flex;
       `}`}
     >
-      <div
+      <animated.div
+        style={styles}
         className={`momentum-scroll-enabled ${css`
           height: 100%;
           width: 70%;
           position: relative;
           background: ${Color.whiteGray()};
-          margin-left: ${marginLeft};
-          transition: margin-left 0.5s;
           overflow-y: scroll;
         `}`}
       >
@@ -118,7 +119,7 @@ export default function MobileMenu({ location, history, onClose }) {
             Log out
           </div>
         )}
-      </div>
+      </animated.div>
       <div style={{ width: '30%', position: 'relative' }} onClick={onClose}>
         <Icon
           icon="times"

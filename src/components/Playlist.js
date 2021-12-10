@@ -9,6 +9,14 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { Color } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
+import localize from 'constants/localize';
+
+const eitherRemovedOrNeverExistedLabel = localize(
+  'eitherRemovedOrNeverExisted'
+);
+const loadingLabel = localize('loading');
+const playlistNotExistLabel = localize('playlistNotExist');
+const uploadedByLabel = localize('uploadedBy');
 
 Playlist.propTypes = {
   onLinkClick: PropTypes.func,
@@ -55,11 +63,11 @@ export default function Playlist({
       {videos.length === 0 ? (
         loaded ? (
           <InvalidPage
-            title="Playlist does not exist"
-            text="It is either removed or never existed in the first place"
+            title={playlistNotExistLabel}
+            text={eitherRemovedOrNeverExistedLabel}
           />
         ) : (
-          <Loading text="Loading..." />
+          <Loading text={`${loadingLabel}...`} />
         )
       ) : null}
       {videos.map((video, index) => (
@@ -99,7 +107,7 @@ export default function Playlist({
               {video.title}
             </Link>
             <p style={{ color: Color.gray(), fontSize: '1.5rem' }}>
-              Uploaded by {video.uploaderName}
+              {uploadedByLabel} {video.uploaderName}
             </p>
           </div>
         </div>

@@ -12,7 +12,6 @@ export const PanelStyle = css`
     line-height: 2.5rem;
   }
   > p {
-    font-family: sans-serif, Arial, Helvetica;
     color: ${Color.darkerGray()};
     margin-bottom: 1rem;
     font-size: 2rem;

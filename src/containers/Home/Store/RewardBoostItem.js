@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ItemPanel from './ItemPanel';
 import Icon from 'components/Icon';
@@ -7,32 +7,51 @@ import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext, useContentContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
-import { karmaPointTable, videoRewardHash } from 'constants/defaultValues';
+import {
+  karmaPointTable,
+  videoRewardHash,
+  SELECTED_LANGUAGE
+} from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const boostRewardsFromWatchingXPVideosLabel = localize(
+  'boostRewardsFromWatchingXPVideos'
+);
 
 const item = {
   maxLvl: 10,
   name: [
-    'Boost rewards from watching XP Videos',
-    'Boost rewards from watching XP Videos (level 2)',
-    'Boost rewards from watching XP Videos (level 3)',
-    'Boost rewards from watching XP Videos (level 4)',
-    'Boost rewards from watching XP Videos (level 5)',
-    'Boost rewards from watching XP Videos (level 6)',
-    'Boost rewards from watching XP Videos (level 7)',
-    'Boost rewards from watching XP Videos (level 8)',
-    'Boost rewards from watching XP Videos (level 9)',
-    'Boost rewards from watching XP Videos (level 10)'
+    boostRewardsFromWatchingXPVideosLabel,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 2)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 3)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 4)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 5)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 6)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 7)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 8)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 9)`,
+    `${boostRewardsFromWatchingXPVideosLabel} (level 10)`
   ],
   description: [...Array(10).keys()].map((key) => {
     const rewardLevels = [1, 2, 3, 4, 5];
     const colorKey = ['logoBlue', 'pink', 'orange', 'cranberry', 'gold'];
     const keyNumber = Number(key);
-    return (
-      <div style={{ paddingTop: '1.5rem', paddingBottom: '1.5rem' }} key={key}>
-        <p>
+    const descriptionLabel =
+      SELECTED_LANGUAGE === 'kr' ? (
+        <>
+          본 아이템을 {keyNumber === 0 ? '잠금 해제' : '업그레이드'} 하시면 XP
+          동영상을 보실때 <b>매분마다</b> 아래의 보상을 획득하실 수 있게 됩니다
+        </>
+      ) : (
+        <>
           {keyNumber === 0 ? 'Unlock' : 'Upgrade'} this item to earn the
           following rewards <b>per minute</b> while watching XP Videos
-        </p>
+        </>
+      );
+
+    return (
+      <div style={{ paddingTop: '1.5rem', paddingBottom: '1.5rem' }} key={key}>
+        <p>{descriptionLabel}</p>
         <div
           style={{
             width: '100%',
@@ -161,6 +180,13 @@ export default function RewardBoostItem({ style }) {
   const {
     requestHelpers: { upgradeRewardBoost }
   } = useAppContext();
+  const maxLevelItemDescriptionLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `이제 XP동영상을 시청하실 때 매분 (보상레벨 × ${videoRewardHash[rewardBoostLvl].xp})XP와 트윈클 코인 ${videoRewardHash[rewardBoostLvl].coin}개를 획득하실 수 있습니다`;
+    }
+    return `You can now earn (reward level × ${videoRewardHash[rewardBoostLvl].xp}) XP and ${videoRewardHash[rewardBoostLvl].coin} Twinkle Coins per minute while watching XP Videos`;
+  }, [rewardBoostLvl]);
+
   return (
     <ItemPanel
       isLeveled
@@ -177,8 +203,12 @@ export default function RewardBoostItem({ style }) {
     >
       <MaxLevelItemInfo
         icon="bolt"
-        title="XP Video Reward Boost - Level 10"
-        description={`You can now earn (reward level × ${videoRewardHash[rewardBoostLvl].xp}) XP and ${videoRewardHash[rewardBoostLvl].coin} Twinkle Coins per minute while watching XP Videos`}
+        title={
+          SELECTED_LANGUAGE === 'kr'
+            ? 'XP동영상 보상 증가 - Level 10'
+            : 'XP Video Reward Boost - Level 10'
+        }
+        description={maxLevelItemDescriptionLabel}
       />
     </ItemPanel>
   );

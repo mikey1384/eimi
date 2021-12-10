@@ -65,6 +65,7 @@ export default function Attachment({
           `}`}
         >
           <FileViewer
+            showImageModalOnClick
             small={small}
             thumbUrl={thumbUrl}
             src={fileUrl}

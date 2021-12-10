@@ -1,6 +1,10 @@
 import PropTypes from 'prop-types';
 import React from 'react';
 import FilterBar from 'components/FilterBar';
+import localize from 'constants/localize';
+
+const videoLabel = localize('video');
+const questionsLabel = localize('questions');
 
 PageTab.propTypes = {
   onQuestionTabClick: PropTypes.func.isRequired,
@@ -18,13 +22,13 @@ export default function PageTab({
   return (
     <FilterBar>
       <nav className={watchTabActive ? 'active' : ''} onClick={onWatchTabClick}>
-        Video
+        {videoLabel}
       </nav>
       <nav
         className={watchTabActive ? '' : 'active'}
         onClick={onQuestionTabClick}
       >
-        Questions {questions.length > 0 && `(${questions.length})`}
+        {questionsLabel} {questions.length > 0 && `(${questions.length})`}
       </nav>
     </FilterBar>
   );

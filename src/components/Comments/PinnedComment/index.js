@@ -6,6 +6,9 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
 import { useAppContext, useContentContext } from 'contexts';
+import localize from 'constants/localize';
+
+const pinnedLabel = localize('pinned');
 
 PinnedComment.propTypes = {
   commentId: PropTypes.number.isRequired,
@@ -67,7 +70,7 @@ export default function PinnedComment({
             }}
           >
             <Icon icon={['fas', 'thumbtack']} />
-            <span style={{ marginLeft: '0.7rem' }}>Pinned</span>
+            <span style={{ marginLeft: '0.7rem' }}>{pinnedLabel}</span>
           </div>
           <Comment
             parent={parent}

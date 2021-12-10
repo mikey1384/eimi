@@ -28,6 +28,10 @@ import {
   useViewContext,
   useExploreContext
 } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const rewardLabel = localize('reward');
 
 LinkPage.propTypes = {
   history: PropTypes.object.isRequired,
@@ -250,6 +254,13 @@ export default function LinkPage({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [userId]);
 
+  const madeByLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>{uploader?.username}님이 직접 제작한 콘텐츠입니다</>;
+    }
+    return <>This was made by {uploader?.username}</>;
+  }, [uploader?.username]);
+
   return loaded ? (
     <div
       className={css`
@@ -296,7 +307,7 @@ export default function LinkPage({
           onEditDone={handleEditLinkPage}
           userIsUploader={userIsUploader}
         />
-        {!!byUser && (
+        {!!byUser && false && (
           <div
             style={{
               padding: '0.7rem',
@@ -319,7 +330,7 @@ export default function LinkPage({
               }
             `}
           >
-            This was made by {uploader.username}
+            {madeByLabel}
           </div>
         )}
         <Embedly
@@ -362,7 +373,7 @@ export default function LinkPage({
                 >
                   <Icon icon="certificate" />
                   <span style={{ marginLeft: '0.7rem' }}>
-                    {xpButtonDisabled || 'Reward'}
+                    {xpButtonDisabled || rewardLabel}
                   </span>
                 </Button>
               )}
@@ -391,16 +402,18 @@ export default function LinkPage({
               />
             </div>
           </div>
-          <Button
-            style={{ right: '1rem', bottom: '0.5rem', position: 'absolute' }}
-            color="brownOrange"
-            skeuomorphic
-            filled={isRecommendedByUser}
-            disabled={recommendationInterfaceShown}
-            onClick={() => setRecommendationInterfaceShown(true)}
-          >
-            <Icon icon="star" />
-          </Button>
+          {false && (
+            <Button
+              style={{ right: '1rem', bottom: '0.5rem', position: 'absolute' }}
+              color="brownOrange"
+              skeuomorphic
+              filled={isRecommendedByUser}
+              disabled={recommendationInterfaceShown}
+              onClick={() => setRecommendationInterfaceShown(true)}
+            >
+              <Icon icon="star" />
+            </Button>
+          )}
         </div>
         {recommendationInterfaceShown && (
           <RecommendationInterface
@@ -434,14 +447,16 @@ export default function LinkPage({
             />
           </div>
         )}
-        <RecommendationStatus
-          style={{
-            marginTop: likes.length > 0 ? '0.5rem' : '1rem',
-            marginBottom: recommendationInterfaceShown ? '1rem' : 0
-          }}
-          contentType="url"
-          recommendations={recommendations}
-        />
+        {false && (
+          <RecommendationStatus
+            style={{
+              marginTop: likes.length > 0 ? '0.5rem' : '1rem',
+              marginBottom: recommendationInterfaceShown ? '1rem' : 0
+            }}
+            contentType="url"
+            recommendations={recommendations}
+          />
+        )}
         <RewardStatus
           contentType="url"
           contentId={linkId}
@@ -564,18 +579,13 @@ export default function LinkPage({
   }
 
   async function handleEditLinkPage(params) {
-    await editContent(params);
-    const {
-      contentId,
-      editedTitle: title,
-      editedDescription: description,
-      editedUrl: content
-    } = params;
+    const data = await editContent(params);
+    const { contentId, editedTitle: title, editedUrl: content } = params;
     onEditContent({
       data: {
         content: processedURL(content),
         title,
-        description
+        description: data.description
       },
       contentType: 'url',
       contentId

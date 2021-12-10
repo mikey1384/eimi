@@ -7,10 +7,16 @@ import React, {
   useState
 } from 'react';
 import PropTypes from 'prop-types';
-import ReactPlayer from 'react-player';
+import ReactPlayer from 'react-player/youtube';
 import ErrorBoundary from 'components/ErrorBoundary';
 import XPBar from './XPBar';
-import { videoRewardHash, strongColors } from 'constants/defaultValues';
+import Link from 'components/Link';
+import playButtonImg from './play-button-image.png';
+import {
+  videoRewardHash,
+  strongColors,
+  SELECTED_LANGUAGE
+} from 'constants/defaultValues';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { useContentState, useMyState } from 'helpers/hooks';
@@ -20,6 +26,7 @@ const intervalLength = 2000;
 
 XPVideoPlayer.propTypes = {
   isChat: PropTypes.bool,
+  isLink: PropTypes.bool,
   byUser: PropTypes.bool,
   minimized: PropTypes.bool,
   onPlay: PropTypes.func,
@@ -32,6 +39,7 @@ XPVideoPlayer.propTypes = {
 
 function XPVideoPlayer({
   isChat,
+  isLink,
   byUser,
   rewardLevel,
   minimized,
@@ -345,9 +353,16 @@ function XPVideoPlayer({
     [handleIncreaseMeter, playing, videoId]
   );
 
+  const thisVideoWasMadeByLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>{uploader?.username}님이 직접 제작한 동영상입니다</>;
+    }
+    return <>This video was made by {uploader?.username}</>;
+  }, [uploader?.username]);
+
   return (
     <ErrorBoundary style={style}>
-      {byUser && !isChat && (
+      {byUser && !isChat && false && (
         <div
           className={css`
             background: ${Color[themeColor](
@@ -381,7 +396,7 @@ function XPVideoPlayer({
                 {`Visit ${uploader.username}'s`} YouTube Channel
               </a>
             ) : (
-              <span>This video was made by {uploader.username}</span>
+              <span>{thisVideoWasMadeByLabel}</span>
             )}
           </div>
         </div>
@@ -402,34 +417,61 @@ function XPVideoPlayer({
           cursor: !isEditing && !started && 'pointer'
         }}
       >
-        <ReactPlayer
-          ref={PlayerRef}
-          className={css`
-            position: absolute;
-            top: 0;
-            left: 0;
-            z-index: 1;
-          `}
-          width="100%"
-          height="100%"
-          url={videoUrl}
-          playing={playing}
-          controls
-          onReady={onVideoReady}
-          onPlay={() => {
-            onPlay?.();
-            onVideoPlay({
-              userId: userIdRef.current
-            });
-          }}
-          onPause={handleVideoStop}
-          onEnded={() => {
-            handleVideoStop();
-            if (userIdRef.current) {
-              finishWatchingVideo(videoId);
-            }
-          }}
-        />
+        {isLink ? (
+          <Link to={`/videos/${videoId}`}>
+            <div
+              className={css`
+                position: absolute;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                top: 0;
+                left: 0;
+                z-index: 1;
+                width: 100%;
+                height: 100%;
+                background: url(https://img.youtube.com/vi/${videoCode}/mqdefault.jpg)
+                  no-repeat center;
+                background-size: 100% auto;
+              `}
+              alt="video_thumb"
+            >
+              <img
+                style={{ width: '45px', height: '45px' }}
+                src={playButtonImg}
+              />
+            </div>
+          </Link>
+        ) : (
+          <ReactPlayer
+            ref={PlayerRef}
+            className={css`
+              position: absolute;
+              top: 0;
+              left: 0;
+              z-index: 1;
+            `}
+            width="100%"
+            height="100%"
+            url={videoUrl}
+            playing={playing}
+            controls
+            onReady={onVideoReady}
+            onPlay={() => {
+              onPlay?.();
+              onVideoPlay({
+                userId: userIdRef.current
+              });
+            }}
+            onPause={handleVideoStop}
+            onEnded={() => {
+              handleVideoStop();
+              if (userIdRef.current) {
+                finishWatchingVideo(videoId);
+              }
+            }}
+          />
+        )}
       </div>
       {(!!rewardLevel || (startingPosition > 0 && !started)) && (
         <XPBar

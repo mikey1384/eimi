@@ -13,28 +13,26 @@ RewardMessage.propTypes = {
 
 export default function RewardMessage({ rewardReason, rewardAmount }) {
   return (
-    <div>
-      <div
-        className={css`
-          @media (max-width: ${mobileMaxWidth}) {
-            font-size: 1.2rem;
-          }
-        `}
-        style={{
-          display: 'inline-block',
-          width: 'auto',
-          borderRadius,
-          padding: '1rem',
-          background: Color[rewardReasons[rewardReason].color](),
-          color: '#fff'
-        }}
-      >
-        <Icon icon={rewardReasons[rewardReason].icon} />
-        <span style={{ marginLeft: '1rem' }}>
-          Rewarded {addCommasToNumber(rewardAmount)} XP{' '}
-          {rewardReasons[rewardReason].message}
-        </span>
-      </div>
+    <div
+      className={css`
+        @media (max-width: ${mobileMaxWidth}) {
+          font-size: 1.2rem;
+        }
+      `}
+      style={{
+        display: 'inline-block',
+        width: 'auto',
+        borderRadius,
+        padding: '1rem',
+        background: Color[rewardReasons[rewardReason].color](),
+        color: '#fff'
+      }}
+    >
+      <Icon icon={rewardReasons[rewardReason].icon} />
+      <span style={{ marginLeft: '1rem' }}>
+        Rewarded {addCommasToNumber(rewardAmount)} XP{' '}
+        {rewardReasons[rewardReason].message}
+      </span>
     </div>
   );
 }

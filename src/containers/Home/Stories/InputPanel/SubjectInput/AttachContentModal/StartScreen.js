@@ -13,17 +13,22 @@ import {
 } from 'helpers/stringHelpers';
 import { useInputContext } from 'contexts';
 import {
-  FILE_UPLOAD_XP_REQUIREMENT_FOR_SUBJECT,
+  FILE_UPLOAD_XP_REQUIREMENT,
   mb,
-  returnMaxUploadSize
+  returnMaxUploadSize,
+  SELECTED_LANGUAGE
 } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const fromTwinkleWebsiteLabel = localize('fromTwinkleWebsite');
+const videoLabel = localize('video');
+const linkLabel = localize('link');
+const deviceIsMobile = isMobile(navigator);
 
 StartScreen.propTypes = {
   navigateTo: PropTypes.func.isRequired,
   onHide: PropTypes.func.isRequired
 };
-
-const deviceIsMobile = isMobile(navigator);
 
 export default function StartScreen({ navigateTo, onHide }) {
   const {
@@ -38,9 +43,15 @@ export default function StartScreen({ navigateTo, onHide }) {
   );
   const disabled = useMemo(() => {
     if (authLevel > 1) return false;
-    if (twinkleXP >= FILE_UPLOAD_XP_REQUIREMENT_FOR_SUBJECT) return false;
+    if (twinkleXP >= FILE_UPLOAD_XP_REQUIREMENT) return false;
     return true;
   }, [authLevel, twinkleXP]);
+  const fromYourLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return <>{deviceIsMobile ? '기기' : '컴퓨터'}에서 가져오기</>;
+    }
+    return <>from Your {deviceIsMobile ? 'Device' : 'Computer'}</>;
+  }, []);
 
   return (
     <ErrorBoundary style={{ display: 'flex', width: '100%' }}>
@@ -59,7 +70,7 @@ export default function StartScreen({ navigateTo, onHide }) {
             color: Color.black()
           }}
         >
-          from Your {deviceIsMobile ? 'Device' : 'Computer'}
+          {fromYourLabel}
         </div>
         <div
           style={{
@@ -86,7 +97,7 @@ export default function StartScreen({ navigateTo, onHide }) {
                 fontWeight: 'bold'
               }}
             >{`Requires ${addCommasToNumber(
-              FILE_UPLOAD_XP_REQUIREMENT_FOR_SUBJECT
+              FILE_UPLOAD_XP_REQUIREMENT
             )} XP`}</div>
           )}
         </div>
@@ -107,7 +118,7 @@ export default function StartScreen({ navigateTo, onHide }) {
             color: Color.black()
           }}
         >
-          from Twinkle Website
+          {fromTwinkleWebsiteLabel}
         </div>
         <div
           style={{
@@ -122,7 +133,7 @@ export default function StartScreen({ navigateTo, onHide }) {
             onClick={() => navigateTo('selectVideo')}
           >
             <Icon icon="film" />
-            <span style={{ marginLeft: '1rem' }}>Video</span>
+            <span style={{ marginLeft: '1rem' }}>{videoLabel}</span>
           </Button>
           <Button
             skeuomorphic
@@ -131,7 +142,7 @@ export default function StartScreen({ navigateTo, onHide }) {
             onClick={() => navigateTo('selectLink')}
           >
             <Icon icon="link" />
-            <span style={{ marginLeft: '1rem' }}>Link</span>
+            <span style={{ marginLeft: '1rem' }}>{linkLabel}</span>
           </Button>
         </div>
       </div>

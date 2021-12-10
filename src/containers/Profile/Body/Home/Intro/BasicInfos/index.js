@@ -19,6 +19,7 @@ import {
 } from 'contexts';
 
 BasicInfos.propTypes = {
+  authLevel: PropTypes.number,
   className: PropTypes.string,
   email: PropTypes.string,
   verifiedEmail: PropTypes.string,
@@ -37,6 +38,7 @@ BasicInfos.propTypes = {
 };
 
 export default function BasicInfos({
+  authLevel,
   className,
   email,
   verifiedEmail,
@@ -54,21 +56,20 @@ export default function BasicInfos({
   style
 }) {
   const history = useHistory();
-  const { userId: myId, username: myUsername, banned } = useMyState();
   const {
-    requestHelpers: {
-      loadChat,
-      loadDMChannel,
-      uploadProfileInfo,
-      sendVerificationEmail
-    }
+    userId: myId,
+    username: myUsername,
+    authLevel: myAuthLevel,
+    banned
+  } = useMyState();
+  const {
+    requestHelpers: { loadDMChannel, uploadProfileInfo, sendVerificationEmail }
   } = useAppContext();
   const {
     actions: { onUpdateProfileInfo }
   } = useContentContext();
   const {
-    state: { loaded },
-    actions: { onInitChat, onOpenDirectMessageChannel }
+    actions: { onOpenNewChatTab }
   } = useChatContext();
   const {
     state: {
@@ -303,19 +304,28 @@ export default function BasicInfos({
   );
 
   async function handleTalkButtonClick() {
-    if (!loaded) {
-      const initialData = await loadChat();
-      onInitChat(initialData);
-    }
-    const data = await loadDMChannel({
+    const { pathId } = await loadDMChannel({
       recepient: { id: userId, username }
     });
-    onOpenDirectMessageChannel({
-      user: { id: myId, username: myUsername },
-      recepient: { id: userId, username, profilePicUrl },
-      channelData: data
-    });
-    history.push('/chat');
+    if (mounted.current) {
+      if (!pathId) {
+        onOpenNewChatTab({
+          user: {
+            username: myUsername,
+            id: myId,
+            profilePicUrl,
+            authLevel: myAuthLevel
+          },
+          recepient: {
+            username: username,
+            id: userId,
+            profilePicUrl: profilePicUrl,
+            authLevel
+          }
+        });
+      }
+      history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
+    }
   }
 
   function goToEmail() {

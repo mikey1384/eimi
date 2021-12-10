@@ -15,6 +15,7 @@ import Link from 'components/Link';
 import SecretComment from 'components/SecretComment';
 import MissionContent from './MissionContent';
 import { strongColors } from 'constants/defaultValues';
+import { isMobile } from 'helpers';
 import { stringIsEmpty, getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
@@ -29,6 +30,8 @@ MainContent.propTypes = {
   secretHidden: PropTypes.bool,
   userId: PropTypes.number
 };
+
+const displayIsMobile = isMobile(navigator);
 
 export default function MainContent({
   contentId,
@@ -101,7 +104,7 @@ export default function MainContent({
         )}
         {(contentType === 'video' || subjectIsAttachedToVideo) && (
           <XPVideoPlayer
-            stretch
+            isLink={displayIsMobile}
             rewardLevel={
               contentType === 'subject' ? rootObj.rewardLevel : rewardLevel
             }
@@ -133,35 +136,37 @@ export default function MainContent({
             contentId={contentId}
           />
         )}
-        {(contentType === 'url' || contentType === 'subject') && !!byUser && (
-          <div
-            style={{
-              ...(subjectIsAttachedToVideo ? { marginTop: '0.5rem' } : {}),
-              padding: '0.7rem',
-              background: Color[profileTheme](
-                strongColors.includes(profileTheme) ? 0.7 : 0.9
-              ),
-              color: '#fff',
-              display: 'flex',
-              justifyContent: 'center',
-              alignItems: 'center',
-              fontWeight: 'bold',
-              fontSize: '1.7rem'
-            }}
-            className={css`
-              margin-left: -1px;
-              margin-right: -1px;
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-left: 0;
-                margin-right: 0;
-              }
-            `}
-          >
-            This was{' '}
-            {contentType === 'subject' && !filePath ? 'written' : 'made'} by{' '}
-            {uploader.username}
-          </div>
-        )}
+        {(contentType === 'url' || contentType === 'subject') &&
+          !!byUser &&
+          false && (
+            <div
+              style={{
+                ...(subjectIsAttachedToVideo ? { marginTop: '0.5rem' } : {}),
+                padding: '0.7rem',
+                background: Color[profileTheme](
+                  strongColors.includes(profileTheme) ? 0.7 : 0.9
+                ),
+                color: '#fff',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                fontWeight: 'bold',
+                fontSize: '1.7rem'
+              }}
+              className={css`
+                margin-left: -1px;
+                margin-right: -1px;
+                @media (max-width: ${mobileMaxWidth}) {
+                  margin-left: 0;
+                  margin-right: 0;
+                }
+              `}
+            >
+              This was{' '}
+              {contentType === 'subject' && !filePath ? 'written' : 'made'} by{' '}
+              {uploader.username}
+            </div>
+          )}
         {(contentType === 'subject' || contentType === 'comment') &&
           filePath &&
           !(contentType === 'comment' && secretHidden) &&

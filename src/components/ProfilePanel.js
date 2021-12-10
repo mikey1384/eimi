@@ -12,7 +12,10 @@ import Link from 'components/Link';
 import UserDetails from 'components/UserDetails';
 import Loading from 'components/Loading';
 import { useHistory } from 'react-router-dom';
-import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
+import {
+  MAX_PROFILE_PIC_SIZE,
+  SELECTED_LANGUAGE
+} from 'constants/defaultValues';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { timeSince } from 'helpers/timeStampHelpers';
@@ -20,10 +23,21 @@ import { useContentState, useLazyLoad, useMyState } from 'helpers/hooks';
 import { useInView } from 'react-intersection-observer';
 import {
   useAppContext,
-  useContentContext,
   useChatContext,
+  useContentContext,
   useProfileContext
 } from 'contexts';
+import localize from 'constants/localize';
+
+const chatLabel = localize('chat2');
+const changePicLabel = localize('changePic');
+const editBioLabel = localize('editBio');
+const imageTooLarge10MBLabel = localize('imageTooLarge10MB');
+const lastOnlineLabel = localize('lastOnline');
+const pleaseSelectSmallerImageLabel = localize('pleaseSelectSmallerImage');
+const viewProfileLabel = localize('viewProfile');
+const visitWebsiteLabel = localize('visitWebsite');
+const visitYoutubeLabel = localize('visitYoutube');
 
 ProfilePanel.propTypes = {
   expandable: PropTypes.bool,
@@ -69,6 +83,10 @@ function ProfilePanel({ expandable, profileId, style }) {
     website,
     youtubeUrl
   } = profile;
+
+  const {
+    actions: { onOpenNewChatTab }
+  } = useChatContext();
 
   const {
     actions: {
@@ -140,19 +158,13 @@ function ProfilePanel({ expandable, profileId, style }) {
   const {
     requestHelpers: {
       checkIfUserOnline,
-      loadChat,
       loadDMChannel,
       loadComments,
       loadProfile,
       uploadBio
     }
   } = useAppContext();
-  const { isCreator, userId, username } = useMyState();
-
-  const {
-    state: { loaded: chatLoaded },
-    actions: { onInitChat, onOpenDirectMessageChannel }
-  } = useChatContext();
+  const { isCreator, userId, username, banned, authLevel } = useMyState();
   const {
     actions: { onResetProfile }
   } = useProfileContext();
@@ -215,13 +227,38 @@ function ProfilePanel({ expandable, profileId, style }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [profileId, userId, profile.loaded, commentsLoaded, previewLoaded]);
 
-  const canEdit = userId === profileId || isCreator;
-  const noBio = !profileFirstRow && !profileSecondRow && !profileThirdRow;
-  const heightNotSet = !placeholderHeight && !previousPlaceholderHeight;
+  const canEdit = useMemo(
+    () => userId === profileId || isCreator,
+    [isCreator, profileId, userId]
+  );
+  const noBio = useMemo(
+    () => !profileFirstRow && !profileSecondRow && !profileThirdRow,
+    [profileFirstRow, profileSecondRow, profileThirdRow]
+  );
+  const heightNotSet = useMemo(
+    () => !placeholderHeight && !previousPlaceholderHeight,
+    [placeholderHeight, previousPlaceholderHeight]
+  );
   const contentShown = useMemo(
     () => !loaded || heightNotSet || visible || inView,
     [heightNotSet, inView, loaded, visible]
   );
+  const leaveMessageLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          메시지
+          {profileId === userId ? '' : ' 남기기'}
+        </>
+      );
+    }
+    return (
+      <>
+        {profileId === userId ? '' : 'Leave '}
+        Message
+      </>
+    );
+  }, [profileId, userId]);
 
   return (
     <div style={style} ref={ComponentRef} key={profileId}>
@@ -342,7 +379,7 @@ function ProfilePanel({ expandable, profileId, style }) {
                         }}
                         onClick={() => history.push(`/users/${profileName}`)}
                       >
-                        View Profile
+                        {viewProfileLabel}
                       </Button>
                     </div>
                     {youtubeUrl && (
@@ -352,7 +389,7 @@ function ProfilePanel({ expandable, profileId, style }) {
                         style={{ padding: '0.5rem' }}
                         onClick={() => window.open(youtubeUrl)}
                       >
-                        Visit YouTube
+                        {visitYoutubeLabel}
                       </Button>
                     )}
                     {website && (
@@ -362,7 +399,7 @@ function ProfilePanel({ expandable, profileId, style }) {
                         style={{ padding: '0.5rem' }}
                         onClick={() => window.open(website)}
                       >
-                        Visit Website
+                        {visitWebsiteLabel}
                       </Button>
                     )}
                   </div>
@@ -379,7 +416,12 @@ function ProfilePanel({ expandable, profileId, style }) {
                     <UserDetails
                       profile={profile}
                       removeStatusMsg={onRemoveStatusMsg}
-                      updateStatusMsg={onUpdateStatusMsg}
+                      updateStatusMsg={(data) => {
+                        if (banned?.posting) {
+                          return;
+                        }
+                        onUpdateStatusMsg(data);
+                      }}
                       onUpdateBio={onUpdateBio}
                       userId={userId}
                     />
@@ -396,14 +438,19 @@ function ProfilePanel({ expandable, profileId, style }) {
                             transparent
                             onClick={onChangeProfilePictureClick}
                           >
-                            Change Pic
+                            {changePicLabel}
                           </Button>
                           <Button
                             transparent
-                            onClick={() => setBioEditModalShown(true)}
+                            onClick={() => {
+                              if (banned?.posting) {
+                                return;
+                              }
+                              setBioEditModalShown(true);
+                            }}
                             style={{ marginLeft: '0.5rem' }}
                           >
-                            Edit Bio
+                            {editBioLabel}
                           </Button>
                           {profileId === userId &&
                             comments.length > 0 &&
@@ -422,7 +469,9 @@ function ProfilePanel({ expandable, profileId, style }) {
                       >
                         <Button color="green" onClick={handleTalkClick}>
                           <Icon icon="comments" />
-                          <span style={{ marginLeft: '0.7rem' }}>Chat</span>
+                          <span style={{ marginLeft: '0.7rem' }}>
+                            {chatLabel}
+                          </span>
                         </Button>
                         {renderMessagesButton()}
                       </div>
@@ -435,7 +484,9 @@ function ProfilePanel({ expandable, profileId, style }) {
                           color: Color.gray()
                         }}
                       >
-                        <p>last online {timeSince(lastActive)}</p>
+                        <p>
+                          {lastOnlineLabel} {timeSince(lastActive)}
+                        </p>
                       </div>
                     )}
                   </div>
@@ -501,8 +552,8 @@ function ProfilePanel({ expandable, profileId, style }) {
             {!!twinkleXP && <RankBar profile={profile} />}
             {alertModalShown && (
               <AlertModal
-                title="Image is too large (limit: 10mb)"
-                content="Please select a smaller image"
+                title={imageTooLarge10MBLabel}
+                content={pleaseSelectSmallerImageLabel}
                 onHide={() => setAlertModalShown(false)}
               />
             )}
@@ -540,20 +591,20 @@ function ProfilePanel({ expandable, profileId, style }) {
   }
 
   async function handleTalkClick() {
-    if (!chatLoaded) {
-      const initialData = await loadChat();
-      if (mounted.current) {
-        onInitChat(initialData);
-      }
-    }
-    const data = await loadDMChannel({ recepient: profile });
+    const { pathId } = await loadDMChannel({ recepient: profile });
     if (mounted.current) {
-      onOpenDirectMessageChannel({
-        user: { id: userId, username },
-        recepient: profile,
-        channelData: data
-      });
-      history.push('/chat');
+      if (!pathId) {
+        onOpenNewChatTab({
+          user: { username, id: userId, profilePicUrl, authLevel },
+          recepient: {
+            username: profile.username,
+            id: profile.id,
+            profilePicUrl: profile.profilePicUrl,
+            authLevel: profile.authLevel
+          }
+        });
+      }
+      history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
     }
   }
 
@@ -599,8 +650,7 @@ function ProfilePanel({ expandable, profileId, style }) {
       >
         <Icon icon="comment-alt" />
         <span style={{ marginLeft: '0.7rem' }}>
-          {profileId === userId ? '' : 'Leave '}
-          Message
+          {leaveMessageLabel}
           {profileId === userId && Number(numMessages) > 0 && !commentsShown
             ? `${numMessages > 1 ? 's' : ''}`
             : ''}

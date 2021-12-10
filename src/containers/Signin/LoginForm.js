@@ -8,6 +8,14 @@ import { mobileMaxWidth } from 'constants/css';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const enterYourUsernameLabel = localize('enterYourUsername');
+const enterYourPasswordLabel = localize('enterYourPassword');
+const iDontHaveAnAccountLabel = localize('iDontHaveAnAccount');
+const iForgotMyPasswordLabel = localize('iForgotMyPassword2');
+const logMeInLabel = localize('logMeIn');
+const yourUsernameAndPasswordLabel = localize('yourUsernameAndPassword');
 
 LoginForm.propTypes = {
   username: PropTypes.string,
@@ -36,7 +44,7 @@ export default function LoginForm({
 
   return (
     <ErrorBoundary>
-      <header>{`What's your username and password?`}</header>
+      <header>{yourUsernameAndPasswordLabel}</header>
       {errorMessage && <Banner color="pink">{errorMessage}</Banner>}
       <main>
         <div style={{ width: '100%' }}>
@@ -48,7 +56,7 @@ export default function LoginForm({
                 setErrorMessage('');
                 onSetUsername(text);
               }}
-              placeholder="Enter your username"
+              placeholder={enterYourUsernameLabel}
               onKeyPress={(event) => {
                 if (
                   !stringIsEmpty(username) &&
@@ -68,7 +76,7 @@ export default function LoginForm({
                 setErrorMessage('');
                 setPassword(text);
               }}
-              placeholder="Enter your password"
+              placeholder={enterYourPasswordLabel}
               type="password"
               onKeyPress={(event) => {
                 if (
@@ -96,7 +104,7 @@ export default function LoginForm({
           transparent
           onClick={onShowForgotPasswordForm}
         >
-          I forgot my password
+          {iForgotMyPasswordLabel}
         </Button>
         <Button
           className={css`
@@ -110,7 +118,7 @@ export default function LoginForm({
           transparent
           onClick={onShowSignupForm}
         >
-          {"I don't have an account"}
+          {iDontHaveAnAccountLabel}
         </Button>
         <Button
           color="blue"
@@ -118,7 +126,7 @@ export default function LoginForm({
           disabled={stringIsEmpty(username) || stringIsEmpty(password)}
           onClick={onSubmit}
         >
-          Log me in!
+          {logMeInLabel}
         </Button>
       </footer>
     </ErrorBoundary>
