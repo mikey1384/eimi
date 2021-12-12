@@ -10,6 +10,9 @@ import { addEmoji, stringIsEmpty } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { useMyState, useOutsideClick } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const editLabel = localize('edit');
 
 SectionPanel.propTypes = {
   canEdit: PropTypes.bool,
@@ -177,7 +180,7 @@ export default function SectionPanel({
                   }}
                 >
                   <Icon icon="pencil-alt" />
-                  &nbsp;&nbsp;Edit
+                  &nbsp;&nbsp;{editLabel}
                 </span>
               </div>
             ) : (

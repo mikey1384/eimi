@@ -24,6 +24,10 @@ const languageObj = {
     en: 'Add Account Type',
     kr: '계정유형 추가'
   },
+  addedBy: {
+    en: 'Added by',
+    kr: '게시자:'
+  },
   addLink: {
     en: 'Add Link',
     kr: '링크 추가'
@@ -32,9 +36,9 @@ const languageObj = {
     en: 'Add members of your class',
     kr: '멤버를 추가하세요'
   },
-  addedBy: {
-    en: 'Added by',
-    kr: '게시자:'
+  addPicture: {
+    en: 'Add Picture',
+    kr: '사진 추가'
   },
   addQuestions: {
     en: 'Add Questions',
@@ -155,6 +159,14 @@ const languageObj = {
   changePicture: {
     en: 'Change Picture',
     kr: '사진 변경'
+  },
+  changeTheme: {
+    en: 'Change theme',
+    kr: '테마 변경'
+  },
+  changeTheme2: {
+    en: 'Change Theme',
+    kr: '테마 변경'
   },
   changeUsername: {
     en: 'Change your username',
@@ -308,6 +320,10 @@ const languageObj = {
     en: 'Delete Content Permanently',
     kr: '게시물 영구 삭제'
   },
+  deletePictures: {
+    en: 'Delete Pictures',
+    kr: '사진 삭제'
+  },
   deletedPosts: {
     en: 'Deleted Posts',
     kr: '삭제된 게시물'
@@ -364,6 +380,14 @@ const languageObj = {
     en: 'elementary',
     kr: '초급'
   },
+  email: {
+    en: 'email',
+    kr: '이메일'
+  },
+  emailHasBeenSent: {
+    en: 'An email has been sent. Tap here to check your inbox',
+    kr: '이메일이 발송되었습니다. 이메일을 확인하려면 여기를 클릭하세요'
+  },
   emailYoursOrYourParents: {
     en: "Email (yours or your parent's)",
     kr: '이메일 (본인 혹은 부모님의 이메일 주소를 입력하세요)'
@@ -399,6 +423,10 @@ const languageObj = {
   enterHeading: {
     en: 'Enter Heading',
     kr: '제목을 입력하세요'
+  },
+  enterMessageForVisitors: {
+    en: 'Enter a message for your visitors',
+    kr: '방문자에게 전할 메시지를 입력하세요'
   },
   enterNewUsername: {
     en: 'Enter New Username',
@@ -612,6 +640,10 @@ const languageObj = {
     en: 'Liked',
     kr: '좋아요'
   },
+  likes: {
+    en: 'Likes',
+    kr: '좋아요'
+  },
   link: {
     en: 'Link',
     kr: '링크'
@@ -680,6 +712,10 @@ const languageObj = {
     en: 'Members',
     kr: '멤버'
   },
+  memberSince: {
+    en: 'Member since',
+    kr: '가입일:'
+  },
   menu: {
     en: 'Menu',
     kr: '메뉴'
@@ -716,6 +752,10 @@ const languageObj = {
     en: 'Moderate Effort',
     kr: '적당한 노력'
   },
+  monthlyXpGrowth: {
+    en: 'Monthly XP Growth',
+    kr: '월간 XP 증가량'
+  },
   moreToCome: {
     en: 'More to come',
     kr: '출시 준비중'
@@ -723,6 +763,10 @@ const languageObj = {
   myRanking: {
     en: 'My Ranking',
     kr: '내 순위'
+  },
+  mustLogInToViewContent: {
+    en: 'You must log in to view this content',
+    kr: '로그인이 필요합니다'
   },
   name: {
     en: 'Name',
@@ -791,6 +835,10 @@ const languageObj = {
   notRankedDescription: {
     en: 'You are not ranked. To get ranked, earn XP by completing missions, watching XP videos, or leaving comments',
     kr: '현재 XP가 없습니다. 미션을 완료하거나, XP 동영상을 시청하거나, 댓글을 남기시면 XP를 보상받으실 수 있습니다'
+  },
+  notableActivities: {
+    en: 'Notable Activities',
+    kr: '주요 활동'
   },
   noUserMadeContent: {
     en: 'No user made content',
@@ -868,6 +916,10 @@ const languageObj = {
     en: 'per minute',
     kr: '를 1분마다 획득'
   },
+  pictures: {
+    en: 'Pictures',
+    kr: '사진'
+  },
   pin: {
     en: 'Pin',
     kr: '고정'
@@ -895,6 +947,10 @@ const languageObj = {
   pleaseSelectSmallerImage: {
     en: 'Please select a smaller image',
     kr: '더 작은 이미지를 선택해주세요'
+  },
+  pleaseVerifyEmail: {
+    en: 'Please verify your email',
+    kr: '이메일 주소를 인증해주세요'
   },
   post: {
     en: 'Post!',
@@ -955,6 +1011,10 @@ const languageObj = {
   randomHighXPSubject: {
     en: 'Random High XP Subject',
     kr: '무작위 고XP 주제'
+  },
+  rank: {
+    en: 'Rank',
+    kr: '랭킹'
   },
   ranking: {
     en: 'Ranking',
@@ -1031,6 +1091,10 @@ const languageObj = {
   reorder: {
     en: 'Reorder',
     kr: '순서 변경'
+  },
+  reorderPicturesByDragging: {
+    en: 'Reorder Pictures by Dragging Them',
+    kr: '사진을 드래그하여 순서를 변경하세요'
   },
   reorderQuestions: {
     en: 'Reorder Questions',
@@ -1172,6 +1236,10 @@ const languageObj = {
     en: 'Show me another subject',
     kr: '다른 주제를 보여주세요'
   },
+  showMore: {
+    en: 'Show More',
+    kr: '더 보기'
+  },
   showMoreRewardRecords: {
     en: 'Show More Reward Records',
     kr: '더 많은 보상 기록 보기'
@@ -1300,6 +1368,10 @@ const languageObj = {
     en: 'User',
     kr: '사용자'
   },
+  userEmailNotVerified: {
+    en: `This user's email has not been verified, yet`,
+    kr: '이 사용자의 이메일 주소는 아직 인증되지 않았습니다'
+  },
   username: {
     en: 'Username',
     kr: '아이디'
@@ -1352,9 +1424,25 @@ const languageObj = {
     en: 'Vocabulary',
     kr: '단어수집 게임'
   },
+  watched: {
+    en: 'Watched',
+    kr: '시청한 영상'
+  },
   watching: {
     en: 'watching',
     kr: '시청하기'
+  },
+  wasLastActive: {
+    en: 'Was last active',
+    kr: '최근 접속:'
+  },
+  website: {
+    en: 'website',
+    kr: '웹사이트'
+  },
+  Website: {
+    en: 'Website',
+    kr: '웹사이트'
   },
   welcomeToTwinkle: {
     en: `Welcome to Twinkle. Do you have a Twinkle account?`,
@@ -1403,6 +1491,10 @@ const languageObj = {
   yourXP: {
     en: 'Your XP',
     kr: 'XP'
+  },
+  youtube: {
+    en: 'YouTube',
+    kr: '유튜브'
   },
   youtubeVideo: {
     en: 'YouTube Video',

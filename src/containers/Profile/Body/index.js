@@ -6,6 +6,12 @@ import Home from './Home';
 import Posts from './Posts';
 import { Switch, Route } from 'react-router-dom';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const profileLabel = localize('Profile');
+const watchedLabel = localize('watched');
+const likesLabel = localize('likes');
+const postsLabel = localize('posts');
 
 Body.propTypes = {
   history: PropTypes.object.isRequired,
@@ -70,7 +76,7 @@ export default function Body({
             style={{ cursor: 'pointer' }}
             onClick={() => history.push(`/users/${username}`)}
           >
-            <a>Profile</a>
+            <a>{profileLabel}</a>
           </nav>
           <nav
             className={
@@ -79,7 +85,7 @@ export default function Body({
             style={{ cursor: 'pointer' }}
             onClick={() => history.push(`${match.url}${`/watched`}`)}
           >
-            <a>Watched</a>
+            <a>{watchedLabel}</a>
           </nav>
           <nav
             className={
@@ -88,7 +94,7 @@ export default function Body({
             style={{ cursor: 'pointer' }}
             onClick={() => history.push(`${match.url}${`/likes`}`)}
           >
-            <a>Likes</a>
+            <a>{likesLabel}</a>
           </nav>
           <nav
             className={
@@ -101,7 +107,7 @@ export default function Body({
             style={{ cursor: 'pointer' }}
             onClick={() => history.push(`${match.url}${`/all`}`)}
           >
-            <a>Posts</a>
+            <a>{postsLabel}</a>
           </nav>
         </FilterBar>
         <div

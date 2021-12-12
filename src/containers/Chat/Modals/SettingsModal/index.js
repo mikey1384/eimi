@@ -18,6 +18,9 @@ import {
 } from 'contexts';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
+import localize from 'constants/localize';
+
+const changeThemeLabel = localize('changeTheme');
 
 SettingsModal.propTypes = {
   channelId: PropTypes.number,
@@ -241,7 +244,7 @@ export default function SettingsModal({
                   fontSize: '1.7rem'
                 }}
               >
-                Change theme:
+                {changeThemeLabel}:
               </div>
               <ColorSelector
                 colors={[

@@ -11,6 +11,9 @@ import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
 import { useAppContext, useContentContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const changeThemeLabel = localize('changeTheme2');
 
 Cover.propTypes = {
   onSelectTheme: PropTypes.func.isRequired,
@@ -142,7 +145,7 @@ export default function Cover({
                 filled
                 onClick={() => setColorSelectorShown(true)}
               >
-                Change Theme
+                {changeThemeLabel}
               </Button>
             )}
             {colorSelectorShown && (

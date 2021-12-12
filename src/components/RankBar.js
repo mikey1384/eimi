@@ -3,6 +3,10 @@ import PropTypes from 'prop-types';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { borderRadius, mobileMaxWidth, Color } from 'constants/css';
 import { css } from '@emotion/css';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const rankLabel = localize('rank');
 
 RankBar.propTypes = {
   className: PropTypes.string,
@@ -22,6 +26,49 @@ export default function RankBar({ className, profile, style }) {
         : undefined,
     [profile.rank]
   );
+  const rankNumberLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${profile.rank}위`;
+    }
+    return `#${profile.rank}`;
+  }, [profile.rank]);
+  const xpNumberLabel = useMemo(() => {
+    const innerComponent = (
+      <>
+        <span
+          style={{
+            color:
+              rankColor ||
+              (profile.rank <= 10 ? Color.logoGreen() : Color.darkGray())
+          }}
+        >
+          {addCommasToNumber(profile.twinkleXP)}
+        </span>{' '}
+        <span
+          style={{
+            color:
+              rankColor ||
+              (profile.rank <= 10 ? Color.gold() : Color.darkGray())
+          }}
+        >
+          XP
+        </span>
+      </>
+    );
+    return SELECTED_LANGUAGE === 'kr' ? (
+      <>
+        <span style={{ color: profile.rank > 3 ? Color.darkGray() : null }}>
+          (
+        </span>
+        {innerComponent}
+        <span style={{ color: profile.rank > 3 ? Color.darkGray() : null }}>
+          )
+        </span>
+      </>
+    ) : (
+      innerComponent
+    );
+  }, [profile.rank, profile.twinkleXP, rankColor]);
 
   return (
     <div
@@ -53,7 +100,7 @@ export default function RankBar({ className, profile, style }) {
               (profile.rank <= 10 ? Color.logoBlue() : Color.darkGray())
           }}
         >
-          Rank
+          {rankLabel}
         </span>{' '}
         <span
           style={{
@@ -62,37 +109,22 @@ export default function RankBar({ className, profile, style }) {
               (profile.rank <= 10 ? Color.logoBlue() : Color.darkGray())
           }}
         >
-          #{profile.rank}
+          {rankNumberLabel}
         </span>{' '}
-        <span
-          style={{
-            color:
-              rankColor ||
-              (profile.rank <= 10 ? Color.logoBlue() : Color.darkGray())
-          }}
-        >
-          with
-        </span>
+        {SELECTED_LANGUAGE === 'en' ? (
+          <span
+            style={{
+              color:
+                rankColor ||
+                (profile.rank <= 10 ? Color.logoBlue() : Color.darkGray())
+            }}
+          >
+            with
+          </span>
+        ) : null}
       </span>{' '}
       <span>
-        <span
-          style={{
-            color:
-              rankColor ||
-              (profile.rank <= 10 ? Color.logoGreen() : Color.darkGray())
-          }}
-        >
-          {addCommasToNumber(profile.twinkleXP)}
-        </span>{' '}
-        <span
-          style={{
-            color:
-              rankColor ||
-              (profile.rank <= 10 ? Color.gold() : Color.darkGray())
-          }}
-        >
-          XP
-        </span>
+        {xpNumberLabel}
         {!!profile.xpThisMonth && (
           <span
             style={{

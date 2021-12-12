@@ -7,6 +7,10 @@ import MonthlyXp from './MonthlyXp';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { useAppContext, useProfileContext } from 'contexts';
 import { useProfileState } from 'helpers/hooks';
+import localize from 'constants/localize';
+
+const notableActivitiesLabel = localize('notableActivities');
+const showMoreLabel = localize('showMore');
 
 Achievements.propTypes = {
   profile: PropTypes.object.isRequired,
@@ -58,7 +62,7 @@ export default function Achievements({
     <ErrorBoundary>
       <SectionPanel
         customColorTheme={selectedTheme}
-        title="Notable Activities"
+        title={notableActivitiesLabel}
         loaded={!loading}
       >
         {feeds.length === 0 && (
@@ -83,7 +87,7 @@ export default function Achievements({
         {loadMoreButton && (
           <LoadMoreButton
             style={{ fontSize: '1.7rem' }}
-            label="Show More"
+            label={showMoreLabel}
             transparent
             onClick={handleLoadMoreNotables}
           />

@@ -15,6 +15,14 @@ import { useMyState } from 'helpers/hooks';
 import ErrorBoundary from 'components/ErrorBoundary';
 import ReorderInterface from './ReorderInterface';
 import NoPictures from './NoPictures';
+import localize from 'constants/localize';
+
+const addPictureLabel = localize('addPicture');
+const deleteLabel = localize('delete');
+const deletePicturesLabel = localize('deletePictures');
+const picturesLabel = localize('pictures');
+const reorderLabel = localize('reorder');
+const reorderPicturesByDraggingLabel = localize('reorderPicturesByDragging');
 
 Pictures.propTypes = {
   numPics: PropTypes.number,
@@ -78,7 +86,7 @@ export default function Pictures({
         >
           <Icon icon="plus" />
           <span style={{ marginLeft: '0.7rem' }}>
-            Add Picture ({pictures.length}/{numPics})
+            {addPictureLabel} ({pictures.length}/{numPics})
           </span>
         </Button>
         <DropdownButton
@@ -94,7 +102,9 @@ export default function Pictures({
                     label: (
                       <>
                         <Icon icon="sort" />
-                        <span style={{ marginLeft: '1rem' }}>Reorder</span>
+                        <span style={{ marginLeft: '1rem' }}>
+                          {reorderLabel}
+                        </span>
                       </>
                     ),
                     onClick: () => setReorderMode(true)
@@ -105,7 +115,7 @@ export default function Pictures({
               label: (
                 <>
                   <Icon icon="trash-alt" />
-                  <span style={{ marginLeft: '1rem' }}>Delete</span>
+                  <span style={{ marginLeft: '1rem' }}>{deleteLabel}</span>
                 </>
               ),
               onClick: () => setDeleteMode(true)
@@ -182,10 +192,10 @@ export default function Pictures({
           loaded
           title={
             deleteMode
-              ? 'Delete Pictures'
+              ? deletePicturesLabel
               : reorderMode
-              ? 'Reorder Pictures by Dragging Them'
-              : 'Pictures'
+              ? reorderPicturesByDraggingLabel
+              : picturesLabel
           }
         >
           <div

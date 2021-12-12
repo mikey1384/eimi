@@ -4,6 +4,9 @@ import SectionPanel from 'components/SectionPanel';
 import BarChart from './BarChart';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { useAppContext } from 'contexts';
+import localize from 'constants/localize';
+
+const monthlyXpGrowthLabel = localize('monthlyXpGrowth');
 
 MonthlyXp.propTypes = {
   selectedTheme: PropTypes.string,
@@ -41,7 +44,7 @@ export default function MonthlyXp({ selectedTheme, userId }) {
     <ErrorBoundary>
       <SectionPanel
         customColorTheme={selectedTheme}
-        title="Monthly XP Growth"
+        title={monthlyXpGrowthLabel}
         loaded={loaded}
       >
         {data && (

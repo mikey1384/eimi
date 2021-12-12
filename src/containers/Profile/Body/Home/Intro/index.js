@@ -25,6 +25,11 @@ import {
   stringIsEmpty,
   finalizeEmoji
 } from 'helpers/stringHelpers';
+import localize from 'constants/localize';
+
+const editLabel = localize('edit');
+const enterMessageForVisitorsLabel = localize('enterMessageForVisitors');
+const removeLabel = localize('remove');
 
 Intro.propTypes = {
   profile: PropTypes.object,
@@ -93,7 +98,7 @@ export default function Intro({ profile, selectedTheme }) {
         customColorTheme={selectedTheme}
         title={greeting || 'Welcome!'}
         canEdit={id === userId}
-        placeholder="Enter a message for your visitors"
+        placeholder={enterMessageForVisitorsLabel}
         onEditTitle={handleEditGreeting}
       >
         <div
@@ -180,7 +185,7 @@ export default function Intro({ profile, selectedTheme }) {
                       }}
                     >
                       <Icon icon="pencil-alt" />
-                      <span style={{ marginLeft: '0.7rem' }}>Edit</span>
+                      <span style={{ marginLeft: '0.7rem' }}>{editLabel}</span>
                     </Button>
                     <Button
                       transparent
@@ -188,7 +193,9 @@ export default function Intro({ profile, selectedTheme }) {
                       onClick={() => setConfirmModalShown(true)}
                     >
                       <Icon icon="trash-alt" />
-                      <span style={{ marginLeft: '0.7rem' }}>Remove</span>
+                      <span style={{ marginLeft: '0.7rem' }}>
+                        {removeLabel}
+                      </span>
                     </Button>
                   </div>
                 )}
@@ -294,11 +301,11 @@ export default function Intro({ profile, selectedTheme }) {
                 color="darkerGray"
                 menuProps={[
                   {
-                    label: 'Edit',
+                    label: editLabel,
                     onClick: () => setBioEditModalShown(true)
                   },
                   {
-                    label: 'Remove',
+                    label: removeLabel,
                     onClick: () =>
                       uploadBio({
                         firstLine: '',
