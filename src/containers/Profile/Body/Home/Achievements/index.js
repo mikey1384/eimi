@@ -1,10 +1,11 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import ContentPanel from 'components/ContentPanel';
 import LoadMoreButton from 'components/Buttons/LoadMoreButton';
 import MonthlyXp from './MonthlyXp';
 import ErrorBoundary from 'components/ErrorBoundary';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { useAppContext, useProfileContext } from 'contexts';
 import { useProfileState } from 'helpers/hooks';
 import localize from 'constants/localize';
@@ -58,6 +59,13 @@ export default function Achievements({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id, loaded, profile.id, username]);
 
+  const hasntEngagedLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${username}님은 아직 여기에 보일 만한 활동기록이 없습니다`;
+    }
+    return `${username} hasn't engaged in an activity worth showing here, yet`;
+  }, [username]);
+
   return (
     <ErrorBoundary>
       <SectionPanel
@@ -66,9 +74,9 @@ export default function Achievements({
         loaded={!loading}
       >
         {feeds.length === 0 && (
-          <div
-            style={{ fontSize: '2rem', textAlign: 'center' }}
-          >{`${username} hasn't engaged in an activity worth showing here, yet`}</div>
+          <div style={{ fontSize: '2rem', textAlign: 'center' }}>
+            {hasntEngagedLabel}
+          </div>
         )}
         {feeds.map((notable, index) => {
           const { contentId, contentType } = notable;

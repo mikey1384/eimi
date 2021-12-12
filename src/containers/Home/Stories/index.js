@@ -10,7 +10,11 @@ import Icon from 'components/Icon';
 import { css } from '@emotion/css';
 import { mobileMaxWidth } from 'constants/css';
 import { useInfiniteScroll, useMyState } from 'helpers/hooks';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { useAppContext, useHomeContext, useNotiContext } from 'contexts';
+import localize from 'constants/localize';
+
+const hiThereLabel = localize('hiThere');
 
 const categoryObj = {
   uploads: {
@@ -156,6 +160,13 @@ export default function Stories() {
     ));
   }, [category, feeds, subFilter, userId]);
 
+  const beTheFirstLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `안녕하세요 ${username}님! 첫 번째 게시물을 올려보세요!`;
+    }
+    return `Hello ${username}, be the first to post something`;
+  }, [username]);
+
   return (
     <ErrorBoundary>
       <div style={{ width: '100%' }} ref={ContainerRef}>
@@ -183,9 +194,7 @@ export default function Stories() {
               }}
             >
               <h1 style={{ textAlign: 'center' }}>
-                {username
-                  ? `Hello ${username}, be the first to post something`
-                  : 'Hi there!'}
+                {username ? beTheFirstLabel : hiThereLabel}
               </h1>
             </div>
           )}

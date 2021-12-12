@@ -10,6 +10,9 @@ import { useContentState, useMyState } from 'helpers/hooks';
 import { useAppContext, useContentContext } from 'contexts';
 import { css } from '@emotion/css';
 import { mobileMaxWidth } from 'constants/css';
+import localize from 'constants/localize';
+
+const messageBoardLabel = localize('messageBoard');
 
 Home.propTypes = {
   profile: PropTypes.object,
@@ -107,7 +110,7 @@ export default function Home({ profile, selectedTheme }) {
         <SectionPanel
           customColorTheme={selectedTheme}
           loaded
-          title="Message Board"
+          title={messageBoardLabel}
         >
           <Comments
             comments={comments}

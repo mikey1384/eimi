@@ -544,6 +544,10 @@ const languageObj = {
     en: 'Hide Watched',
     kr: '시청한 영상 숨기기'
   },
+  hiThere: {
+    en: 'Hi there!',
+    kr: '안녕하세요!'
+  },
   home: {
     en: 'Home',
     kr: '홈'
@@ -719,6 +723,10 @@ const languageObj = {
   menu: {
     en: 'Menu',
     kr: '메뉴'
+  },
+  messageBoard: {
+    en: 'Message Board',
+    kr: '방명록'
   },
   mission: {
     en: 'Mission',

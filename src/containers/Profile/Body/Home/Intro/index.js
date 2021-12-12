@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import StatusMsg from 'components/UserDetails/StatusMsg';
@@ -19,6 +19,7 @@ import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useAppContext, useContentContext, useInputContext } from 'contexts';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import {
   addEmoji,
   renderText,
@@ -83,9 +84,27 @@ export default function Intro({ profile, selectedTheme }) {
   } = profile;
 
   const StatusInputRef = useRef(null);
-  const bioExists = profileFirstRow || profileSecondRow || profileThirdRow;
-  const usernameColor = Color[selectedTheme]();
-  let defaultMessage = `<p>Welcome to <b style="color: ${usernameColor}">${username}</b>'s Profile Page</p>`;
+  const bioExists = useMemo(
+    () => profileFirstRow || profileSecondRow || profileThirdRow,
+    [profileFirstRow, profileSecondRow, profileThirdRow]
+  );
+  const usernameColor = useMemo(() => Color[selectedTheme](), [selectedTheme]);
+  let defaultMessage = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <p>
+          <b style={{ color: usernameColor }}>{username}</b>님의 프로필
+          페이지입니다
+        </p>
+      );
+    }
+    return (
+      <p>
+        Welcome to <b style={{ color: usernameColor }}>{username}</b>
+        {`'s`} Profile Page
+      </p>
+    );
+  }, [username, usernameColor]);
   const displayedStatusColor =
     userId === profile.id ? editedStatusColor : statusColor;
   const displayedStatusMsg =
@@ -208,8 +227,9 @@ export default function Intro({ profile, selectedTheme }) {
                     textAlign: 'center',
                     alignItems: 'center'
                   }}
-                  dangerouslySetInnerHTML={{ __html: defaultMessage }}
-                />
+                >
+                  {defaultMessage}
+                </div>
               )}
             </div>
           </div>
