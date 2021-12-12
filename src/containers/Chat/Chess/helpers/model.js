@@ -42,7 +42,7 @@ export function initializeChessBoard({ initialState, loading, myId }) {
   let board;
   let defaultBoard = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
   if (initialState) {
-    let { board: parsedBoard, playerColors, move } = JSON.parse(initialState);
+    let { board: parsedBoard, playerColors, move } = initialState;
     board = parsedBoard;
     if (typeof move?.srcIndex === 'number') {
       board[myColor === 'black' ? 63 - move.srcIndex : move.srcIndex] =

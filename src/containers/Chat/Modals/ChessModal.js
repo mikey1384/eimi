@@ -108,26 +108,21 @@ export default function ChessModal({
     }
   }, [channelId, countdownNumber]);
 
-  const parsedState = useMemo(
-    () => (initialState ? JSON.parse(initialState) : {}),
-    [initialState]
-  );
-
   const gameFinished = useMemo(
     () =>
-      parsedState?.isCheckmate ||
-      parsedState?.isStalemate ||
-      parsedState?.isDraw,
-    [parsedState?.isCheckmate, parsedState?.isStalemate, parsedState?.isDraw]
+      initialState?.isCheckmate ||
+      initialState?.isStalemate ||
+      initialState?.isDraw,
+    [initialState?.isCheckmate, initialState?.isStalemate, initialState?.isDraw]
   );
 
   const gameEndButtonShown = useMemo(
     () =>
-      !!parsedState?.move?.number > 0 &&
+      !!initialState?.move?.number > 0 &&
       !newChessState &&
       !gameFinished &&
       !userMadeLastMove,
-    [gameFinished, newChessState, parsedState?.move?.number, userMadeLastMove]
+    [gameFinished, newChessState, initialState?.move?.number, userMadeLastMove]
   );
 
   const drawOffererId = useMemo(() => {
@@ -140,7 +135,7 @@ export default function ChessModal({
   const drawButtonShown = useMemo(() => {
     return (
       !drawOffererId &&
-      !!parsedState?.move?.number > 0 &&
+      !!initialState?.move?.number > 0 &&
       !newChessState &&
       !gameFinished &&
       userMadeLastMove
@@ -149,7 +144,7 @@ export default function ChessModal({
     drawOffererId,
     gameFinished,
     newChessState,
-    parsedState?.move?.number,
+    initialState?.move?.number,
     userMadeLastMove
   ]);
 
@@ -173,7 +168,7 @@ export default function ChessModal({
               isFromModal
               channelId={channelId}
               countdownNumber={countdownNumber}
-              interactable={!parsedState?.isDraw}
+              interactable={!initialState?.isDraw}
               initialState={initialState}
               loaded={loaded}
               myId={myId}

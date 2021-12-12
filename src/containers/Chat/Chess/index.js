@@ -36,7 +36,7 @@ Chess.propTypes = {
   countdownNumber: PropTypes.number,
   gameWinnerId: PropTypes.number,
   interactable: PropTypes.bool,
-  initialState: PropTypes.string,
+  initialState: PropTypes.object,
   isFromModal: PropTypes.bool,
   loaded: PropTypes.bool,
   moveViewed: PropTypes.bool,
@@ -94,10 +94,6 @@ function Chess({
   });
   const enPassantTarget = useRef(null);
   const capturedPiece = useRef(null);
-  const parsedState = useMemo(
-    () => (initialState ? JSON.parse(initialState) : undefined),
-    [initialState]
-  );
 
   const awaitingMoveLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
@@ -117,23 +113,23 @@ function Chess({
   }, [opponentName]);
 
   const move = useMemo(() => {
-    if (parsedState) {
-      return parsedState.move;
+    if (initialState) {
+      return initialState.move;
     } else {
       return {};
     }
-  }, [parsedState]);
+  }, [initialState]);
 
   const myColor = useMemo(
-    () => parsedState?.playerColors[myId] || 'white',
-    [myId, parsedState]
+    () => initialState?.playerColors[myId] || 'white',
+    [myId, initialState]
   );
 
   const userMadeLastMove = useMemo(() => move.by === myId, [move.by, myId]);
-  const isCheck = parsedState?.isCheck;
-  const isCheckmate = parsedState?.isCheckmate;
-  const isStalemate = parsedState?.isStalemate;
-  const isDraw = parsedState?.isDraw;
+  const isCheck = initialState?.isCheck;
+  const isCheckmate = initialState?.isCheckmate;
+  const isStalemate = initialState?.isStalemate;
+  const isDraw = initialState?.isDraw;
   const statusText = isCheckmate
     ? 'Checkmate!'
     : isStalemate
@@ -160,19 +156,19 @@ function Chess({
 
   useEffect(() => {
     if (newChessState) return;
-    playerColors.current = parsedState
-      ? parsedState.playerColors
+    playerColors.current = initialState
+      ? initialState.playerColors
       : {
           [myId]: 'white',
           [opponentId]: 'black'
         };
     setSquares(initializeChessBoard({ initialState, loading: !loaded, myId }));
     capturedPiece.current = null;
-    if (parsedState) {
-      enPassantTarget.current = parsedState.enPassantTarget || null;
-      setBlackFallenPieces(parsedState.fallenPieces.black);
-      setWhiteFallenPieces(parsedState.fallenPieces.white);
-      fallenPieces.current = parsedState.fallenPieces;
+    if (initialState) {
+      enPassantTarget.current = initialState.enPassantTarget || null;
+      setBlackFallenPieces(initialState.fallenPieces.black);
+      setWhiteFallenPieces(initialState.fallenPieces.white);
+      fallenPieces.current = initialState.fallenPieces;
     } else {
       enPassantTarget.current = null;
       setBlackFallenPieces([]);
@@ -207,7 +203,6 @@ function Chess({
     myId,
     newChessState,
     opponentId,
-    parsedState,
     userMadeLastMove
   ]);
 
@@ -599,7 +594,7 @@ function Chess({
       }}
     >
       {loaded &&
-        parsedState &&
+        initialState &&
         (userMadeLastMove ||
           spoilerOff ||
           isCheckmate ||
@@ -668,16 +663,16 @@ function Chess({
                       <span>
                         to <b>{move.to}</b>
                       </span>
-                      {parsedState?.capturedPiece && (
+                      {initialState?.capturedPiece && (
                         <>
                           {' '}
                           <span>capturing</span>{' '}
                           <span>
-                            {parsedState?.capturedPiece === 'queen'
+                            {initialState?.capturedPiece === 'queen'
                               ? 'the'
                               : 'a'}{' '}
                           </span>
-                          <b>{parsedState?.capturedPiece}</b>
+                          <b>{initialState?.capturedPiece}</b>
                         </>
                       )}
                     </>
