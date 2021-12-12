@@ -824,6 +824,10 @@ const languageObj = {
     en: "No, I don't have an account",
     kr: '아니오, 계정이 없습니다'
   },
+  noLinks: {
+    en: 'No Uploaded Links',
+    kr: '업로드된 링크가 없습니다'
+  },
   noModerators: {
     en: 'No Moderators',
     kr: '관리자가 없습니다'
