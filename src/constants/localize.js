@@ -634,7 +634,7 @@ const languageObj = {
   },
   letsSetUpYourAccount: {
     en: `Welcome to Twinkle! Let's set up your account`,
-    kr: '트윈클에 오신 것을 환영합니다! 계정을 만들어 볼까요?'
+    kr: '환영합니다! 계정을 만들어 볼까요?'
   },
   like: {
     en: 'Like',
@@ -1458,7 +1458,7 @@ const languageObj = {
   },
   welcomeToTwinkle: {
     en: `Welcome to Twinkle. Do you have a Twinkle account?`,
-    kr: '트윈클에 오신 것을 환영합니다. 계정이 있으신가요?'
+    kr: '환영합니다! 계정이 있으신가요?'
   },
   whatIsYourFirstName: {
     en: 'What is your first name?',
