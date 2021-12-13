@@ -1260,6 +1260,10 @@ const languageObj = {
     en: 'Show More Reward Records',
     kr: '더 많은 보상 기록 보기'
   },
+  start: {
+    en: 'Start',
+    kr: '시작'
+  },
   startedBy: {
     en: 'Started by',
     kr: '개설자:'
@@ -1471,6 +1475,10 @@ const languageObj = {
   whatIsYourLastName: {
     en: 'What is your last name?',
     kr: '성을 입력하세요'
+  },
+  whenReadyPressStart: {
+    en: 'When you are ready, press "Start"',
+    kr: '준비되시면 시작 버튼을 누르세요'
   },
   xpVideos: {
     en: 'XP Videos',

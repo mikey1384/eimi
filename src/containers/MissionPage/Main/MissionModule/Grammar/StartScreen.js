@@ -4,6 +4,11 @@ import Button from 'components/Button';
 import Icon from 'components/Icon';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { borderRadius, Color } from 'constants/css';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
+import localize from 'constants/localize';
+
+const startLabel = localize('start');
+const whenReadyPressStartLabel = localize('whenReadyPressStart');
 
 StartScreen.propTypes = {
   isRepeating: PropTypes.bool,
@@ -29,6 +34,13 @@ export default function StartScreen({
     onInitMission();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  const correctlyAnswerAllQuestionsLabel = useMemo(() => {
+    if (SELECTED_LANGUAGE === 'kr') {
+      return `${mission.numQuestions} 문제를 모두 맞추셔야 통과합니다`;
+    }
+    return `Correctly answer all ${mission.numQuestions} questions`;
+  }, [mission?.numQuestions]);
 
   const rewardDetails = useMemo(() => {
     return (mission.xpReward || mission.coinReward) &&
@@ -113,10 +125,10 @@ export default function StartScreen({
           </div>
         </div>
       )}
-      <h3>Correctly answer all {mission.numQuestions} grammar questions</h3>
-      <p
-        style={{ marginTop: '1.5rem', fontSize: '1.7rem' }}
-      >{`When you are ready, press "Start"`}</p>
+      <h3>{correctlyAnswerAllQuestionsLabel}</h3>
+      <p style={{ marginTop: '1.5rem', fontSize: '1.7rem' }}>
+        {whenReadyPressStartLabel}
+      </p>
       <div
         style={{
           display: 'flex',
@@ -131,7 +143,7 @@ export default function StartScreen({
           style={{ fontSize: '2.3rem' }}
           onClick={onStartButtonClick}
         >
-          Start
+          {startLabel}
         </Button>
       </div>
     </div>
