@@ -23,7 +23,6 @@ const enterTheUsernameYouWishToUseLabel = localize(
   'enterTheUsernameYouWishToUse'
 );
 const lastNameLabel = localize('lastName');
-const passphraseLabel = localize('passphrase');
 const setUpPasswordLabel = localize('setUpPassword');
 const whatIsYourFirstNameLabel = localize('whatIsYourFirstName');
 const whatIsYourLastNameLabel = localize('whatIsYourLastName');
@@ -52,7 +51,6 @@ export default function SignUpForm({
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
-  const [keyphrase, setKeyphrase] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
   const submitDisabled = useMemo(
     () =>
@@ -60,9 +58,8 @@ export default function SignUpForm({
       stringIsEmpty(password) ||
       stringIsEmpty(firstname) ||
       stringIsEmpty(lastname) ||
-      stringIsEmpty(keyphrase) ||
       errorMessage,
-    [errorMessage, firstname, keyphrase, lastname, password, username]
+    [errorMessage, firstname, lastname, password, username]
   );
   const usernameErrorMsgLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
@@ -183,22 +180,6 @@ export default function SignUpForm({
               }}
             />
           </section>
-          <section>
-            <label>{passphraseLabel}</label>
-            <Input
-              value={keyphrase}
-              placeholder={passphraseLabel}
-              onChange={(text) => {
-                setErrorMessage('');
-                setKeyphrase(text);
-              }}
-              onKeyPress={(event) => {
-                if (event.key === 'Enter' && !submitDisabled) {
-                  onSubmit();
-                }
-              }}
-            />
-          </section>
           <section style={{ marginTop: '2rem' }}>
             <label>{emailYoursOrYourParentsLabel}</label>
             <Input
@@ -264,7 +245,6 @@ export default function SignUpForm({
         username,
         password,
         firstname,
-        keyphrase,
         lastname,
         email
       });
