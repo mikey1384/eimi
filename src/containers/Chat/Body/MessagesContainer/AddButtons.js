@@ -20,7 +20,7 @@ export default function AddButtons({
     <div
       style={{
         display: 'flex',
-        margin: '1.1rem 0 0 0',
+        margin: '0.2rem 0 0.2rem 0',
         alignItems: 'flex-start'
       }}
     >
@@ -29,18 +29,17 @@ export default function AddButtons({
         disabled={disabled}
         onClick={onUploadButtonClick}
         color={profileTheme}
-        style={{ padding: '0.5rem' }}
       >
-        <Icon icon="upload" />
+        <Icon size="lg" icon="upload" />
       </Button>
       <Button
         skeuomorphic
         disabled={disabled}
         color={profileTheme}
         onClick={onSelectVideoButtonClick}
-        style={{ marginLeft: '0.5rem', padding: '0.5rem' }}
+        style={{ marginLeft: '1rem' }}
       >
-        <Icon icon="film" />
+        <Icon size="lg" icon="film" />
       </Button>
     </div>
   );
