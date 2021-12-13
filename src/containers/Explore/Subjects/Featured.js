@@ -10,6 +10,7 @@ import { useMyState } from 'helpers/hooks';
 import localize from 'constants/localize';
 
 const featuredLabel = localize('featuredSubjects');
+const noFeaturedSubjectsLabel = localize('noFeaturedSubjects');
 const reorderLabel = localize('reorder');
 const selectLabel = localize('select');
 
@@ -66,7 +67,7 @@ export default function Featured({
           ) : null
         }
         isEmpty={subjects.length === 0}
-        emptyMessage="No Subjects Featured"
+        emptyMessage={noFeaturedSubjectsLabel}
         loaded={loaded}
       >
         {shownSubjects.map((subject) => (

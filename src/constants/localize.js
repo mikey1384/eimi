@@ -836,6 +836,10 @@ const languageObj = {
     en: 'No playlists',
     kr: '재생목록이 존재하지 않습니다'
   },
+  noFeaturedSubjects: {
+    en: 'No Featured Subjects',
+    kr: '추천 주제가 없습니다'
+  },
   notEnoughTwinkleCoins: {
     en: `You don't have enough Twinkle Coins`,
     kr: '트윈클 코인이 부족합니다'
