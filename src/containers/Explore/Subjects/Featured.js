@@ -21,6 +21,7 @@ Featured.propTypes = {
   onExpand: PropTypes.func.isRequired,
   onSubmit: PropTypes.func.isRequired
 };
+
 export default function Featured({
   loaded,
   expanded,
