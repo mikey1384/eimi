@@ -36,7 +36,6 @@ MessageInput.propTypes = {
   onChessButtonClick: PropTypes.func.isRequired,
   onHeightChange: PropTypes.func.isRequired,
   onMessageSubmit: PropTypes.func.isRequired,
-  onSelectGifButtonClick: PropTypes.func.isRequired,
   onSelectVideoButtonClick: PropTypes.func.isRequired,
   replyTarget: PropTypes.object,
   recepientId: PropTypes.number,
@@ -55,7 +54,6 @@ function MessageInput({
   onChessButtonClick,
   onHeightChange,
   onMessageSubmit,
-  onSelectGifButtonClick,
   onSelectVideoButtonClick,
   replyTarget,
   recepientId,
@@ -336,7 +334,6 @@ function MessageInput({
         <AddButtons
           disabled={loading || !!banned?.chat || !socketConnected}
           onUploadButtonClick={() => FileInputRef.current.click()}
-          onSelectGifButtonClick={onSelectGifButtonClick}
           onSelectVideoButtonClick={onSelectVideoButtonClick}
           profileTheme={profileTheme}
         />

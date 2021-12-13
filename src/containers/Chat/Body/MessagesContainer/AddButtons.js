@@ -7,7 +7,6 @@ AddButtons.propTypes = {
   disabled: PropTypes.bool,
   onUploadButtonClick: PropTypes.func.isRequired,
   onSelectVideoButtonClick: PropTypes.func.isRequired,
-  onSelectGifButtonClick: PropTypes.func.isRequired,
   profileTheme: PropTypes.string
 };
 
@@ -15,7 +14,6 @@ export default function AddButtons({
   disabled,
   onUploadButtonClick,
   onSelectVideoButtonClick,
-  onSelectGifButtonClick,
   profileTheme
 }) {
   return (
@@ -33,16 +31,7 @@ export default function AddButtons({
         color={profileTheme}
         style={{ padding: '0.5rem' }}
       >
-        <Icon size="sm" icon="upload" />
-      </Button>
-      <Button
-        skeuomorphic
-        disabled={disabled}
-        onClick={onSelectGifButtonClick}
-        color={profileTheme}
-        style={{ marginLeft: '0.5rem', padding: '0.5rem' }}
-      >
-        <Icon size="sm" icon={['fal', 'sticky-note']} />
+        <Icon icon="upload" />
       </Button>
       <Button
         skeuomorphic
@@ -51,7 +40,7 @@ export default function AddButtons({
         onClick={onSelectVideoButtonClick}
         style={{ marginLeft: '0.5rem', padding: '0.5rem' }}
       >
-        <Icon size="sm" icon="film" />
+        <Icon icon="film" />
       </Button>
     </div>
   );
