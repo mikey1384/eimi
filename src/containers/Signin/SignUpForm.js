@@ -147,14 +147,14 @@ export default function SignUpForm({
             />
           </section>
           <section>
-            <label>{firstNameLabel}</label>
+            <label>{lastNameLabel}</label>
             <Input
               maxLength={30}
-              value={firstname}
-              placeholder={whatIsYourFirstNameLabel}
+              value={lastname}
+              placeholder={whatIsYourLastNameLabel}
               onChange={(text) => {
                 setErrorMessage('');
-                setFirstname(text.trim());
+                setLastname(text.trim());
               }}
               onKeyPress={(event) => {
                 if (event.key === 'Enter' && !submitDisabled) {
@@ -164,14 +164,14 @@ export default function SignUpForm({
             />
           </section>
           <section>
-            <label>{lastNameLabel}</label>
+            <label>{firstNameLabel}</label>
             <Input
               maxLength={30}
-              value={lastname}
-              placeholder={whatIsYourLastNameLabel}
+              value={firstname}
+              placeholder={whatIsYourFirstNameLabel}
               onChange={(text) => {
                 setErrorMessage('');
-                setLastname(text.trim());
+                setFirstname(text.trim());
               }}
               onKeyPress={(event) => {
                 if (event.key === 'Enter' && !submitDisabled) {
@@ -264,7 +264,7 @@ function isValidEmailAddress(email) {
 }
 
 function isValidRealname(realName) {
-  const pattern = new RegExp(/^[a-zA-Z]+$/);
+  const pattern = new RegExp(/^[a-zA-Z가-힣]+$/);
   return pattern.test(realName);
 }
 
