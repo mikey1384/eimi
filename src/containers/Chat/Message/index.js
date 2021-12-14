@@ -36,6 +36,12 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import ErrorBoundary from 'components/ErrorBoundary';
 import LocalContext from '../Context';
+import localize from 'constants/localize';
+
+const replyLabel = localize('reply2');
+const rewardLabel = localize('reward');
+const removeLabel = localize('remove');
+const editLabel = localize('edit');
 
 Message.propTypes = {
   chessCountdownNumber: PropTypes.number,
@@ -335,7 +341,7 @@ function Message({
         label: (
           <>
             <Icon icon="reply" />
-            <span style={{ marginLeft: '1rem' }}>Reply</span>
+            <span style={{ marginLeft: '1rem' }}>{replyLabel}</span>
           </>
         ),
         onClick: () => {
@@ -354,7 +360,7 @@ function Message({
         label: (
           <>
             <Icon icon="pencil-alt"></Icon>
-            <span style={{ marginLeft: '1rem' }}>Edit</span>
+            <span style={{ marginLeft: '1rem' }}>{editLabel}</span>
           </>
         ),
         onClick: () => {
@@ -371,7 +377,7 @@ function Message({
         label: (
           <>
             <Icon icon="trash-alt"></Icon>
-            <span style={{ marginLeft: '1rem' }}>Remove</span>
+            <span style={{ marginLeft: '1rem' }}>{removeLabel}</span>
           </>
         ),
         onClick: () => {
@@ -388,7 +394,7 @@ function Message({
         label: (
           <>
             <Icon icon="star"></Icon>
-            <span style={{ marginLeft: '1rem' }}>Reward</span>
+            <span style={{ marginLeft: '1rem' }}>{rewardLabel}</span>
           </>
         ),
         style: { color: '#fff', background: Color.pink() },

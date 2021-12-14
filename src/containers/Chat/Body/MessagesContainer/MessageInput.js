@@ -26,6 +26,9 @@ import {
 } from 'helpers/stringHelpers';
 import { mb, returnMaxUploadSize } from 'constants/defaultValues';
 import LocalContext from '../../Context';
+import localize from 'constants/localize';
+
+const enterMessageLabel = localize('enterMessage');
 
 MessageInput.propTypes = {
   currentChannelId: PropTypes.number,
@@ -300,7 +303,7 @@ function MessageInput({
         <Textarea
           innerRef={innerRef}
           minRows={1}
-          placeholder="Type a message..."
+          placeholder={`${enterMessageLabel}...`}
           onKeyDown={handleKeyDown}
           value={text}
           onChange={handleChange}

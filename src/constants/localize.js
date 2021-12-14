@@ -424,6 +424,10 @@ const languageObj = {
     en: 'Enter Heading',
     kr: '제목을 입력하세요'
   },
+  enterMessage: {
+    en: 'Enter a message',
+    kr: '메시지를 입력하세요'
+  },
   enterMessageForVisitors: {
     en: 'Enter a message for your visitors',
     kr: '방문자에게 전할 메시지를 입력하세요'
@@ -1127,6 +1131,10 @@ const languageObj = {
   reply: {
     en: 'Reply',
     kr: '답글'
+  },
+  reply2: {
+    en: 'Reply',
+    kr: '답하기'
   },
   repliedOn: {
     en: 'replied on',
