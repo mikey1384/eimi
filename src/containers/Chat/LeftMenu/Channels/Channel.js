@@ -117,6 +117,20 @@ function Channel({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [history, pathId]);
 
+  const badgeShown = useMemo(() => {
+    return (
+      channelId !== selectedChannelId &&
+      numUnreads > 0 &&
+      lastMessage?.sender?.id !== userId
+    );
+  }, [
+    channelId,
+    lastMessage?.sender?.id,
+    numUnreads,
+    selectedChannelId,
+    userId
+  ]);
+
   return (
     <div
       key={channelId}
@@ -138,7 +152,6 @@ function Channel({
     >
       <div
         style={{
-          width: '100%',
           display: 'flex',
           height: '100%',
           justifyContent: 'space-between',
@@ -148,7 +161,7 @@ function Channel({
         <div
           style={{
             display: 'flex',
-            width: '100%',
+            width: badgeShown ? 'CALC(100% - 3rem)' : '100%',
             height: '100%',
             whiteSpace: 'nowrap',
             flexDirection: 'column',
@@ -199,28 +212,26 @@ function Channel({
             {PreviewMessage}
           </div>
         </div>
-        {channelId !== selectedChannelId &&
-          numUnreads > 0 &&
-          lastMessage?.sender?.id !== userId && (
-            <div
-              style={{
-                background: Color.rose(),
-                display: 'flex',
-                color: '#fff',
-                fontWeight: 'bold',
-                minWidth: '2rem',
-                height: '2rem',
-                borderRadius: '50%',
-                justifyContent: 'center',
-                alignItems: 'center',
-                position: 'relative',
-                right: '1.5rem',
-                bottom: '1.2rem'
-              }}
-            >
-              {numUnreads}
-            </div>
-          )}
+        {badgeShown && (
+          <div
+            style={{
+              background: Color.rose(),
+              fontSize: '1.3rem',
+              display: 'flex',
+              color: '#fff',
+              fontWeight: 'bold',
+              minWidth: '2rem',
+              height: '2rem',
+              borderRadius: '50%',
+              justifyContent: 'center',
+              alignItems: 'center',
+              position: 'relative',
+              bottom: '1.1rem'
+            }}
+          >
+            {numUnreads}
+          </div>
+        )}
       </div>
     </div>
   );
