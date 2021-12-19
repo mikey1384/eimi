@@ -520,6 +520,7 @@ function Message({
         className={MessageStyle.container}
         style={{
           width: '100%',
+          display: 'block',
           zIndex
         }}
       >

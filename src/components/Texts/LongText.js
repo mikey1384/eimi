@@ -89,7 +89,7 @@ export default function LongText({
         finalTextArray = finalTextArray.filter(
           (word, index) => index !== finalTextArray.length - 1
         );
-        processedText = finalTextArray.join('<a') + 'Read More';
+        processedText = finalTextArray.join('<a') + '...';
       }
     }
     const finalText = parse(limitBrs(processedText), {
