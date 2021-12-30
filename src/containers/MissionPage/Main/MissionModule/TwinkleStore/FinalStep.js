@@ -13,15 +13,16 @@ FinalStep.propTypes = {
 };
 
 export default function FinalStep({ mission, style, userId }) {
-  const {
-    requestHelpers: { uploadMissionAttempt }
-  } = useAppContext();
-  const {
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
-  const {
-    actions: { onChangeUserXP, onUpdateUserCoins }
-  } = useContentContext();
+  const uploadMissionAttempt = useAppContext(
+    (v) => v.requestHelpers.uploadMissionAttempt
+  );
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
+  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const mounted = useRef(true);
 

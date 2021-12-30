@@ -43,16 +43,18 @@ export default function Pictures({
   const [deleteMode, setDeleteMode] = useState(false);
   const [reorderedPictureIds, setReorderedPictureIds] = useState([]);
   const [remainingPictures, setRemainingPictures] = useState(pictures);
-  const {
-    requestHelpers: {
-      deleteProfilePictures,
-      reorderProfilePictures,
-      updateUserPictures
-    }
-  } = useAppContext();
-  const {
-    actions: { onUpdateProfileInfo }
-  } = useContentContext();
+  const deleteProfilePictures = useAppContext(
+    (v) => v.requestHelpers.deleteProfilePictures
+  );
+  const reorderProfilePictures = useAppContext(
+    (v) => v.requestHelpers.reorderProfilePictures
+  );
+  const updateUserPictures = useAppContext(
+    (v) => v.requestHelpers.updateUserPictures
+  );
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
   const addPictureButtonDisabled = useMemo(() => {
     return pictures.length >= numPics;
   }, [numPics, pictures]);
@@ -93,7 +95,6 @@ export default function Pictures({
           skeuomorphic
           icon="ellipsis-h"
           color="darkerGray"
-          direction="left"
           style={{ marginLeft: '1rem' }}
           menuProps={[
             ...(pictures.length > 1

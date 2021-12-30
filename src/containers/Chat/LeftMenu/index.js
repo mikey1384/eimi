@@ -26,9 +26,8 @@ LeftMenu.propTypes = {
 function LeftMenu({ onNewButtonClick }) {
   const history = useHistory();
   const { profileTheme } = useMyState();
-  const {
-    state: { chatType, loadingVocabulary }
-  } = useChatContext();
+  const chatType = useChatContext((v) => v.state.chatType);
+  const loadingVocabulary = useChatContext((v) => v.state.loadingVocabulary);
 
   return (
     <div

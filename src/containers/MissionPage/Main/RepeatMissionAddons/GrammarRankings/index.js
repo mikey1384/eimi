@@ -24,9 +24,9 @@ export default function GrammarRankings({ mission, myAttempts }) {
   const [top30s, setTop30s] = useState([]);
   const [all, setAll] = useState([]);
   const mounted = useRef(true);
-  const {
-    requestHelpers: { loadMissionRankings }
-  } = useAppContext();
+  const loadMissionRankings = useAppContext(
+    (v) => v.requestHelpers.loadMissionRankings
+  );
   useEffect(() => {
     mounted.current = true;
     return function onUnmount() {

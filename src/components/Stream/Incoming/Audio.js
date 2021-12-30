@@ -8,16 +8,13 @@ Audio.propTypes = {
 
 export default function Audio({ stream }) {
   const audioRef = useRef(stream);
-  const {
-    state: { callMuted }
-  } = useChatContext();
+  const callMuted = useChatContext((v) => v.state.callMuted);
   useEffect(() => {
     const currentAudio = audioRef.current;
     if (audioRef.current && !audioRef.current.srcObject) {
       const clonedStream = stream.clone();
       audioRef.current.srcObject = clonedStream;
     }
-
     return function cleanUp() {
       currentAudio.srcObject?.getTracks()?.forEach((track) => {
         track.stop();
@@ -25,7 +22,6 @@ export default function Audio({ stream }) {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
   useEffect(() => {
     audioRef.current.muted = callMuted;
   }, [callMuted]);

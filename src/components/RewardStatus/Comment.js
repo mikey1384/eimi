@@ -38,12 +38,12 @@ function Comment({
   onEditDone = () => {},
   reward
 }) {
-  const {
-    requestHelpers: { editRewardComment, revokeReward }
-  } = useAppContext();
-  const {
-    actions: { onRevokeReward, onSetIsEditing }
-  } = useContentContext();
+  const editRewardComment = useAppContext(
+    (v) => v.requestHelpers.editRewardComment
+  );
+  const revokeReward = useAppContext((v) => v.requestHelpers.revokeReward);
+  const onRevokeReward = useContentContext((v) => v.actions.onRevokeReward);
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
   const { authLevel, canEdit, userId } = useMyState();
   const { isEditing } = useContentState({
     contentType: 'reward',
@@ -236,7 +236,6 @@ function Comment({
               skeuomorphic
               icon="chevron-down"
               color="darkerGray"
-              direction="left"
               menuProps={editMenuItems}
             />
           )}

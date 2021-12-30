@@ -54,13 +54,9 @@ export default function Description({
   userIsUploader
 }) {
   const { canDelete, canEdit } = useMyState();
-  const {
-    actions: { onSetIsEditing }
-  } = useContentContext();
-  const {
-    state: inputState,
-    actions: { onSetEditForm }
-  } = useInputContext();
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
+  const inputState = useInputContext((v) => v.state);
+  const onSetEditForm = useInputContext((v) => v.actions.onSetEditForm);
   const { isEditing } = useContentState({
     contentType: 'url',
     contentId: linkId
@@ -217,7 +213,6 @@ export default function Description({
           color="darkerGray"
           opacity={0.8}
           style={{ position: 'absolute', top: '1rem', right: '1rem' }}
-          direction="left"
           menuProps={editMenuItems}
         />
       )}

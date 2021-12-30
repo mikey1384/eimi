@@ -15,6 +15,7 @@ import Body from './Body';
 import Loading from 'components/Loading';
 import PleaseLogIn from './PleaseLogIn';
 import LocalContext from './Context';
+import { parseChannelPath } from 'helpers';
 import { phoneMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from '@emotion/css';
@@ -38,39 +39,74 @@ Chat.propTypes = {
 function Chat({ onFileUpload }) {
   const { pathname } = useLocation();
   const history = useHistory();
-  const {
-    requestHelpers: {
-      acceptInvitation,
-      changeChannelOwner,
-      checkChatAccessible,
-      createNewChat,
-      deleteChatMessage,
-      editChannelSettings,
-      editChatMessage,
-      hideChatAttachment,
-      hideChat,
-      leaveChannel,
-      loadChatChannel,
-      loadChatSubject,
-      loadGeneralChatPathId,
-      loadMoreChatMessages,
-      loadRankings,
-      loadVocabulary,
-      parseChannelPath,
-      putFavoriteChannel,
-      reloadChatSubject,
-      saveChatMessage,
-      searchChatSubject,
-      sendInvitationMessage,
-      setChessMoveViewTimeStamp,
-      startNewDMChannel,
-      updateChatLastRead,
-      updateLastChannelId,
-      updateUserXP,
-      uploadChatSubject,
-      uploadThumb
-    }
-  } = useAppContext();
+  const acceptInvitation = useAppContext(
+    (v) => v.requestHelpers.acceptInvitation
+  );
+  const changeChannelOwner = useAppContext(
+    (v) => v.requestHelpers.changeChannelOwner
+  );
+  const checkChatAccessible = useAppContext(
+    (v) => v.requestHelpers.checkChatAccessible
+  );
+  const createNewChat = useAppContext((v) => v.requestHelpers.createNewChat);
+  const deleteChatMessage = useAppContext(
+    (v) => v.requestHelpers.deleteChatMessage
+  );
+  const editChannelSettings = useAppContext(
+    (v) => v.requestHelpers.editChannelSettings
+  );
+  const editChatMessage = useAppContext(
+    (v) => v.requestHelpers.editChatMessage
+  );
+  const hideChatAttachment = useAppContext(
+    (v) => v.requestHelpers.hideChatAttachment
+  );
+  const hideChat = useAppContext((v) => v.requestHelpers.hideChat);
+  const leaveChannel = useAppContext((v) => v.requestHelpers.leaveChannel);
+  const loadChatChannel = useAppContext(
+    (v) => v.requestHelpers.loadChatChannel
+  );
+  const loadChatSubject = useAppContext(
+    (v) => v.requestHelpers.loadChatSubject
+  );
+  const loadMoreChatMessages = useAppContext(
+    (v) => v.requestHelpers.loadMoreChatMessages
+  );
+  const loadRankings = useAppContext((v) => v.requestHelpers.loadRankings);
+  const loadVocabulary = useAppContext((v) => v.requestHelpers.loadVocabulary);
+  const putFavoriteChannel = useAppContext(
+    (v) => v.requestHelpers.putFavoriteChannel
+  );
+  const reloadChatSubject = useAppContext(
+    (v) => v.requestHelpers.reloadChatSubject
+  );
+  const saveChatMessage = useAppContext(
+    (v) => v.requestHelpers.saveChatMessage
+  );
+  const searchChatSubject = useAppContext(
+    (v) => v.requestHelpers.searchChatSubject
+  );
+  const sendInvitationMessage = useAppContext(
+    (v) => v.requestHelpers.sendInvitationMessage
+  );
+  const setChessMoveViewTimeStamp = useAppContext(
+    (v) => v.requestHelpers.setChessMoveViewTimeStamp
+  );
+  const startNewDMChannel = useAppContext(
+    (v) => v.requestHelpers.startNewDMChannel
+  );
+  const updateChatLastRead = useAppContext(
+    (v) => v.requestHelpers.updateChatLastRead
+  );
+  const updateLastChannelId = useAppContext(
+    (v) => v.requestHelpers.updateLastChannelId
+  );
+  const updateUserXP = useAppContext((v) => v.requestHelpers.updateUserXP);
+  const uploadChatSubject = useAppContext(
+    (v) => v.requestHelpers.uploadChatSubject
+  );
+  const uploadThumb = useAppContext((v) => v.requestHelpers.uploadThumb);
+
   const {
     authLevel,
     banned,
@@ -87,88 +123,129 @@ function Chat({ onFileUpload }) {
     rank,
     twinkleXP
   } = useMyState();
-  const {
-    state,
-    actions: { onEnterComment }
-  } = useInputContext();
-  const {
-    state: {
-      allFavoriteChannelIds,
-      chatType,
-      chatStatus,
-      chessModalShown,
-      channelsObj,
-      channelPathIdHash,
-      channelOnCall,
-      creatingNewDMChannel,
-      currentChannelName,
-      filesBeingUploaded,
-      isRespondingToSubject,
-      loadingVocabulary,
-      loaded,
-      recepientId,
-      reconnecting,
-      selectedChannelId,
-      subjectObj,
-      subjectSearchResults
-    },
-    actions: {
-      onClearNumUnreads,
-      onClearSubjectSearchResults,
-      onCreateNewChannel,
-      onDeleteMessage,
-      onEditChannelSettings,
-      onEditMessage,
-      onEnterChannelWithId,
-      onEnterEmptyChat,
-      onHideAttachment,
-      onHideChat,
-      onLeaveChannel,
-      onLoadChatSubject,
-      onLoadMoreMessages,
-      onLoadVocabulary,
-      onNotifyThatMemberLeftChannel,
-      onReceiveMessage,
-      onReceiveMessageOnDifferentChannel,
-      onReloadChatSubject,
-      onSaveMessage,
-      onSendFirstDirectMessage,
-      onSetChessModalShown,
-      onSetCurrentChannelName,
-      onSetIsRespondingToSubject,
-      onSetLoadingVocabulary,
-      onSetCreatingNewDMChannel,
-      onSetFavoriteChannel,
-      onSetReplyTarget,
-      onShowIncoming,
-      onSubmitMessage,
-      onSearchChatSubject,
-      onTrimMessages,
-      onUpdateChannelPathIdHash,
-      onUpdateChessMoveViewTimeStamp,
-      onUpdateRecentChessMessage,
-      onUpdateSelectedChannelId,
-      onUploadChatSubject
-    }
-  } = useChatContext();
-  const {
-    actions: {
-      onSetEmbeddedUrl,
-      onSetActualDescription,
-      onSetActualTitle,
-      onSetIsEditing,
-      onSetSiteUrl,
-      onSetThumbUrl,
-      onSetMediaStarted
-    }
-  } = useContentContext();
-  const {
-    state: { pageVisible }
-  } = useViewContext();
-  const {
-    state: { allRanks, socketConnected },
-    actions: { onGetRanks }
-  } = useNotiContext();
+  const state = useInputContext((v) => v.state);
+  const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
+  const allFavoriteChannelIds = useChatContext(
+    (v) => v.state.allFavoriteChannelIds
+  );
+  const chatType = useChatContext((v) => v.state.chatType);
+  const chatStatus = useChatContext((v) => v.state.chatStatus);
+  const chessModalShown = useChatContext((v) => v.state.chessModalShown);
+  const channelsObj = useChatContext((v) => v.state.channelsObj);
+  const channelPathIdHash = useChatContext((v) => v.state.channelPathIdHash);
+  const channelOnCall = useChatContext((v) => v.state.channelOnCall);
+  const creatingNewDMChannel = useChatContext(
+    (v) => v.state.creatingNewDMChannel
+  );
+  const currentChannelName = useChatContext((v) => v.state.currentChannelName);
+  const filesBeingUploaded = useChatContext((v) => v.state.filesBeingUploaded);
+  const isRespondingToSubject = useChatContext(
+    (v) => v.state.isRespondingToSubject
+  );
+  const loadingVocabulary = useChatContext((v) => v.state.loadingVocabulary);
+  const loaded = useChatContext((v) => v.state.loaded);
+  const recepientId = useChatContext((v) => v.state.recepientId);
+  const reconnecting = useChatContext((v) => v.state.reconnecting);
+  const selectedChannelId = useChatContext((v) => v.state.selectedChannelId);
+  const subjectObj = useChatContext((v) => v.state.subjectObj);
+  const subjectSearchResults = useChatContext(
+    (v) => v.state.subjectSearchResults
+  );
+  const onClearNumUnreads = useChatContext((v) => v.actions.onClearNumUnreads);
+  const onClearSubjectSearchResults = useChatContext(
+    (v) => v.actions.onClearSubjectSearchResults
+  );
+  const onCreateNewChannel = useChatContext(
+    (v) => v.actions.onCreateNewChannel
+  );
+  const onDeleteMessage = useChatContext((v) => v.actions.onDeleteMessage);
+  const onEditChannelSettings = useChatContext(
+    (v) => v.actions.onEditChannelSettings
+  );
+  const onEditMessage = useChatContext((v) => v.actions.onEditMessage);
+  const onEnterChannelWithId = useChatContext(
+    (v) => v.actions.onEnterChannelWithId
+  );
+  const onEnterEmptyChat = useChatContext((v) => v.actions.onEnterEmptyChat);
+  const onHideAttachment = useChatContext((v) => v.actions.onHideAttachment);
+  const onHideChat = useChatContext((v) => v.actions.onHideChat);
+  const onLeaveChannel = useChatContext((v) => v.actions.onLeaveChannel);
+  const onLoadChatSubject = useChatContext((v) => v.actions.onLoadChatSubject);
+  const onLoadMoreMessages = useChatContext(
+    (v) => v.actions.onLoadMoreMessages
+  );
+  const onLoadVocabulary = useChatContext((v) => v.actions.onLoadVocabulary);
+  const onNotifyThatMemberLeftChannel = useChatContext(
+    (v) => v.actions.onNotifyThatMemberLeftChannel
+  );
+  const onReceiveMessage = useChatContext((v) => v.actions.onReceiveMessage);
+  const onReceiveMessageOnDifferentChannel = useChatContext(
+    (v) => v.actions.onReceiveMessageOnDifferentChannel
+  );
+  const onReloadChatSubject = useChatContext(
+    (v) => v.actions.onReloadChatSubject
+  );
+  const onSaveMessage = useChatContext((v) => v.actions.onSaveMessage);
+  const onSendFirstDirectMessage = useChatContext(
+    (v) => v.actions.onSendFirstDirectMessage
+  );
+  const onSetChessModalShown = useChatContext(
+    (v) => v.actions.onSetChessModalShown
+  );
+  const onSetCurrentChannelName = useChatContext(
+    (v) => v.actions.onSetCurrentChannelName
+  );
+  const onSetIsRespondingToSubject = useChatContext(
+    (v) => v.actions.onSetIsRespondingToSubject
+  );
+  const onSetLoadingVocabulary = useChatContext(
+    (v) => v.actions.onSetLoadingVocabulary
+  );
+  const onSetCreatingNewDMChannel = useChatContext(
+    (v) => v.actions.onSetCreatingNewDMChannel
+  );
+  const onSetFavoriteChannel = useChatContext(
+    (v) => v.actions.onSetFavoriteChannel
+  );
+  const onSetReplyTarget = useChatContext((v) => v.actions.onSetReplyTarget);
+  const onShowIncoming = useChatContext((v) => v.actions.onShowIncoming);
+  const onSubmitMessage = useChatContext((v) => v.actions.onSubmitMessage);
+  const onSearchChatSubject = useChatContext(
+    (v) => v.actions.onSearchChatSubject
+  );
+  const onTrimMessages = useChatContext((v) => v.actions.onTrimMessages);
+  const onUpdateChannelPathIdHash = useChatContext(
+    (v) => v.actions.onUpdateChannelPathIdHash
+  );
+  const onUpdateChessMoveViewTimeStamp = useChatContext(
+    (v) => v.actions.onUpdateChessMoveViewTimeStamp
+  );
+  const onUpdateRecentChessMessage = useChatContext(
+    (v) => v.actions.onUpdateRecentChessMessage
+  );
+  const onUpdateSelectedChannelId = useChatContext(
+    (v) => v.actions.onUpdateSelectedChannelId
+  );
+  const onUploadChatSubject = useChatContext(
+    (v) => v.actions.onUploadChatSubject
+  );
+
+  const onSetEmbeddedUrl = useContentContext((v) => v.actions.onSetEmbeddedUrl);
+  const onSetActualDescription = useContentContext(
+    (v) => v.actions.onSetActualDescription
+  );
+  const onSetActualTitle = useContentContext((v) => v.actions.onSetActualTitle);
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
+  const onSetSiteUrl = useContentContext((v) => v.actions.onSetSiteUrl);
+  const onSetThumbUrl = useContentContext((v) => v.actions.onSetThumbUrl);
+  const onSetMediaStarted = useContentContext(
+    (v) => v.actions.onSetMediaStarted
+  );
+
+  const pageVisible = useViewContext((v) => v.state.pageVisible);
+  const allRanks = useNotiContext((v) => v.state.allRanks);
+  const socketConnected = useNotiContext((v) => v.state.socketConnected);
+  const onGetRanks = useNotiContext((v) => v.actions.onGetRanks);
   const [creatingChat, setCreatingChat] = useState(false);
   const [createNewChatModalShown, setCreateNewChatModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
@@ -184,6 +261,11 @@ function Chat({ onFileUpload }) {
   );
 
   const currentPathId = useMemo(() => pathname.split('chat/')[1], [pathname]);
+  const currentPathIdRef = useRef(currentPathId);
+
+  useEffect(() => {
+    currentPathIdRef.current = currentPathId;
+  }, [currentPathId]);
 
   useEffect(() => {
     if (currentPathId === 'vocabulary') {
@@ -216,8 +298,7 @@ function Chat({ onFileUpload }) {
       if (!isAccessible) {
         return history.replace(`/chat/${generalChatPathId}`);
       }
-      const channelId =
-        channelPathIdHash[pathId] || (await parseChannelPath(pathId));
+      const channelId = channelPathIdHash[pathId] || parseChannelPath(pathId);
       if (!channelPathIdHash[pathId] && mounted.current) {
         onUpdateChannelPathIdHash({ channelId, pathId });
       }
@@ -279,8 +360,14 @@ function Chat({ onFileUpload }) {
     onSetLoadingVocabulary(true);
     const { vocabActivities, wordsObj, wordCollectors } =
       await loadVocabulary();
-    onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors });
-    onSetLoadingVocabulary(false);
+    if (currentPathIdRef.current === 'vocabulary') {
+      if (mounted.current) {
+        onLoadVocabulary({ vocabActivities, wordsObj, wordCollectors });
+      }
+      if (mounted.current) {
+        onSetLoadingVocabulary(false);
+      }
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [chatType]);
 
@@ -411,6 +498,7 @@ function Chat({ onFileUpload }) {
       if (!messageIsForCurrentChannel) {
         onReceiveMessageOnDifferentChannel({
           pageVisible,
+          message,
           channel: {
             id: channelId,
             channelName,
@@ -490,7 +578,6 @@ function Chat({ onFileUpload }) {
           hideChatAttachment,
           leaveChannel,
           loadChatChannel,
-          loadGeneralChatPathId,
           loadMoreChatMessages,
           loadChatSubject,
           loadRankings,

@@ -12,9 +12,8 @@ import WordModal from './WordModal';
 const deviceIsMobile = isMobile(navigator);
 
 export default function WordRegisterStatus() {
-  const {
-    state: { wordRegisterStatus: { frequency, content } = {} }
-  } = useChatContext();
+  const { frequency, content } =
+    useChatContext((v) => v.state.wordRegisterStatus) || {};
   const [wordModalShown, setWordModalShown] = useState(false);
 
   const wordLevel = useMemo(() => {

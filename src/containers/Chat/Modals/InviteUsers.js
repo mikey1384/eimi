@@ -18,17 +18,22 @@ export default function InviteUsersModal({
   onHide,
   currentChannel
 }) {
-  const {
-    requestHelpers: { inviteUsersToChannel, searchUserToInvite }
-  } = useAppContext();
-  const {
-    state: { userSearchResults },
-    actions: {
-      onClearUserSearchResults,
-      onInviteUsersToChannel,
-      onSearchUserToInvite
-    }
-  } = useChatContext();
+  const inviteUsersToChannel = useAppContext(
+    (v) => v.requestHelpers.inviteUsersToChannel
+  );
+  const searchUserToInvite = useAppContext(
+    (v) => v.requestHelpers.searchUserToInvite
+  );
+  const userSearchResults = useChatContext((v) => v.state.userSearchResults);
+  const onClearUserSearchResults = useChatContext(
+    (v) => v.actions.onClearUserSearchResults
+  );
+  const onInviteUsersToChannel = useChatContext(
+    (v) => v.actions.onInviteUsersToChannel
+  );
+  const onSearchUserToInvite = useChatContext(
+    (v) => v.actions.onSearchUserToInvite
+  );
   const [selectedUsers, setSelectedUsers] = useState([]);
   const [inviting, setInviting] = useState(false);
   const currentMembersUID = currentChannel.members.map((member) => member.id);

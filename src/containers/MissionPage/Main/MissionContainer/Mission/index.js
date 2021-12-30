@@ -38,16 +38,14 @@ export default function Mission({
   style,
   onSetMissionState
 }) {
-  const {
-    requestHelpers: { checkMissionStatus }
-  } = useAppContext();
-  const {
-    state: { myAttempts },
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
-  const {
-    state: { pageVisible }
-  } = useViewContext();
+  const checkMissionStatus = useAppContext(
+    (v) => v.requestHelpers.checkMissionStatus
+  );
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
+  const pageVisible = useViewContext((v) => v.state.pageVisible);
   const myAttempt = useMemo(
     () => myAttempts[missionId],
     [missionId, myAttempts]

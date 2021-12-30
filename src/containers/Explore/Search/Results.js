@@ -14,15 +14,17 @@ Results.propTypes = {
 };
 
 export default function Results({ filter, searchText }) {
-  const {
-    requestHelpers: { searchContent }
-  } = useAppContext();
-  const {
-    state: {
-      search: { results, loadMoreButton }
-    },
-    actions: { onLoadSearchResults, onLoadMoreSearchResults }
-  } = useExploreContext();
+  const searchContent = useAppContext((v) => v.requestHelpers.searchContent);
+  const results = useExploreContext((v) => v.state.search.results);
+  const loadMoreButton = useExploreContext(
+    (v) => v.state.search.loadMoreButton
+  );
+  const onLoadSearchResults = useExploreContext(
+    (v) => v.actions.onLoadSearchResults
+  );
+  const onLoadMoreSearchResults = useExploreContext(
+    (v) => v.actions.onLoadMoreSearchResults
+  );
   const [searching, setSearching] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [firstRun, setFirstRun] = useState(true);

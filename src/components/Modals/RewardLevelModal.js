@@ -4,6 +4,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import ErrorBoundary from 'components/ErrorBoundary';
 import RewardLevelForm from 'components/Forms/RewardLevelForm';
+import VideoRewardLevelExplainer from 'components/VideoRewardLevelExplainer';
 import AlertModal from 'components/Modals/AlertModal';
 import { useAppContext } from 'contexts';
 import { SELECTED_LANGUAGE } from 'constants/defaultValues';
@@ -12,7 +13,7 @@ import localize from 'constants/localize';
 const cancelLabel = localize('cancel');
 const setLabel = localize('set');
 const settingCannotBeChangedLabel = localize('settingCannotBeChanged');
-const setVideoRewardLevelLabel = localize('setVideoRewardLevel');
+const setRewardLevelLabel = localize('setRewardLevel');
 
 RewardLevelModal.propTypes = {
   contentId: PropTypes.number.isRequired,
@@ -29,9 +30,9 @@ export default function RewardLevelModal({
   onSubmit,
   onHide
 }) {
-  const {
-    requestHelpers: { updateRewardLevel }
-  } = useAppContext();
+  const updateRewardLevel = useAppContext(
+    (v) => v.requestHelpers.updateRewardLevel
+  );
   const [moderatorName, setModeratorName] = useState('');
   const [cannotChangeModalShown, setCannotChangeModalShown] = useState(false);
   const [disabled, setDisabled] = useState(false);
@@ -56,12 +57,18 @@ export default function RewardLevelModal({
   return (
     <Modal onHide={onHide}>
       <ErrorBoundary>
-        <header>{setVideoRewardLevelLabel}</header>
+        <header>{setRewardLevelLabel}</header>
         <main style={{ fontSize: '3rem', paddingTop: 0 }}>
+          {contentType === 'video' && (
+            <VideoRewardLevelExplainer
+              style={{ marginTop: '5rem' }}
+              rewardLevel={rewardLevel}
+            />
+          )}
           <RewardLevelForm
             rewardLevel={rewardLevel}
             onSetRewardLevel={setRewardLevel}
-            style={{ marginTop: '5rem', textAlign: 'center' }}
+            style={{ marginTop: '3rem', textAlign: 'center' }}
           />
         </main>
         <footer>

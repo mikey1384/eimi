@@ -51,12 +51,12 @@ export default function HomeFilter({
   selectedFilter,
   setDisplayOrder
 }) {
-  const {
-    user: {
-      actions: { onToggleHideWatched }
-    },
-    requestHelpers: { toggleHideWatched }
-  } = useAppContext();
+  const onToggleHideWatched = useAppContext(
+    (v) => v.user.actions.onToggleHideWatched
+  );
+  const toggleHideWatched = useAppContext(
+    (v) => v.requestHelpers.toggleHideWatched
+  );
   const { hideWatched, userId } = useMyState();
   const [activeTab, setActiveTab] = useState();
   const mounted = useRef(true);
@@ -125,7 +125,6 @@ export default function HomeFilter({
                   <DropdownButton
                     skeuomorphic
                     color="darkerGray"
-                    direction="left"
                     icon="caret-down"
                     text={categoryObj.uploads[displayOrder]}
                     menuProps={[

@@ -38,28 +38,40 @@ function MainFeeds({
   selectNotiTab,
   style
 }) {
-  const {
-    requestHelpers: {
-      fetchNotifications,
-      loadMoreNotifications,
-      loadMoreRewards,
-      updateUserXP,
-      collectRewardedCoins
-    }
-  } = useAppContext();
+  const fetchNotifications = useAppContext(
+    (v) => v.requestHelpers.fetchNotifications
+  );
+  const loadMoreNotifications = useAppContext(
+    (v) => v.requestHelpers.loadMoreNotifications
+  );
+  const loadMoreRewards = useAppContext(
+    (v) => v.requestHelpers.loadMoreRewards
+  );
+  const updateUserXP = useAppContext((v) => v.requestHelpers.updateUserXP);
+  const collectRewardedCoins = useAppContext(
+    (v) => v.requestHelpers.collectRewardedCoins
+  );
+
   const { userId, rank, twinkleXP, twinkleCoins } = useMyState();
-  const {
-    state: { numNewNotis, totalRewardedTwinkles, totalRewardedTwinkleCoins },
-    actions: {
-      onClearRewards,
-      onFetchNotifications,
-      onLoadMoreNotifications,
-      onLoadMoreRewards
-    }
-  } = useNotiContext();
-  const {
-    actions: { onUpdateUserCoins, onChangeUserXP }
-  } = useContentContext();
+  const numNewNotis = useNotiContext((v) => v.state.numNewNotis);
+  const totalRewardedTwinkles = useNotiContext(
+    (v) => v.state.totalRewardedTwinkles
+  );
+  const totalRewardedTwinkleCoins = useNotiContext(
+    (v) => v.state.totalRewardedTwinkleCoins
+  );
+  const onClearRewards = useNotiContext((v) => v.actions.onClearRewards);
+  const onFetchNotifications = useNotiContext(
+    (v) => v.actions.onFetchNotifications
+  );
+  const onLoadMoreNotifications = useNotiContext(
+    (v) => v.actions.onLoadMoreNotifications
+  );
+  const onLoadMoreRewards = useNotiContext((v) => v.actions.onLoadMoreRewards);
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
+  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
   const [loading, setLoading] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const [collectingReward, setCollectingReward] = useState(false);

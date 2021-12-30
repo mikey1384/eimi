@@ -27,17 +27,12 @@ export default function MobileMenu({ location, history, onClose }) {
 
   const mounted = useRef(true);
   const displayedRef = useRef(false);
-  const {
-    user: {
-      actions: { onLogout }
-    }
-  } = useAppContext();
-  const {
-    actions: { onResetChat }
-  } = useChatContext();
-  const {
-    actions: { onUploadProfilePic, onSetOnline }
-  } = useContentContext();
+  const onLogout = useAppContext((v) => v.user.actions.onLogout);
+  const onResetChat = useChatContext((v) => v.actions.onResetChat);
+  const onUploadProfilePic = useContentContext(
+    (v) => v.actions.onUploadProfilePic
+  );
+  const onSetOnline = useContentContext((v) => v.actions.onSetOnline);
   const { username, userId } = useMyState();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditStatus, setImageEditStatus] = useState({

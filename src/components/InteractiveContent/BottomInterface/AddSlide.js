@@ -14,18 +14,27 @@ AddSlide.propTypes = {
 };
 
 export default function AddSlide({ archivedSlides, interactiveId, lastFork }) {
-  const {
-    requestHelpers: { appendInteractiveSlide, recoverArchivedSlide }
-  } = useAppContext();
-  const {
-    actions: {
-      onAddNewInteractiveSlide,
-      onChangeNumUpdates,
-      onConcatDisplayedSlides,
-      onRecoverArchivedSlide,
-      onSetSlideState
-    }
-  } = useInteractiveContext();
+  const appendInteractiveSlide = useAppContext(
+    (v) => v.requestHelpers.appendInteractiveSlide
+  );
+  const recoverArchivedSlide = useAppContext(
+    (v) => v.requestHelpers.recoverArchivedSlide
+  );
+  const onAddNewInteractiveSlide = useInteractiveContext(
+    (v) => v.actions.onAddNewInteractiveSlide
+  );
+  const onChangeNumUpdates = useInteractiveContext(
+    (v) => v.actions.onChangeNumUpdates
+  );
+  const onConcatDisplayedSlides = useInteractiveContext(
+    (v) => v.actions.onConcatDisplayedSlides
+  );
+  const onRecoverArchivedSlide = useInteractiveContext(
+    (v) => v.actions.onRecoverArchivedSlide
+  );
+  const onSetSlideState = useInteractiveContext(
+    (v) => v.actions.onSetSlideState
+  );
   const forkOptionNotSelected = useMemo(() => {
     return lastFork && !lastFork?.selectedForkButtonId;
   }, [lastFork]);

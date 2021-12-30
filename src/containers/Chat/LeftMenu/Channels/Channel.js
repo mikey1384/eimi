@@ -7,8 +7,11 @@ import { useMyState } from 'helpers/hooks';
 import { useHistory, useLocation } from 'react-router-dom';
 import localize from 'constants/localize';
 
+const deletedLabel = localize('deleted');
+
 Channel.propTypes = {
   channel: PropTypes.object.isRequired,
+  chatType: PropTypes.string,
   customChannelNames: PropTypes.object.isRequired,
   selectedChannelId: PropTypes.number
 };
@@ -25,6 +28,7 @@ function Channel({
     numUnreads,
     pathId
   },
+  chatType,
   selectedChannelId
 }) {
   const history = useHistory();
@@ -38,12 +42,14 @@ function Channel({
     [channelName, customChannelNames, channelId]
   );
   const selected = useMemo(() => {
-    if (currentPathId === 'vocabulary') return false;
+    if (currentPathId === 'vocabulary' || chatType === 'vocabulary') {
+      return false;
+    }
     if (pathId === currentPathId || channelId === selectedChannelId) {
       return true;
     }
     return false;
-  }, [pathId, currentPathId, channelId, selectedChannelId]);
+  }, [currentPathId, chatType, pathId, channelId, selectedChannelId]);
   const lastMessage = useMemo(() => {
     const lastMessageId = messageIds[0];
     return messagesObj[lastMessageId];
@@ -105,7 +111,7 @@ function Channel({
     : undefined;
 
   const ChannelName = useMemo(
-    () => otherMember || effectiveChannelName || '(Deleted)',
+    () => otherMember || effectiveChannelName || `(${deletedLabel})`,
     [effectiveChannelName, otherMember]
   );
 
@@ -130,6 +136,14 @@ function Channel({
     selectedChannelId,
     userId
   ]);
+
+  const badgeWidth = useMemo(() => {
+    const numDigits = numUnreads?.toString()?.length || 1;
+    if (numDigits === 1) {
+      return '2rem';
+    }
+    return `${Math.min(numDigits, 4)}.5rem`;
+  }, [numUnreads]);
 
   return (
     <div
@@ -216,17 +230,16 @@ function Channel({
           <div
             style={{
               background: Color.rose(),
-              fontSize: '1.3rem',
               display: 'flex',
               color: '#fff',
               fontWeight: 'bold',
-              minWidth: '2rem',
+              fontSize: '1.5rem',
+              minWidth: badgeWidth,
               height: '2rem',
-              borderRadius: '50%',
+              borderRadius: '1rem',
+              lineHeight: 1,
               justifyContent: 'center',
-              alignItems: 'center',
-              position: 'relative',
-              bottom: '1.1rem'
+              alignItems: 'center'
             }}
           >
             {numUnreads}

@@ -5,10 +5,10 @@ import { Color, phoneMaxWidth } from 'constants/css';
 import { useChatContext } from 'contexts';
 
 export default function Tabs() {
-  const {
-    state: { favoriteChannelIds, classChannelIds, selectedChatTab },
-    actions: { onSelectChatTab }
-  } = useChatContext();
+  const favoriteChannelIds = useChatContext((v) => v.state.favoriteChannelIds);
+  const classChannelIds = useChatContext((v) => v.state.classChannelIds);
+  const selectedChatTab = useChatContext((v) => v.state.selectedChatTab);
+  const onSelectChatTab = useChatContext((v) => v.actions.onSelectChatTab);
 
   return (
     <div

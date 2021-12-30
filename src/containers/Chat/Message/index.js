@@ -49,6 +49,7 @@ Message.propTypes = {
   channelId: PropTypes.number,
   channelName: PropTypes.string,
   currentChannel: PropTypes.object,
+  forceRefreshForMobile: PropTypes.func,
   message: PropTypes.object,
   onDelete: PropTypes.func,
   index: PropTypes.number,
@@ -72,6 +73,7 @@ function Message({
   chessCountdownNumber,
   chessOpponent,
   currentChannel,
+  forceRefreshForMobile,
   index,
   isLastMsg,
   isNotification,
@@ -561,7 +563,6 @@ function Message({
                     id: userId,
                     username
                   }}
-                  dropdownMenuReversed={isLastMsg}
                 />{' '}
                 <span className={MessageStyle.timeStamp}>
                   {displayedTimeStamp}
@@ -645,6 +646,7 @@ function Message({
                         channelId={channelId}
                         content={content}
                         extractedUrl={extractedUrl}
+                        forceRefreshForMobile={forceRefreshForMobile}
                         myId={myId}
                         messageId={messageId}
                         numMsgs={numMsgs}
@@ -673,10 +675,8 @@ function Message({
                   color="darkerGray"
                   icon="chevron-down"
                   style={{ position: 'absolute', top: 0, right: 0 }}
-                  direction="left"
                   opacity={0.8}
                   menuProps={messageMenuItems}
-                  isReversed={isLastMsg}
                 />
               )}
             </div>

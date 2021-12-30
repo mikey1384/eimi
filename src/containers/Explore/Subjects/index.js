@@ -8,41 +8,66 @@ import { useMyState } from 'helpers/hooks';
 
 export default function Subjects() {
   const { canPinPlaylists, userId } = useMyState();
-  const {
-    requestHelpers: {
-      loadByUserUploads,
-      loadFeaturedSubjects,
-      loadRecommendedUploads
-    }
-  } = useAppContext();
-  const {
-    state: {
-      subjects: {
-        loaded,
-        byUsers,
-        byUsersExpanded,
-        byUsersLoadMoreButton,
-        byUsersLoaded,
-        featureds,
-        featuredLoaded,
-        featuredExpanded,
-        recommendeds,
-        recommendedExpanded,
-        recommendedLoadMoreButton,
-        recommendedLoaded
-      },
-      prevUserId
-    },
-    actions: {
-      onLoadFeaturedSubjects,
-      onSetByUserSubjectsExpanded,
-      onSetFeaturedSubjectsExpanded,
-      onSetRecommendedSubjectsExpanded,
-      onLoadByUserSubjects,
-      onLoadRecommendedSubjects,
-      onSetSubjectsLoaded
-    }
-  } = useExploreContext();
+  const loadByUserUploads = useAppContext(
+    (v) => v.requestHelpers.loadByUserUploads
+  );
+  const loadFeaturedSubjects = useAppContext(
+    (v) => v.requestHelpers.loadFeaturedSubjects
+  );
+  const loadRecommendedUploads = useAppContext(
+    (v) => v.requestHelpers.loadRecommendedUploads
+  );
+  const loaded = useExploreContext((v) => v.state.subjects.loaded);
+  const byUsers = useExploreContext((v) => v.state.subjects.byUsers);
+  const byUsersExpanded = useExploreContext(
+    (v) => v.state.subjects.byUsersExpanded
+  );
+  const byUsersLoadMoreButton = useExploreContext(
+    (v) => v.state.subjects.byUsersLoadMoreButton
+  );
+  const byUsersLoaded = useExploreContext(
+    (v) => v.state.subjects.byUsersLoaded
+  );
+  const featureds = useExploreContext((v) => v.state.subjects.featureds);
+  const featuredLoaded = useExploreContext(
+    (v) => v.state.subjects.featuredLoaded
+  );
+  const featuredExpanded = useExploreContext(
+    (v) => v.state.subjects.featuredExpanded
+  );
+  const recommendeds = useExploreContext((v) => v.state.subjects.recommendeds);
+  const recommendedExpanded = useExploreContext(
+    (v) => v.state.subjects.recommendedExpanded
+  );
+  const recommendedLoadMoreButton = useExploreContext(
+    (v) => v.state.subjects.recommendedLoadMoreButton
+  );
+  const recommendedLoaded = useExploreContext(
+    (v) => v.state.subjects.recommendedLoaded
+  );
+  const prevUserId = useExploreContext((v) => v.state.prevUserId);
+  const onLoadFeaturedSubjects = useExploreContext(
+    (v) => v.actions.onLoadFeaturedSubjects
+  );
+  const onSetByUserSubjectsExpanded = useExploreContext(
+    (v) => v.actions.onSetByUserSubjectsExpanded
+  );
+  const onSetFeaturedSubjectsExpanded = useExploreContext(
+    (v) => v.actions.onSetFeaturedSubjectsExpanded
+  );
+  const onSetRecommendedSubjectsExpanded = useExploreContext(
+    (v) => v.actions.onSetRecommendedSubjectsExpanded
+  );
+  const onLoadByUserSubjects = useExploreContext(
+    (v) => v.actions.onLoadByUserSubjects
+  );
+  const onLoadRecommendedSubjects = useExploreContext(
+    (v) => v.actions.onLoadRecommendedSubjects
+  );
+  const onSetSubjectsLoaded = useExploreContext(
+    (v) => v.actions.onSetSubjectsLoaded
+  );
+
   useEffect(() => {
     init();
     async function init() {

@@ -57,64 +57,86 @@ const deviceIsMobile = isMobile(navigator);
 const userIsUsingIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
 
 function App({ location, history }) {
-  const {
-    user: {
-      actions: { onCloseSigninModal, onInitUser, onLogout, onSetSessionLoaded }
-    },
-    requestHelpers: {
-      auth,
-      loadMyData,
-      recordUserTraffic,
-      uploadFile,
-      uploadContent,
-      uploadFileOnChat
-    }
-  } = useAppContext();
+  const onCloseSigninModal = useAppContext(
+    (v) => v.user.actions.onCloseSigninModal
+  );
+  const onInitUser = useAppContext((v) => v.user.actions.onInitUser);
+  const onLogout = useAppContext((v) => v.user.actions.onLogout);
+  const onSetSessionLoaded = useAppContext(
+    (v) => v.user.actions.onSetSessionLoaded
+  );
+  const auth = useAppContext((v) => v.requestHelpers.auth);
+  const loadMyData = useAppContext((v) => v.requestHelpers.loadMyData);
+  const recordUserTraffic = useAppContext(
+    (v) => v.requestHelpers.recordUserTraffic
+  );
+  const uploadFile = useAppContext((v) => v.requestHelpers.uploadFile);
+  const uploadContent = useAppContext((v) => v.requestHelpers.uploadContent);
+  const uploadFileOnChat = useAppContext(
+    (v) => v.requestHelpers.uploadFileOnChat
+  );
   const { authLevel, profilePicUrl, signinModalShown, userId, username } =
     useMyState();
-  const {
-    state: {
-      channelOnCall,
-      channelsObj,
-      currentChannelName,
-      selectedChannelId
-    },
-    actions: {
-      onDisplayAttachedFile,
-      onSetReplyTarget,
-      onPostFileUploadStatus,
-      onPostUploadComplete,
-      onResetChat,
-      onSendFirstDirectMessage,
-      onUpdateChannelPathIdHash,
-      onUpdateChatUploadProgress
-    }
-  } = useChatContext();
-  const {
-    actions: { onInitContent }
-  } = useContentContext();
-  const {
-    actions: {
-      onLoadNewFeeds,
-      onSetFileUploadComplete,
-      onSetSecretAttachmentUploadComplete,
-      onSetSubmittingSubject,
-      onUpdateFileUploadProgress,
-      onUpdateSecretAttachmentUploadProgress,
-      onClearFileUploadProgress,
-      onSetUploadingFile
-    }
-  } = useHomeContext();
-  const {
-    state: { updateDetail, updateNoticeShown }
-  } = useNotiContext();
-  const {
-    state: { pageVisible, scrollPositions },
-    actions: { onChangePageVisibility, onRecordScrollPosition }
-  } = useViewContext();
-  const {
-    actions: { onResetSubjectInput }
-  } = useInputContext();
+  const channelOnCall = useChatContext((v) => v.state.channelOnCall);
+  const channelsObj = useChatContext((v) => v.state.channelsObj);
+  const currentChannelName = useChatContext((v) => v.state.currentChannelName);
+  const selectedChannelId = useChatContext((v) => v.state.selectedChannelId);
+  const onDisplayAttachedFile = useChatContext(
+    (v) => v.actions.onDisplayAttachedFile
+  );
+  const onSetReplyTarget = useChatContext((v) => v.actions.onSetReplyTarget);
+  const onPostFileUploadStatus = useChatContext(
+    (v) => v.actions.onPostFileUploadStatus
+  );
+  const onPostUploadComplete = useChatContext(
+    (v) => v.actions.onPostUploadComplete
+  );
+  const onResetChat = useChatContext((v) => v.actions.onResetChat);
+  const onSendFirstDirectMessage = useChatContext(
+    (v) => v.actions.onSendFirstDirectMessage
+  );
+  const onUpdateChannelPathIdHash = useChatContext(
+    (v) => v.actions.onUpdateChannelPathIdHash
+  );
+  const onUpdateChatUploadProgress = useChatContext(
+    (v) => v.actions.onUpdateChatUploadProgress
+  );
+  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onLoadNewFeeds = useHomeContext((v) => v.actions.onLoadNewFeeds);
+  const onSetFileUploadComplete = useHomeContext(
+    (v) => v.actions.onSetFileUploadComplete
+  );
+  const onSetSecretAttachmentUploadComplete = useHomeContext(
+    (v) => v.actions.onSetSecretAttachmentUploadComplete
+  );
+  const onSetSubmittingSubject = useHomeContext(
+    (v) => v.actions.onSetSubmittingSubject
+  );
+  const onUpdateFileUploadProgress = useHomeContext(
+    (v) => v.actions.onUpdateFileUploadProgress
+  );
+  const onUpdateSecretAttachmentUploadProgress = useHomeContext(
+    (v) => v.actions.onUpdateSecretAttachmentUploadProgress
+  );
+  const onClearFileUploadProgress = useHomeContext(
+    (v) => v.actions.onClearFileUploadProgress
+  );
+  const onSetUploadingFile = useHomeContext(
+    (v) => v.actions.onSetUploadingFile
+  );
+  const updateDetail = useNotiContext((v) => v.state.updateDetail);
+  const updateNoticeShown = useNotiContext((v) => v.state.updateNoticeShown);
+  const pageVisible = useViewContext((v) => v.state.pageVisible);
+  const scrollPositions = useViewContext((v) => v.state.scrollPositions);
+  const onChangePageVisibility = useViewContext(
+    (v) => v.actions.onChangePageVisibility
+  );
+  const onRecordScrollPosition = useViewContext(
+    (v) => v.actions.onRecordScrollPosition
+  );
+  const onResetSubjectInput = useInputContext(
+    (v) => v.actions.onResetSubjectInput
+  );
   const [mobileMenuShown, setMobileMenuShown] = useState(false);
   const currentChannel = useMemo(
     () => channelsObj[selectedChannelId] || {},

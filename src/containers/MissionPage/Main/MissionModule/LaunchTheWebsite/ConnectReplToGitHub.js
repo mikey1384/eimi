@@ -20,12 +20,12 @@ export default function ConnectReplToGitHub({
   okayPressed,
   taskType
 }) {
-  const {
-    requestHelpers: { updateMissionStatus }
-  } = useAppContext();
-  const {
-    actions: { onUpdateUserMissionState }
-  } = useContentContext();
+  const updateMissionStatus = useAppContext(
+    (v) => v.requestHelpers.updateMissionStatus
+  );
+  const onUpdateUserMissionState = useContentContext(
+    (v) => v.actions.onUpdateUserMissionState
+  );
   const [noPressed, setNoPressed] = useState(false);
   const { userId } = useMyState();
 

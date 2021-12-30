@@ -29,12 +29,13 @@ export default function TakeScreenshot({
   onSetMissionState,
   style
 }) {
-  const {
-    requestHelpers: { uploadFile, uploadMissionAttempt }
-  } = useAppContext();
-  const {
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
+  const uploadFile = useAppContext((v) => v.requestHelpers.uploadFile);
+  const uploadMissionAttempt = useAppContext(
+    (v) => v.requestHelpers.uploadMissionAttempt
+  );
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
   const [screenshotTaken, setScreenshotTaken] = useState(false);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const [buttonShown, setButtonShown] = useState(false);

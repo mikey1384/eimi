@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import FileInfo from './FileInfo';
 import ImagePreview from './ImagePreview';
 import MediaPlayer from './MediaPlayer';
-import { cloudFrontURL, S3URL } from 'constants/defaultValues';
+import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 
 ContentFileViewer.propTypes = {
@@ -45,10 +45,10 @@ export default function ContentFileViewer({
   );
   const src = useMemo(
     () =>
-      `${fileType === 'video' ? S3URL : cloudFrontURL}/attachments/${
+      `${cloudFrontURL}/attachments/${
         isDisplayedOnHome ? 'feed' : contentType
       }/${filePath}/${encodeURIComponent(fileName)}`,
-    [contentType, fileName, filePath, fileType, isDisplayedOnHome]
+    [contentType, fileName, filePath, isDisplayedOnHome]
   );
 
   return (

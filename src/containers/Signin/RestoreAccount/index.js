@@ -14,11 +14,7 @@ RestoreAccount.propTypes = {
 };
 
 export default function RestoreAccount({ username, onShowLoginForm, onHide }) {
-  const {
-    user: {
-      state: { searchedProfiles }
-    }
-  } = useAppContext();
+  const searchedProfiles = useAppContext((v) => v.user.state.searchedProfiles);
   const [section, setSection] = useState('username');
   const [searchText, setSearchText] = useState(username);
 

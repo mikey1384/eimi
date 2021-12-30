@@ -27,13 +27,11 @@ export default function StartNewSubjectPanel({
   contentType,
   onUploadSubject
 }) {
-  const {
-    requestHelpers: { uploadSubject }
-  } = useAppContext();
+  const uploadSubject = useAppContext((v) => v.requestHelpers.uploadSubject);
   const { canEditRewardLevel } = useMyState();
-  const {
-    actions: { onSetSubjectFormShown }
-  } = useContentContext();
+  const onSetSubjectFormShown = useContentContext(
+    (v) => v.actions.onSetSubjectFormShown
+  );
   const { subjectFormShown } = useContentState({ contentType, contentId });
   return (
     <div

@@ -22,12 +22,12 @@ const deviceIsMobile = isMobile(navigator);
 
 export default function LaunchTheWebsite({ style, task }) {
   const { userId, state, username } = useMyState();
-  const {
-    requestHelpers: { updateMissionStatus }
-  } = useAppContext();
-  const {
-    actions: { onUpdateUserMissionState }
-  } = useContentContext();
+  const updateMissionStatus = useAppContext(
+    (v) => v.requestHelpers.updateMissionStatus
+  );
+  const onUpdateUserMissionState = useContentContext(
+    (v) => v.actions.onUpdateUserMissionState
+  );
   const taskState = useMemo(
     () => state?.missions?.[task?.missionType] || {},
     [state?.missions, task?.missionType]

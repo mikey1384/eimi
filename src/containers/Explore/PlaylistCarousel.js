@@ -41,16 +41,16 @@ export default function PlaylistCarousel({
   uploader,
   userIsUploader
 }) {
-  const {
-    requestHelpers: { deletePlaylist, editPlaylistTitle }
-  } = useAppContext();
+  const deletePlaylist = useAppContext((v) => v.requestHelpers.deletePlaylist);
+  const editPlaylistTitle = useAppContext(
+    (v) => v.requestHelpers.editPlaylistTitle
+  );
   const { canEditPlaylists, profileTheme } = useMyState();
-  const {
-    state: {
-      videos: { clickSafe }
-    },
-    actions: { onDeletePlaylist, onEditPlaylistTitle }
-  } = useExploreContext();
+  const clickSafe = useExploreContext((v) => v.state.videos.clickSafe);
+  const onDeletePlaylist = useExploreContext((v) => v.actions.onDeletePlaylist);
+  const onEditPlaylistTitle = useExploreContext(
+    (v) => v.actions.onEditPlaylistTitle
+  );
   const [onEdit, setOnEdit] = useState(false);
   const [changePLVideosModalShown, setChangePLVideosModalShown] =
     useState(false);
@@ -120,7 +120,6 @@ export default function PlaylistCarousel({
             skeuomorphic
             color="darkerGray"
             style={{ position: 'absolute', right: 0 }}
-            direction="left"
             menuProps={[
               {
                 label: editTitleLabel,

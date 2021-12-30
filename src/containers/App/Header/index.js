@@ -22,6 +22,7 @@ import {
 } from 'contexts';
 import {
   GENERAL_CHAT_ID,
+  GENERAL_CHAT_PATH_ID,
   TURN_USERNAME,
   TURN_PASSWORD
 } from 'constants/defaultValues';
@@ -38,117 +39,157 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     () => getSectionFromPathname(pathname)?.section === 'chat',
     [pathname]
   );
-  const {
-    user: {
-      actions: { onSetLastChatPath }
-    },
-    requestHelpers: {
-      checkIfHomeOutdated,
-      checkVersion,
-      fetchNotifications,
-      getNumberOfUnreadMessages,
-      loadGeneralChatPathId,
-      loadChat,
-      loadRankings,
-      loadCoins,
-      loadXP,
-      updateChatLastRead
-    }
-  } = useAppContext();
+  const onSetLastChatPath = useAppContext(
+    (v) => v.user.actions.onSetLastChatPath
+  );
+  const checkIfHomeOutdated = useAppContext(
+    (v) => v.requestHelpers.checkIfHomeOutdated
+  );
+  const checkVersion = useAppContext((v) => v.requestHelpers.checkVersion);
+  const fetchNotifications = useAppContext(
+    (v) => v.requestHelpers.fetchNotifications
+  );
+  const getNumberOfUnreadMessages = useAppContext(
+    (v) => v.requestHelpers.getNumberOfUnreadMessages
+  );
+  const loadChat = useAppContext((v) => v.requestHelpers.loadChat);
+  const loadRankings = useAppContext((v) => v.requestHelpers.loadRankings);
+  const loadCoins = useAppContext((v) => v.requestHelpers.loadCoins);
+  const loadXP = useAppContext((v) => v.requestHelpers.loadXP);
+  const updateChatLastRead = useAppContext(
+    (v) => v.requestHelpers.updateChatLastRead
+  );
+
   const { defaultSearchFilter, userId, username, loggedIn, profilePicUrl } =
     useMyState();
-  const {
-    state: {
-      channelOnCall,
-      channelsObj,
-      chatType,
-      selectedChannelId,
-      myStream,
-      numUnreads,
-      chatStatus
-    },
-    actions: {
-      onChangeAwayStatus,
-      onChangeBusyStatus,
-      onChangeOnlineStatus,
-      onChangeChatSubject,
-      onEnableChatSubject,
-      onSetReconnecting,
-      onChangeChannelOwner,
-      onChangeChannelSettings,
-      onClearRecentChessMessage,
-      onHideAttachment,
-      onCallReceptionConfirm,
-      onDeleteMessage,
-      onEditMessage,
-      onLeaveChannel,
-      onGetNumberOfUnreadMessages,
-      onHangUp,
-      onInitChat,
-      onReceiveFirstMsg,
-      onReceiveMessage,
-      onReceiveMessageOnDifferentChannel,
-      onReceiveVocabActivity,
-      onResetChat,
-      onSetCall,
-      onSetMembersOnCall,
-      onSetMyStream,
-      onSetOnlineUserData,
-      onSetPeerStreams,
-      onShowIncoming,
-      onShowOutgoing,
-      onUpdateSelectedChannelId,
-      onUpdateCollectorsRankings
-    }
-  } = useChatContext();
+  const channelOnCall = useChatContext((v) => v.state.channelOnCall);
+  const channelsObj = useChatContext((v) => v.state.channelsObj);
+  const chatType = useChatContext((v) => v.state.chatType);
+  const selectedChannelId = useChatContext((v) => v.state.selectedChannelId);
+  const myStream = useChatContext((v) => v.state.myStream);
+  const numUnreads = useChatContext((v) => v.state.numUnreads);
+  const chatStatus = useChatContext((v) => v.state.chatStatus);
+  const onChangeAwayStatus = useChatContext(
+    (v) => v.actions.onChangeAwayStatus
+  );
+  const onChangeBusyStatus = useChatContext(
+    (v) => v.actions.onChangeBusyStatus
+  );
+  const onChangeOnlineStatus = useChatContext(
+    (v) => v.actions.onChangeOnlineStatus
+  );
+  const onChangeChatSubject = useChatContext(
+    (v) => v.actions.onChangeChatSubject
+  );
+  const onEnableChatSubject = useChatContext(
+    (v) => v.actions.onEnableChatSubject
+  );
+  const onSetReconnecting = useChatContext((v) => v.actions.onSetReconnecting);
+  const onChangeChannelOwner = useChatContext(
+    (v) => v.actions.onChangeChannelOwner
+  );
+  const onChangeChannelSettings = useChatContext(
+    (v) => v.actions.onChangeChannelSettings
+  );
+  const onClearRecentChessMessage = useChatContext(
+    (v) => v.actions.onClearRecentChessMessage
+  );
+  const onHideAttachment = useChatContext((v) => v.actions.onHideAttachment);
+  const onCallReceptionConfirm = useChatContext(
+    (v) => v.actions.onCallReceptionConfirm
+  );
+  const onDeleteMessage = useChatContext((v) => v.actions.onDeleteMessage);
+  const onEditMessage = useChatContext((v) => v.actions.onEditMessage);
+  const onLeaveChannel = useChatContext((v) => v.actions.onLeaveChannel);
+  const onGetNumberOfUnreadMessages = useChatContext(
+    (v) => v.actions.onGetNumberOfUnreadMessages
+  );
+  const onHangUp = useChatContext((v) => v.actions.onHangUp);
+  const onInitChat = useChatContext((v) => v.actions.onInitChat);
+  const onReceiveFirstMsg = useChatContext((v) => v.actions.onReceiveFirstMsg);
+  const onReceiveMessage = useChatContext((v) => v.actions.onReceiveMessage);
+  const onReceiveMessageOnDifferentChannel = useChatContext(
+    (v) => v.actions.onReceiveMessageOnDifferentChannel
+  );
+  const onReceiveVocabActivity = useChatContext(
+    (v) => v.actions.onReceiveVocabActivity
+  );
+  const onResetChat = useChatContext((v) => v.actions.onResetChat);
+  const onSetCall = useChatContext((v) => v.actions.onSetCall);
+  const onSetMembersOnCall = useChatContext(
+    (v) => v.actions.onSetMembersOnCall
+  );
+  const onSetMyStream = useChatContext((v) => v.actions.onSetMyStream);
+  const onSetOnlineUserData = useChatContext(
+    (v) => v.actions.onSetOnlineUserData
+  );
+  const onSetPeerStreams = useChatContext((v) => v.actions.onSetPeerStreams);
+  const onShowIncoming = useChatContext((v) => v.actions.onShowIncoming);
+  const onShowOutgoing = useChatContext((v) => v.actions.onShowOutgoing);
+  const onUpdateSelectedChannelId = useChatContext(
+    (v) => v.actions.onUpdateSelectedChannelId
+  );
+  const onUpdateCollectorsRankings = useChatContext(
+    (v) => v.actions.onUpdateCollectorsRankings
+  );
 
-  const {
-    state: { category, feeds, subFilter },
-    actions: { onSetFeedsOutdated }
-  } = useHomeContext();
+  const category = useHomeContext((v) => v.state.category);
+  const feeds = useHomeContext((v) => v.state.feeds);
+  const subFilter = useHomeContext((v) => v.state.subFilter);
+  const onSetFeedsOutdated = useHomeContext(
+    (v) => v.actions.onSetFeedsOutdated
+  );
 
-  const {
-    state: {
-      numNewNotis,
-      numNewPosts,
-      totalRewardedTwinkles,
-      totalRewardedTwinkleCoins,
-      versionMatch,
-      prevUserId
-    },
-    actions: {
-      onChangeSocketStatus,
-      onCheckVersion,
-      onFetchNotifications,
-      onGetRanks,
-      onIncreaseNumNewPosts,
-      onIncreaseNumNewNotis,
-      onNotifyChatSubjectChange,
-      onShowUpdateNotice
-    }
-  } = useNotiContext();
+  const numNewNotis = useNotiContext((v) => v.state.numNewNotis);
+  const numNewPosts = useNotiContext((v) => v.state.numNewPosts);
+  const totalRewardedTwinkles = useNotiContext(
+    (v) => v.state.totalRewardedTwinkles
+  );
+  const totalRewardedTwinkleCoins = useNotiContext(
+    (v) => v.state.totalRewardedTwinkleCoins
+  );
+  const versionMatch = useNotiContext((v) => v.state.versionMatch);
+  const prevUserId = useNotiContext((v) => v.state.prevUserId);
+  const onChangeSocketStatus = useNotiContext(
+    (v) => v.actions.onChangeSocketStatus
+  );
+  const onCheckVersion = useNotiContext((v) => v.actions.onCheckVersion);
+  const onFetchNotifications = useNotiContext(
+    (v) => v.actions.onFetchNotifications
+  );
+  const onGetRanks = useNotiContext((v) => v.actions.onGetRanks);
+  const onIncreaseNumNewPosts = useNotiContext(
+    (v) => v.actions.onIncreaseNumNewPosts
+  );
+  const onIncreaseNumNewNotis = useNotiContext(
+    (v) => v.actions.onIncreaseNumNewNotis
+  );
+  const onNotifyChatSubjectChange = useNotiContext(
+    (v) => v.actions.onNotifyChatSubjectChange
+  );
+  const onShowUpdateNotice = useNotiContext(
+    (v) => v.actions.onShowUpdateNotice
+  );
+  const pageVisible = useViewContext((v) => v.state.pageVisible);
+  const onAttachReward = useContentContext((v) => v.actions.onAttachReward);
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
+  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
+  const onLikeContent = useContentContext((v) => v.actions.onLikeContent);
+  const onRecommendContent = useContentContext(
+    (v) => v.actions.onRecommendContent
+  );
+  const onUploadComment = useContentContext((v) => v.actions.onUploadComment);
+  const onUploadReply = useContentContext((v) => v.actions.onUploadReply);
+  const state = useContentContext((v) => v.state);
 
-  const {
-    state: { pageVisible }
-  } = useViewContext();
-
-  const {
-    state,
-    actions: {
-      onAttachReward,
-      onUpdateProfileInfo,
-      onUpdateUserCoins,
-      onChangeUserXP,
-      onLikeContent,
-      onRecommendContent,
-      onUploadComment,
-      onUploadReply
-    }
-  } = useContentContext();
-
-  const {
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
 
   const prevProfilePicUrl = useRef(profilePicUrl);
   const peersRef = useRef({});
@@ -383,12 +424,11 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     async function handleLeftChatFromAnotherTab(channelId) {
       if (selectedChannelId === channelId) {
         onLeaveChannel(channelId);
-        const pathId = await loadGeneralChatPathId();
         if (usingChat) {
-          history.push(`/chat/${pathId}`);
+          history.push(`/chat/${GENERAL_CHAT_PATH_ID}`);
         } else {
           onUpdateSelectedChannelId(GENERAL_CHAT_ID);
-          onSetLastChatPath(`/${pathId}`);
+          onSetLastChatPath(`/${GENERAL_CHAT_PATH_ID}`);
         }
       } else {
         onLeaveChannel(channelId);

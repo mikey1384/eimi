@@ -20,12 +20,8 @@ AddLinkModal.propTypes = {
 };
 
 export default function AddLinkModal({ onHide }) {
-  const {
-    requestHelpers: { uploadContent }
-  } = useAppContext();
-  const {
-    actions: { onUploadLink }
-  } = useExploreContext();
+  const uploadContent = useAppContext((v) => v.requestHelpers.uploadContent);
+  const onUploadLink = useExploreContext((v) => v.actions.onUploadLink);
   const [urlError, setUrlError] = useState('');
   const [form, setForm] = useState({
     url: '',

@@ -8,7 +8,8 @@ import { useAppContext, useContentContext, useMissionContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
 
-const missionText = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce luctus
+const missionText =
+  `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce luctus
 commodo purus eget tempus. In suscipit euismod ex, sit amet maximus sem
 egestas ac. Duis libero massa, Miguel molestie imperdiet a neque et, posuere aliquam
 metus. Curabitur rhoncus semper augue, sit amet placerat libero mattis
@@ -32,15 +33,16 @@ export default function CopyAndPaste({ mission, onSetMissionState, style }) {
   const mounted = useRef(true);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const { userId } = useMyState();
-  const {
-    requestHelpers: { uploadMissionAttempt }
-  } = useAppContext();
-  const {
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
-  const {
-    actions: { onChangeUserXP, onUpdateUserCoins }
-  } = useContentContext();
+  const uploadMissionAttempt = useAppContext(
+    (v) => v.requestHelpers.uploadMissionAttempt
+  );
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
+  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
 
   const { content = '' } = mission;
   const [status, setStatus] = useState('');

@@ -10,9 +10,8 @@ Replit.propTypes = {
 };
 
 export default function Replit({ task }) {
-  const {
-    state: { missionTypeIdHash, myAttempts }
-  } = useMissionContext();
+  const missionTypeIdHash = useMissionContext((v) => v.state.missionTypeIdHash);
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
   const copyAndPasteId = useMemo(
     () => missionTypeIdHash['copy-and-paste'],
     [missionTypeIdHash]

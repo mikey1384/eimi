@@ -16,15 +16,15 @@ export default function ReorderFeaturedPlaylists({
   onHide,
   playlistIds: initialPlaylistIds
 }) {
-  const {
-    requestHelpers: { uploadFeaturedPlaylists }
-  } = useAppContext();
-  const {
-    state: {
-      videos: { featuredPlaylists }
-    },
-    actions: { onChangeFeaturedPlaylists }
-  } = useExploreContext();
+  const uploadFeaturedPlaylists = useAppContext(
+    (v) => v.requestHelpers.uploadFeaturedPlaylists
+  );
+  const featuredPlaylists = useExploreContext(
+    (v) => v.state.videos.featuredPlaylists
+  );
+  const onChangeFeaturedPlaylists = useExploreContext(
+    (v) => v.actions.onChangeFeaturedPlaylists
+  );
   const [playlistIds, setPlaylistIds] = useState(initialPlaylistIds);
   const [disabled, setDisabled] = useState(false);
   const listItemObj = objectify(featuredPlaylists);

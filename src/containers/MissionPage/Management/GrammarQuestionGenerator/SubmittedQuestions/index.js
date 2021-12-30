@@ -24,9 +24,9 @@ export default function SubmittedQuestions({
     managementTab: activeTab = 'pending',
     loadMoreGrammarQuestionsButton: loadMoreButton
   } = mission;
-  const {
-    requestHelpers: { loadGrammarQuestions }
-  } = useAppContext();
+  const loadGrammarQuestions = useAppContext(
+    (v) => v.requestHelpers.loadGrammarQuestions
+  );
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   useEffect(() => {
@@ -152,11 +152,10 @@ export default function SubmittedQuestions({
                   onSetMissionState({
                     missionId: mission.id,
                     newState: {
-                      [`${
-                        isApproved ? 'pending' : 'approved'
-                      }QuestionIds`]: mission[
-                        `${isApproved ? 'pending' : 'approved'}QuestionIds`
-                      ].filter((id) => id !== questionId),
+                      [`${isApproved ? 'pending' : 'approved'}QuestionIds`]:
+                        mission[
+                          `${isApproved ? 'pending' : 'approved'}QuestionIds`
+                        ].filter((id) => id !== questionId),
                       questionObj: {
                         ...mission.questionObj,
                         [questionId]: {
@@ -201,9 +200,8 @@ export default function SubmittedQuestions({
       onSetMissionState({
         missionId: mission.id,
         newState: {
-          [`${activeTab}QuestionIds`]: mission[
-            `${activeTab}QuestionIds`
-          ].concat(loadedQuestionIds),
+          [`${activeTab}QuestionIds`]:
+            mission[`${activeTab}QuestionIds`].concat(loadedQuestionIds),
           questionObj: { ...mission.questionObj, ...questionObj },
           loadMoreGrammarQuestionsButton: loadMoreButton
         }

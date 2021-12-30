@@ -39,13 +39,15 @@ function ActivitiesContainer({ style }) {
       }, 200);
     }
   });
-  const {
-    requestHelpers: { loadVocabulary }
-  } = useAppContext();
-  const {
-    state: { vocabActivities, wordsObj, vocabActivitiesLoadMoreButton },
-    actions: { onLoadMoreVocabulary }
-  } = useChatContext();
+  const loadVocabulary = useAppContext((v) => v.requestHelpers.loadVocabulary);
+  const vocabActivities = useChatContext((v) => v.state.vocabActivities);
+  const wordsObj = useChatContext((v) => v.state.wordsObj);
+  const vocabActivitiesLoadMoreButton = useChatContext(
+    (v) => v.state.vocabActivitiesLoadMoreButton
+  );
+  const onLoadMoreVocabulary = useChatContext(
+    (v) => v.actions.onLoadMoreVocabulary
+  );
 
   const fillerHeight =
     ActivitiesContainerRef.current?.offsetHeight >

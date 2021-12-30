@@ -16,15 +16,13 @@ export default function ReorderFeaturedSubjects({
   onHide,
   subjectIds: initialSubjectIds
 }) {
-  const {
-    requestHelpers: { uploadFeaturedSubjects }
-  } = useAppContext();
-  const {
-    state: {
-      subjects: { featureds: featuredSubjects }
-    },
-    actions: { onLoadFeaturedSubjects }
-  } = useExploreContext();
+  const uploadFeaturedSubjects = useAppContext(
+    (v) => v.requestHelpers.uploadFeaturedSubjects
+  );
+  const featuredSubjects = useExploreContext((v) => v.state.subjects.featureds);
+  const onLoadFeaturedSubjects = useExploreContext(
+    (v) => v.actions.onLoadFeaturedSubjects
+  );
   const [subjectIds, setSubjectIds] = useState(initialSubjectIds);
   const [disabled, setDisabled] = useState(false);
   const listItemObj = objectify(featuredSubjects);

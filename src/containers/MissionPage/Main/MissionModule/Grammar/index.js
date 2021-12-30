@@ -14,13 +14,14 @@ Grammar.propTypes = {
 export default function Grammar({ isRepeating, mission }) {
   const mounted = useRef(true);
   const { userId } = useMyState();
-  const {
-    requestHelpers: { loadMission }
-  } = useAppContext();
-  const {
-    state: { myAttempts },
-    actions: { onSetMissionState, onSetMyMissionAttempts }
-  } = useMissionContext();
+  const loadMission = useAppContext((v) => v.requestHelpers.loadMission);
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
+  const onSetMissionState = useMissionContext(
+    (v) => v.actions.onSetMissionState
+  );
+  const onSetMyMissionAttempts = useMissionContext(
+    (v) => v.actions.onSetMyMissionAttempts
+  );
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(false);
   useEffect(() => {

@@ -31,10 +31,18 @@ Moderators.propTypes = {
 
 export default function Moderators({ canManage }) {
   const { userId, profileTheme } = useMyState();
-  const {
-    state: { accountTypes, moderators, moderatorsLoaded, numModeratorsShown },
-    actions: { onLoadMoreModerators }
-  } = useManagementContext();
+  const accountTypes = useManagementContext((v) => v.state.accountTypes);
+  const moderators = useManagementContext((v) => v.state.moderators);
+  const moderatorsLoaded = useManagementContext(
+    (v) => v.state.moderatorsLoaded
+  );
+  const numModeratorsShown = useManagementContext(
+    (v) => v.state.numModeratorsShown
+  );
+  const onLoadMoreModerators = useManagementContext(
+    (v) => v.actions.onLoadMoreModerators
+  );
+
   const [searchQuery, setSearchQuery] = useState('');
   const [addModeratorModalShown, setAddModeratorModalShown] = useState(false);
   const [moderatorModalTarget, setModeratorModalTarget] = useState(null);

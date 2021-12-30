@@ -48,17 +48,18 @@ export default function XPRewardInterface({
   uploaderId,
   uploaderAuthLevel
 }) {
-  const {
-    requestHelpers: { rewardUser }
-  } = useAppContext();
+  const rewardUser = useAppContext((v) => v.requestHelpers.rewardUser);
   const { authLevel, twinkleCoins, userId, banned } = useMyState();
-  const {
-    state,
-    actions: { onSetRewardForm }
-  } = useInputContext();
-  const {
-    actions: { onAttachReward, onUpdateUserCoins, onSetXpRewardInterfaceShown }
-  } = useContentContext();
+  const state = useInputContext((v) => v.state);
+  const onSetRewardForm = useInputContext((v) => v.actions.onSetRewardForm);
+  const onAttachReward = useContentContext((v) => v.actions.onAttachReward);
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
+
   const rewardForm = state['reward' + contentType + contentId] || {};
   const {
     comment: prevComment = '',

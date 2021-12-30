@@ -37,15 +37,15 @@ const welcomeMessageLabel =
   );
 
 export default function Store() {
-  const {
-    requestHelpers: { loadMyData, unlockUsernameChange }
-  } = useAppContext();
-  const {
-    actions: { onInitContent, onUpdateProfileInfo }
-  } = useContentContext();
-  const {
-    state: { pageVisible }
-  } = useViewContext();
+  const loadMyData = useAppContext((v) => v.requestHelpers.loadMyData);
+  const unlockUsernameChange = useAppContext(
+    (v) => v.requestHelpers.unlockUsernameChange
+  );
+  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
+  const pageVisible = useViewContext((v) => v.state.pageVisible);
   const { canChangeUsername, karmaPoints, userId } = useMyState();
   const mounted = useRef(true);
 

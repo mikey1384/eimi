@@ -39,7 +39,6 @@ export default function PeopleFilterBar({
       <DropdownButton
         skeuomorphic
         color="darkerGray"
-        direction="left"
         icon="caret-down"
         text={orderByText}
         menuProps={[

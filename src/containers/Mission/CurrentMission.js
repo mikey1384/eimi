@@ -13,9 +13,7 @@ CurrentMission.propTypes = {
 const currentMissionLabel = localize('currentMission');
 
 export default function CurrentMission({ style, missionId }) {
-  const {
-    state: { missionObj }
-  } = useMissionContext();
+  const missionObj = useMissionContext((v) => v.state.missionObj);
   const mission = useMemo(
     () => missionObj[missionId] || {},
     [missionId, missionObj]

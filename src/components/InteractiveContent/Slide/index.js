@@ -80,23 +80,30 @@ export default function Slide({
   slideObj,
   style
 }) {
-  const {
-    requestHelpers: {
-      deleteInteractiveSlide,
-      publishInteractiveSlide,
-      undeleteInteractiveSlide,
-      unPublishInteractiveSlide
-    }
-  } = useAppContext();
-  const {
-    actions: {
-      onArchiveSlide,
-      onChangeNumUpdates,
-      onGoBack,
-      onRemoveInteractiveSlide,
-      onSetSlideState
-    }
-  } = useInteractiveContext();
+  const deleteInteractiveSlide = useAppContext(
+    (v) => v.requestHelpers.deleteInteractiveSlide
+  );
+  const publishInteractiveSlide = useAppContext(
+    (v) => v.requestHelpers.publishInteractiveSlide
+  );
+  const undeleteInteractiveSlide = useAppContext(
+    (v) => v.requestHelpers.undeleteInteractiveSlide
+  );
+  const unPublishInteractiveSlide = useAppContext(
+    (v) => v.requestHelpers.unPublishInteractiveSlide
+  );
+  const onArchiveSlide = useInteractiveContext((v) => v.actions.onArchiveSlide);
+  const onChangeNumUpdates = useInteractiveContext(
+    (v) => v.actions.onChangeNumUpdates
+  );
+  const onGoBack = useInteractiveContext((v) => v.actions.onGoBack);
+  const onRemoveInteractiveSlide = useInteractiveContext(
+    (v) => v.actions.onRemoveInteractiveSlide
+  );
+  const onSetSlideState = useInteractiveContext(
+    (v) => v.actions.onSetSlideState
+  );
+
   const { canEdit } = useMyState();
   const [confirmModalShown, setConfirmModalShown] = useState(false);
 
@@ -238,7 +245,6 @@ export default function Slide({
             <DropdownButton
               skeuomorphic
               color="darkerGray"
-              direction="left"
               listStyle={{ width: '25ch' }}
               style={{
                 position: 'absolute',

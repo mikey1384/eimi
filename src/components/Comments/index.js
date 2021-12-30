@@ -95,23 +95,24 @@ function Comments({
   userId
 }) {
   const { banned } = useMyState();
-  const {
-    requestHelpers: { deleteContent, loadComments, uploadComment, uploadFile }
-  } = useAppContext();
-  const {
-    actions: { onEnterComment }
-  } = useInputContext();
+  const deleteContent = useAppContext((v) => v.requestHelpers.deleteContent);
+  const loadComments = useAppContext((v) => v.requestHelpers.loadComments);
+  const uploadComment = useAppContext((v) => v.requestHelpers.uploadComment);
+  const uploadFile = useAppContext((v) => v.requestHelpers.uploadFile);
+  const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
   const rootContentState = useContentState({
     contentType: rootContent?.contentType,
     contentId: rootContent?.id
   });
-  const {
-    actions: {
-      onClearCommentFileUploadProgress,
-      onUpdateCommentFileUploadProgress,
-      onSetCommentFileUploadComplete
-    }
-  } = useContentContext();
+  const onClearCommentFileUploadProgress = useContentContext(
+    (v) => v.actions.onClearCommentFileUploadProgress
+  );
+  const onUpdateCommentFileUploadProgress = useContentContext(
+    (v) => v.actions.onUpdateCommentFileUploadProgress
+  );
+  const onSetCommentFileUploadComplete = useContentContext(
+    (v) => v.actions.onSetCommentFileUploadComplete
+  );
   const [deleting, setDeleting] = useState(false);
   const [isLoadingMore, setIsLoadingMore] = useState(false);
   const [commentSubmitted, setCommentSubmitted] = useState(false);

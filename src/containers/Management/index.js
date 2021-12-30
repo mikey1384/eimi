@@ -21,10 +21,10 @@ Management.propTypes = {
 
 export default function Management({ location }) {
   const history = useHistory();
-  const {
-    state: { loaded },
-    actions: { onLoadManagement }
-  } = useManagementContext();
+  const loaded = useManagementContext((v) => v.state.loaded);
+  const onLoadManagement = useManagementContext(
+    (v) => v.actions.onLoadManagement
+  );
   const { loaded: userLoaded, managementLevel, profileTheme } = useMyState();
   useEffect(() => {
     onLoadManagement();

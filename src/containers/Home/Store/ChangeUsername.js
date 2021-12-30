@@ -25,12 +25,13 @@ ChangeUsername.propTypes = {
 };
 
 export default function ChangeUsername({ style }) {
-  const {
-    requestHelpers: { changeUsername, checkIfUsernameExists }
-  } = useAppContext();
-  const {
-    actions: { onUpdateUserCoins }
-  } = useContentContext();
+  const changeUsername = useAppContext((v) => v.requestHelpers.changeUsername);
+  const checkIfUsernameExists = useAppContext(
+    (v) => v.requestHelpers.checkIfUsernameExists
+  );
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
   const { twinkleCoins, userId, banned } = useMyState();
   const [loading, setLoading] = useState(false);
   const [changing, setChanging] = useState(false);

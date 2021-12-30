@@ -16,9 +16,9 @@ const notRankedDescriptionLabel = localize('notRankedDescription');
 
 export default function Rankings() {
   const { rank, twinkleXP, userId } = useMyState();
-  const {
-    state: { allRanks, top30s, rankingsLoaded }
-  } = useNotiContext();
+  const allRanks = useNotiContext((v) => v.state.allRanks);
+  const top30s = useNotiContext((v) => v.state.top30s);
+  const rankingsLoaded = useNotiContext((v) => v.state.rankingsLoaded);
   const [allSelected, setAllSelected] = useState(true);
   const userChangedTab = useRef(false);
   const mounted = useRef(true);

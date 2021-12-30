@@ -15,33 +15,46 @@ const recommendedLabel = localize('recommendedLinks');
 
 export default function Links() {
   const { userId } = useMyState();
-  const {
-    requestHelpers: { loadByUserUploads, loadRecommendedUploads, loadUploads }
-  } = useAppContext();
-  const {
-    state: {
-      links: {
-        byUserLoaded,
-        byUserLinks,
-        loadMoreByUserLinksButtonShown,
-        recommendedsLoaded,
-        recommendeds,
-        loadMoreRecommendedsButtonShown,
-        loaded,
-        links,
-        loadMoreLinksButtonShown
-      },
-      prevUserId
-    },
-    actions: {
-      onLoadByUserLinks,
-      onLoadMoreByUserLinks,
-      onLoadLinks,
-      onLoadMoreLinks,
-      onLoadRecommendedLinks,
-      onLoadMoreRecommendedLinks
-    }
-  } = useExploreContext();
+  const loadByUserUploads = useAppContext(
+    (v) => v.requestHelpers.loadByUserUploads
+  );
+  const loadRecommendedUploads = useAppContext(
+    (v) => v.requestHelpers.loadRecommendedUploads
+  );
+  const loadUploads = useAppContext((v) => v.requestHelpers.loadUploads);
+  const byUserLoaded = useExploreContext((v) => v.state.links.byUserLoaded);
+  const byUserLinks = useExploreContext((v) => v.state.links.byUserLinks);
+  const loadMoreByUserLinksButtonShown = useExploreContext(
+    (v) => v.state.links.loadMoreByUserLinksButtonShown
+  );
+  const recommendedsLoaded = useExploreContext(
+    (v) => v.state.links.recommendedsLoaded
+  );
+  const recommendeds = useExploreContext((v) => v.state.links.recommendeds);
+  const loadMoreRecommendedsButtonShown = useExploreContext(
+    (v) => v.state.links.loadMoreRecommendedsButtonShown
+  );
+  const loaded = useExploreContext((v) => v.state.links.loaded);
+  const links = useExploreContext((v) => v.state.links.links);
+  const loadMoreLinksButtonShown = useExploreContext(
+    (v) => v.state.links.loadMoreLinksButtonShown
+  );
+  const prevUserId = useExploreContext((v) => v.state.prevUserId);
+  const onLoadByUserLinks = useExploreContext(
+    (v) => v.actions.onLoadByUserLinks
+  );
+  const onLoadMoreByUserLinks = useExploreContext(
+    (v) => v.actions.onLoadMoreByUserLinks
+  );
+  const onLoadLinks = useExploreContext((v) => v.actions.onLoadLinks);
+  const onLoadMoreLinks = useExploreContext((v) => v.actions.onLoadMoreLinks);
+  const onLoadRecommendedLinks = useExploreContext(
+    (v) => v.actions.onLoadRecommendedLinks
+  );
+  const onLoadMoreRecommendedLinks = useExploreContext(
+    (v) => v.actions.onLoadMoreRecommendedLinks
+  );
+
   const [addLinkModalShown, setAddLinkModalShown] = useState(false);
   const mounted = useRef(true);
   const lastId = useRef(null);

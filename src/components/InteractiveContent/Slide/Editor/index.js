@@ -92,16 +92,20 @@ export default function Editor({
           }
   };
 
-  const {
-    requestHelpers: { editInteractiveSlide, uploadFile }
-  } = useAppContext();
-  const {
-    state,
-    actions: { onSetEditInteractiveForm }
-  } = useInputContext();
-  const {
-    actions: { onChangeNumUpdates, onSetSlideState }
-  } = useInteractiveContext();
+  const editInteractiveSlide = useAppContext(
+    (v) => v.requestHelpers.editInteractiveSlide
+  );
+  const uploadFile = useAppContext((v) => v.requestHelpers.uploadFile);
+  const state = useInputContext((v) => v.state);
+  const onSetEditInteractiveForm = useInputContext(
+    (v) => v.actions.onSetEditInteractiveForm
+  );
+  const onChangeNumUpdates = useInteractiveContext(
+    (v) => v.actions.onChangeNumUpdates
+  );
+  const onSetSlideState = useInteractiveContext(
+    (v) => v.actions.onSetSlideState
+  );
   const prevInputState = useMemo(
     () => state[`edit-interactive-${interactiveId}-${slideId}`],
     [interactiveId, slideId, state]

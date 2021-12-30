@@ -26,17 +26,20 @@ ClassroomChat.propTypes = {
 
 export default function ClassroomChat({ onBackClick, onHide }) {
   const history = useHistory();
-  const {
-    requestHelpers: { createNewChat, searchUserToInvite }
-  } = useAppContext();
-  const {
-    state: { userSearchResults },
-    actions: {
-      onClearUserSearchResults,
-      onCreateNewChannel,
-      onSearchUserToInvite
-    }
-  } = useChatContext();
+  const createNewChat = useAppContext((v) => v.requestHelpers.createNewChat);
+  const searchUserToInvite = useAppContext(
+    (v) => v.requestHelpers.searchUserToInvite
+  );
+  const userSearchResults = useChatContext((v) => v.state.userSearchResults);
+  const onClearUserSearchResults = useChatContext(
+    (v) => v.actions.onClearUserSearchResults
+  );
+  const onCreateNewChannel = useChatContext(
+    (v) => v.actions.onCreateNewChannel
+  );
+  const onSearchUserToInvite = useChatContext(
+    (v) => v.actions.onSearchUserToInvite
+  );
   const { userId } = useMyState();
   const [creatingChat, setCreatingChat] = useState(false);
   const [channelName, setChannelName] = useState('');

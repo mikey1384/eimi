@@ -24,9 +24,10 @@ function TagModal({
   onSubmit,
   videoId
 }) {
-  const {
-    requestHelpers: { addVideoToPlaylists, searchContent }
-  } = useAppContext();
+  const addVideoToPlaylists = useAppContext(
+    (v) => v.requestHelpers.addVideoToPlaylists
+  );
+  const searchContent = useAppContext((v) => v.requestHelpers.searchContent);
   const [addPlaylistModalShown, setAddPlaylistModalShown] = useState(false);
   const [notFoundMessageShown, setNotFoundMessageShown] = useState(false);
   const [searchText, setSearchText] = useState('');
@@ -63,10 +64,10 @@ function TagModal({
           inputRef={InputRef}
           itemLabel="title"
           searchResults={searchResults}
-          filter={result => !currentPlaylists.includes(result.id)}
+          filter={(result) => !currentPlaylists.includes(result.id)}
           onSearch={onSearchPlaylists}
           onClear={onClearSearchResults}
-          onAddItem={playlist => {
+          onAddItem={(playlist) => {
             setAddPlaylistModalShown(false);
             setNotFoundMessageShown(false);
             setSelectedPlaylists(selectedPlaylists.concat([playlist]));
@@ -76,8 +77,8 @@ function TagModal({
           }
           onRemoveItem={onRemovePlaylist}
           onSubmit={selectedPlaylists.length > 0 && handleSubmit}
-          renderDropdownLabel={item => <span>{item.title}</span>}
-          renderTagLabel={label => hashify(label)}
+          renderDropdownLabel={(item) => <span>{item.title}</span>}
+          renderTagLabel={(label) => hashify(label)}
           searchPlaceholder="Search for playlists here..."
           selectedItems={selectedPlaylists}
           style={{ width: '80%' }}
@@ -114,8 +115,8 @@ function TagModal({
   function handleAddPlaylist(playlist) {
     onAddPlaylist({
       videoIds: playlist?.playlist
-        ?.map(video => video.videoId)
-        ?.filter(id => id !== videoId),
+        ?.map((video) => video.videoId)
+        ?.filter((id) => id !== videoId),
       playlistId: playlist.id,
       playlistTitle: playlist.title
     });
@@ -130,7 +131,7 @@ function TagModal({
 
   function onRemovePlaylist(playlistId) {
     setSelectedPlaylists(
-      selectedPlaylists.filter(playlist => playlist.id !== playlistId)
+      selectedPlaylists.filter((playlist) => playlist.id !== playlistId)
     );
   }
 
@@ -138,7 +139,7 @@ function TagModal({
     setDisabled(true);
     await addVideoToPlaylists({
       videoId,
-      playlistIds: selectedPlaylists.map(playlist => playlist.id)
+      playlistIds: selectedPlaylists.map((playlist) => playlist.id)
     });
     setSearchText('');
     onSubmit(selectedPlaylists);

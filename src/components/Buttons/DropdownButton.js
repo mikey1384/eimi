@@ -4,18 +4,15 @@ import Button from 'components/Button';
 import DropdownList from 'components/DropdownList';
 import Icon from 'components/Icon';
 import ErrorBoundary from 'components/ErrorBoundary';
-import { useOutsideClick } from 'helpers/hooks';
 import { css } from '@emotion/css';
 
 DropdownButton.propTypes = {
   buttonStyle: PropTypes.object,
   icon: PropTypes.string,
   iconSize: PropTypes.string,
-  isReversed: PropTypes.bool,
   direction: PropTypes.string,
   innerRef: PropTypes.object,
   onButtonClick: PropTypes.func,
-  onOutsideClick: PropTypes.func,
   listStyle: PropTypes.object,
   menuProps: PropTypes.arrayOf(
     PropTypes.shape({
@@ -32,30 +29,22 @@ DropdownButton.propTypes = {
 
 export default function DropdownButton({
   buttonStyle = {},
-  direction,
   opacity = 1,
   style,
   icon = 'pencil-alt',
   iconSize = '1x',
-  isReversed,
   listStyle = {},
   menuProps,
   noBorderRadius,
   onButtonClick,
-  onOutsideClick,
   text = '',
   stretch,
   innerRef,
   ...props
 }) {
-  const [menuDisplayed, setMenuDisplayed] = useState(false);
+  const [dropdownContext, setDropdownContext] = useState(null);
+  const coolDownRef = useRef(null);
   const ButtonRef = useRef(null);
-  useOutsideClick(ButtonRef, () => {
-    if (menuDisplayed && typeof onOutsideClick === 'function') {
-      onOutsideClick();
-    }
-    setMenuDisplayed(false);
-  });
 
   return (
     <ErrorBoundary
@@ -66,7 +55,7 @@ export default function DropdownButton({
         <Button
           {...props}
           className={css`
-            opacity: ${menuDisplayed ? 1 : opacity};
+            opacity: ${dropdownContext ? 1 : opacity};
             &:hover {
               opacity: 1;
             }
@@ -84,15 +73,15 @@ export default function DropdownButton({
           {text && <span>&nbsp;&nbsp;</span>}
           {text}
         </Button>
-        {menuDisplayed && (
+        {dropdownContext && (
           <DropdownList
             style={{
               textTransform: 'none',
               minWidth: '12rem',
               ...listStyle
             }}
-            isReversed={isReversed}
-            direction={direction}
+            dropdownContext={dropdownContext}
+            onHideMenu={handleHideMenuWithCoolDown}
           >
             {renderMenu()}
           </DropdownList>
@@ -102,10 +91,27 @@ export default function DropdownButton({
   );
 
   function onClick() {
+    if (coolDownRef.current) return;
+    const menuDisplayed = !!dropdownContext;
     if (typeof onButtonClick === 'function') {
       onButtonClick(!menuDisplayed);
     }
-    setMenuDisplayed(!menuDisplayed);
+    const parentElementDimensions =
+      ButtonRef.current?.getBoundingClientRect() || {
+        x: 0,
+        y: 0,
+        width: 0,
+        height: 0
+      };
+    setDropdownContext(menuDisplayed ? null : parentElementDimensions);
+  }
+
+  function handleHideMenuWithCoolDown() {
+    coolDownRef.current = true;
+    setDropdownContext(null);
+    setTimeout(() => {
+      coolDownRef.current = false;
+    }, 10);
   }
 
   function renderMenu() {
@@ -137,6 +143,6 @@ export default function DropdownButton({
 
   function handleMenuClick(action) {
     action();
-    setMenuDisplayed(false);
+    setDropdownContext(null);
   }
 }

@@ -92,7 +92,7 @@ export default function ColorSelector({
             <FullTextReveal
               show
               direction="left"
-              style={{ color: '#000' }}
+              style={{ color: '#000', fontSize: '1.3rem', textAlign: 'center' }}
               text={`Requires ${addCommasToNumber(requirement[color])} XP`}
             />
           )}

@@ -16,12 +16,12 @@ EditBanStatusModal.propTypes = {
 };
 
 export default function EditBanStatusModal({ onHide, target }) {
-  const {
-    requestHelpers: { updateBanStatus }
-  } = useAppContext();
-  const {
-    actions: { onUpdateBanStatus }
-  } = useManagementContext();
+  const updateBanStatus = useAppContext(
+    (v) => v.requestHelpers.updateBanStatus
+  );
+  const onUpdateBanStatus = useManagementContext(
+    (v) => v.actions.onUpdateBanStatus
+  );
   const mounted = useRef(true);
   const [banStatus, setBanStatus] = useState(target.banned);
   const submitDisabled = useMemo(() => {

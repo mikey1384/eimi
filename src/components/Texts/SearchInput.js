@@ -48,7 +48,7 @@ export default function SearchInput({
 }) {
   const [indexToHighlight, setIndexToHighlight] = useState(0);
   const SearchInputRef = useRef(null);
-  useOutsideClick(SearchInputRef, () => onClickOutSide?.());
+  useOutsideClick(SearchInputRef, onClickOutSide);
 
   return (
     <div

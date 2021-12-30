@@ -28,18 +28,21 @@ export default function InfoEditForm({
   youtubeUrl
 }) {
   const [checking, setChecking] = useState(false);
-  const {
-    state: { userInfo },
-    actions: {
-      onSetEditedEmail,
-      onSetEmailError,
-      onSetEditedWebsite,
-      onSetWebsiteError,
-      onSetEditedYoutubeName,
-      onSetEditedYoutubeUrl,
-      onSetYoutubeError
-    }
-  } = useInputContext();
+  const userInfo = useInputContext((v) => v.state.userInfo);
+  const onSetEditedEmail = useInputContext((v) => v.actions.onSetEditedEmail);
+  const onSetEmailError = useInputContext((v) => v.actions.onSetEmailError);
+  const onSetEditedWebsite = useInputContext(
+    (v) => v.actions.onSetEditedWebsite
+  );
+  const onSetWebsiteError = useInputContext((v) => v.actions.onSetWebsiteError);
+  const onSetEditedYoutubeName = useInputContext(
+    (v) => v.actions.onSetEditedYoutubeName
+  );
+  const onSetEditedYoutubeUrl = useInputContext(
+    (v) => v.actions.onSetEditedYoutubeUrl
+  );
+  const onSetYoutubeError = useInputContext((v) => v.actions.onSetYoutubeError);
+
   const {
     editedEmail = email || '',
     emailError = '',

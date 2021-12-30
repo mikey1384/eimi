@@ -104,9 +104,8 @@ function Reply({
   onSubmitReply,
   subject
 }) {
-  const {
-    requestHelpers: { editContent, loadReplies }
-  } = useAppContext();
+  const editContent = useAppContext((v) => v.requestHelpers.editContent);
+  const loadReplies = useAppContext((v) => v.requestHelpers.loadReplies);
   const {
     authLevel,
     banned,
@@ -117,9 +116,10 @@ function Reply({
     twinkleCoins,
     userId
   } = useMyState();
-  const {
-    actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
-  } = useContentContext();
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
   const { isDeleted, isEditing, thumbUrl, xpRewardInterfaceShown } =
     useContentState({
       contentType: 'comment',
@@ -331,7 +331,6 @@ function Reply({
                 skeuomorphic
                 icon="chevron-down"
                 color="darkerGray"
-                direction="left"
                 opacity={0.8}
                 menuProps={dropdownMenuItems}
               />

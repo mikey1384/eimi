@@ -40,9 +40,9 @@ export default function AddPlaylistModal({
   onUploadPlaylist,
   title: initialTitle = ''
 }) {
-  const {
-    requestHelpers: { loadUploads, searchContent, uploadPlaylist }
-  } = useAppContext();
+  const loadUploads = useAppContext((v) => v.requestHelpers.loadUploads);
+  const searchContent = useAppContext((v) => v.requestHelpers.searchContent);
+  const uploadPlaylist = useAppContext((v) => v.requestHelpers.uploadPlaylist);
   const [loaded, setLoaded] = useState(false);
   const [isUploading, setIsUploading] = useState(false);
   const [section, setSection] = useState(0);

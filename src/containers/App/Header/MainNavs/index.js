@@ -45,27 +45,25 @@ function MainNavs({
 }) {
   const [twinkleCoinsHovered, setTwinkleCoinsHovered] = useState(false);
   const { twinkleCoins, userId, banned, lastChatPath } = useMyState();
-  const {
-    state: { exploreCategory, contentPath, contentNav, profileNav, homeNav },
-    actions: {
-      onSetExploreCategory,
-      onSetContentPath,
-      onSetContentNav,
-      onSetProfileNav,
-      onSetHomeNav
-    }
-  } = useViewContext();
-  const {
-    user: {
-      actions: { onSetLastChatPath }
-    }
-  } = useAppContext();
-  const {
-    state: { feedsOutdated }
-  } = useHomeContext();
-  const {
-    state: { chatType, loaded: chatLoaded }
-  } = useChatContext();
+  const exploreCategory = useViewContext((v) => v.state.exploreCategory);
+  const contentPath = useViewContext((v) => v.state.contentPath);
+  const contentNav = useViewContext((v) => v.state.contentNav);
+  const profileNav = useViewContext((v) => v.state.profileNav);
+  const homeNav = useViewContext((v) => v.state.homeNav);
+  const onSetExploreCategory = useViewContext(
+    (v) => v.actions.onSetExploreCategory
+  );
+  const onSetContentPath = useViewContext((v) => v.actions.onSetContentPath);
+  const onSetContentNav = useViewContext((v) => v.actions.onSetContentNav);
+  const onSetProfileNav = useViewContext((v) => v.actions.onSetProfileNav);
+  const onSetHomeNav = useViewContext((v) => v.actions.onSetHomeNav);
+
+  const onSetLastChatPath = useAppContext(
+    (v) => v.user.actions.onSetLastChatPath
+  );
+  const feedsOutdated = useHomeContext((v) => v.state.feedsOutdated);
+  const chatType = useChatContext((v) => v.state.chatType);
+  const chatLoaded = useChatContext((v) => v.state.loaded);
   const loaded = useRef(false);
   const timerRef = useRef(null);
 

@@ -73,21 +73,23 @@ export default function BasicInfos({
     authLevel: myAuthLevel,
     banned
   } = useMyState();
-  const {
-    requestHelpers: { loadDMChannel, uploadProfileInfo, sendVerificationEmail }
-  } = useAppContext();
-  const {
-    actions: { onUpdateProfileInfo }
-  } = useContentContext();
-  const {
-    actions: { onOpenNewChatTab }
-  } = useChatContext();
-  const {
-    state: {
-      userInfo: { userInfoOnEdit }
-    },
-    actions: { onSetUserInfoOnEdit }
-  } = useInputContext();
+  const loadDMChannel = useAppContext((v) => v.requestHelpers.loadDMChannel);
+  const uploadProfileInfo = useAppContext(
+    (v) => v.requestHelpers.uploadProfileInfo
+  );
+  const sendVerificationEmail = useAppContext(
+    (v) => v.requestHelpers.sendVerificationEmail
+  );
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
+  const onOpenNewChatTab = useChatContext((v) => v.actions.onOpenNewChatTab);
+  const userInfoOnEdit = useInputContext(
+    (v) => v.state.userInfo.userInfoOnEdit
+  );
+  const onSetUserInfoOnEdit = useInputContext(
+    (v) => v.actions.onSetUserInfoOnEdit
+  );
   const [passwordInputModalShown, setPasswordInputModalShown] = useState(false);
   const [emailCheckHighlighted, setEmailCheckHighlighted] = useState(false);
   const [verificationEmailSent, setVerificationEmailSent] = useState(false);

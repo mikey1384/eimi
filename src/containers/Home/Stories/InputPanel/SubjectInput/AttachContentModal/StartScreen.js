@@ -31,9 +31,9 @@ StartScreen.propTypes = {
 };
 
 export default function StartScreen({ navigateTo, onHide }) {
-  const {
-    actions: { onSetSubjectAttachment }
-  } = useInputContext();
+  const onSetSubjectAttachment = useInputContext(
+    (v) => v.actions.onSetSubjectAttachment
+  );
   const { authLevel, fileUploadLvl, twinkleXP } = useMyState();
   const [alertModalShown, setAlertModalShown] = useState(false);
   const FileInputRef = useRef(null);

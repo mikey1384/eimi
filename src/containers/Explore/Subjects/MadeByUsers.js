@@ -26,12 +26,12 @@ export default function MadeByUsers({
   subjects,
   style
 }) {
-  const {
-    requestHelpers: { loadByUserUploads }
-  } = useAppContext();
-  const {
-    actions: { onLoadMoreByUserSubjects }
-  } = useExploreContext();
+  const loadByUserUploads = useAppContext(
+    (v) => v.requestHelpers.loadByUserUploads
+  );
+  const onLoadMoreByUserSubjects = useExploreContext(
+    (v) => v.actions.onLoadMoreByUserSubjects
+  );
   const shownSubjects = useMemo(() => {
     if (expanded) {
       return subjects;

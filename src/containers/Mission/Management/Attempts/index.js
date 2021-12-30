@@ -36,9 +36,9 @@ export default function Attempts({
 }) {
   const [loading, setLoading] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
-  const {
-    requestHelpers: { loadMissionAttempts }
-  } = useAppContext();
+  const loadMissionAttempts = useAppContext(
+    (v) => v.requestHelpers.loadMissionAttempts
+  );
   useEffect(() => {
     init();
     async function init() {

@@ -33,13 +33,11 @@ export default function Input({
   registerButtonShown,
   isSubmitting
 }) {
-  const {
-    state,
-    actions: { onEnterComment }
-  } = useInputContext();
-  const {
-    actions: { onSetVocabErrorMessage }
-  } = useChatContext();
+  const state = useInputContext((v) => v.state);
+  const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
+  const onSetVocabErrorMessage = useChatContext(
+    (v) => v.actions.onSetVocabErrorMessage
+  );
   const text = useMemo(() => state['vocabulary']?.text || '', [state]);
 
   useEffect(() => {

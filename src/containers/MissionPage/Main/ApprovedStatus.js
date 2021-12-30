@@ -27,9 +27,9 @@ export default function ApprovedStatus({
   myAttempt,
   style
 }) {
-  const {
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
 
   const rewardDetails = useMemo(() => {
     return (xpReward || coinReward) && myAttempt.status === 'pass' ? (

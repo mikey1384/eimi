@@ -1,5 +1,5 @@
 import React, { useMemo, useRef, useState } from 'react';
-import { useContentState, useMyState, useOutsideClick } from 'helpers/hooks';
+import { useContentState, useMyState } from 'helpers/hooks';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -21,7 +21,6 @@ StarButton.propTypes = {
   byUser: PropTypes.bool,
   contentId: PropTypes.number,
   rewardLevel: PropTypes.number,
-  direction: PropTypes.string,
   defaultDescription: PropTypes.string,
   filePath: PropTypes.string,
   filled: PropTypes.bool,
@@ -40,23 +39,21 @@ export default function StarButton({
   defaultDescription,
   filePath,
   rewardLevel,
-  direction = 'left',
   filled,
   onSetRewardLevel,
   onToggleByUser,
   uploader,
   skeuomorphic,
-  style
+  style = {}
 }) {
   const { canReward, canEditRewardLevel, userId } = useMyState();
-  const {
-    requestHelpers: { setByUser }
-  } = useAppContext();
+  const setByUser = useAppContext((v) => v.requestHelpers.setByUser);
   const { description } = useContentState({ contentId, contentType });
   const [cannotChangeModalShown, setCannotChangeModalShown] = useState(false);
   const [moderatorName, setModeratorName] = useState('');
   const [rewardLevelModalShown, setRewardLevelModalShown] = useState(false);
-  const [menuShown, setMenuShown] = useState(false);
+  const [dropdownContext, setDropdownContext] = useState(null);
+  const coolDownRef = useRef(null);
 
   const writtenByButtonShown = useMemo(
     () =>
@@ -75,7 +72,6 @@ export default function StarButton({
     );
   }, [contentType, filePath, uploader, writtenByButtonShown]);
   const StarButtonRef = useRef(null);
-  useOutsideClick(StarButtonRef, () => setMenuShown(false));
   const byUserLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
       const makerLabel =
@@ -131,11 +127,16 @@ export default function StarButton({
     userId
   ]);
 
+  const { marginLeft, ...otherStyles } = useMemo(() => style, [style]);
+
   return buttonShown ? (
     <ErrorBoundary>
-      <div style={{ position: 'relative' }} ref={StarButtonRef}>
+      <div
+        style={{ position: 'relative', height: '100%', marginLeft }}
+        ref={StarButtonRef}
+      >
         <Button
-          style={style}
+          style={otherStyles}
           skeuomorphic={!(!!rewardLevel || byUser || filled) && skeuomorphic}
           color={!!rewardLevel && byUser ? 'gold' : byUser ? 'orange' : 'pink'}
           filled={!!rewardLevel || byUser || filled}
@@ -143,15 +144,11 @@ export default function StarButton({
         >
           <Icon icon="star" />
         </Button>
-        {menuShown && (
+        {dropdownContext && (
           <DropdownList
-            direction={direction}
-            style={{
-              marginTop: '0.5rem',
-              position: 'absolute',
-              right: 0,
-              width: '25rem'
-            }}
+            dropdownContext={dropdownContext}
+            onHideMenu={handleHideMenuWithCoolDown}
+            style={{ minWidth: '20rem' }}
           >
             {(contentType === 'video' || contentType === 'subject') &&
               canEditRewardLevel && (
@@ -187,14 +184,31 @@ export default function StarButton({
 
   function onClick() {
     if (showsDropdownWhenClicked) {
-      return setMenuShown(!menuShown);
+      if (coolDownRef.current) return;
+      const menuDisplayed = !!dropdownContext;
+      const parentElementDimensions =
+        StarButtonRef.current?.getBoundingClientRect() || {
+          x: 0,
+          y: 0,
+          width: 0,
+          height: 0
+        };
+      return setDropdownContext(menuDisplayed ? null : parentElementDimensions);
     }
     return setRewardLevelModalShown(true);
   }
 
+  function handleHideMenuWithCoolDown() {
+    setDropdownContext(null);
+    coolDownRef.current = true;
+    setTimeout(() => {
+      coolDownRef.current = false;
+    }, 10);
+  }
+
   function handleShowRewardLevelModal() {
     setRewardLevelModalShown(true);
-    setMenuShown(false);
+    setDropdownContext(null);
   }
 
   async function toggleByUser() {
@@ -211,6 +225,6 @@ export default function StarButton({
       return setCannotChangeModalShown(true);
     }
     onToggleByUser(byUser);
-    setMenuShown(false);
+    setDropdownContext(null);
   }
 }

@@ -14,21 +14,29 @@ const recommendedLabel = localize('recommendedVideos');
 
 export default function ContinueWatchingPanel() {
   const { userId, loaded: profileLoaded } = useMyState();
-  const {
-    requestHelpers: { loadContinueWatching }
-  } = useAppContext();
-  const {
-    state: {
-      videos: {
-        continueWatchingVideos,
-        continueWatchingLoaded,
-        loadMoreContinueWatchingButton,
-        showingRecommendedVideos
-      },
-      prevUserId
-    },
-    actions: { onLoadContinueWatching, onLoadMoreContinueWatching }
-  } = useExploreContext();
+  const loadContinueWatching = useAppContext(
+    (v) => v.requestHelpers.loadContinueWatching
+  );
+  const continueWatchingVideos = useExploreContext(
+    (v) => v.state.videos.continueWatchingVideos
+  );
+  const continueWatchingLoaded = useExploreContext(
+    (v) => v.state.videos.continueWatchingLoaded
+  );
+  const loadMoreContinueWatchingButton = useExploreContext(
+    (v) => v.state.videos.loadMoreContinueWatchingButton
+  );
+  const showingRecommendedVideos = useExploreContext(
+    (v) => v.state.videos.showingRecommendedVideos
+  );
+  const prevUserId = useExploreContext((v) => v.state.prevUserId);
+  const onLoadContinueWatching = useExploreContext(
+    (v) => v.actions.onLoadContinueWatching
+  );
+  const onLoadMoreContinueWatching = useExploreContext(
+    (v) => v.actions.onLoadMoreContinueWatching
+  );
+
   const [loaded, setLoaded] = useState(continueWatchingLoaded);
   const loadingRef = useRef(false);
   const loadedRef = useRef(false);

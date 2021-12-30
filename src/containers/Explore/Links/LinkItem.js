@@ -37,16 +37,12 @@ export default function LinkItem({
   link: { id, numComments, likes, timeStamp, title, uploader, ...embedProps }
 }) {
   const history = useHistory();
-  const {
-    requestHelpers: { deleteContent, editContent }
-  } = useAppContext();
+  const deleteContent = useAppContext((v) => v.requestHelpers.deleteContent);
+  const editContent = useAppContext((v) => v.requestHelpers.editContent);
   const { authLevel, canDelete, canEdit, userId } = useMyState();
-  const {
-    actions: { onEditLinkTitle }
-  } = useExploreContext();
-  const {
-    actions: { onDeleteContent, onInitContent }
-  } = useContentContext();
+  const onEditLinkTitle = useExploreContext((v) => v.actions.onEditLinkTitle);
+  const onDeleteContent = useContentContext((v) => v.actions.onDeleteContent);
+  const onInitContent = useContentContext((v) => v.actions.onInitContent);
   const { loaded, isDeleted } = useContentState({
     contentType: 'url',
     contentId: id
@@ -281,7 +277,6 @@ export default function LinkItem({
           <DropdownButton
             skeuomorphic
             color="darkerGray"
-            direction="left"
             menuProps={editMenuItems}
           />
         </div>

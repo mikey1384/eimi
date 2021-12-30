@@ -71,12 +71,12 @@ FileSizeItem.propTypes = {
 
 export default function FileSizeItem({ style }) {
   const { fileUploadLvl = 0, karmaPoints, userId } = useMyState();
-  const {
-    actions: { onUpdateProfileInfo }
-  } = useContentContext();
-  const {
-    requestHelpers: { upgradeFileUploadSize }
-  } = useAppContext();
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
+  const upgradeFileUploadSize = useAppContext(
+    (v) => v.requestHelpers.upgradeFileUploadSize
+  );
   return (
     <ItemPanel
       isLeveled

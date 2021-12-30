@@ -224,16 +224,6 @@ export default function chatRequestHelpers({ auth, handleError }) {
         return handleError(error);
       }
     },
-    async loadGeneralChatPathId() {
-      try {
-        const {
-          data: { pathId }
-        } = await request.get(`${URL}/chat/pathId/general`, auth());
-        return Promise.resolve(pathId);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
     async loadChatChannel({ channelId, isForInvitation, skipUpdateChannelId }) {
       try {
         const { data } = await request.get(
@@ -354,16 +344,6 @@ export default function chatRequestHelpers({ auth, handleError }) {
           auth()
         );
         return Promise.resolve(data);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
-    async parseChannelPath(pathId) {
-      try {
-        const {
-          data: { channelId }
-        } = await request.get(`${URL}/chat/parse?pathId=${pathId}`, auth());
-        return Promise.resolve(channelId);
       } catch (error) {
         return handleError(error);
       }

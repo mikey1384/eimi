@@ -28,10 +28,14 @@ export default function MissionList({
   missions,
   missionObj
 }) {
-  const {
-    state: { selectedMissionListTab, myAttempts },
-    actions: { onSetSelectedMissionListTab }
-  } = useMissionContext();
+  const selectedMissionListTab = useMissionContext(
+    (v) => v.state.selectedMissionListTab
+  );
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
+  const onSetSelectedMissionListTab = useMissionContext(
+    (v) => v.actions.onSetSelectedMissionListTab
+  );
+
   const { userId } = useMyState();
   const ongoingMissions = useMemo(() => {
     return missions.filter(

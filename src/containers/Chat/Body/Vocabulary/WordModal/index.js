@@ -18,10 +18,8 @@ WordModal.propTypes = {
 const Backend = isMobile(navigator) ? TouchBackend : HTML5Backend;
 
 export default function WordModal({ onHide, word }) {
-  const {
-    state: { wordsObj },
-    actions: { onEditWord }
-  } = useChatContext();
+  const wordsObj = useChatContext((v) => v.state.wordsObj);
+  const onEditWord = useChatContext((v) => v.actions.onEditWord);
   const [selectedTab, setSelectedTab] = useState('dictionary');
   const wordObj = useMemo(() => {
     return wordsObj[word] || {};
@@ -93,9 +91,8 @@ export default function WordModal({ onHide, word }) {
     if (selectedTab === 'edit') return `Edit Definitions of "${word}"`;
     return `Definitions of "${word}"`;
   }, [selectedTab, word]);
-  const [editedDefinitionOrder, setEditedDefinitionOrder] = useState(
-    definitionOrder
-  );
+  const [editedDefinitionOrder, setEditedDefinitionOrder] =
+    useState(definitionOrder);
 
   return (
     <DndProvider backend={Backend}>

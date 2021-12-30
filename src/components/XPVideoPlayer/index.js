@@ -56,21 +56,28 @@ function XPVideoPlayer({
       mounted.current = false;
     };
   }, []);
-  const {
-    requestHelpers: {
-      addVideoView,
-      checkCurrentlyWatchingAnotherVideo,
-      finishWatchingVideo,
-      loadVideoCurrentTime,
-      updateCurrentlyWatching,
-      updateUserCoins,
-      updateUserXP,
-      updateTotalViewDuration
-    }
-  } = useAppContext();
-  const {
-    state: { pageVisible }
-  } = useViewContext();
+  const addVideoView = useAppContext((v) => v.requestHelpers.addVideoView);
+  const checkCurrentlyWatchingAnotherVideo = useAppContext(
+    (v) => v.requestHelpers.checkCurrentlyWatchingAnotherVideo
+  );
+  const finishWatchingVideo = useAppContext(
+    (v) => v.requestHelpers.finishWatchingVideo
+  );
+  const loadVideoCurrentTime = useAppContext(
+    (v) => v.requestHelpers.loadVideoCurrentTime
+  );
+  const updateCurrentlyWatching = useAppContext(
+    (v) => v.requestHelpers.updateCurrentlyWatching
+  );
+  const updateUserCoins = useAppContext(
+    (v) => v.requestHelpers.updateUserCoins
+  );
+  const updateUserXP = useAppContext((v) => v.requestHelpers.updateUserXP);
+  const updateTotalViewDuration = useAppContext(
+    (v) => v.requestHelpers.updateTotalViewDuration
+  );
+
+  const pageVisible = useViewContext((v) => v.state.pageVisible);
   const { profileTheme, rewardBoostLvl, userId, twinkleCoins } = useMyState();
   const coinRewardAmount = useMemo(
     () => videoRewardHash?.[rewardBoostLvl]?.coin || 2,
@@ -90,17 +97,24 @@ function XPVideoPlayer({
   useEffect(() => {
     xpRewardAmountRef.current = xpRewardAmount;
   }, [xpRewardAmount]);
-  const {
-    actions: {
-      onChangeUserXP,
-      onUpdateUserCoins,
-      onIncreaseNumCoinsEarned,
-      onIncreaseNumXpEarned,
-      onSetVideoProgress,
-      onSetMediaStarted,
-      onSetTimeWatched
-    }
-  } = useContentContext();
+  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
+  const onIncreaseNumCoinsEarned = useContentContext(
+    (v) => v.actions.onIncreaseNumCoinsEarned
+  );
+  const onIncreaseNumXpEarned = useContentContext(
+    (v) => v.actions.onIncreaseNumXpEarned
+  );
+  const onSetVideoProgress = useContentContext(
+    (v) => v.actions.onSetVideoProgress
+  );
+  const onSetMediaStarted = useContentContext(
+    (v) => v.actions.onSetMediaStarted
+  );
+  const onSetTimeWatched = useContentContext((v) => v.actions.onSetTimeWatched);
+
   const {
     started,
     timeWatched: prevTimeWatched = 0,
@@ -109,6 +123,7 @@ function XPVideoPlayer({
     contentType: 'video',
     contentId: videoId
   });
+
   const [playing, setPlaying] = useState(false);
   const [reachedMaxWatchDuration, setReachedMaxWatchDuration] = useState(false);
   const [startingPosition, setStartingPosition] = useState(0);
@@ -417,7 +432,7 @@ function XPVideoPlayer({
           cursor: !isEditing && !started && 'pointer'
         }}
       >
-        {isLink ? (
+        {isLink && (
           <Link to={`/videos/${videoId}`}>
             <div
               className={css`
@@ -442,7 +457,8 @@ function XPVideoPlayer({
               />
             </div>
           </Link>
-        ) : (
+        )}
+        {!isLink && (
           <ReactPlayer
             ref={PlayerRef}
             className={css`

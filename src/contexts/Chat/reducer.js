@@ -234,7 +234,7 @@ export default function ChatReducer(state, action) {
       };
     }
     case 'CREATE_NEW_DM_CHANNEL': {
-      const messageId = uuidv1();
+      const messageId = action.message.id || uuidv1();
       return {
         ...state,
         subject: {},
@@ -903,7 +903,8 @@ export default function ChatReducer(state, action) {
           )
         }
       };
-    case 'RECEIVE_MESSAGE':
+    case 'RECEIVE_MESSAGE': {
+      const messageId = action.message.id || uuidv1();
       return {
         ...state,
         numUnreads:
@@ -914,12 +915,12 @@ export default function ChatReducer(state, action) {
           ...state.channelsObj,
           [action.message.channelId]: {
             ...state.channelsObj[action.message.channelId],
-            messageIds: [action.message.id].concat(
+            messageIds: [messageId].concat(
               state.channelsObj[action.message.channelId].messageIds
             ),
             messagesObj: {
               ...state.channelsObj[action.message.channelId].messagesObj,
-              [action.message.id]: action.message
+              [messageId]: action.message
             },
             members: [
               ...state.channelsObj[action.message.channelId].members,
@@ -955,6 +956,7 @@ export default function ChatReducer(state, action) {
           }
         }
       };
+    }
     case 'RECEIVE_FIRST_MSG': {
       const messageId = uuidv1();
       return {
@@ -991,7 +993,8 @@ export default function ChatReducer(state, action) {
         )
       };
     }
-    case 'RECEIVE_MSG_ON_DIFF_CHANNEL':
+    case 'RECEIVE_MSG_ON_DIFF_CHANNEL': {
+      const messageId = action.message.id || uuidv1();
       return {
         ...state,
         channelsObj: {
@@ -999,12 +1002,12 @@ export default function ChatReducer(state, action) {
           [action.channel.id]: {
             ...state.channelsObj[action.channel.id],
             ...action.channel,
-            messageIds: [action.message.id].concat(
+            messageIds: [messageId].concat(
               state.channelsObj[action.channel.id]?.messageIds || []
             ),
             messagesObj: {
               ...state.channelsObj[action.channel.id]?.messagesObj,
-              [action.message.id]: action.message
+              [messageId]: action.message
             },
             numUnreads: action.isMyMessage
               ? Number(state.channelsObj[action.channel.id]?.numUnreads || 0)
@@ -1029,6 +1032,7 @@ export default function ChatReducer(state, action) {
           )
         )
       };
+    }
     case 'RECEIVE_VOCAB_ACTIVITY':
       return {
         ...state,

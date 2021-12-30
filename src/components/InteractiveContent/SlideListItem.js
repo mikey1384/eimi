@@ -23,9 +23,9 @@ export default function SlideListItem({
   style
 }) {
   const { profileTheme } = useMyState();
-  const {
-    actions: { onSetSlideState }
-  } = useInteractiveContext();
+  const onSetSlideState = useInteractiveContext(
+    (v) => v.actions.onSetSlideState
+  );
   const selected = useMemo(
     () => selectedSlideId === slide.id,
     [selectedSlideId, slide.id]

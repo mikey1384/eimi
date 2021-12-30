@@ -47,15 +47,12 @@ export default function LinkPage({
   }
 }) {
   const linkId = Number(initialLinkId);
-  const {
-    requestHelpers: {
-      deleteContent,
-      editContent,
-      loadComments,
-      loadContent,
-      loadSubjects
-    }
-  } = useAppContext();
+  const deleteContent = useAppContext((v) => v.requestHelpers.deleteContent);
+  const editContent = useAppContext((v) => v.requestHelpers.editContent);
+  const loadComments = useAppContext((v) => v.requestHelpers.loadComments);
+  const loadContent = useAppContext((v) => v.requestHelpers.loadContent);
+  const loadSubjects = useAppContext((v) => v.requestHelpers.loadSubjects);
+
   const {
     authLevel,
     canDelete,
@@ -65,38 +62,59 @@ export default function LinkPage({
     twinkleCoins,
     userId
   } = useMyState();
-  const {
-    actions: { onEditLinkPage, onLikeLink, onUpdateNumLinkComments }
-  } = useExploreContext();
-  const {
-    actions: {
-      onDeleteComment,
-      onDeleteContent,
-      onEditComment,
-      onEditContent,
-      onEditRewardComment,
-      onEditSubject,
-      onInitContent,
-      onLikeComment,
-      onLikeContent,
-      onLoadComments,
-      onLoadMoreComments,
-      onLoadMoreReplies,
-      onLoadMoreSubjectComments,
-      onLoadMoreSubjectReplies,
-      onLoadMoreSubjects,
-      onLoadRepliesOfReply,
-      onLoadSubjectRepliesOfReply,
-      onLoadSubjects,
-      onLoadSubjectComments,
-      onSetByUserStatus,
-      onSetXpRewardInterfaceShown,
-      onSetRewardLevel,
-      onUploadComment,
-      onUploadReply,
-      onUploadSubject
-    }
-  } = useContentContext();
+  const onEditLinkPage = useExploreContext((v) => v.actions.onEditLinkPage);
+  const onLikeLink = useExploreContext((v) => v.actions.onLikeLink);
+  const onUpdateNumLinkComments = useExploreContext(
+    (v) => v.actions.onUpdateNumLinkComments
+  );
+  const onDeleteComment = useContentContext((v) => v.actions.onDeleteComment);
+  const onDeleteContent = useContentContext((v) => v.actions.onDeleteContent);
+  const onEditComment = useContentContext((v) => v.actions.onEditComment);
+  const onEditContent = useContentContext((v) => v.actions.onEditContent);
+  const onEditRewardComment = useContentContext(
+    (v) => v.actions.onEditRewardComment
+  );
+  const onEditSubject = useContentContext((v) => v.actions.onEditSubject);
+  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onLikeComment = useContentContext((v) => v.actions.onLikeComment);
+  const onLikeContent = useContentContext((v) => v.actions.onLikeContent);
+  const onLoadComments = useContentContext((v) => v.actions.onLoadComments);
+  const onLoadMoreComments = useContentContext(
+    (v) => v.actions.onLoadMoreComments
+  );
+  const onLoadMoreReplies = useContentContext(
+    (v) => v.actions.onLoadMoreReplies
+  );
+  const onLoadMoreSubjectComments = useContentContext(
+    (v) => v.actions.onLoadMoreSubjectComments
+  );
+  const onLoadMoreSubjectReplies = useContentContext(
+    (v) => v.actions.onLoadMoreSubjectReplies
+  );
+  const onLoadMoreSubjects = useContentContext(
+    (v) => v.actions.onLoadMoreSubjects
+  );
+  const onLoadRepliesOfReply = useContentContext(
+    (v) => v.actions.onLoadRepliesOfReply
+  );
+  const onLoadSubjectRepliesOfReply = useContentContext(
+    (v) => v.actions.onLoadSubjectRepliesOfReply
+  );
+  const onLoadSubjects = useContentContext((v) => v.actions.onLoadSubjects);
+  const onLoadSubjectComments = useContentContext(
+    (v) => v.actions.onLoadSubjectComments
+  );
+  const onSetByUserStatus = useContentContext(
+    (v) => v.actions.onSetByUserStatus
+  );
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
+  const onSetRewardLevel = useContentContext((v) => v.actions.onSetRewardLevel);
+  const onUploadComment = useContentContext((v) => v.actions.onUploadComment);
+  const onUploadReply = useContentContext((v) => v.actions.onUploadReply);
+  const onUploadSubject = useContentContext((v) => v.actions.onUploadSubject);
+
   const {
     byUser,
     comments,
@@ -119,9 +137,7 @@ export default function LinkPage({
     xpRewardInterfaceShown
   } = useContentState({ contentType: 'url', contentId: linkId });
 
-  const {
-    actions: { onSetContentNav }
-  } = useViewContext();
+  const onSetContentNav = useViewContext((v) => v.actions.onSetContentNav);
   const [loadingComments, setLoadingComments] = useState(false);
   const [notFound, setNotFound] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -383,7 +399,6 @@ export default function LinkPage({
                     fontSize: '2rem',
                     marginLeft: '1rem'
                   }}
-                  direction="left"
                   byUser={!!byUser}
                   contentId={linkId}
                   onToggleByUser={handleSetByUserStatus}

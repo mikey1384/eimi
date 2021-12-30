@@ -17,12 +17,12 @@ ReplitVerifier.propTypes = {
 
 export default function ReplitVerifier({ task }) {
   const { userId, state } = useMyState();
-  const {
-    requestHelpers: { updateMissionStatus }
-  } = useAppContext();
-  const {
-    actions: { onUpdateUserMissionState }
-  } = useContentContext();
+  const updateMissionStatus = useAppContext(
+    (v) => v.requestHelpers.updateMissionStatus
+  );
+  const onUpdateUserMissionState = useContentContext(
+    (v) => v.actions.onUpdateUserMissionState
+  );
 
   const taskState = useMemo(
     () => state?.missions?.[task?.missionType] || {},

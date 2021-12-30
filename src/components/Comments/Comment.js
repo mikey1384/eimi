@@ -129,14 +129,15 @@ function Comment({
   subject = subject || comment.targetObj?.subject || {};
   const { fileType } = getFileInfoFromFileName(fileName);
   const history = useHistory();
-  const {
-    requestHelpers: {
-      checkIfUserResponded,
-      editContent,
-      loadReplies,
-      updateCommentPinStatus
-    }
-  } = useAppContext();
+  const checkIfUserResponded = useAppContext(
+    (v) => v.requestHelpers.checkIfUserResponded
+  );
+  const editContent = useAppContext((v) => v.requestHelpers.editContent);
+  const loadReplies = useAppContext((v) => v.requestHelpers.loadReplies);
+  const updateCommentPinStatus = useAppContext(
+    (v) => v.requestHelpers.updateCommentPinStatus
+  );
+
   const {
     authLevel,
     banned,
@@ -147,17 +148,24 @@ function Comment({
     twinkleCoins,
     userId
   } = useMyState();
-  const {
-    actions: {
-      onChangeSpoilerStatus,
-      onLoadReplies,
-      onSetIsEditing,
-      onSetCommentPlaceholderHeight,
-      onSetCommentVisible,
-      onSetXpRewardInterfaceShown,
-      onUpdateCommentPinStatus
-    }
-  } = useContentContext();
+  const onChangeSpoilerStatus = useContentContext(
+    (v) => v.actions.onChangeSpoilerStatus
+  );
+  const onLoadReplies = useContentContext((v) => v.actions.onLoadReplies);
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
+  const onSetCommentPlaceholderHeight = useContentContext(
+    (v) => v.actions.onSetCommentPlaceholderHeight
+  );
+  const onSetCommentVisible = useContentContext(
+    (v) => v.actions.onSetCommentVisible
+  );
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
+  const onUpdateCommentPinStatus = useContentContext(
+    (v) => v.actions.onUpdateCommentPinStatus
+  );
+
   const {
     commentPlaceholderHeight: previousPlaceholderHeight,
     commentVisible: previousVisible,
@@ -575,7 +583,6 @@ function Comment({
                     skeuomorphic
                     icon="chevron-down"
                     color="darkerGray"
-                    direction="left"
                     opacity={0.8}
                     menuProps={dropdownMenuItems}
                   />

@@ -37,22 +37,30 @@ NavMenu.propTypes = {
 };
 
 export default function NavMenu({ playlistId, videoId, isContinuing }) {
-  const {
-    user: {
-      actions: { onToggleHideWatched }
-    },
-    requestHelpers: {
-      auth,
-      fetchNotifications,
-      loadRightMenuVideos,
-      toggleHideWatched
-    }
-  } = useAppContext();
+  const onToggleHideWatched = useAppContext(
+    (v) => v.user.actions.onToggleHideWatched
+  );
+  const auth = useAppContext((v) => v.requestHelpers.auth);
+  const fetchNotifications = useAppContext(
+    (v) => v.requestHelpers.fetchNotifications
+  );
+  const loadRightMenuVideos = useAppContext(
+    (v) => v.requestHelpers.loadRightMenuVideos
+  );
+  const toggleHideWatched = useAppContext(
+    (v) => v.requestHelpers.toggleHideWatched
+  );
   const { hideWatched, profileTheme, userId } = useMyState();
-  const {
-    state: { numNewNotis, totalRewardedTwinkles, totalRewardedTwinkleCoins },
-    actions: { onFetchNotifications }
-  } = useNotiContext();
+  const numNewNotis = useNotiContext((v) => v.state.numNewNotis);
+  const totalRewardedTwinkles = useNotiContext(
+    (v) => v.state.totalRewardedTwinkles
+  );
+  const totalRewardedTwinkleCoins = useNotiContext(
+    (v) => v.state.totalRewardedTwinkleCoins
+  );
+  const onFetchNotifications = useNotiContext(
+    (v) => v.actions.onFetchNotifications
+  );
 
   const [continueWatchingVideos, setContinueWatchingVideos] = useState([]);
   const [nextVideos, setNextVideos] = useState([]);

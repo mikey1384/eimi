@@ -45,36 +45,51 @@ const secretMessageLabel = localize('secretMessage');
 function SubjectInput() {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const { onFileUpload } = useContext(LocalContext);
-  const {
-    requestHelpers: { uploadContent }
-  } = useAppContext();
+  const uploadContent = useAppContext((v) => v.requestHelpers.uploadContent);
   const { canEditRewardLevel, profileTheme, banned } = useMyState();
-  const {
-    state: {
-      fileUploadComplete,
-      fileUploadProgress,
-      secretAttachmentUploadComplete,
-      secretAttachmentUploadProgress,
-      submittingSubject,
-      uploadingFile
-    },
-    actions: { onLoadNewFeeds, onSetSubmittingSubject, onSetUploadingFile }
-  } = useHomeContext();
-  const {
-    state: { subject },
-    actions: {
-      onSetHasSecretAnswer,
-      onResetSubjectInput,
-      onSetIsMadeByUser,
-      onSetSecretAnswer,
-      onSetSecretAttachment,
-      onSetSubjectAttachment,
-      onSetSubjectDescription,
-      onSetSubjectDescriptionFieldShown,
-      onSetSubjectRewardLevel,
-      onSetSubjectTitle
-    }
-  } = useInputContext();
+  const fileUploadComplete = useHomeContext((v) => v.state.fileUploadComplete);
+  const fileUploadProgress = useHomeContext((v) => v.state.fileUploadProgress);
+  const secretAttachmentUploadComplete = useHomeContext(
+    (v) => v.state.secretAttachmentUploadComplete
+  );
+  const secretAttachmentUploadProgress = useHomeContext(
+    (v) => v.state.secretAttachmentUploadProgress
+  );
+  const submittingSubject = useHomeContext((v) => v.state.submittingSubject);
+  const uploadingFile = useHomeContext((v) => v.state.uploadingFile);
+  const onLoadNewFeeds = useHomeContext((v) => v.actions.onLoadNewFeeds);
+  const onSetSubmittingSubject = useHomeContext(
+    (v) => v.actions.onSetSubmittingSubject
+  );
+  const onSetUploadingFile = useHomeContext(
+    (v) => v.actions.onSetUploadingFile
+  );
+  const subject = useInputContext((v) => v.state.subject);
+  const onSetHasSecretAnswer = useInputContext(
+    (v) => v.actions.onSetHasSecretAnswer
+  );
+  const onResetSubjectInput = useInputContext(
+    (v) => v.actions.onResetSubjectInput
+  );
+  const onSetIsMadeByUser = useInputContext((v) => v.actions.onSetIsMadeByUser);
+  const onSetSecretAnswer = useInputContext((v) => v.actions.onSetSecretAnswer);
+  const onSetSecretAttachment = useInputContext(
+    (v) => v.actions.onSetSecretAttachment
+  );
+  const onSetSubjectAttachment = useInputContext(
+    (v) => v.actions.onSetSubjectAttachment
+  );
+  const onSetSubjectDescription = useInputContext(
+    (v) => v.actions.onSetSubjectDescription
+  );
+  const onSetSubjectDescriptionFieldShown = useInputContext(
+    (v) => v.actions.onSetSubjectDescriptionFieldShown
+  );
+  const onSetSubjectRewardLevel = useInputContext(
+    (v) => v.actions.onSetSubjectRewardLevel
+  );
+  const onSetSubjectTitle = useInputContext((v) => v.actions.onSetSubjectTitle);
+
   const {
     details,
     details: { attachment, rewardLevel, secretAttachment }

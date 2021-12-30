@@ -16,16 +16,17 @@ Profile.propTypes = {
 };
 
 export default function Profile({ history, location, match }) {
-  const {
-    requestHelpers: { loadProfileViaUsername, setTheme }
-  } = useAppContext();
+  const loadProfileViaUsername = useAppContext(
+    (v) => v.requestHelpers.loadProfileViaUsername
+  );
+  const setTheme = useAppContext((v) => v.requestHelpers.setTheme);
   const { userId, username } = useMyState();
-  const {
-    actions: { onChangeProfileTheme, onInitContent }
-  } = useContentContext();
-  const {
-    actions: { onSetProfileId, onUserNotExist }
-  } = useProfileContext();
+  const onChangeProfileTheme = useContentContext(
+    (v) => v.actions.onChangeProfileTheme
+  );
+  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onSetProfileId = useProfileContext((v) => v.actions.onSetProfileId);
+  const onUserNotExist = useProfileContext((v) => v.actions.onUserNotExist);
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
   const { notExist, profileId } = useProfileState(match.params.username);

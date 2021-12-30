@@ -20,24 +20,27 @@ Home.propTypes = {
 };
 
 export default function Home({ profile, selectedTheme }) {
-  const {
-    requestHelpers: { loadComments }
-  } = useAppContext();
+  const loadComments = useAppContext((v) => v.requestHelpers.loadComments);
   const { userId } = useMyState();
-  const {
-    actions: {
-      onDeleteComment,
-      onEditComment,
-      onEditRewardComment,
-      onLikeComment,
-      onLoadComments,
-      onLoadMoreComments,
-      onLoadMoreReplies,
-      onLoadRepliesOfReply,
-      onUploadComment,
-      onUploadReply
-    }
-  } = useContentContext();
+  const onDeleteComment = useContentContext((v) => v.actions.onDeleteComment);
+  const onEditComment = useContentContext((v) => v.actions.onEditComment);
+  const onEditRewardComment = useContentContext(
+    (v) => v.actions.onEditRewardComment
+  );
+  const onLikeComment = useContentContext((v) => v.actions.onLikeComment);
+  const onLoadComments = useContentContext((v) => v.actions.onLoadComments);
+  const onLoadMoreComments = useContentContext(
+    (v) => v.actions.onLoadMoreComments
+  );
+  const onLoadMoreReplies = useContentContext(
+    (v) => v.actions.onLoadMoreReplies
+  );
+  const onLoadRepliesOfReply = useContentContext(
+    (v) => v.actions.onLoadRepliesOfReply
+  );
+  const onUploadComment = useContentContext((v) => v.actions.onUploadComment);
+  const onUploadReply = useContentContext((v) => v.actions.onUploadReply);
+
   const { commentsLoaded, id, numPics, username, pictures } = profile;
   const [loadingComments, setLoadingComments] = useState(false);
   const mounted = useRef(true);

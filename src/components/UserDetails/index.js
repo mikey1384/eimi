@@ -47,19 +47,18 @@ export default function UserDetails({
   onUpdateBio,
   userId
 }) {
-  const {
-    requestHelpers: { auth, uploadBio }
-  } = useAppContext();
-  const {
-    actions: { onReloadContent }
-  } = useContentContext();
-  const {
-    state: { editedStatusColor, editedStatusMsg },
-    actions: { onSetEditedStatusColor, onSetEditedStatusMsg }
-  } = useInputContext();
-  const {
-    actions: { onResetProfile }
-  } = useProfileContext();
+  const auth = useAppContext((v) => v.requestHelpers.auth);
+  const uploadBio = useAppContext((v) => v.requestHelpers.uploadBio);
+  const onReloadContent = useContentContext((v) => v.actions.onReloadContent);
+  const editedStatusColor = useInputContext((v) => v.state.editedStatusColor);
+  const editedStatusMsg = useInputContext((v) => v.state.editedStatusMsg);
+  const onSetEditedStatusColor = useInputContext(
+    (v) => v.actions.onSetEditedStatusColor
+  );
+  const onSetEditedStatusMsg = useInputContext(
+    (v) => v.actions.onSetEditedStatusMsg
+  );
+  const onResetProfile = useProfileContext((v) => v.actions.onResetProfile);
   const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   useEffect(() => {

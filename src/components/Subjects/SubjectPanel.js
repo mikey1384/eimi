@@ -69,17 +69,21 @@ export default function SubjectPanel({
   secretAttachment,
   subjectId
 }) {
-  const {
-    requestHelpers: { deleteSubject, editContent, loadComments }
-  } = useAppContext();
-  const {
-    actions: {
-      onChangeSpoilerStatus,
-      onEditRewardComment,
-      onSetXpRewardInterfaceShown,
-      onSetByUserStatus
-    }
-  } = useContentContext();
+  const deleteSubject = useAppContext((v) => v.requestHelpers.deleteSubject);
+  const editContent = useAppContext((v) => v.requestHelpers.editContent);
+  const loadComments = useAppContext((v) => v.requestHelpers.loadComments);
+  const onChangeSpoilerStatus = useContentContext(
+    (v) => v.actions.onChangeSpoilerStatus
+  );
+  const onEditRewardComment = useContentContext(
+    (v) => v.actions.onEditRewardComment
+  );
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
+  const onSetByUserStatus = useContentContext(
+    (v) => v.actions.onSetByUserStatus
+  );
   const {
     authLevel,
     canDelete,
@@ -232,7 +236,6 @@ export default function SubjectPanel({
                   skeuomorphic
                   style={{ marginLeft: '1rem' }}
                   color="darkerGray"
-                  direction="left"
                   menuProps={renderMenuProps()}
                 />
               )}

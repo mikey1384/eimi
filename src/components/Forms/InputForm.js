@@ -81,10 +81,11 @@ function InputForm({
   const [alertModalShown, setAlertModalShown] = useState(false);
   const FileInputRef = useRef(null);
   const secretViewMessageSubmittingRef = useRef(false);
-  const {
-    state,
-    actions: { onEnterComment, onSetCommentAttachment }
-  } = useInputContext();
+  const state = useInputContext((v) => v.state);
+  const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
+  const onSetCommentAttachment = useInputContext(
+    (v) => v.actions.onSetCommentAttachment
+  );
   const contentType = targetCommentId ? 'comment' : parent.contentType;
   const contentId = targetCommentId || parent.contentId;
   const attachment = useMemo(

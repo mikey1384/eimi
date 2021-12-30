@@ -97,16 +97,13 @@ export default function Details({
     canReward,
     twinkleCoins
   } = useMyState();
-  const {
-    actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
-  } = useContentContext();
-  const {
-    state: inputState,
-    actions: { onSetEditForm }
-  } = useInputContext();
-  const {
-    actions: { onLikeVideo }
-  } = useExploreContext();
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
+  const inputState = useInputContext((v) => v.state);
+  const onSetEditForm = useInputContext((v) => v.actions.onSetEditForm);
+  const onLikeVideo = useExploreContext((v) => v.actions.onLikeVideo);
   const { isEditing, xpRewardInterfaceShown } = useContentState({
     contentType: 'video',
     contentId: videoId

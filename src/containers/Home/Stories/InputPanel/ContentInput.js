@@ -21,12 +21,11 @@ import {
   finalizeEmoji
 } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 import localize from 'constants/localize';
+import VideoRewardLevelExplainer from 'components/VideoRewardLevelExplainer';
 
 const enterDescriptionOptionalLabel = localize('enterDescriptionOptional');
-const forEveryStarYouAddLabel = localize('forEveryStarYouAdd');
 const enterTitleHereLabel = localize('enterTitleHere');
 const postContentLabel = localize('postContent');
 const copyAndPasteUrlLabel = localize('copyAndPasteUrl');
@@ -34,30 +33,46 @@ const youtubeVideoLabel = localize('youtubeVideo');
 
 function ContentInput() {
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
-  const {
-    requestHelpers: { checkContentUrl, uploadContent }
-  } = useAppContext();
+  const checkContentUrl = useAppContext(
+    (v) => v.requestHelpers.checkContentUrl
+  );
+  const uploadContent = useAppContext((v) => v.requestHelpers.uploadContent);
   const { canEditRewardLevel, banned } = useMyState();
-  const {
-    actions: { onLoadNewFeeds }
-  } = useHomeContext();
-  const {
-    state: { content },
-    actions: {
-      onResetContentInput,
-      onSetContentAlreadyPosted,
-      onSetContentIsVideo,
-      onSetContentDescription,
-      onSetContentDescriptionFieldShown,
-      onSetContentRewardLevel,
-      onSetContentTitle,
-      onSetContentTitleFieldShown,
-      onSetContentUrl,
-      onSetContentUrlError,
-      onSetContentUrlHelper,
-      onSetYouTubeVideoDetails
-    }
-  } = useInputContext();
+  const onLoadNewFeeds = useHomeContext((v) => v.actions.onLoadNewFeeds);
+  const content = useInputContext((v) => v.state.content);
+  const onResetContentInput = useInputContext(
+    (v) => v.actions.onResetContentInput
+  );
+  const onSetContentAlreadyPosted = useInputContext(
+    (v) => v.actions.onSetContentAlreadyPosted
+  );
+  const onSetContentIsVideo = useInputContext(
+    (v) => v.actions.onSetContentIsVideo
+  );
+  const onSetContentDescription = useInputContext(
+    (v) => v.actions.onSetContentDescription
+  );
+  const onSetContentDescriptionFieldShown = useInputContext(
+    (v) => v.actions.onSetContentDescriptionFieldShown
+  );
+  const onSetContentRewardLevel = useInputContext(
+    (v) => v.actions.onSetContentRewardLevel
+  );
+  const onSetContentTitle = useInputContext((v) => v.actions.onSetContentTitle);
+  const onSetContentTitleFieldShown = useInputContext(
+    (v) => v.actions.onSetContentTitleFieldShown
+  );
+  const onSetContentUrl = useInputContext((v) => v.actions.onSetContentUrl);
+  const onSetContentUrlError = useInputContext(
+    (v) => v.actions.onSetContentUrlError
+  );
+  const onSetContentUrlHelper = useInputContext(
+    (v) => v.actions.onSetContentUrlHelper
+  );
+  const onSetYouTubeVideoDetails = useInputContext(
+    (v) => v.actions.onSetYouTubeVideoDetails
+  );
+
   const {
     alreadyPosted: prevAlreadyPosted,
     descriptionFieldShown: prevDescriptionFieldShown,
@@ -148,66 +163,6 @@ function ContentInput() {
     urlError,
     urlExceedsCharLimit
   ]);
-
-  const rewardLevelDescription = useMemo(() => {
-    switch (form.rewardLevel) {
-      case 3:
-        if (SELECTED_LANGUAGE === 'kr') {
-          return (
-            <>
-              이 동영상은{' '}
-              <span style={{ color: Color.pink() }}>흥미 위주의 콘텐츠</span>
-              이지만 영어 듣기에 도움이 됩니다
-            </>
-          );
-        }
-        return (
-          <>
-            This video is{' '}
-            <span style={{ color: Color.pink() }}>
-              purely for entertainment
-            </span>
-            , but {`it's`} good for English listening
-          </>
-        );
-      case 4:
-        if (SELECTED_LANGUAGE === 'kr') {
-          return (
-            <>
-              이 동영상은{' '}
-              <span style={{ color: Color.green() }}>교육적이며</span> 영어
-              듣기에 도움이 됩니다
-            </>
-          );
-        }
-        return (
-          <>
-            This video is{' '}
-            <span style={{ color: Color.green() }}>educational</span> and good
-            for English listening
-          </>
-        );
-      case 5:
-        if (SELECTED_LANGUAGE === 'kr') {
-          return (
-            <>
-              이 동영상은{' '}
-              <span style={{ color: Color.green() }}>교육적이고</span>, 영어
-              듣기에 도움이 되며, 유저들이 꼭 봐야할 콘텐츠입니다
-            </>
-          );
-        }
-        return (
-          <>
-            This video is{' '}
-            <span style={{ color: Color.green() }}>educational</span>, good for
-            English listening, and I want every single user to watch it
-          </>
-        );
-      default:
-        return '';
-    }
-  }, [form.rewardLevel]);
 
   useEffect(() => {
     return function saveFormBeforeUnmount() {
@@ -345,14 +300,7 @@ function ContentInput() {
             contentIsVideo &&
             canEditRewardLevel && (
               <div style={{ marginTop: '1rem' }}>
-                {rewardLevelDescription && (
-                  <div style={{ fontSize: '1.7rem', fontWeight: 'bold' }}>
-                    {rewardLevelDescription}
-                  </div>
-                )}
-                <div style={{ fontSize: '1.5rem' }}>
-                  {forEveryStarYouAddLabel}
-                </div>
+                <VideoRewardLevelExplainer rewardLevel={form.rewardLevel} />
                 <RewardLevelForm
                   themed
                   isFromContentInput

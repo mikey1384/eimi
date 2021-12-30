@@ -87,16 +87,16 @@ export default function Body({
     };
   }, []);
 
-  const {
-    requestHelpers: { deleteContent, loadComments }
-  } = useAppContext();
+  const deleteContent = useAppContext((v) => v.requestHelpers.deleteContent);
+  const loadComments = useAppContext((v) => v.requestHelpers.loadComments);
 
   const { authLevel, canDelete, canEdit, canReward, twinkleCoins, userId } =
     useMyState();
 
-  const {
-    actions: { onSetIsEditing, onSetXpRewardInterfaceShown }
-  } = useContentContext();
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
 
   const {
     isEditing,

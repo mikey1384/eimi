@@ -41,16 +41,14 @@ export default function Task({
   nextTaskType,
   tutorialRef
 }) {
-  const {
-    requestHelpers: { checkMissionStatus }
-  } = useAppContext();
-  const {
-    state: { myAttempts },
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
-  const {
-    state: { pageVisible }
-  } = useViewContext();
+  const checkMissionStatus = useAppContext(
+    (v) => v.requestHelpers.checkMissionStatus
+  );
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
+  const pageVisible = useViewContext((v) => v.state.pageVisible);
   const myAttempt = useMemo(() => myAttempts[taskId], [myAttempts, taskId]);
   const approvedStatusShown = useMemo(
     () =>

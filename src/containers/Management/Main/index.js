@@ -9,12 +9,22 @@ import { useAppContext, useManagementContext } from 'contexts';
 export default function Main() {
   const { managementLevel } = useMyState();
   const canManage = useMemo(() => managementLevel > 1, [managementLevel]);
-  const {
-    requestHelpers: { loadAccountTypes, loadBannedUsers, loadModerators }
-  } = useAppContext();
-  const {
-    actions: { onLoadAccountTypes, onLoadBannedUsers, onLoadModerators }
-  } = useManagementContext();
+  const loadAccountTypes = useAppContext(
+    (v) => v.requestHelpers.loadAccountTypes
+  );
+  const loadBannedUsers = useAppContext(
+    (v) => v.requestHelpers.loadBannedUsers
+  );
+  const loadModerators = useAppContext((v) => v.requestHelpers.loadModerators);
+  const onLoadAccountTypes = useManagementContext(
+    (v) => v.actions.onLoadAccountTypes
+  );
+  const onLoadBannedUsers = useManagementContext(
+    (v) => v.actions.onLoadBannedUsers
+  );
+  const onLoadModerators = useManagementContext(
+    (v) => v.actions.onLoadModerators
+  );
 
   useEffect(() => {
     initModerators();

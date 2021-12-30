@@ -21,29 +21,37 @@ Notification.propTypes = {
 };
 
 function Notification({ className, location, style }) {
-  const {
-    requestHelpers: { loadRankings, fetchNotifications }
-  } = useAppContext();
+  const loadRankings = useAppContext((v) => v.requestHelpers.loadRankings);
+  const fetchNotifications = useAppContext(
+    (v) => v.requestHelpers.fetchNotifications
+  );
   const { userId, twinkleXP } = useMyState();
+  const loadMore = useNotiContext((v) => v.state.loadMore);
+  const notifications = useNotiContext((v) => v.state.notifications);
+  const numNewNotis = useNotiContext((v) => v.state.numNewNotis);
+  const prevUserId = useNotiContext((v) => v.state.prevUserId);
+  const rewards = useNotiContext((v) => v.state.rewards);
+  const totalRewardedTwinkles = useNotiContext(
+    (v) => v.state.totalRewardedTwinkles
+  );
+  const totalRewardedTwinkleCoins = useNotiContext(
+    (v) => v.state.totalRewardedTwinkleCoins
+  );
   const {
-    state: {
-      loadMore,
-      notifications,
-      numNewNotis,
-      prevUserId,
-      rewards,
-      totalRewardedTwinkles,
-      totalRewardedTwinkleCoins,
-      currentChatSubject: { content = defaultChatSubject, loaded, ...subject }
-    },
-    actions: {
-      onClearNotifications,
-      onFetchNotifications,
-      onGetRanks,
-      onResetRewards,
-      onSetPrevUserId
-    }
-  } = useNotiContext();
+    content = defaultChatSubject,
+    loaded,
+    ...subject
+  } = useNotiContext((v) => v.state.currentChatSubject);
+  const onClearNotifications = useNotiContext(
+    (v) => v.actions.onClearNotifications
+  );
+  const onFetchNotifications = useNotiContext(
+    (v) => v.actions.onFetchNotifications
+  );
+  const onGetRanks = useNotiContext((v) => v.actions.onGetRanks);
+  const onResetRewards = useNotiContext((v) => v.actions.onResetRewards);
+  const onSetPrevUserId = useNotiContext((v) => v.actions.onSetPrevUserId);
+
   const loadingNotificationRef = useRef(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [activeTab, setActiveTab] = useState('rankings');

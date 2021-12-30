@@ -24,9 +24,9 @@ function VideoThumbImage({
   style,
   videoId
 }) {
-  const {
-    requestHelpers: { loadVideoWatchPercentage }
-  } = useAppContext();
+  const loadVideoWatchPercentage = useAppContext(
+    (v) => v.requestHelpers.loadVideoWatchPercentage
+  );
   const { userId } = useMyState();
   const [progressBarPercentage, setProgressBarPercentage] = useState(0);
   const mounted = useRef(true);

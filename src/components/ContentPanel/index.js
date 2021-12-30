@@ -44,37 +44,53 @@ export default function ContentPanel({
   });
   const PanelRef = useRef(null);
   const history = useHistory();
-  const {
-    requestHelpers: { loadContent }
-  } = useAppContext();
-  const {
-    actions: {
-      onAddTags,
-      onAddTagToContents,
-      onChangeSpoilerStatus,
-      onDeleteComment,
-      onDeleteContent,
-      onEditComment,
-      onEditContent,
-      onEditRewardComment,
-      onInitContent,
-      onLikeContent,
-      onLoadComments,
-      onLoadMoreComments,
-      onLoadMoreReplies,
-      onLoadRepliesOfReply,
-      onLoadTags,
-      onSetByUserStatus,
-      onSetCommentsShown,
-      onSetPlaceholderHeight,
-      onSetRewardLevel,
-      onSetVisible,
-      onShowTCReplyInput,
-      onUploadTargetComment,
-      onUploadComment,
-      onUploadReply
-    }
-  } = useContentContext();
+  const loadContent = useAppContext((v) => v.requestHelpers.loadContent);
+  const onAddTags = useContentContext((v) => v.actions.onAddTags);
+  const onAddTagToContents = useContentContext(
+    (v) => v.actions.onAddTagToContents
+  );
+  const onChangeSpoilerStatus = useContentContext(
+    (v) => v.actions.onChangeSpoilerStatus
+  );
+  const onDeleteComment = useContentContext((v) => v.actions.onDeleteComment);
+  const onDeleteContent = useContentContext((v) => v.actions.onDeleteContent);
+  const onEditComment = useContentContext((v) => v.actions.onEditComment);
+  const onEditContent = useContentContext((v) => v.actions.onEditContent);
+  const onEditRewardComment = useContentContext(
+    (v) => v.actions.onEditRewardComment
+  );
+  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onLikeContent = useContentContext((v) => v.actions.onLikeContent);
+  const onLoadComments = useContentContext((v) => v.actions.onLoadComments);
+  const onLoadMoreComments = useContentContext(
+    (v) => v.actions.onLoadMoreComments
+  );
+  const onLoadMoreReplies = useContentContext(
+    (v) => v.actions.onLoadMoreReplies
+  );
+  const onLoadRepliesOfReply = useContentContext(
+    (v) => v.actions.onLoadRepliesOfReply
+  );
+  const onLoadTags = useContentContext((v) => v.actions.onLoadTags);
+  const onSetByUserStatus = useContentContext(
+    (v) => v.actions.onSetByUserStatus
+  );
+  const onSetCommentsShown = useContentContext(
+    (v) => v.actions.onSetCommentsShown
+  );
+  const onSetPlaceholderHeight = useContentContext(
+    (v) => v.actions.onSetPlaceholderHeight
+  );
+  const onSetRewardLevel = useContentContext((v) => v.actions.onSetRewardLevel);
+  const onSetVisible = useContentContext((v) => v.actions.onSetVisible);
+  const onShowTCReplyInput = useContentContext(
+    (v) => v.actions.onShowTCReplyInput
+  );
+  const onUploadTargetComment = useContentContext(
+    (v) => v.actions.onUploadTargetComment
+  );
+  const onUploadComment = useContentContext((v) => v.actions.onUploadComment);
+  const onUploadReply = useContentContext((v) => v.actions.onUploadReply);
 
   const contentState = useContentState({ contentType, contentId });
   const {

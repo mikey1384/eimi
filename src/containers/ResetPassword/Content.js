@@ -9,9 +9,7 @@ Content.propTypes = {
 };
 
 export default function Content({ match }) {
-  const {
-    requestHelpers: { verifyEmail }
-  } = useAppContext();
+  const verifyEmail = useAppContext((v) => v.requestHelpers.verifyEmail);
   const [loaded, setLoaded] = useState(false);
   const [profilePicUrl, setProfilePicUrl] = useState(null);
   const [userId, setUserId] = useState(null);

@@ -30,12 +30,8 @@ Explore.propTypes = {
 };
 
 export default function Explore({ history, location }) {
-  const {
-    state: {
-      search: { searchText }
-    },
-    actions: { onSetPrevUserId }
-  } = useExploreContext();
+  const searchText = useExploreContext((v) => v.state.search.searchText);
+  const onSetPrevUserId = useExploreContext((v) => v.actions.onSetPrevUserId);
   const { userId } = useMyState();
   const mounted = useRef(true);
   const disconnected = useRef(false);

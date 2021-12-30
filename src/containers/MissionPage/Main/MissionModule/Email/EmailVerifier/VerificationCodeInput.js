@@ -16,12 +16,12 @@ export default function VerificationCodeInput({ onRetry, email }) {
   const [verificationCode, setVerificationCode] = useState('');
   const [verifying, setVerifying] = useState(false);
   const [errorMsg, setErrorMsg] = useState('');
-  const {
-    requestHelpers: { verifyEmailViaOTP }
-  } = useAppContext();
-  const {
-    actions: { onUpdateProfileInfo }
-  } = useContentContext();
+  const verifyEmailViaOTP = useAppContext(
+    (v) => v.requestHelpers.verifyEmailViaOTP
+  );
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
   const { userId } = useMyState();
 
   return (

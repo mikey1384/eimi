@@ -1,4 +1,10 @@
-import React, { memo, useContext, useCallback, useMemo } from 'react';
+import React, {
+  memo,
+  useContext,
+  useCallback,
+  useEffect,
+  useMemo
+} from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import EditTextArea from 'components/Texts/EditTextArea';
@@ -8,8 +14,11 @@ import LongText from 'components/Texts/LongText';
 import { Color } from 'constants/css';
 import { isValidSpoiler } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
+import { isMobile } from 'helpers';
 import Spoiler from './Spoiler';
 import LocalContext from '../Context';
+
+const deviceIsMobile = isMobile(navigator);
 
 TextMessage.propTypes = {
   attachmentHidden: PropTypes.bool,
@@ -19,6 +28,7 @@ TextMessage.propTypes = {
   isNotification: PropTypes.bool,
   isReloadedSubject: PropTypes.bool,
   isSubject: PropTypes.bool,
+  forceRefreshForMobile: PropTypes.func,
   messageId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
   MessageStyle: PropTypes.object,
   numMsgs: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -40,6 +50,7 @@ function TextMessage({
   isNotification,
   isReloadedSubject,
   isSubject,
+  forceRefreshForMobile,
   messageId,
   MessageStyle,
   numMsgs,
@@ -82,6 +93,12 @@ function TextMessage({
     socket.emit('hide_message_attachment', { channelId, messageId });
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [channelId, messageId]);
+
+  useEffect(() => {
+    if (deviceIsMobile && isEditing) {
+      forceRefreshForMobile?.();
+    }
+  }, [isEditing, forceRefreshForMobile]);
 
   return (
     <ErrorBoundary>

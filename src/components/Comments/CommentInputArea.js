@@ -58,10 +58,10 @@ export default function CommentInputArea({
     [parent, targetCommentId, subjectId]
   );
   const { onSubmitWithAttachment } = useContext(LocalContext);
-  const {
-    state,
-    actions: { onSetCommentAttachment }
-  } = useInputContext();
+  const state = useInputContext((v) => v.state);
+  const onSetCommentAttachment = useInputContext(
+    (v) => v.actions.onSetCommentAttachment
+  );
 
   const { fileUploadComplete, fileUploadProgress } = useContentState({
     contentId,

@@ -32,9 +32,9 @@ function ChatInfo({
   channelName
 }) {
   const { userId: myId, username, profilePicUrl, banned } = useMyState();
-  const {
-    actions: { onSetCall, onHangUp, onSubmitMessage }
-  } = useChatContext();
+  const onSetCall = useChatContext((v) => v.actions.onSetCall);
+  const onHangUp = useChatContext((v) => v.actions.onHangUp);
+  const onSubmitMessage = useChatContext((v) => v.actions.onSubmitMessage);
 
   const callOngoing = useMemo(
     () =>

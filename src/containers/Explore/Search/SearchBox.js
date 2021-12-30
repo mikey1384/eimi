@@ -15,12 +15,10 @@ SearchBox.propTypes = {
 
 export default function SearchBox({ category, className, innerRef, style }) {
   const { profileTheme } = useMyState();
-  const {
-    state: {
-      search: { searchText }
-    },
-    actions: { onChangeSearchInput }
-  } = useExploreContext();
+  const searchText = useExploreContext((v) => v.state.search.searchText);
+  const onChangeSearchInput = useExploreContext(
+    (v) => v.actions.onChangeSearchInput
+  );
   const placeholderLabel = useMemo(() => {
     return SELECTED_LANGUAGE === 'kr'
       ? `${localize(category.slice(0, -1))}${

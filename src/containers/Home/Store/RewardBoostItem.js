@@ -174,12 +174,12 @@ RewardBoostItem.propTypes = {
 
 export default function RewardBoostItem({ style }) {
   const { rewardBoostLvl, karmaPoints, userId } = useMyState();
-  const {
-    actions: { onUpdateProfileInfo }
-  } = useContentContext();
-  const {
-    requestHelpers: { upgradeRewardBoost }
-  } = useAppContext();
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
+  const upgradeRewardBoost = useAppContext(
+    (v) => v.requestHelpers.upgradeRewardBoost
+  );
   const maxLevelItemDescriptionLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
       return `이제 XP동영상을 시청하실 때 매분 (보상레벨 × ${videoRewardHash[rewardBoostLvl].xp})XP와 트윈클 코인 ${videoRewardHash[rewardBoostLvl].coin}개를 획득하실 수 있습니다`;

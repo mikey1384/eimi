@@ -24,9 +24,7 @@ export default function ContentPage({
 }) {
   const contentId = Number(initialContentId);
   const { userId } = useMyState();
-  const {
-    actions: { onSetContentNav }
-  } = useViewContext();
+  const onSetContentNav = useViewContext((v) => v.actions.onSetContentNav);
   const contentType = url.split('/')[1].slice(0, -1);
   const { loaded, isDeleted, isDeleteNotification } = useContentState({
     contentType,

@@ -23,9 +23,9 @@ export default function QuestionListItem({
   question,
   style
 }) {
-  const {
-    requestHelpers: { approveGrammarQuestion }
-  } = useAppContext();
+  const approveGrammarQuestion = useAppContext(
+    (v) => v.requestHelpers.approveGrammarQuestion
+  );
   const correctChoice = useMemo(() => {
     return question.choices[question.answerIndex];
   }, [question.answerIndex, question.choices]);

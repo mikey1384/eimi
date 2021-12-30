@@ -4,10 +4,8 @@ import { useChatContext } from 'contexts';
 export default function Outgoing() {
   const myStreamRef = useRef(null);
   const mounted = useRef(true);
-  const {
-    state: { myStream },
-    actions: { onSetMyStream }
-  } = useChatContext();
+  const myStream = useChatContext((v) => v.state.myStream);
+  const onSetMyStream = useChatContext((v) => v.actions.onSetMyStream);
   useEffect(() => {
     mounted.current = true;
     init();

@@ -24,17 +24,17 @@ export default function ArchivedPicture({
   onDeleteArchivedPicture
 }) {
   const { profileTheme } = useMyState();
-  const {
-    requestHelpers: { deleteArchivedPicture }
-  } = useAppContext();
+  const deleteArchivedPicture = useAppContext(
+    (v) => v.requestHelpers.deleteArchivedPicture
+  );
   const imageUrl = useMemo(() => {
     return picture?.src ? `${cloudFrontURL}${picture?.src}` : '';
   }, [picture]);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
-  const isSelected = useMemo(() => selectedPictureIds.includes(picture.id), [
-    picture.id,
-    selectedPictureIds
-  ]);
+  const isSelected = useMemo(
+    () => selectedPictureIds.includes(picture.id),
+    [picture.id, selectedPictureIds]
+  );
   const width = 25;
 
   return (

@@ -18,10 +18,9 @@ Vocabulary.propTypes = {
 };
 
 function Vocabulary({ selected, onClick }) {
-  const {
-    state: { wordsObj, vocabActivities }
-  } = useChatContext();
   const { userId: myId } = useMyState();
+  const wordsObj = useChatContext((v) => v.state.wordsObj);
+  const vocabActivities = useChatContext((v) => v.state.vocabActivities);
 
   const lastActivity = useMemo(() => {
     return wordsObj[vocabActivities[vocabActivities.length - 1]];

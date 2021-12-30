@@ -13,14 +13,16 @@ ChatSearchBox.propTypes = {
 
 function ChatSearchBox({ style }) {
   const history = useHistory();
-  const {
-    requestHelpers: { searchChat }
-  } = useAppContext();
+  const searchChat = useAppContext((v) => v.requestHelpers.searchChat);
   const { profilePicUrl, userId, username, authLevel } = useMyState();
-  const {
-    state: { chatSearchResults, selectedChannelId },
-    actions: { onClearChatSearchResults, onOpenNewChatTab, onSearchChat }
-  } = useChatContext();
+  const chatSearchResults = useChatContext((v) => v.state.chatSearchResults);
+  const selectedChannelId = useChatContext((v) => v.state.selectedChannelId);
+  const onClearChatSearchResults = useChatContext(
+    (v) => v.actions.onClearChatSearchResults
+  );
+  const onOpenNewChatTab = useChatContext((v) => v.actions.onOpenNewChatTab);
+  const onSearchChat = useChatContext((v) => v.actions.onSearchChat);
+
   const [searchText, setSearchText] = useState('');
   const handleSearchChat = useCallback(async (text) => {
     const data = await searchChat(text);

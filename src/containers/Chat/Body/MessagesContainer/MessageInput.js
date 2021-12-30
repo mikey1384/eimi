@@ -63,6 +63,7 @@ function MessageInput({
   socketConnected,
   subjectId
 }) {
+  const mounted = useRef(true);
   const {
     actions: { onEnterComment, onSetIsRespondingToSubject, onSetReplyTarget },
     inputState,
@@ -145,16 +146,22 @@ function MessageInput({
       if (inputCoolingDown.current) {
         clearTimeout(timerRef.current);
         timerRef.current = setTimeout(() => {
-          setCoolingDown(false);
+          if (mounted.current) {
+            setCoolingDown(false);
+          }
           inputCoolingDown.current = false;
         }, 700);
       }
       return;
     }
-    setCoolingDown(true);
+    if (mounted.current) {
+      setCoolingDown(true);
+    }
     inputCoolingDown.current = true;
     timerRef.current = setTimeout(() => {
-      setCoolingDown(false);
+      if (mounted.current) {
+        setCoolingDown(false);
+      }
       inputCoolingDown.current = false;
     }, 500);
     if (banned?.chat) {
@@ -164,12 +171,16 @@ function MessageInput({
     if (stringIsEmpty(text)) return;
     try {
       await onMessageSubmit(finalizeEmoji(text));
-      handleSetText('');
-      onEnterComment({
-        contentType: 'chat',
-        contentId: currentChannelId,
-        text: ''
-      });
+      if (mounted.current) {
+        handleSetText('');
+      }
+      if (mounted.current) {
+        onEnterComment({
+          contentType: 'chat',
+          contentId: currentChannelId,
+          text: ''
+        });
+      }
     } catch (error) {
       console.error(error);
     }
@@ -253,6 +264,13 @@ function MessageInput({
     },
     [handleImagePaste]
   );
+
+  useEffect(() => {
+    mounted.current = true;
+    return function onUnmount() {
+      mounted.current = false;
+    };
+  }, []);
 
   return (
     <div

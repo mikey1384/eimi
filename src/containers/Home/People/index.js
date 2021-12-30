@@ -20,30 +20,24 @@ import localize from 'constants/localize';
 const searchUsersLabel = localize('searchUsers');
 
 function People() {
-  const {
-    user: {
-      actions: {
-        onClearUserSearch,
-        onLoadUsers,
-        onLoadMoreUsers,
-        onSearchUsers,
-        onSetOrderUsersBy
-      },
-      state: {
-        loadMoreButton,
-        profilesLoaded,
-        orderUsersBy,
-        profiles,
-        searchedProfiles
-      }
-    },
-    requestHelpers: { loadUsers }
-  } = useAppContext();
+  const { loadUsers } = useAppContext((v) => v.requestHelpers);
+  const onClearUserSearch = useAppContext(
+    (v) => v.user.actions.onClearUserSearch
+  );
+  const onLoadUsers = useAppContext((v) => v.user.actions.onLoadUsers);
+  const onLoadMoreUsers = useAppContext((v) => v.user.actions.onLoadMoreUsers);
+  const onSearchUsers = useAppContext((v) => v.user.actions.onSearchUsers);
+  const onSetOrderUsersBy = useAppContext(
+    (v) => v.user.actions.onSetOrderUsersBy
+  );
+  const loadMoreButton = useAppContext((v) => v.user.state.loadMoreButton);
+  const profilesLoaded = useAppContext((v) => v.user.state.profilesLoaded);
+  const orderUsersBy = useAppContext((v) => v.user.state.orderUsersBy);
+  const profiles = useAppContext((v) => v.user.state.profiles);
+  const searchedProfiles = useAppContext((v) => v.user.state.searchedProfiles);
   const { profileTheme } = useMyState();
-  const {
-    state: { userSearchText },
-    actions: { onSetSearchText }
-  } = useInputContext();
+  const userSearchText = useInputContext((v) => v.state.userSearchText);
+  const onSetSearchText = useInputContext((v) => v.actions.onSetSearchText);
   const [loading, setLoading] = useState(false);
   const { handleSearch, searching } = useSearch({
     onSearch: handleSearchUsers,

@@ -21,12 +21,11 @@ AddModeratorModal.propTypes = {
 };
 
 export default function AddModeratorModal({ accountTypes, onHide }) {
-  const {
-    requestHelpers: { addModerators, searchUsers }
-  } = useAppContext();
-  const {
-    actions: { onEditModerators }
-  } = useManagementContext();
+  const addModerators = useAppContext((v) => v.requestHelpers.addModerators);
+  const searchUsers = useAppContext((v) => v.requestHelpers.searchUsers);
+  const onEditModerators = useManagementContext(
+    (v) => v.actions.onEditModerators
+  );
   const { authLevel } = useMyState();
   const [searchText, setSearchText] = useState('');
   const [searchedUsers, setSearchedUsers] = useState([]);
@@ -94,7 +93,7 @@ export default function AddModeratorModal({ accountTypes, onHide }) {
   }, [accountTypes, selectedUsers]);
 
   return (
-    <Modal onHide={onHide}>
+    <Modal closeWhenClickedOutside={false} onHide={onHide}>
       <header>Add / Edit Moderators</header>
       <main>
         <SearchInput

@@ -37,33 +37,27 @@ const categoryObj = {
 };
 
 export default function Stories() {
-  const {
-    requestHelpers: { loadFeeds, loadNewFeeds }
-  } = useAppContext();
+  const loadFeeds = useAppContext((v) => v.requestHelpers.loadFeeds);
+  const loadNewFeeds = useAppContext((v) => v.requestHelpers.loadNewFeeds);
   const { hideWatched, userId, username } = useMyState();
-  const {
-    state: { numNewPosts },
-    actions: { onResetNumNewPosts }
-  } = useNotiContext();
-  const {
-    state: {
-      category,
-      displayOrder,
-      feeds,
-      loadMoreButton,
-      loaded,
-      feedsOutdated,
-      subFilter
-    },
-    actions: {
-      onChangeCategory,
-      onChangeSubFilter,
-      onLoadFeeds,
-      onLoadMoreFeeds,
-      onLoadNewFeeds,
-      onSetDisplayOrder
-    }
-  } = useHomeContext();
+  const numNewPosts = useNotiContext((v) => v.state.numNewPosts);
+  const onResetNumNewPosts = useNotiContext(
+    (v) => v.actions.onResetNumNewPosts
+  );
+  const category = useHomeContext((v) => v.state.category);
+  const displayOrder = useHomeContext((v) => v.state.displayOrder);
+  const feeds = useHomeContext((v) => v.state.feeds);
+  const loadMoreButton = useHomeContext((v) => v.state.loadMoreButton);
+  const loaded = useHomeContext((v) => v.state.loaded);
+  const feedsOutdated = useHomeContext((v) => v.state.feedsOutdated);
+  const subFilter = useHomeContext((v) => v.state.subFilter);
+  const onChangeCategory = useHomeContext((v) => v.actions.onChangeCategory);
+  const onChangeSubFilter = useHomeContext((v) => v.actions.onChangeSubFilter);
+  const onLoadFeeds = useHomeContext((v) => v.actions.onLoadFeeds);
+  const onLoadMoreFeeds = useHomeContext((v) => v.actions.onLoadMoreFeeds);
+  const onLoadNewFeeds = useHomeContext((v) => v.actions.onLoadNewFeeds);
+  const onSetDisplayOrder = useHomeContext((v) => v.actions.onSetDisplayOrder);
+
   const [loadingFeeds, setLoadingFeeds] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);

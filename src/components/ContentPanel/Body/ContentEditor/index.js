@@ -70,10 +70,8 @@ function ContentEditor({
     }),
     [comment, content, contentType, description, secretAnswer, title]
   );
-  const {
-    state,
-    actions: { onSetEditForm }
-  } = useInputContext();
+  const state = useInputContext((v) => v.state);
+  const onSetEditForm = useInputContext((v) => v.actions.onSetEditForm);
   const prevInputState = useMemo(
     () => state['edit' + contentType + contentId],
     [contentId, contentType, state]

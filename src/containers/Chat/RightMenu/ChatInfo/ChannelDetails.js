@@ -15,9 +15,7 @@ ChannelDetails.propTypes = {
 const deviceIsMobile = isMobile(navigator);
 
 export default function ChannelDetails({ channelId, channelName, style }) {
-  const {
-    state: { customChannelNames }
-  } = useChatContext();
+  const customChannelNames = useChatContext((v) => v.state.customChannelNames);
   const [channelNameHovered, setChannelNameHovered] = useState(false);
   const ChannelNameRef = useRef(null);
   return (

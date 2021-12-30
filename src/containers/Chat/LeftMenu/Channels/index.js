@@ -13,25 +13,28 @@ import { useAppContext, useChatContext } from 'contexts';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 
 function Channels() {
-  const {
-    requestHelpers: { loadMoreChannels }
-  } = useAppContext();
-  const {
-    state: {
-      chatType,
-      channelsObj,
-      classChannelIds,
-      customChannelNames,
-      favoriteChannelIds,
-      homeChannelIds,
-      classLoadMoreButton,
-      favoriteLoadMoreButton,
-      homeLoadMoreButton,
-      selectedChannelId,
-      selectedChatTab
-    },
-    actions: { onLoadMoreChannels }
-  } = useChatContext();
+  const loadMoreChannels = useAppContext(
+    (v) => v.requestHelpers.loadMoreChannels
+  );
+  const chatType = useChatContext((v) => v.state.chatType);
+  const channelsObj = useChatContext((v) => v.state.channelsObj);
+  const classChannelIds = useChatContext((v) => v.state.classChannelIds);
+  const customChannelNames = useChatContext((v) => v.state.customChannelNames);
+  const favoriteChannelIds = useChatContext((v) => v.state.favoriteChannelIds);
+  const homeChannelIds = useChatContext((v) => v.state.homeChannelIds);
+  const classLoadMoreButton = useChatContext(
+    (v) => v.state.classLoadMoreButton
+  );
+  const favoriteLoadMoreButton = useChatContext(
+    (v) => v.state.favoriteLoadMoreButton
+  );
+  const homeLoadMoreButton = useChatContext((v) => v.state.homeLoadMoreButton);
+  const selectedChannelId = useChatContext((v) => v.state.selectedChannelId);
+  const selectedChatTab = useChatContext((v) => v.state.selectedChatTab);
+  const onLoadMoreChannels = useChatContext(
+    (v) => v.actions.onLoadMoreChannels
+  );
+
   const [channelsLoading, setChannelsLoading] = useState(false);
   const [prevChannelIds, setPrevChannelIds] = useState(homeChannelIds);
   const ChannelListRef = useRef(null);

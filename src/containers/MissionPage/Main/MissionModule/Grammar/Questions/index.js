@@ -17,20 +17,26 @@ export default function Questions({ isRepeating, mission, onFail }) {
   const [submitDisabled, setSubmitDisabled] = useState(true);
   const { userId } = useMyState();
   const [repeatMissionComplete, setRepeatMissionComplete] = useState(false);
-  const {
-    requestHelpers: {
-      updateUserCoins,
-      updateUserXP,
-      uploadMissionAttempt,
-      uploadGrammarAttempt
-    }
-  } = useAppContext();
-  const {
-    actions: { onUpdateMissionAttempt, onSetMissionState }
-  } = useMissionContext();
-  const {
-    actions: { onChangeUserXP, onUpdateUserCoins }
-  } = useContentContext();
+  const updateUserCoins = useAppContext(
+    (v) => v.requestHelpers.updateUserCoins
+  );
+  const updateUserXP = useAppContext((v) => v.requestHelpers.updateUserXP);
+  const uploadMissionAttempt = useAppContext(
+    (v) => v.requestHelpers.uploadMissionAttempt
+  );
+  const uploadGrammarAttempt = useAppContext(
+    (v) => v.requestHelpers.uploadGrammarAttempt
+  );
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
+  const onSetMissionState = useMissionContext(
+    (v) => v.actions.onSetMissionState
+  );
+  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
   const [questionIds, setQuestionIds] = useState([]);
   const [questionObj, setQuestionObj] = useState({});
   useEffect(() => {

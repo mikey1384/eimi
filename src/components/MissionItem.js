@@ -26,16 +26,12 @@ export default function MissionItem({
   missionLink,
   showStatus = true
 }) {
-  const {
-    state: { myAttempts }
-  } = useMissionContext();
   const history = useHistory();
   const { userId } = useMyState();
-  const {
-    user: {
-      actions: { onOpenSigninModal }
-    }
-  } = useAppContext();
+  const onOpenSigninModal = useAppContext(
+    (v) => v.user.actions.onOpenSigninModal
+  );
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
   const statusShown = useMemo(() => {
     if (!showStatus) return false;
     if (mission.isMultiMission) {

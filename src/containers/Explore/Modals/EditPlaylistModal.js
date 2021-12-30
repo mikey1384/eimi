@@ -39,18 +39,20 @@ export default function EditPlaylistModal({
       mounted.current = false;
     };
   }, []);
-  const {
-    requestHelpers: {
-      editPlaylistVideos,
-      loadPlaylistVideos,
-      loadUploads,
-      reorderPlaylistVideos,
-      searchContent
-    }
-  } = useAppContext();
-  const {
-    actions: { onChangePlaylistVideos }
-  } = useExploreContext();
+  const editPlaylistVideos = useAppContext(
+    (v) => v.requestHelpers.editPlaylistVideos
+  );
+  const loadPlaylistVideos = useAppContext(
+    (v) => v.requestHelpers.loadPlaylistVideos
+  );
+  const loadUploads = useAppContext((v) => v.requestHelpers.loadUploads);
+  const reorderPlaylistVideos = useAppContext(
+    (v) => v.requestHelpers.reorderPlaylistVideos
+  );
+  const searchContent = useAppContext((v) => v.requestHelpers.searchContent);
+  const onChangePlaylistVideos = useExploreContext(
+    (v) => v.actions.onChangePlaylistVideos
+  );
   const [addedVideos, setAddedVideos] = useState([]);
   const [loadingMore, setLoadingMore] = useState(false);
   const [modalVideos, setModalVideos] = useState([]);
@@ -61,9 +63,8 @@ export default function EditPlaylistModal({
   const [isSaving, setIsSaving] = useState(false);
   const [removedVideoIds, setRemovedVideoIds] = useState({});
   const [loadMoreButton, setLoadMoreButton] = useState(false);
-  const [removeVideosLoadMoreButton, setRemoveVideosLoadMoreButton] = useState(
-    false
-  );
+  const [removeVideosLoadMoreButton, setRemoveVideosLoadMoreButton] =
+    useState(false);
   const [selectedVideos, setSelectedVideos] = useState([]);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [mainTabActive, setMainTabActive] = useState(true);
@@ -430,14 +431,12 @@ export default function EditPlaylistModal({
     }
 
     if (modalType === 'change') {
-      const {
-        results: loadedVideos,
-        loadMoreButton: changeLoadMoreButton
-      } = await loadUploads({
-        contentType: 'video',
-        limit: 18,
-        contentId: modalVideos[modalVideos.length - 1]
-      });
+      const { results: loadedVideos, loadMoreButton: changeLoadMoreButton } =
+        await loadUploads({
+          contentType: 'video',
+          limit: 18,
+          contentId: modalVideos[modalVideos.length - 1]
+        });
       const { results: playlistVideos } = await loadPlaylistVideos({
         playlistId,
         targetVideos: loadedVideos
@@ -468,16 +467,14 @@ export default function EditPlaylistModal({
       return;
     }
 
-    const {
-      results: loadedVideos,
-      loadMoreButton: reorderLoadMoreButton
-    } = await loadPlaylistVideos({
-      playlistId,
-      shownVideos: modalVideos.map(
-        (videoId) => playlistVideoObjects.current[videoId]
-      ),
-      limit: 18
-    });
+    const { results: loadedVideos, loadMoreButton: reorderLoadMoreButton } =
+      await loadPlaylistVideos({
+        playlistId,
+        shownVideos: modalVideos.map(
+          (videoId) => playlistVideoObjects.current[videoId]
+        ),
+        limit: 18
+      });
     playlistVideoObjects.current = {
       ...playlistVideoObjects.current,
       ...objectify(loadedVideos)

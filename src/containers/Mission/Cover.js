@@ -22,9 +22,9 @@ Cover.propTypes = {
 export default function Cover({ missionIds, missionObj, myAttempts }) {
   const history = useHistory();
   const { profileTheme, profilePicUrl, userId, username } = useMyState();
-  const {
-    requestHelpers: { loadMissionRankings }
-  } = useAppContext();
+  const loadMissionRankings = useAppContext(
+    (v) => v.requestHelpers.loadMissionRankings
+  );
   const [numComplete, setNumComplete] = useState(0);
   const [myGrammarRank, setMyGrammarRank] = useState(0);
   useEffect(() => {

@@ -19,9 +19,9 @@ StartScreen.propTypes = {
 const deviceIsMobile = isMobile(navigator);
 
 export default function StartScreen({ navigateTo, onHide, profileId }) {
-  const {
-    actions: { onUpdateProfileInfo }
-  } = useContentContext();
+  const onUpdateProfileInfo = useContentContext(
+    (v) => v.actions.onUpdateProfileInfo
+  );
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);

@@ -67,6 +67,10 @@ hr {
   background: rgb(231, 231, 231);
 }
 
+ul {
+  margin-top: 0;
+}
+
 #react-view {
   height: 100%;
 }

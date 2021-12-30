@@ -29,12 +29,8 @@ function LikeButton({
   style,
   onClick = () => {}
 }) {
-  const {
-    requestHelpers: { likeContent }
-  } = useAppContext();
-  const {
-    actions: { onLikeContent }
-  } = useContentContext();
+  const likeContent = useAppContext((v) => v.requestHelpers.likeContent);
+  const onLikeContent = useContentContext((v) => v.actions.onLikeContent);
   const { userId } = useMyState();
   const [disabled, setDisabled] = useState(false);
   const liked = useMemo(() => {

@@ -41,16 +41,18 @@ function Nav({
   style
 }) {
   const history = useHistory();
-  const {
-    state: profileState = {},
-    actions: { onResetProfile }
-  } = useProfileContext();
-  const {
-    actions: { onReloadContent }
-  } = useContentContext();
-  const {
-    actions: { onClearLinksLoaded, onClearVideosLoaded, onSetSubjectsLoaded }
-  } = useExploreContext();
+  const onResetProfile = useProfileContext((v) => v.actions.onResetProfile);
+  const profileState = useProfileContext((v) => v.state) || {};
+  const onReloadContent = useContentContext((v) => v.actions.onReloadContent);
+  const onClearLinksLoaded = useExploreContext(
+    (v) => v.actions.onClearLinksLoaded
+  );
+  const onClearVideosLoaded = useExploreContext(
+    (v) => v.actions.onClearVideosLoaded
+  );
+  const onSetSubjectsLoaded = useExploreContext(
+    (v) => v.actions.onSetSubjectsLoaded
+  );
   const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const highlighted = useMemo(
     () =>
@@ -66,11 +68,9 @@ function Nav({
     () => (alert ? alertColor : Color.darkGray()),
     [alert, alertColor]
   );
-  const {
-    user: {
-      actions: { onSetProfilesLoaded }
-    }
-  } = useAppContext();
+  const onSetProfilesLoaded = useAppContext(
+    (v) => v.user.actions.onSetProfilesLoaded
+  );
 
   return (
     <Route

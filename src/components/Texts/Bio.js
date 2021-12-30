@@ -28,6 +28,7 @@ export default function Bio({ firstRow, secondRow, thirdRow, small, style }) {
     <ul
       style={{
         display: 'flex',
+        marginTop: '2rem',
         flexDirection: 'column',
         justifyContent: 'center',
         whiteSpace: 'pre-wrap',

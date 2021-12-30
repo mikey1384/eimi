@@ -34,9 +34,7 @@ export default function CodeSandbox({
   runButtonLabel = 'Run',
   style
 }) {
-  const {
-    requestHelpers: { formatCode }
-  } = useAppContext();
+  const formatCode = useAppContext((v) => v.requestHelpers.formatCode);
   const { userId } = useMyState();
   const timerRef = useRef(null);
   const ComponentRef = useRef(null);

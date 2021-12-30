@@ -32,31 +32,29 @@ const lookingUpLabel = localize('lookingUp');
 const typeWordInBoxBelowLabel = localize('typeWordInBoxBelow');
 
 function Vocabulary() {
-  const {
-    user: {
-      actions: { onUpdateNumWordsCollected }
-    },
-    requestHelpers: { lookUpWord, registerWord }
-  } = useAppContext();
-  const {
-    state: { vocabErrorMessage, wordsObj, wordRegisterStatus },
-    actions: {
-      onRegisterWord,
-      onSetWordRegisterStatus,
-      onSetWordsObj,
-      onUpdateCollectorsRankings
-    }
-  } = useChatContext();
-  const {
-    actions: { onUpdateUserCoins, onChangeUserXP }
-  } = useContentContext();
-  const {
-    state,
-    actions: { onEnterComment }
-  } = useInputContext();
-  const {
-    state: { socketConnected }
-  } = useNotiContext();
+  const lookUpWord = useAppContext((v) => v.requestHelpers.lookUpWord);
+  const registerWord = useAppContext((v) => v.requestHelpers.registerWord);
+  const onUpdateNumWordsCollected = useAppContext(
+    (v) => v.user.actions.onUpdateNumWordsCollected
+  );
+  const vocabErrorMessage = useChatContext((v) => v.state.vocabErrorMessage);
+  const wordsObj = useChatContext((v) => v.state.wordsObj);
+  const wordRegisterStatus = useChatContext((v) => v.state.wordRegisterStatus);
+  const onRegisterWord = useChatContext((v) => v.actions.onRegisterWord);
+  const onSetWordRegisterStatus = useChatContext(
+    (v) => v.actions.onSetWordRegisterStatus
+  );
+  const onSetWordsObj = useChatContext((v) => v.actions.onSetWordsObj);
+  const onUpdateCollectorsRankings = useChatContext(
+    (v) => v.actions.onUpdateCollectorsRankings
+  );
+  const onUpdateUserCoins = useContentContext(
+    (v) => v.actions.onUpdateUserCoins
+  );
+  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
+  const state = useInputContext((v) => v.state);
+  const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
+  const socketConnected = useNotiContext((v) => v.state.socketConnected);
   const { userId } = useMyState();
   const inputText = state['vocabulary']?.text || '';
   const wordObj = useMemo(

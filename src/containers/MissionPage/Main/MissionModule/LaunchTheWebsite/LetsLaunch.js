@@ -15,12 +15,12 @@ LetsLaunch.propTypes = {
 };
 
 export default function LetsLaunch({ index, innerRef, taskId }) {
-  const {
-    requestHelpers: { uploadMissionAttempt }
-  } = useAppContext();
-  const {
-    actions: { onUpdateMissionAttempt }
-  } = useMissionContext();
+  const uploadMissionAttempt = useAppContext(
+    (v) => v.requestHelpers.uploadMissionAttempt
+  );
+  const onUpdateMissionAttempt = useMissionContext(
+    (v) => v.actions.onUpdateMissionAttempt
+  );
   const [url, setUrl] = useState('');
   const [urlError, setUrlError] = useState(false);
   const [submitting, setSubmitting] = useState(false);

@@ -1,4 +1,4 @@
-import { returnMaxRewards } from 'constants/defaultValues';
+import { CHAT_ID_BASE_NUMBER, returnMaxRewards } from 'constants/defaultValues';
 
 export function checkScrollIsAtTheBottom({ content, container }) {
   return content.offsetHeight <= container.offsetHeight + container.scrollTop;
@@ -76,6 +76,10 @@ export function objectify(array, id = 'id') {
     result[elem[id]] = elem;
   }
   return result;
+}
+
+export function parseChannelPath(pathId) {
+  return Number(pathId) - Number(CHAT_ID_BASE_NUMBER);
 }
 
 export function scrollElementToCenter(element, adjustment = -50) {

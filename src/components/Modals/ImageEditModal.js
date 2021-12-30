@@ -33,9 +33,8 @@ export default function ImageEditModal({
   imageUri
 }) {
   const [captionText, setCaptionText] = useState('');
-  const {
-    requestHelpers: { uploadFile, uploadUserPic }
-  } = useAppContext();
+  const uploadFile = useAppContext((v) => v.requestHelpers.uploadFile);
+  const uploadUserPic = useAppContext((v) => v.requestHelpers.uploadUserPic);
   const { userId } = useMyState();
   const [uploading, setUploading] = useState(false);
   const [uploadProgress, setUploadProgress] = useState(null);

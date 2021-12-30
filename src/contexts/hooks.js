@@ -1,4 +1,4 @@
-import { useContext } from 'react';
+import { useContextSelector } from 'use-context-selector';
 import { AppContext } from './AppContext';
 import { ChatContext } from './Chat';
 import { ContentContext } from './Content';
@@ -12,39 +12,39 @@ import { ProfileContext } from './Profile';
 import { MissionContext } from './Mission';
 import { ViewContext } from './View';
 
-export function useAppContext() {
-  return useContext(AppContext);
+export function useAppContext(fn) {
+  return useContextSelector(AppContext, fn);
 }
-export function useChatContext() {
-  return useContext(ChatContext);
+export function useChatContext(fn) {
+  return useContextSelector(ChatContext, fn);
 }
-export function useContentContext() {
-  return useContext(ContentContext);
+export function useContentContext(fn) {
+  return useContextSelector(ContentContext, fn);
 }
-export function useExploreContext() {
-  return useContext(ExploreContext);
+export function useExploreContext(fn) {
+  return useContextSelector(ExploreContext, fn);
 }
-export function useHomeContext() {
-  return useContext(HomeContext);
+export function useHomeContext(fn) {
+  return useContextSelector(HomeContext, fn);
 }
-export function useInputContext() {
-  return useContext(InputContext);
+export function useInputContext(fn) {
+  return useContextSelector(InputContext, fn);
 }
-export function useInteractiveContext() {
-  return useContext(InteractiveContext);
+export function useInteractiveContext(fn) {
+  return useContextSelector(InteractiveContext, fn);
 }
-export function useManagementContext() {
-  return useContext(ManagementContext);
+export function useManagementContext(fn) {
+  return useContextSelector(ManagementContext, fn);
 }
-export function useNotiContext() {
-  return useContext(NotiContext);
+export function useNotiContext(fn) {
+  return useContextSelector(NotiContext, fn);
 }
-export function useProfileContext() {
-  return useContext(ProfileContext);
+export function useProfileContext(fn) {
+  return useContextSelector(ProfileContext, fn);
 }
-export function useMissionContext() {
-  return useContext(MissionContext);
+export function useMissionContext(fn) {
+  return useContextSelector(MissionContext, fn);
 }
-export function useViewContext() {
-  return useContext(ViewContext);
+export function useViewContext(fn) {
+  return useContextSelector(ViewContext, fn);
 }

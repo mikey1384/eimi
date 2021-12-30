@@ -77,9 +77,8 @@ export default function TargetContent({
   }, []);
 
   const history = useHistory();
-  const {
-    requestHelpers: { uploadComment, uploadFile }
-  } = useAppContext();
+  const uploadComment = useAppContext((v) => v.requestHelpers.uploadComment);
+  const uploadFile = useAppContext((v) => v.requestHelpers.uploadFile);
   const {
     authLevel,
     canReward,
@@ -88,14 +87,19 @@ export default function TargetContent({
     twinkleCoins,
     username
   } = useMyState();
-  const {
-    actions: {
-      onSetXpRewardInterfaceShown,
-      onClearCommentFileUploadProgress,
-      onUpdateCommentFileUploadProgress,
-      onSetCommentFileUploadComplete
-    }
-  } = useContentContext();
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
+  const onClearCommentFileUploadProgress = useContentContext(
+    (v) => v.actions.onClearCommentFileUploadProgress
+  );
+  const onUpdateCommentFileUploadProgress = useContentContext(
+    (v) => v.actions.onUpdateCommentFileUploadProgress
+  );
+  const onSetCommentFileUploadComplete = useContentContext(
+    (v) => v.actions.onSetCommentFileUploadComplete
+  );
+
   const {
     onDeleteComment,
     onEditComment,
@@ -111,10 +115,11 @@ export default function TargetContent({
     contentType: 'subject',
     contentId: subject?.id
   });
-  const {
-    state,
-    actions: { onEnterComment, onSetCommentAttachment }
-  } = useInputContext();
+  const state = useInputContext((v) => v.state);
+  const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
+  const onSetCommentAttachment = useInputContext(
+    (v) => v.actions.onSetCommentAttachment
+  );
   const attachment = state['comment' + comment.id]?.attachment;
   const { fileType } = comment?.fileName
     ? getFileInfoFromFileName(comment?.fileName)

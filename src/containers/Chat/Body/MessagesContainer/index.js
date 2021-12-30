@@ -27,12 +27,16 @@ import CallScreen from './CallScreen';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Icon from 'components/Icon';
 import { v1 as uuidv1 } from 'uuid';
-import { GENERAL_CHAT_ID, rewardReasons } from 'constants/defaultValues';
+import {
+  GENERAL_CHAT_ID,
+  GENERAL_CHAT_PATH_ID,
+  rewardReasons
+} from 'constants/defaultValues';
 import { addEvent, removeEvent } from 'helpers/listenerHelpers';
 import { css } from '@emotion/css';
 import { Color } from 'constants/css';
 import { socket } from 'constants/io';
-import { isMobile } from 'helpers';
+import { isMobile, parseChannelPath } from 'helpers';
 import { useHistory } from 'react-router-dom';
 import LocalContext from '../../Context';
 import localize from 'constants/localize';
@@ -89,9 +93,7 @@ function MessagesContainer({
       hideChat,
       leaveChannel,
       loadChatChannel,
-      loadGeneralChatPathId,
       loadMoreChatMessages,
-      parseChannelPath,
       putFavoriteChannel,
       sendInvitationMessage,
       startNewDMChannel,
@@ -117,10 +119,11 @@ function MessagesContainer({
     messagesLoadMoreButton = false
   } = currentChannel;
   const scrolledToBottomRef = useRef(true);
+  const loadMoreButtonLock = useRef(false);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
-  const [loadMoreButtonLock, setLoadMoreButtonLock] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
   const [newUnseenMessage, setNewUnseenMessage] = useState(false);
   const [selectVideoModalShown, setSelectVideoModalShown] = useState(false);
   const [leaving, setLeaving] = useState(false);
@@ -369,7 +372,6 @@ function MessagesContainer({
 
   useEffect(() => {
     favoritingRef.current = false;
-    setLoadMoreButtonLock(false);
   }, [selectedChannelId]);
 
   const handleChessModalShown = useCallback(() => {
@@ -411,7 +413,7 @@ function MessagesContainer({
   );
 
   const handleConfirmChessMove = useCallback(
-    async ({ state, isCheckmate, isStalemate }) => {
+    async ({ state, isCheckmate, isStalemate, moveNumber }) => {
       const gameWinnerId = isCheckmate ? userId : isStalemate ? 0 : undefined;
       const params = {
         userId,
@@ -422,22 +424,31 @@ function MessagesContainer({
       const content = 'Made a chess move';
       try {
         if (selectedChannelId) {
-          const messageId = uuidv1();
-          onSubmitMessage({
-            messageId,
-            message: {
-              ...params,
-              profilePicUrl,
-              username,
-              content,
-              channelId: selectedChannelId
-            }
-          });
           onSetReplyTarget({ channelId: selectedChannelId, target: null });
-          socket.emit('user_made_a_move', {
-            userId,
-            channelId: selectedChannelId
-          });
+          socket.emit(
+            'user_made_a_move',
+            {
+              userId,
+              channelId: selectedChannelId,
+              moveNumber
+            },
+            (success) => {
+              if (success) {
+                const messageId = uuidv1();
+                onSubmitMessage({
+                  messageId,
+                  message: {
+                    ...params,
+                    profilePicUrl,
+                    username,
+                    content,
+                    channelId: selectedChannelId
+                  }
+                });
+              }
+              onSetChessModalShown(false);
+            }
+          );
         } else {
           const { alreadyExists, channel, message, pathId } =
             await startNewDMChannel({
@@ -606,8 +617,7 @@ function MessagesContainer({
           username,
           profilePicUrl
         });
-        const pathId = await loadGeneralChatPathId();
-        history.push(`/chat/${pathId}`);
+        history.push(`/chat/${GENERAL_CHAT_PATH_ID}`);
         setLeaveConfirmModalShown(false);
         setLeaving(false);
       } catch (error) {
@@ -639,8 +649,9 @@ function MessagesContainer({
   const handleLoadMore = useCallback(async () => {
     if (messagesLoadMoreButton) {
       const messageId = messages[messages.length - 1].id;
-      if (!loadMoreButtonLock) {
-        setLoadMoreButtonLock(true);
+      if (!loadMoreButtonLock.current) {
+        setLoadingMore(true);
+        loadMoreButtonLock.current = true;
         prevScrollPosition.current =
           ((MessagesRef.current || {}).scrollHeight -
             (MessagesRef.current || {}).offsetHeight) *
@@ -653,27 +664,23 @@ function MessagesContainer({
               channelId: selectedChannelId
             });
           onLoadMoreMessages({ messageIds, messagesObj, loadedChannelId });
-          setLoadMoreButtonLock(false);
+          setLoadingMore(false);
+          loadMoreButtonLock.current = false;
         } catch (error) {
           console.error(error);
-          setLoadMoreButtonLock(false);
+          setLoadingMore(false);
+          loadMoreButtonLock.current = false;
         }
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    loadMoreButtonLock,
-    messages,
-    messagesLoadMoreButton,
-    selectedChannelId,
-    userId
-  ]);
+  }, [messages, messagesLoadMoreButton, selectedChannelId, userId]);
 
   const handleAcceptGroupInvitation = useCallback(
     async (invitationChannelPath) => {
       const invitationChannelId =
         channelPathIdHash[invitationChannelPath] ||
-        (await parseChannelPath(invitationChannelPath));
+        parseChannelPath(invitationChannelPath);
       if (!channelPathIdHash[invitationChannelPath]) {
         onUpdateChannelPathIdHash({
           channelId: invitationChannelId,
@@ -846,7 +853,6 @@ function MessagesContainer({
             listStyle={{
               width: '15rem'
             }}
-            direction="left"
             icon="bars"
             text={menuLabel}
             menuProps={menuProps}
@@ -961,6 +967,7 @@ function MessagesContainer({
                   chessCountdownNumber={chessCountdownNumber}
                   chessOpponent={chessOpponent}
                   currentChannel={currentChannel}
+                  forceRefreshForMobile={handleForceRefreshForMobile}
                   index={index}
                   isLastMsg={index === 0}
                   isNotification={!!message.isNotification}
@@ -980,26 +987,29 @@ function MessagesContainer({
                   }
                 />
               ))}
-              {!loading && messagesLoadMoreButton && (
-                <div>
-                  <div style={{ width: '100%', height: '1rem' }} />
-                  <div
-                    style={{
-                      marginBottom: '1rem',
-                      display: 'flex',
-                      justifyContent: 'center',
-                      width: '100%'
-                    }}
-                  >
-                    <LoadMoreButton
-                      filled
-                      color="lightBlue"
-                      loading={loadMoreButtonLock}
-                      onClick={handleLoadMore}
-                    />
+              {!loading &&
+                (messagesLoadMoreButton ? (
+                  <div>
+                    <div style={{ width: '100%', height: '1rem' }} />
+                    <div
+                      style={{
+                        marginBottom: '1rem',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        width: '100%'
+                      }}
+                    >
+                      <LoadMoreButton
+                        filled
+                        color="lightBlue"
+                        loading={loadingMore}
+                        onClick={handleLoadMore}
+                      />
+                    </div>
                   </div>
-                </div>
-              )}
+                ) : (
+                  <div style={{ paddingTop: '20rem' }} />
+                ))}
             </>
           )}
         </div>
@@ -1138,6 +1148,13 @@ function MessagesContainer({
       )}
     </ErrorBoundary>
   );
+
+  function handleForceRefreshForMobile() {
+    const currentScrollTop = (MessagesRef.current || {}).scrollTop || 0;
+    (MessagesRef.current || {}).scrollTop = currentScrollTop;
+    (MessagesRef.current || {}).scrollTop = currentScrollTop - 1000;
+    (MessagesRef.current || {}).scrollTop = currentScrollTop;
+  }
 
   function handleReceiveNewMessage() {
     if (MessagesRef.current && !scrolledToBottomRef.current) {

@@ -12,12 +12,8 @@ Members.propTypes = {
 };
 
 function Members({ channelId, creatorId, members, onlineMembers }) {
-  const {
-    state: {
-      channelOnCall: { id: channelOnCallId, members: membersOnCallObj }
-    }
-  } = useChatContext();
-
+  const channelOnCallId = useChatContext((v) => v.state.channelOnCall.id);
+  const membersOnCallObj = useChatContext((v) => v.state.channelOnCall.members);
   const membersOnCall = useMemo(
     () =>
       channelOnCallId === channelId

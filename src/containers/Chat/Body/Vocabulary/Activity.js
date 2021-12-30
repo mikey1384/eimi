@@ -42,9 +42,9 @@ export default function Activity({
   myId,
   onReceiveNewActivity
 }) {
-  const {
-    actions: { onRemoveNewActivityStatus }
-  } = useChatContext();
+  const onRemoveNewActivityStatus = useChatContext(
+    (v) => v.actions.onRemoveNewActivityStatus
+  );
   const [wordModalShown, setWordModalShown] = useState(false);
   const userIsUploader = myId === userId;
   useEffect(() => {

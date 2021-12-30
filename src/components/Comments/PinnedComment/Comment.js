@@ -108,13 +108,14 @@ function Comment({
   subject = subject || comment.targetObj?.subject || {};
   const { fileType } = getFileInfoFromFileName(fileName);
   const history = useHistory();
-  const {
-    requestHelpers: {
-      checkIfUserResponded,
-      editContent,
-      updateCommentPinStatus
-    }
-  } = useAppContext();
+  const checkIfUserResponded = useAppContext(
+    (v) => v.requestHelpers.checkIfUserResponded
+  );
+  const editContent = useAppContext((v) => v.requestHelpers.editContent);
+  const updateCommentPinStatus = useAppContext(
+    (v) => v.requestHelpers.updateCommentPinStatus
+  );
+
   const {
     authLevel,
     canDelete,
@@ -124,14 +125,16 @@ function Comment({
     twinkleCoins,
     userId
   } = useMyState();
-  const {
-    actions: {
-      onChangeSpoilerStatus,
-      onSetIsEditing,
-      onSetXpRewardInterfaceShown,
-      onUpdateCommentPinStatus
-    }
-  } = useContentContext();
+  const onChangeSpoilerStatus = useContentContext(
+    (v) => v.actions.onChangeSpoilerStatus
+  );
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
+  const onSetXpRewardInterfaceShown = useContentContext(
+    (v) => v.actions.onSetXpRewardInterfaceShown
+  );
+  const onUpdateCommentPinStatus = useContentContext(
+    (v) => v.actions.onUpdateCommentPinStatus
+  );
   const {
     isEditing,
     thumbUrl: thumbUrlFromContext,
@@ -430,7 +433,6 @@ function Comment({
                 skeuomorphic
                 icon="chevron-down"
                 color="darkerGray"
-                direction="left"
                 opacity={0.8}
                 menuProps={dropdownMenuItems}
               />

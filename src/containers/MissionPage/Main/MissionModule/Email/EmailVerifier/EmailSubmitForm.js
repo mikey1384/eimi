@@ -15,9 +15,9 @@ EmailSubmitForm.propTypes = {
 };
 
 export default function EmailSubmitForm({ email, onSetEmail, onSetEmailSent }) {
-  const {
-    requestHelpers: { sendVerificationOTPEmail }
-  } = useAppContext();
+  const sendVerificationOTPEmail = useAppContext(
+    (v) => v.requestHelpers.sendVerificationOTPEmail
+  );
   const [sendingEmail, setSendingEmail] = useState(false);
   const sendingEmailRef = useRef(false);
   const [errorMsg, setErrorMsg] = useState('');

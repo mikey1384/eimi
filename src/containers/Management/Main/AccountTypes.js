@@ -30,9 +30,10 @@ AccountTypes.propTypes = {
 
 export default function AccountTypes({ canManage }) {
   const { profileTheme } = useMyState();
-  const {
-    state: { accountTypes, accountTypesLoaded }
-  } = useManagementContext();
+  const accountTypes = useManagementContext((v) => v.state.accountTypes);
+  const accountTypesLoaded = useManagementContext(
+    (v) => v.state.accountTypesLoaded
+  );
   const [addAccountTypeModalShown, setAddAccountTypeModalShown] =
     useState(false);
   const [accountTypeModalTarget, setAccountTypeModalTarget] = useState(null);

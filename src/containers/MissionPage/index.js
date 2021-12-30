@@ -27,21 +27,30 @@ export default function MissionPage({
   const history = useHistory();
   const location = useLocation();
   const { loaded, userId, isCreator } = useMyState();
-  const {
-    requestHelpers: { loadMission, loadMissionTypeIdHash, updateCurrentMission }
-  } = useAppContext();
-  const {
-    actions: { onUpdateCurrentMission }
-  } = useContentContext();
-  const {
-    actions: {
-      onLoadMission,
-      onLoadMissionTypeIdHash,
-      onSetMissionState,
-      onSetMyMissionAttempts
-    },
-    state: { missionObj, prevUserId, missionTypeIdHash, myAttempts }
-  } = useMissionContext();
+  const loadMission = useAppContext((v) => v.requestHelpers.loadMission);
+  const loadMissionTypeIdHash = useAppContext(
+    (v) => v.requestHelpers.loadMissionTypeIdHash
+  );
+  const updateCurrentMission = useAppContext(
+    (v) => v.requestHelpers.updateCurrentMission
+  );
+  const onUpdateCurrentMission = useContentContext(
+    (v) => v.actions.onUpdateCurrentMission
+  );
+  const onLoadMission = useMissionContext((v) => v.actions.onLoadMission);
+  const onLoadMissionTypeIdHash = useMissionContext(
+    (v) => v.actions.onLoadMissionTypeIdHash
+  );
+  const onSetMissionState = useMissionContext(
+    (v) => v.actions.onSetMissionState
+  );
+  const onSetMyMissionAttempts = useMissionContext(
+    (v) => v.actions.onSetMyMissionAttempts
+  );
+  const missionObj = useMissionContext((v) => v.state.missionObj);
+  const prevUserId = useMissionContext((v) => v.state.prevUserId);
+  const missionTypeIdHash = useMissionContext((v) => v.state.missionTypeIdHash);
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
 
   const missionId = useMemo(() => {
     return missionTypeIdHash?.[missionType];

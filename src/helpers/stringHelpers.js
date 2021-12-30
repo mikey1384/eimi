@@ -40,6 +40,7 @@ export function addTwoLetterEmoji(string) {
     .replace(/(;\) )/g, '😉 ')
     .replace(/(XD )/g, '😆 ')
     .replace(/(xD )/g, '😆 ')
+    .replace(/(xd )/g, '😆 ')
     .replace(/(:D )/g, '😄 ')
     .replace(/(:P )/gi, '😛 ')
     .replace(/(:\( )/g, '🙁 ')

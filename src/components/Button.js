@@ -136,7 +136,6 @@ function Button({
     stretch,
     transparent
   ]);
-
   return (
     <button
       style={{ ...style, ...(stretch ? { width: '100%' } : {}) }}

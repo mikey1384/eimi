@@ -34,9 +34,7 @@ export default function EditTab({
   onSetEditedDefinitionOrder,
   word
 }) {
-  const {
-    requestHelpers: { editWord }
-  } = useAppContext();
+  const editWord = useAppContext((v) => v.requestHelpers.editWord);
   const { canDelete } = useMyState();
   const [selectedTab, setSelectedTab] = useState('reorder');
   const [posting, setPosting] = useState(false);

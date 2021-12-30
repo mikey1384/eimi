@@ -24,9 +24,9 @@ Home.propTypes = {
 
 function Home({ history, location, onFileUpload }) {
   const { userId } = useMyState();
-  const {
-    actions: { onUploadProfilePic }
-  } = useContentContext();
+  const onUploadProfilePic = useContentContext(
+    (v) => v.actions.onUploadProfilePic
+  );
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);

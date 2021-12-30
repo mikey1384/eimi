@@ -7,10 +7,12 @@ export { default as useInfiniteScroll } from './useInfiniteScroll';
 import { defaultContentState } from 'constants/defaultValues';
 
 export function useContentState({ contentType, contentId }) {
-  const { state } = useContentContext();
-  return state[contentType + contentId]
-    ? { ...defaultContentState, ...state[contentType + contentId] }
-    : defaultContentState;
+  const result = {};
+  result[contentType + contentId] = useContentContext(
+    (v) => v.state[contentType + contentId]
+  );
+  const state = result[contentType + contentId];
+  return state ? { ...defaultContentState, ...state } : defaultContentState;
 }
 
 export function useInterval(callback, interval) {
@@ -70,20 +72,17 @@ export function useLazyLoad({
 }
 
 export function useMyState() {
-  const {
-    user: {
-      state: {
-        hideWatched,
-        lastChatPath,
-        loaded,
-        numWordsCollected,
-        userId,
-        searchFilter,
-        signinModalShown,
-        xpThisMonth
-      }
-    }
-  } = useAppContext();
+  const hideWatched = useAppContext((v) => v.user.state.hideWatched);
+  const lastChatPath = useAppContext((v) => v.user.state.lastChatPath);
+  const loaded = useAppContext((v) => v.user.state.loaded);
+  const numWordsCollected = useAppContext(
+    (v) => v.user.state.numWordsCollected
+  );
+  const userId = useAppContext((v) => v.user.state.userId);
+  const searchFilter = useAppContext((v) => v.user.state.searchFilter);
+  const signinModalShown = useAppContext((v) => v.user.state.signinModalShown);
+  const xpThisMonth = useAppContext((v) => v.user.state.xpThisMonth);
+
   const myState = useContentState({
     contentId: userId,
     contentType: 'user'
@@ -114,12 +113,12 @@ export function useMyState() {
 export function useOutsideClick(ref, callback) {
   const [insideClicked, setInsideClicked] = useState(false);
   useEffect(() => {
-    function uPlistener(event) {
+    function upListener(event) {
       if (insideClicked) return setInsideClicked(false);
       if (!ref.current || ref.current.contains(event.target)) {
         return;
       }
-      callback();
+      callback?.();
     }
     function downListener(event) {
       if (ref.current?.contains(event.target)) {
@@ -127,18 +126,35 @@ export function useOutsideClick(ref, callback) {
       }
     }
     addEvent(document, 'mousedown', downListener);
-    addEvent(document, 'mouseup', uPlistener);
-    addEvent(document, 'touchend', uPlistener);
+    addEvent(document, 'mouseup', upListener);
+    addEvent(document, 'touchend', upListener);
     return function cleanUp() {
       removeEvent(document, 'mousedown', downListener);
-      removeEvent(document, 'mouseup', uPlistener);
-      removeEvent(document, 'touchend', uPlistener);
+      removeEvent(document, 'mouseup', upListener);
+      removeEvent(document, 'touchend', upListener);
+    };
+  });
+}
+
+export function useOutsideTap(ref, callback) {
+  useEffect(() => {
+    function downListener(event) {
+      if (!ref.current || ref.current.contains(event.target)) {
+        return;
+      }
+      callback();
+    }
+    addEvent(document, 'scroll', downListener);
+    addEvent(document, 'mousedown', downListener);
+    return function cleanUp() {
+      removeEvent(document, 'scroll', downListener);
+      removeEvent(document, 'mousedown', downListener);
     };
   });
 }
 
 export function useProfileState(username) {
-  const { state = {} } = useProfileContext();
+  const state = useProfileContext((v) => v.state) || {};
   const { [username]: userState = {} } = state;
   const {
     notExist = false,

@@ -60,12 +60,10 @@ export default function Carousel({
   style,
   title
 }) {
-  const {
-    state: {
-      videos: { clickSafe }
-    },
-    actions: { onClickSafeOff, onClickSafeOn }
-  } = useExploreContext();
+  const clickSafe = useExploreContext((v) => v.state.videos.clickSafe);
+  const onClickSafeOff = useExploreContext((v) => v.actions.onClickSafeOff);
+  const onClickSafeOn = useExploreContext((v) => v.actions.onClickSafeOn);
+
   const DEFAULT_DURATION = 300;
   const DEFAULT_EASING = 'easeCircleOut';
   const DEFAULT_EDGE_EASING = 'easeElasticOut';

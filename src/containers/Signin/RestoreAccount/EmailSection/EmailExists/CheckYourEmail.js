@@ -9,9 +9,9 @@ CheckYourEmail.propTypes = {
 };
 
 export default function CheckYourEmail({ email, hiddenEmail, userId }) {
-  const {
-    requestHelpers: { sendVerificationEmail }
-  } = useAppContext();
+  const sendVerificationEmail = useAppContext(
+    (v) => v.requestHelpers.sendVerificationEmail
+  );
   useEffect(() => {
     sendVerificationEmail({
       email,

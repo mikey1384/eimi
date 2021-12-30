@@ -1,4 +1,5 @@
-import React, { createContext, useReducer } from 'react';
+import React, { useReducer } from 'react';
+import { createContext } from 'use-context-selector';
 import PropTypes from 'prop-types';
 import ProfileActions from './actions';
 import ProfileReducer from './reducer';

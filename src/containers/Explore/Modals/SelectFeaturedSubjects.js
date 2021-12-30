@@ -23,9 +23,11 @@ export default function SelectFeaturedSubjectsModal({
   onHide,
   onSubmit
 }) {
-  const {
-    requestHelpers: { loadUploads, searchContent, uploadFeaturedSubjects }
-  } = useAppContext();
+  const loadUploads = useAppContext((v) => v.requestHelpers.loadUploads);
+  const searchContent = useAppContext((v) => v.requestHelpers.searchContent);
+  const uploadFeaturedSubjects = useAppContext(
+    (v) => v.requestHelpers.uploadFeaturedSubjects
+  );
   const [loadMoreButton, setLoadMoreButton] = useState(false);
   const [searchLoadMoreButton, setSearchLoadMoreButton] = useState(false);
   const [loadingMore, setLoadingMore] = useState(false);

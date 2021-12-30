@@ -44,12 +44,9 @@ function Comment({
   username
 }) {
   const history = useHistory();
-  const {
-    requestHelpers: { deleteContent, editContent }
-  } = useAppContext();
-  const {
-    actions: { onSetIsEditing }
-  } = useContentContext();
+  const deleteContent = useAppContext((v) => v.requestHelpers.deleteContent);
+  const editContent = useAppContext((v) => v.requestHelpers.editContent);
+  const onSetIsEditing = useContentContext((v) => v.actions.onSetIsEditing);
   const { isEditing } = useContentState({
     contentType: 'comment',
     contentId: id
@@ -78,7 +75,6 @@ function Comment({
           <DropdownButton
             skeuomorphic
             color="darkerGray"
-            direction="left"
             style={{ position: 'absolute' }}
             opacity={0.8}
             menuProps={[

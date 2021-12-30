@@ -12,9 +12,9 @@ const noNewlyDeletedPostsLabel = localize('noNewlyDeletedPosts');
 export default function ModActivities() {
   const [loaded, setLoaded] = useState(false);
   const [deletedPosts, setDeletedPosts] = useState([]);
-  const {
-    requestHelpers: { loadDeletedPosts }
-  } = useAppContext();
+  const loadDeletedPosts = useAppContext(
+    (v) => v.requestHelpers.loadDeletedPosts
+  );
   useEffect(() => {
     init();
     async function init() {

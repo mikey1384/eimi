@@ -48,9 +48,7 @@ function ContentListItem({
     thumbUrl,
     uploader = {}
   } = useContentState({ contentId, contentType });
-  const {
-    actions: { onInitContent }
-  } = useContentContext();
+  const onInitContent = useContentContext((v) => v.actions.onInitContent);
   useEffect(() => {
     if (!loaded) {
       onInitContent({ contentId, contentType, ...contentObj });

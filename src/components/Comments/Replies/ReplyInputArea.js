@@ -31,10 +31,10 @@ export default function ReplyInputArea({
   targetCommentId,
   rows = 1
 }) {
-  const {
-    state,
-    actions: { onSetCommentAttachment }
-  } = useInputContext();
+  const state = useInputContext((v) => v.state);
+  const onSetCommentAttachment = useInputContext(
+    (v) => v.actions.onSetCommentAttachment
+  );
   const { fileUploadComplete, fileUploadProgress } = useContentState({
     contentId: targetCommentId,
     contentType: 'comment'

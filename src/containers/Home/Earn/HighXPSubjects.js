@@ -18,9 +18,9 @@ HighXPSubjects.propTypes = {
 export default function HighXPSubjects({ style }) {
   const [subjects, setSubjects] = useState([]);
   const [loading, setLoading] = useState(false);
-  const {
-    requestHelpers: { loadHighXPSubjects }
-  } = useAppContext();
+  const loadHighXPSubjects = useAppContext(
+    (v) => v.requestHelpers.loadHighXPSubjects
+  );
   useEffect(() => {
     handleLoadHighXPSubjects();
     // eslint-disable-next-line react-hooks/exhaustive-deps

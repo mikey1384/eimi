@@ -25,9 +25,10 @@ BannedUsers.propTypes = {
 };
 
 export default function BannedUsers({ canManage }) {
-  const {
-    state: { bannedUsers, bannedUsersLoaded }
-  } = useManagementContext();
+  const bannedUsers = useManagementContext((v) => v.state.bannedUsers);
+  const bannedUsersLoaded = useManagementContext(
+    (v) => v.state.bannedUsersLoaded
+  );
   const { profileTheme } = useMyState();
   const [newBanModalShown, setNewBanModalShown] = useState(false);
   const [banStatusModalTarget, setEditBanStatusModalTarget] = useState(null);

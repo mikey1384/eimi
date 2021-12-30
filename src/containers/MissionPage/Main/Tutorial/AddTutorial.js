@@ -11,12 +11,12 @@ AddTutorial.propTypes = {
 };
 
 export default function AddTutorial({ missionId, missionTitle }) {
-  const {
-    requestHelpers: { attachMissionTutorial }
-  } = useAppContext();
-  const {
-    actions: { onSetMissionState }
-  } = useMissionContext();
+  const attachMissionTutorial = useAppContext(
+    (v) => v.requestHelpers.attachMissionTutorial
+  );
+  const onSetMissionState = useMissionContext(
+    (v) => v.actions.onSetMissionState
+  );
   return (
     <div
       className={panel}

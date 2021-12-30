@@ -50,12 +50,16 @@ export default function ChessModal({
   socketConnected
 }) {
   const { banned, userId, username, profilePicUrl } = useMyState();
-  const {
-    requestHelpers: { fetchCurrentChessState, setChessMoveViewTimeStamp }
-  } = useAppContext();
-  const {
-    actions: { onSubmitMessage, onUpdateChessMoveViewTimeStamp }
-  } = useChatContext();
+  const fetchCurrentChessState = useAppContext(
+    (v) => v.requestHelpers.fetchCurrentChessState
+  );
+  const setChessMoveViewTimeStamp = useAppContext(
+    (v) => v.requestHelpers.setChessMoveViewTimeStamp
+  );
+  const onSubmitMessage = useChatContext((v) => v.actions.onSubmitMessage);
+  const onUpdateChessMoveViewTimeStamp = useChatContext(
+    (v) => v.actions.onUpdateChessMoveViewTimeStamp
+  );
   const [initialState, setInitialState] = useState();
   const [viewTimeStamp, setViewTimeStamp] = useState();
   const [message, setMessage] = useState();
@@ -65,7 +69,9 @@ export default function ChessModal({
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   const [spoilerOff, setSpoilerOff] = useState(false);
   const [userMadeLastMove, setUserMadeLastMove] = useState(false);
+  const [submitting, setSubmitting] = useState(false);
   const prevChannelId = useRef(channelId);
+  const submittingRef = useRef(false);
   const loading = useRef(null);
 
   useEffect(() => {
@@ -234,10 +240,15 @@ export default function ChessModal({
               color="blue"
               style={{ marginLeft: '1rem' }}
               onClick={submitChessMove}
-              disabled={!newChessState || !socketConnected || banned?.chess}
+              disabled={
+                !newChessState ||
+                !socketConnected ||
+                banned?.chess ||
+                submitting
+              }
             >
               {doneLabel}
-              {!socketConnected && (
+              {(!socketConnected || submitting) && (
                 <Icon style={{ marginLeft: '0.7rem' }} icon="spinner" pulse />
               )}
             </Button>
@@ -283,8 +294,11 @@ export default function ChessModal({
   }
 
   async function submitChessMove() {
-    await onConfirmChessMove(newChessState);
-    onHide();
+    if (!submittingRef.current) {
+      submittingRef.current = true;
+      setSubmitting(true);
+      await onConfirmChessMove(newChessState);
+    }
   }
 
   function handleGameOver() {

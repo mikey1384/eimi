@@ -16,12 +16,10 @@ Search.propTypes = {
 };
 
 export default function Search({ history, innerRef, pathname, style }) {
-  const {
-    state: {
-      search: { searchText }
-    },
-    actions: { onLoadSearchResults }
-  } = useExploreContext();
+  const searchText = useExploreContext((v) => v.state.search.searchText);
+  const onLoadSearchResults = useExploreContext(
+    (v) => v.actions.onLoadSearchResults
+  );
   const category = getSectionFromPathname(pathname)?.section;
   const prevSearchText = useRef(searchText);
 

@@ -16,13 +16,9 @@ MemberListItem.propTypes = {
 };
 
 function MemberListItem({ onlineMembers, creatorId, member, style }) {
-  const {
-    state: {
-      chatStatus: {
-        [member.id]: { isAway, isBusy, username, profilePicUrl } = {}
-      }
-    }
-  } = useChatContext();
+  const chatStatus = useChatContext((v) => v.state.chatStatus);
+  const { isAway, isBusy, username, profilePicUrl } =
+    chatStatus[member.id] || {};
   const { username: memberName, profilePicUrl: memberProfilePicUrl } =
     useContentState({ contentId: member.id, contentType: 'user' });
   const { userId: myId } = useMyState();

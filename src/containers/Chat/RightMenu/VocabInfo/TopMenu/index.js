@@ -12,11 +12,7 @@ const top30Label = localize('top30');
 
 export default function TopMenu() {
   const { numWordsCollected } = useMyState();
-  const {
-    state: {
-      wordCollectors: { all, top30s }
-    }
-  } = useChatContext();
+  const { all, top30s } = useChatContext((v) => v.state.wordCollectors);
   const [allSelected, setAllSelected] = useState(numWordsCollected > 0);
   const wordCollectors = useMemo(
     () => (allSelected ? all : top30s),

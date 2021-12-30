@@ -25,16 +25,21 @@ export default function InsertSlide({
   className,
   style
 }) {
-  const {
-    requestHelpers: { insertArchivedSlide, insertInteractiveSlide }
-  } = useAppContext();
-  const {
-    actions: {
-      onChangeNumUpdates,
-      onInsertInteractiveSlide,
-      onRecoverArchivedSlide
-    }
-  } = useInteractiveContext();
+  const insertArchivedSlide = useAppContext(
+    (v) => v.requestHelpers.insertArchivedSlide
+  );
+  const insertInteractiveSlide = useAppContext(
+    (v) => v.requestHelpers.insertInteractiveSlide
+  );
+  const onChangeNumUpdates = useInteractiveContext(
+    (v) => v.actions.onChangeNumUpdates
+  );
+  const onInsertInteractiveSlide = useInteractiveContext(
+    (v) => v.actions.onInsertInteractiveSlide
+  );
+  const onRecoverArchivedSlide = useInteractiveContext(
+    (v) => v.actions.onRecoverArchivedSlide
+  );
   const [selectArchivedSlideModalShown, setSelectArchivedSlideModalShown] =
     useState(false);
 
