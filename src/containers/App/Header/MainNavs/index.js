@@ -131,10 +131,6 @@ function MainNavs({
   );
 
   const contentPageMatch = useMemo(() => {
-    const subjectPageMatch = matchPath(pathname, {
-      path: '/subjects/:id',
-      exact: true
-    });
     const playlistsMatch = matchPath(pathname, {
       path: '/playlists/:id',
       exact: true
@@ -156,7 +152,6 @@ function MainNavs({
     });
 
     return (
-      !!subjectPageMatch ||
       !!playlistsMatch ||
       !!videoPageMatch ||
       !!linkPageMatch ||
@@ -195,14 +190,14 @@ function MainNavs({
     if (profilePageMatch) {
       onSetProfileNav(pathname);
     }
-    if (['links', 'videos', 'subjects'].includes(section)) {
+    if (['links', 'videos'].includes(section)) {
       onSetExploreCategory(section);
       loaded.current = true;
     } else if (!loaded.current && defaultSearchFilter) {
       onSetExploreCategory(
-        ['videos', 'subjects', 'links'].includes(defaultSearchFilter)
+        ['videos', 'links'].includes(defaultSearchFilter)
           ? defaultSearchFilter
-          : 'subjects'
+          : 'videos'
       );
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -214,8 +209,6 @@ function MainNavs({
         ? 'film'
         : contentNav === 'links'
         ? 'book'
-        : contentNav === 'subjects'
-        ? 'bolt'
         : contentNav === 'missions'
         ? 'clipboard-check'
         : 'comment-alt',

@@ -77,7 +77,7 @@ export default function Categories({
           }
         `}
       >
-        {['subjects', 'videos', 'links'].map((contentType) => {
+        {['videos', 'links'].map((contentType) => {
           const exploreLabel =
             SELECTED_LANGUAGE === 'kr' ? (
               <>{localize(contentType.slice(0, -1))} 탐색</>

@@ -17,10 +17,8 @@ import Categories from './Categories';
 import Icon from 'components/Icon';
 import Videos from './Videos';
 import Links from './Links';
-import Subjects from './Subjects';
 import localize from 'constants/localize';
 
-const subjectsLabel = localize('subjects');
 const videosLabel = localize('videos2');
 const linksLabel = localize('links');
 
@@ -79,10 +77,6 @@ export default function Explore({ history, location }) {
         `}
       >
         <SideMenu>
-          <NavLink to="/subjects" activeClassName="active">
-            <Icon icon="bolt" />
-            <span style={{ marginLeft: '1.1rem' }}>{subjectsLabel}</span>
-          </NavLink>
           <NavLink to="/videos" activeClassName="active">
             <Icon icon="film" />
             <span style={{ marginLeft: '1.1rem' }}>{videosLabel}</span>
@@ -126,7 +120,6 @@ export default function Explore({ history, location }) {
           <Switch>
             <Route path="/videos" component={Videos} />
             <Route path="/links" component={Links} />
-            <Route path="/subjects" component={Subjects} />
           </Switch>
           <Categories
             style={{ marginTop: '3rem', marginBottom: '4rem' }}

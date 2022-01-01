@@ -998,7 +998,7 @@ const languageObj = {
   },
   postContent: {
     en: 'Share interesting videos or webpages',
-    kr: '흥미로운 동영상이나 웹페이지를 공유하세요'
+    kr: '이해하고 배우고 싶은 영상이나 노래를 공유하세요'
   },
   posting: {
     en: 'Posting',

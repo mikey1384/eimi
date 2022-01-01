@@ -23,12 +23,6 @@ export default function TopFilter({ history, selectedFilter, className }) {
       >
         Links
       </nav>
-      <nav
-        onClick={() => history.push('/subjects')}
-        className={selectedFilter === 'subjects' ? 'active' : ''}
-      >
-        Subjects
-      </nav>
     </FilterBar>
   );
 }
