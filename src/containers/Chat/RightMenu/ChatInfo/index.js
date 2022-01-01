@@ -1,23 +1,17 @@
-import React, { memo, useCallback, useMemo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Members from './Members';
 import ChannelDetails from './ChannelDetails';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
-import { useChatContext } from 'contexts';
-import { socket } from 'constants/io';
-import { v1 as uuidv1 } from 'uuid';
 import { GENERAL_CHAT_ID } from 'constants/defaultValues';
-import CallButton from './CallButton';
 import localize from 'constants/localize';
 
-const madeCallLabel = localize('madeCall');
 const onlineLabel = localize('online');
 
 ChatInfo.propTypes = {
   channelName: PropTypes.string,
-  channelOnCall: PropTypes.object,
   currentChannel: PropTypes.object.isRequired,
   currentChannelOnlineMembers: PropTypes.object.isRequired,
   selectedChannelId: PropTypes.number
@@ -25,34 +19,12 @@ ChatInfo.propTypes = {
 
 function ChatInfo({
   selectedChannelId,
-  channelOnCall,
   currentChannel,
   currentChannel: { theme },
   currentChannelOnlineMembers,
   channelName
 }) {
-  const { userId: myId, username, profilePicUrl, banned } = useMyState();
-  const onSetCall = useChatContext((v) => v.actions.onSetCall);
-  const onHangUp = useChatContext((v) => v.actions.onHangUp);
-  const onSubmitMessage = useChatContext((v) => v.actions.onSubmitMessage);
-
-  const callOngoing = useMemo(
-    () =>
-      selectedChannelId === channelOnCall.id && !!channelOnCall.members[myId],
-    [channelOnCall.id, channelOnCall.members, myId, selectedChannelId]
-  );
-
-  const calling = useMemo(() => {
-    return !channelOnCall.callReceived && channelOnCall.imCalling;
-  }, [channelOnCall.callReceived, channelOnCall.imCalling]);
-
-  const voiceChatButtonShown = useMemo(() => {
-    if (currentChannel.twoPeople) {
-      if (currentChannel.members?.length !== 2) return false;
-      return !!currentChannel.id;
-    }
-    return false;
-  }, [currentChannel]);
+  const { userId: myId, username, profilePicUrl } = useMyState();
 
   const displayedChannelMembers = useMemo(() => {
     const totalChannelMembers = currentChannel?.members || [];
@@ -102,63 +74,6 @@ function ChatInfo({
     return Object.keys(currentChannelOnlineMembers).length;
   }, [currentChannelOnlineMembers]);
 
-  const handleCall = useCallback(async () => {
-    if (!channelOnCall.id) {
-      const messageId = uuidv1();
-      onSubmitMessage({
-        messageId,
-        message: {
-          content: madeCallLabel,
-          channelId: selectedChannelId,
-          profilePicUrl,
-          userId: myId,
-          username,
-          isNotification: true,
-          isCallNotification: true
-        }
-      });
-      onSetCall({
-        imCalling: true,
-        channelId: selectedChannelId
-      });
-    } else {
-      if (calling) {
-        onSetCall({});
-      } else {
-        onHangUp({ memberId: myId, iHungUp: true });
-      }
-      socket.emit('hang_up_call', channelOnCall.id, () => {
-        if (selectedChannelId !== channelOnCall.id) {
-          const messageId = uuidv1();
-          onSubmitMessage({
-            messageId,
-            message: {
-              content: madeCallLabel,
-              channelId: selectedChannelId,
-              profilePicUrl,
-              userId: myId,
-              username,
-              isNotification: true,
-              isCallNotification: true
-            }
-          });
-          onSetCall({
-            imCalling: true,
-            channelId: selectedChannelId
-          });
-        }
-      });
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [
-    calling,
-    channelOnCall?.id,
-    myId,
-    profilePicUrl,
-    selectedChannelId,
-    username
-  ]);
-
   return (
     <>
       <div
@@ -179,9 +94,6 @@ function ChatInfo({
           }}
           className="unselectable"
         >
-          {voiceChatButtonShown && !banned?.chat && (
-            <CallButton callOngoing={callOngoing} onCall={handleCall} />
-          )}
           <ChannelDetails
             style={{ marginTop: '1rem' }}
             channelId={currentChannel.id}
