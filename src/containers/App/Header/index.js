@@ -689,7 +689,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
   useEffect(() => {
     const newNotiNum =
       (pathname === '/' ? numNewPosts : 0) + numNewNotis + numUnreads;
-    document.title = `Twinkle${newNotiNum > 0 ? ' *' : ''}`;
+    document.title = `EIMI Challenge Campus${newNotiNum > 0 ? ' *' : ''}`;
   }, [numNewNotis, numNewPosts, numUnreads, pathname]);
 
   useEffect(() => {

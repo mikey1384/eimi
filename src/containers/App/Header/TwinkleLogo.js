@@ -1,6 +1,5 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 
 TwinkleLogo.propTypes = {
@@ -14,7 +13,6 @@ export default function TwinkleLogo({ style }) {
       className={`desktop ${css`
         cursor: pointer;
         position: relative;
-        width: 10rem;
         height: 2rem;
       `}`}
       onClick={() => {
@@ -28,20 +26,9 @@ export default function TwinkleLogo({ style }) {
           font-weight: bold;
           font-family: 'Ubuntu', sans-serif, Arial, Helvetica;
           line-height: 0.9;
-          color: ${Color.gray()};
-          > .logo {
-            line-height: 1;
-          }
-          > .logo-twin {
-            color: ${Color.logoBlue()};
-          }
-          > .logo-kle {
-            color: ${Color.logoGreen()};
-          }
         `}
       >
-        <span className="logo logo-twin">Twin</span>
-        <span className="logo logo-kle">kle</span>
+        EIMICC
       </div>
     </div>
   );
