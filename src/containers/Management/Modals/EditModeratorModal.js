@@ -46,7 +46,7 @@ export default function EditModeratorModal({ accountTypes, onHide, target }) {
   }, [accountTypes, selectedAccountType]);
 
   return (
-    <Modal onHide={onHide}>
+    <Modal closeWhenClickedOutside={false} onHide={onHide}>
       <header
         style={{ display: 'block' }}
       >{`Change Moderator Account Type:`}</header>

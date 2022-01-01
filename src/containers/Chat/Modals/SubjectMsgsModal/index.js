@@ -13,12 +13,18 @@ import URL from 'constants/URL';
 const API_URL = `${URL}/chat`;
 
 SubjectMsgsModal.propTypes = {
+  closeWhenClickedOutside: PropTypes.bool,
   onHide: PropTypes.func,
   subjectId: PropTypes.number,
   subjectTitle: PropTypes.string
 };
 
-export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
+export default function SubjectMsgsModal({
+  closeWhenClickedOutside = true,
+  onHide,
+  subjectId,
+  subjectTitle
+}) {
   const [loading, setLoading] = useState(false);
   const [loadMoreButtonShown, setLoadMoreButtonShown] = useState(false);
   const [messages, setMessages] = useState([]);
@@ -48,7 +54,11 @@ export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
   }, []);
 
   return (
-    <Modal modalOverModal onHide={onHide}>
+    <Modal
+      modalOverModal
+      closeWhenClickedOutside={closeWhenClickedOutside}
+      onHide={onHide}
+    >
       <header>
         <span style={{ color: Color.green() }}>{subjectTitle}</span>
       </header>

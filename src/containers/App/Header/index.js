@@ -9,7 +9,7 @@ import { css } from '@emotion/css';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { useHistory, useLocation } from 'react-router-dom';
-import { getSectionFromPathname } from 'helpers';
+import { getSectionFromPathname, parseChannelPath } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import {
   useAppContext,
@@ -35,6 +35,7 @@ Header.propTypes = {
 export default function Header({ onMobileMenuOpen, style = {} }) {
   const { pathname } = useLocation();
   const history = useHistory();
+  const currentPathId = useMemo(() => pathname.split('chat/')[1], [pathname]);
   const usingChat = useMemo(
     () => getSectionFromPathname(pathname)?.section === 'chat',
     [pathname]
@@ -315,7 +316,10 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
 
       async function handleLoadChat() {
         onSetReconnecting(true);
-        const data = await loadChat(selectedChannelId);
+        const pathId = Number(currentPathId);
+        const data = await loadChat(
+          !isNaN(pathId) ? parseChannelPath(pathId) : selectedChannelId
+        );
         onInitChat(data);
         socket.emit(
           'check_online_members',

@@ -8,6 +8,7 @@ import { useAppContext, useContentContext, useMissionContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
 
+const BodyRef = document.scrollingElement || document.documentElement;
 const missionText =
   `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Fusce luctus
 commodo purus eget tempus. In suscipit euismod ex, sit amet maximus sem
@@ -29,7 +30,6 @@ CopyAndPaste.propTypes = {
 };
 
 export default function CopyAndPaste({ mission, onSetMissionState, style }) {
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const mounted = useRef(true);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const { userId } = useMyState();
@@ -152,7 +152,7 @@ export default function CopyAndPaste({ mission, onSetMissionState, style }) {
         });
       }
       document.getElementById('App').scrollTop = 0;
-      BodyRef.current.scrollTop = 0;
+      BodyRef.scrollTop = 0;
     }
     if (mounted.current) {
       setSubmitDisabled(false);

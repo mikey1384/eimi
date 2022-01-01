@@ -1,6 +1,8 @@
 import { useEffect, useLayoutEffect, useRef } from 'react';
 import { addEvent, removeEvent } from '../listenerHelpers';
 
+const BodyRef = document.scrollingElement || document.documentElement;
+
 export default function useInfiniteScroll({
   feedsLength,
   scrollable,
@@ -9,7 +11,6 @@ export default function useInfiniteScroll({
   onLoad,
   onScrollToBottom
 }) {
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const prevFeedsLength = useRef(0);
   const scrollHeightRef = useRef(0);
   const scrollPositionRef = useRef({ desktop: 0, mobile: 0 });
@@ -25,17 +26,17 @@ export default function useInfiniteScroll({
         if (
           document.getElementById('App').scrollHeight >
             scrollHeightRef.current ||
-          BodyRef.current.scrollTop > scrollHeightRef.current
+          BodyRef.scrollTop > scrollHeightRef.current
         ) {
           scrollHeightRef.current = Math.max(
             document.getElementById('App').scrollHeight,
-            BodyRef.current.scrollTop
+            BodyRef.scrollTop
           );
         }
         if (scrollable && scrollHeightRef.current !== 0) {
           scrollPositionRef.current = {
             desktop: document.getElementById('App').scrollTop,
-            mobile: BodyRef.current.scrollTop
+            mobile: BodyRef.scrollTop
           };
           if (
             loadable &&
@@ -60,7 +61,7 @@ export default function useInfiniteScroll({
     if (feedsLength < prevFeedsLength.current) {
       scrollHeightRef.current = Math.max(
         document.getElementById('App').scrollHeight,
-        BodyRef.current.scrollTop
+        BodyRef.scrollTop
       );
     }
     prevFeedsLength.current = feedsLength;

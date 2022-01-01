@@ -25,6 +25,7 @@ import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 import localize from 'constants/localize';
 import VideoRewardLevelExplainer from 'components/VideoRewardLevelExplainer';
 
+const BodyRef = document.scrollingElement || document.documentElement;
 const enterDescriptionOptionalLabel = localize('enterDescriptionOptional');
 const enterTitleHereLabel = localize('enterTitleHere');
 const postContentLabel = localize('postContent');
@@ -32,7 +33,6 @@ const copyAndPasteUrlLabel = localize('copyAndPasteUrl');
 const youtubeVideoLabel = localize('youtubeVideo');
 
 function ContentInput() {
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const checkContentUrl = useAppContext(
     (v) => v.requestHelpers.checkContentUrl
   );
@@ -377,7 +377,7 @@ function ContentInput() {
         handleSetContentDescriptionFieldShown(false);
         onLoadNewFeeds([data]);
         document.getElementById('App').scrollTop = 0;
-        BodyRef.current.scrollTop = 0;
+        BodyRef.scrollTop = 0;
       }
       setSubmitting(false);
     } catch (error) {

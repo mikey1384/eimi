@@ -6,6 +6,8 @@ export { default as useScrollToBottom } from './useScrollToBottom';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
 import { defaultContentState } from 'constants/defaultValues';
 
+const BodyRef = document.scrollingElement || document.documentElement;
+
 export function useContentState({ contentType, contentId }) {
   const result = {};
   result[contentType + contentId] = useContentContext(
@@ -206,17 +208,15 @@ export function useScrollPosition({
   pathname,
   scrollPositions = {}
 }) {
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
-
   useEffect(() => {
     document.getElementById('App').scrollTop = scrollPositions[pathname] || 0;
-    BodyRef.current.scrollTop = scrollPositions[pathname] || 0;
+    BodyRef.scrollTop = scrollPositions[pathname] || 0;
     // prevents bug on mobile devices where tapping stops working after user swipes left to go to previous page
     if (isMobile) {
       setTimeout(() => {
         document.getElementById('App').scrollTop =
           scrollPositions[pathname] || 0;
-        BodyRef.current.scrollTop = scrollPositions[pathname] || 0;
+        BodyRef.scrollTop = scrollPositions[pathname] || 0;
       }, 500);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -234,7 +234,7 @@ export function useScrollPosition({
     function handleScroll() {
       const position = Math.max(
         document.getElementById('App').scrollTop,
-        BodyRef.current.scrollTop
+        BodyRef.scrollTop
       );
       onRecordScrollPosition({ section: pathname, position });
     }

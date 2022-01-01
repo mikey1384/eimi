@@ -12,6 +12,8 @@ import { v1 as uuidv1 } from 'uuid';
 import { css } from '@emotion/css';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 
+const BodyRef = document.scrollingElement || document.documentElement;
+
 TakeScreenshot.propTypes = {
   attachment: PropTypes.object,
   fileUploadComplete: PropTypes.bool,
@@ -47,7 +49,6 @@ export default function TakeScreenshot({
     () => returnMaxUploadSize(fileUploadLvl),
     [fileUploadLvl]
   );
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -387,7 +388,7 @@ export default function TakeScreenshot({
         });
       }
       document.getElementById('App').scrollTop = 0;
-      BodyRef.current.scrollTop = 0;
+      BodyRef.scrollTop = 0;
     }
     setSubmitDisabled(false);
 

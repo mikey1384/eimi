@@ -83,6 +83,7 @@ export default function UsernameText({
       }}
       className={className}
       onMouseLeave={() => {
+        clearTimeout(showTimerRef.current);
         hideTimerRef.current = setTimeout(() => {
           if (mounted.current) {
             setDropdownContext(null);
@@ -220,11 +221,11 @@ export default function UsernameText({
               setDropdownContext(parentElementDimensions);
             }
           }
-        }, 200);
+        }, 500);
       } else {
         showTimerRef.current = setTimeout(
           () => setDropdownContext(parentElementDimensions),
-          300
+          500
         );
       }
     }

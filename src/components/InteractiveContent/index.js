@@ -11,6 +11,8 @@ import { scrollElementToCenter, scrollElementTo } from 'helpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 
+const BodyRef = document.scrollingElement || document.documentElement;
+
 InteractiveContent.propTypes = {
   autoFocus: PropTypes.bool,
   interactiveId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
@@ -61,7 +63,6 @@ export default function InteractiveContent({
   const expanded = useRef(false);
   const SlideRefs = useRef({});
   const prevDisplayedSlideIds = useRef([]);
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
 
   const {
     numUpdates,
@@ -275,7 +276,7 @@ export default function InteractiveContent({
               skeuomorphic
               onClick={() => {
                 document.getElementById('App').scrollTop = 0;
-                BodyRef.current.scrollTop = 0;
+                BodyRef.scrollTop = 0;
               }}
             >
               <Icon icon="arrow-up" />

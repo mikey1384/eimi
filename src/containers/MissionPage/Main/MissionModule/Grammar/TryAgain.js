@@ -1,7 +1,9 @@
-import React, { useLayoutEffect, useRef } from 'react';
+import React, { useLayoutEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Color, borderRadius } from 'constants/css';
 import Button from 'components/Button';
+
+const BodyRef = document.scrollingElement || document.documentElement;
 
 TryAgain.propTypes = {
   isRepeating: PropTypes.bool,
@@ -10,10 +12,9 @@ TryAgain.propTypes = {
 };
 
 export default function TryAgain({ isRepeating, onInitMission, onTryAgain }) {
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useLayoutEffect(() => {
     document.getElementById('App').scrollTop = 0;
-    BodyRef.current.scrollTop = 0;
+    BodyRef.scrollTop = 0;
     onInitMission();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

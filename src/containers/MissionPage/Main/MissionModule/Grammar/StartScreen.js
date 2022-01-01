@@ -1,4 +1,4 @@
-import React, { useLayoutEffect, useMemo, useRef } from 'react';
+import React, { useLayoutEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
@@ -7,6 +7,7 @@ import { borderRadius, Color } from 'constants/css';
 import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import localize from 'constants/localize';
 
+const BodyRef = document.scrollingElement || document.documentElement;
 const startLabel = localize('start');
 const whenReadyPressStartLabel = localize('whenReadyPressStart');
 
@@ -27,10 +28,9 @@ export default function StartScreen({
   onInitMission,
   onStartButtonClick
 }) {
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   useLayoutEffect(() => {
     document.getElementById('App').scrollTop = 0;
-    BodyRef.current.scrollTop = 0;
+    BodyRef.scrollTop = 0;
     onInitMission();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);

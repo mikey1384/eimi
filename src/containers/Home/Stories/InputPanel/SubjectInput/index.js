@@ -35,6 +35,7 @@ import { useMyState } from 'helpers/hooks';
 import { useAppContext, useHomeContext, useInputContext } from 'contexts';
 import localize from 'constants/localize';
 
+const BodyRef = document.scrollingElement || document.documentElement;
 const enterDescriptionOptionalLabel = localize('enterDescriptionOptional');
 const forEveryStarYouAddLabel = localize('forEveryStarYouAddSubject');
 const postLabel = localize('post');
@@ -43,7 +44,6 @@ const postSubjectPlaceholder = localize('postSubjectPlaceholder');
 const secretMessageLabel = localize('secretMessage');
 
 function SubjectInput() {
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const { onFileUpload } = useContext(LocalContext);
   const uploadContent = useAppContext((v) => v.requestHelpers.uploadContent);
   const { canEditRewardLevel, profileTheme, banned } = useMyState();
@@ -432,7 +432,7 @@ function SubjectInput() {
       handleUploadSubject();
     }
     document.getElementById('App').scrollTop = 0;
-    BodyRef.current.scrollTop = 0;
+    BodyRef.scrollTop = 0;
   }
 
   function handleSetTitle(text) {

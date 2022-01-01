@@ -1,4 +1,4 @@
-import React, { memo, useMemo, useRef } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import { Route, useHistory } from 'react-router-dom';
@@ -10,6 +10,8 @@ import {
   useExploreContext,
   useProfileContext
 } from 'contexts';
+
+const BodyRef = document.scrollingElement || document.documentElement;
 
 Nav.propTypes = {
   isMobileSideMenu: PropTypes.bool,
@@ -53,7 +55,6 @@ function Nav({
   const onSetSubjectsLoaded = useExploreContext(
     (v) => v.actions.onSetSubjectsLoaded
   );
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const highlighted = useMemo(
     () =>
       ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(
@@ -186,7 +187,7 @@ function Nav({
   function handleMatch(match) {
     if (match.path === '/') {
       document.getElementById('App').scrollTop = 0;
-      BodyRef.current.scrollTop = 0;
+      BodyRef.scrollTop = 0;
     }
     if (match.path.includes('/users/')) {
       const username = match.path.split('/users/')[1].split('/')[0];
@@ -210,7 +211,7 @@ function Nav({
       onClearVideosLoaded();
     }
     document.getElementById('App').scrollTop = 0;
-    BodyRef.current.scrollTop = 0;
+    BodyRef.scrollTop = 0;
   }
 }
 

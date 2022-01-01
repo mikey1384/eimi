@@ -69,7 +69,6 @@ Message.propTypes = {
 
 function Message({
   channelId,
-  channelName,
   chessCountdownNumber,
   chessOpponent,
   currentChannel,
@@ -507,7 +506,7 @@ function Message({
     return (
       <GameOverMessage
         winnerId={gameWinnerId}
-        opponentName={channelName}
+        opponentName={chessOpponent?.username}
         myId={myId}
         isResign={!!isResign}
         isDraw={!!isDraw}

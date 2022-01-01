@@ -163,9 +163,10 @@ export default function Description({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [canDelete, canEdit, linkId, userIsUploader]);
 
+  const urlIsEmpty = useMemo(() => stringIsEmpty(editedUrl), [editedUrl]);
+  const urlIsValid = useMemo(() => isValidUrl(editedUrl), [editedUrl]);
+
   const doneButtonDisabled = useMemo(() => {
-    const urlIsEmpty = stringIsEmpty(editedUrl);
-    const urlIsValid = isValidUrl(editedUrl);
     const titleIsEmpty = stringIsEmpty(editedTitle);
     const titleChanged = editedTitle !== title;
     const urlChanged = editedUrl !== url;
@@ -187,7 +188,9 @@ export default function Description({
     title,
     titleExceedsCharLimit,
     url,
-    urlExceedsCharLimit
+    urlExceedsCharLimit,
+    urlIsEmpty,
+    urlIsValid
   ]);
 
   useEffect(() => {
@@ -276,12 +279,20 @@ export default function Description({
       >
         {isEditing ? (
           <div>
-            <Input
-              placeholder={`${enterUrlLabel}...`}
-              style={{ marginBottom: '1rem', ...urlExceedsCharLimit?.style }}
-              value={editedUrl}
-              onChange={handleUrlChange}
-            />
+            <div style={{ marginBottom: '1rem' }}>
+              <Input
+                placeholder={`${enterUrlLabel}...`}
+                style={urlExceedsCharLimit?.style}
+                value={editedUrl}
+                hasError={!urlIsValid}
+                onChange={handleUrlChange}
+              />
+              {!urlIsValid && (
+                <small style={{ color: 'red' }}>
+                  {urlIsEmpty ? 'Please enter url' : 'Please check the url'}
+                </small>
+              )}
+            </div>
             <Textarea
               minRows={4}
               placeholder={`${enterDescriptionLabel}...`}

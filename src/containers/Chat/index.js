@@ -302,10 +302,10 @@ function Chat({ onFileUpload }) {
       if (!channelPathIdHash[pathId] && mounted.current) {
         onUpdateChannelPathIdHash({ channelId, pathId });
       }
-      if (mounted.current) {
-        onUpdateSelectedChannelId(channelId);
-      }
       if (channelsObj[channelId]?.loaded) {
+        if (mounted.current) {
+          onUpdateSelectedChannelId(channelId);
+        }
         if (lastChatPath !== `/${pathId}`) {
           updateLastChannelId(channelId);
         }
@@ -319,7 +319,9 @@ function Chat({ onFileUpload }) {
         !isNaN(Number(prevPathId.current)) &&
         data.channel.pathId !== Number(prevPathId.current)
       ) {
-        setLoading(false);
+        if (mounted.current) {
+          setLoading(false);
+        }
         loadingRef.current = false;
         return;
       }
@@ -477,11 +479,17 @@ function Chat({ onFileUpload }) {
         channelName,
         isClosed
       });
-      onCreateNewChannel({ message, isClosed, members, pathId });
+      if (mounted.current) {
+        onCreateNewChannel({ message, isClosed, members, pathId });
+      }
       socket.emit('join_chat_group', message.channelId);
       history.push(`/chat/${pathId}`);
-      setCreateNewChatModalShown(false);
-      setCreatingChat(false);
+      if (mounted.current) {
+        setCreateNewChatModalShown(false);
+      }
+      if (mounted.current) {
+        setCreatingChat(false);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     []

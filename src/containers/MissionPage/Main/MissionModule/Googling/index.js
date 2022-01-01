@@ -6,11 +6,14 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import { scrollElementToCenter } from 'helpers';
 import { useAppContext, useMissionContext } from 'contexts';
 
+const BodyRef = document.scrollingElement || document.documentElement;
+
 Googling.propTypes = {
   mission: PropTypes.object.isRequired,
   onSetMissionState: PropTypes.func.isRequired,
   style: PropTypes.object
 };
+
 export default function Googling({ mission, onSetMissionState, style }) {
   const uploadMissionAttempt = useAppContext(
     (v) => v.requestHelpers.uploadMissionAttempt
@@ -24,7 +27,6 @@ export default function Googling({ mission, onSetMissionState, style }) {
   const [hasErrorObj, setHasErrorObj] = useState(mission.hasErrorObj || {});
   const hasErrorObjRef = useRef(mission.hasErrorObj || {});
   const QuestionRefs = useRef({});
-  const BodyRef = useRef(document.scrollingElement || document.documentElement);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -144,7 +146,7 @@ export default function Googling({ mission, onSetMissionState, style }) {
         });
       }
       document.getElementById('App').scrollTop = 0;
-      BodyRef.current.scrollTop = 0;
+      BodyRef.scrollTop = 0;
     }
     setSubmitDisabled(false);
   }

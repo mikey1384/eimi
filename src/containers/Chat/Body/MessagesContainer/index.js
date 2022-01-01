@@ -37,7 +37,7 @@ import { css } from '@emotion/css';
 import { Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { isMobile, parseChannelPath } from 'helpers';
-import { useHistory } from 'react-router-dom';
+import { useLocation, useHistory } from 'react-router-dom';
 import LocalContext from '../../Context';
 import localize from 'constants/localize';
 
@@ -67,6 +67,7 @@ function MessagesContainer({
   loading: channelLoading
 }) {
   const history = useHistory();
+  const { pathname } = useLocation();
   const {
     actions: {
       onDeleteMessage,
@@ -120,6 +121,7 @@ function MessagesContainer({
   } = currentChannel;
   const scrolledToBottomRef = useRef(true);
   const loadMoreButtonLock = useRef(false);
+  const currentPathId = useMemo(() => pathname.split('chat/')[1], [pathname]);
   const [chessCountdownObj, setChessCountdownObj] = useState({});
   const [textAreaHeight, setTextAreaHeight] = useState(0);
   const [inviteUsersModalShown, setInviteUsersModalShown] = useState(false);
@@ -171,6 +173,11 @@ function MessagesContainer({
     [selectedChannelId, subjectObj]
   );
 
+  const selectedChannelIdAndPathIdNotSynced = useMemo(() => {
+    const pathId = Number(currentPathId);
+    return !isNaN(pathId) && parseChannelPath(pathId) !== selectedChannelId;
+  }, [currentPathId, selectedChannelId]);
+
   useEffect(() => {
     mounted.current = true;
     return function onUnmount() {
@@ -205,10 +212,19 @@ function MessagesContainer({
     textAreaHeight
   ]);
 
-  const loading = useMemo(
-    () => channelLoading || creatingNewDMChannel || reconnecting,
-    [channelLoading, creatingNewDMChannel, reconnecting]
-  );
+  const loadingAnimationShown = useMemo(() => {
+    return (
+      channelLoading ||
+      creatingNewDMChannel ||
+      reconnecting ||
+      selectedChannelIdAndPathIdNotSynced
+    );
+  }, [
+    channelLoading,
+    creatingNewDMChannel,
+    reconnecting,
+    selectedChannelIdAndPathIdNotSynced
+  ]);
 
   const chessCountdownNumber = useMemo(
     () => chessCountdownObj[selectedChannelId],
@@ -388,12 +404,18 @@ function MessagesContainer({
 
   const handleHideChat = useCallback(async () => {
     await hideChat(selectedChannelId);
-    onHideChat(selectedChannelId);
+    if (mounted.current) {
+      onHideChat(selectedChannelId);
+    }
     const data = await loadChatChannel({
       channelId: GENERAL_CHAT_ID
     });
-    onEnterChannelWithId({ data });
-    setHideModalShown(false);
+    if (mounted.current) {
+      onEnterChannelWithId({ data });
+    }
+    if (mounted.current) {
+      setHideModalShown(false);
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [selectedChannelId]);
 
@@ -466,8 +488,12 @@ function MessagesContainer({
             pathId,
             message
           });
-          onUpdateChannelPathIdHash({ channelId: channel.id, pathId });
-          onSendFirstDirectMessage({ channel, message });
+          if (mounted.current) {
+            onUpdateChannelPathIdHash({ channelId: channel.id, pathId });
+          }
+          if (mounted.current) {
+            onSendFirstDirectMessage({ channel, message });
+          }
           history.replace(`/chat/${pathId}`);
           return;
         }
@@ -482,13 +508,17 @@ function MessagesContainer({
   const handleDelete = useCallback(async () => {
     const { fileName, filePath, messageId } = deleteModal;
     await deleteChatMessage({ fileName, filePath, messageId });
-    onDeleteMessage({ channelId: selectedChannelId, messageId });
-    setDeleteModal({
-      shown: false,
-      fileName: '',
-      filePath: '',
-      messageId: null
-    });
+    if (mounted.current) {
+      onDeleteMessage({ channelId: selectedChannelId, messageId });
+    }
+    if (mounted.current) {
+      setDeleteModal({
+        shown: false,
+        fileName: '',
+        filePath: '',
+        messageId: null
+      });
+    }
     socket.emit('delete_chat_message', {
       channelId: selectedChannelId,
       messageId
@@ -510,13 +540,15 @@ function MessagesContainer({
         canChangeSubject: editedCanChangeSubject,
         theme: editedTheme
       });
-      onEditChannelSettings({
-        channelName: editedChannelName,
-        isClosed: editedIsClosed,
-        channelId: selectedChannelId,
-        canChangeSubject: editedCanChangeSubject,
-        theme: editedTheme
-      });
+      if (mounted.current) {
+        onEditChannelSettings({
+          channelName: editedChannelName,
+          isClosed: editedIsClosed,
+          channelId: selectedChannelId,
+          canChangeSubject: editedCanChangeSubject,
+          theme: editedTheme
+        });
+      }
       if (userId === currentChannel.creatorId) {
         socket.emit('new_channel_settings', {
           channelName: editedChannelName,
@@ -564,13 +596,15 @@ function MessagesContainer({
           origin: currentChannel.id
         });
         for (let i = 0; i < channels.length; i++) {
-          onReceiveMessageOnDifferentChannel({
-            message: messages[i],
-            channel: channels[i].channel,
-            pageVisible: true,
-            usingChat: true,
-            isMyMessage: true
-          });
+          if (mounted.current) {
+            onReceiveMessageOnDifferentChannel({
+              message: messages[i],
+              channel: channels[i].channel,
+              pageVisible: true,
+              usingChat: true,
+              isMyMessage: true
+            });
+          }
         }
       }
       setInviteUsersModalShown(false);
@@ -610,7 +644,9 @@ function MessagesContainer({
       try {
         setLeaving(true);
         await leaveChannel(selectedChannelId);
-        onLeaveChannel(selectedChannelId);
+        if (mounted.current) {
+          onLeaveChannel(selectedChannelId);
+        }
         socket.emit('leave_chat_channel', {
           channelId: selectedChannelId,
           userId,
@@ -618,8 +654,12 @@ function MessagesContainer({
           profilePicUrl
         });
         history.push(`/chat/${GENERAL_CHAT_PATH_ID}`);
-        setLeaveConfirmModalShown(false);
-        setLeaving(false);
+        if (mounted.current) {
+          setLeaveConfirmModalShown(false);
+        }
+        if (mounted.current) {
+          setLeaving(false);
+        }
       } catch (error) {
         console.error(error);
         setLeaving(false);
@@ -663,8 +703,12 @@ function MessagesContainer({
               messageId,
               channelId: selectedChannelId
             });
-          onLoadMoreMessages({ messageIds, messagesObj, loadedChannelId });
-          setLoadingMore(false);
+          if (mounted.current) {
+            onLoadMoreMessages({ messageIds, messagesObj, loadedChannelId });
+          }
+          if (mounted.current) {
+            setLoadingMore(false);
+          }
           loadMoreButtonLock.current = false;
         } catch (error) {
           console.error(error);
@@ -713,7 +757,9 @@ function MessagesContainer({
       favoritingRef.current = true;
       try {
         const favorited = await putFavoriteChannel(selectedChannelId);
-        onSetFavoriteChannel({ channelId: selectedChannelId, favorited });
+        if (mounted.current) {
+          onSetFavoriteChannel({ channelId: selectedChannelId, favorited });
+        }
         favoritingRef.current = false;
       } catch (error) {
         console.error(error);
@@ -747,9 +793,15 @@ function MessagesContainer({
             pathId,
             message
           });
-          onUpdateChannelPathIdHash({ channelId: channel.id, pathId });
-          onSendFirstDirectMessage({ channel, message });
-          onSetCreatingNewDMChannel(false);
+          if (mounted.current) {
+            onUpdateChannelPathIdHash({ channelId: channel.id, pathId });
+          }
+          if (mounted.current) {
+            onSendFirstDirectMessage({ channel, message });
+          }
+          if (mounted.current) {
+            onSetCreatingNewDMChannel(false);
+          }
           history.replace(`/chat/${pathId}`);
           return Promise.resolve();
         } catch (error) {
@@ -827,7 +879,9 @@ function MessagesContainer({
       if (andLeave) {
         handleLeaveChannel();
       }
-      setSelectNewOwnerModalShown(false);
+      if (mounted.current) {
+        setSelectNewOwnerModalShown(false);
+      }
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [handleLeaveChannel, profilePicUrl, selectedChannelId, userId, username]
@@ -909,7 +963,7 @@ function MessagesContainer({
           height: containerHeight
         }}
       >
-        {!loading && channelHeaderShown && (
+        {!loadingAnimationShown && channelHeaderShown && (
           <ChannelHeader
             currentChannel={currentChannel}
             onInputFocus={() => ChatInputRef.current.focus()}
@@ -931,7 +985,7 @@ function MessagesContainer({
           `}
           ref={MessagesRef}
         >
-          {loading ? (
+          {loadingAnimationShown ? (
             <Loading style={{ position: 'absolute', top: '5rem' }} />
           ) : (
             <>
@@ -971,7 +1025,7 @@ function MessagesContainer({
                   index={index}
                   isLastMsg={index === 0}
                   isNotification={!!message.isNotification}
-                  loading={loading}
+                  loading={loadingAnimationShown}
                   message={message}
                   onAcceptGroupInvitation={handleAcceptGroupInvitation}
                   onChessBoardClick={handleChessModalShown}
@@ -987,7 +1041,7 @@ function MessagesContainer({
                   }
                 />
               ))}
-              {!loading &&
+              {!loadingAnimationShown &&
                 (messagesLoadMoreButton ? (
                   <div>
                     <div style={{ width: '100%', height: '1rem' }} />
@@ -1032,6 +1086,7 @@ function MessagesContainer({
       )}
       {subjectMsgsModal.shown && (
         <SubjectMsgsModal
+          closeWhenClickedOutside={false}
           subjectId={subjectMsgsModal.subjectId}
           subjectTitle={subjectMsgsModal.content}
           onHide={() =>
@@ -1052,7 +1107,7 @@ function MessagesContainer({
       >
         <MessageInput
           innerRef={ChatInputRef}
-          loading={loading}
+          loading={loadingAnimationShown}
           socketConnected={socketConnected}
           myId={userId}
           isRespondingToSubject={currentChannel.isRespondingToSubject}
