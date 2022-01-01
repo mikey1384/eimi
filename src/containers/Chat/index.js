@@ -681,7 +681,7 @@ function Chat({ onFileUpload }) {
               />
             </div>
           ) : (
-            <Loading text="Loading Twinkle Chat" />
+            <Loading text="Loading" />
           )
         ) : (
           <PleaseLogIn />

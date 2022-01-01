@@ -1446,7 +1446,7 @@ const languageObj = {
   },
   vocabulary: {
     en: 'Vocabulary',
-    kr: '단어수집 게임'
+    kr: '영어 단어수집 게임'
   },
   watched: {
     en: 'Watched',
