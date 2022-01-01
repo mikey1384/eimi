@@ -46,14 +46,18 @@ export default function SignUpForm({
   const [lastname, setLastname] = useState('');
   const [email, setEmail] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const [dateOfBirth, setDateOfBirth] = useState('');
+  const [gender, setGender] = useState('');
   const submitDisabled = useMemo(
     () =>
       stringIsEmpty(username) ||
       stringIsEmpty(password) ||
       stringIsEmpty(firstname) ||
       stringIsEmpty(lastname) ||
+      stringIsEmpty(dateOfBirth) ||
+      stringIsEmpty(gender) ||
       errorMessage,
-    [errorMessage, firstname, lastname, password, username]
+    [errorMessage, firstname, gender, lastname, password, username, dateOfBirth]
   );
   const usernameErrorMsgLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
@@ -174,6 +178,30 @@ export default function SignUpForm({
               }}
             />
           </section>
+          <section>
+            <label>남자</label>:{' '}
+            <input
+              onChange={() => setGender('male')}
+              checked={gender === 'male'}
+              type="radio"
+              style={{ cursor: 'pointer' }}
+            />
+            <label style={{ marginLeft: '1rem' }}>여자</label>:{' '}
+            <input
+              onChange={() => setGender('female')}
+              checked={gender === 'female'}
+              type="radio"
+              style={{ cursor: 'pointer' }}
+            />
+          </section>
+          <section>
+            <label>생년월일</label>
+            <input
+              style={{ marginLeft: '1rem' }}
+              type="date"
+              onChange={handleDateChange}
+            />
+          </section>
           <section style={{ marginTop: '2rem' }}>
             <label>{emailYoursOrYourParentsLabel}</label>
             <Input
@@ -217,6 +245,10 @@ export default function SignUpForm({
     </ErrorBoundary>
   );
 
+  function handleDateChange(e) {
+    setDateOfBirth(e.target.value);
+  }
+
   async function onSubmit() {
     if (!isValidUsername(username)) {
       return setErrorMessage(usernameErrorMsgLabel);
@@ -236,6 +268,8 @@ export default function SignUpForm({
 
     try {
       const data = await signup({
+        gender,
+        dateOfBirth,
         username,
         password,
         firstname,
