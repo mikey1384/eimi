@@ -600,6 +600,12 @@ export default function ChatActions(dispatch) {
         data
       });
     },
+    onUpdateChatType(chatType) {
+      return dispatch({
+        type: 'UPDATE_CHAT_TYPE',
+        chatType
+      });
+    },
     onUpdateChatUploadProgress({ progress, channelId, path }) {
       return dispatch({
         type: 'UPDATE_UPLOAD_PROGRESS',

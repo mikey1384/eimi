@@ -381,6 +381,7 @@ export default function ChatReducer(state, action) {
 
       return {
         ...state,
+        chatType: 'default',
         homeChannelIds: action.showOnTop
           ? [selectedChannel.id].concat(
               state.homeChannelIds.filter(
@@ -1487,6 +1488,12 @@ export default function ChatReducer(state, action) {
           }
         }
       };
+    case 'UPDATE_CHAT_TYPE': {
+      return {
+        ...state,
+        chatType: action.chatType
+      };
+    }
     case 'UPDATE_SELECTED_CHANNEL_ID':
       return {
         ...state,

@@ -217,6 +217,7 @@ function Chat({ onFileUpload }) {
   const onUpdateChannelPathIdHash = useChatContext(
     (v) => v.actions.onUpdateChannelPathIdHash
   );
+  const onUpdateChatType = useChatContext((v) => v.actions.onUpdateChatType);
   const onUpdateChessMoveViewTimeStamp = useChatContext(
     (v) => v.actions.onUpdateChessMoveViewTimeStamp
   );
@@ -292,6 +293,7 @@ function Chat({ onFileUpload }) {
 
     async function handleChannelEnter(pathId) {
       loadingRef.current = true;
+      onUpdateChatType('default');
       const { isAccessible, generalChatPathId } = await checkChatAccessible(
         pathId
       );

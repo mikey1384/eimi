@@ -5,7 +5,7 @@ import { useChatContext } from 'contexts';
 import { Color } from 'constants/css';
 
 Members.propTypes = {
-  channelId: PropTypes.number.isRequired,
+  channelId: PropTypes.number,
   creatorId: PropTypes.number,
   members: PropTypes.array.isRequired,
   onlineMembers: PropTypes.object.isRequired
