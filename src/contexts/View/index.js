@@ -7,7 +7,7 @@ import ViewReducer from './reducer';
 export const ViewContext = createContext();
 const initialViewState = {
   pageVisible: true,
-  exploreCategory: ['videos', 'links'][Math.floor(Math.random() * 2)],
+  exploreCategory: 'videos',
   contentPath: '',
   contentNav: '',
   profileNav: '',
