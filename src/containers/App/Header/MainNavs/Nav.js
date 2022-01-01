@@ -52,15 +52,10 @@ function Nav({
   const onClearVideosLoaded = useExploreContext(
     (v) => v.actions.onClearVideosLoaded
   );
-  const onSetSubjectsLoaded = useExploreContext(
-    (v) => v.actions.onSetSubjectsLoaded
-  );
   const highlighted = useMemo(
     () =>
-      ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(
-        to
-      ) &&
-      ['featured', 'videos', 'links', 'subjects', 'comments'].includes(
+      ['/featured', '/videos', '/links', '/comments'].includes(to) &&
+      ['featured', 'videos', 'links', 'comments'].includes(
         pathname.substring(1)
       ),
     [pathname, to]
@@ -201,13 +196,8 @@ function Nav({
     if (match.path === '/users') {
       onSetProfilesLoaded(false);
     }
-    if (
-      ['/featured', '/videos', '/links', '/subjects', '/comments'].includes(
-        match.path
-      )
-    ) {
+    if (['/featured', '/videos', '/links', '/comments'].includes(match.path)) {
       onClearLinksLoaded();
-      onSetSubjectsLoaded(false);
       onClearVideosLoaded();
     }
     document.getElementById('App').scrollTop = 0;
