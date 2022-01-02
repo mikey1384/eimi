@@ -57,7 +57,7 @@ export default class ErrorBoundary extends Component {
           }}
         >
           <div style={{ color: Color.orange() }}>
-            Something went wrong! Please tell Mikey what happened
+            버그가 발생했습니다! 관리자에게 보고해주세요.
           </div>
           <div
             className={css`
@@ -73,7 +73,7 @@ export default class ErrorBoundary extends Component {
             }}
             onClick={() => window.location.reload()}
           >
-            Tap here to reload the website (sometimes this fixes things)
+            여기를 누르시면 새로고침 됩니다 (가끔 이걸로 고쳐지기도 합니다)
           </div>
         </div>
       );
