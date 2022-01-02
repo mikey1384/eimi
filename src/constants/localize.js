@@ -994,11 +994,11 @@ const languageObj = {
   },
   postSubject: {
     en: 'Post a subject users can talk about',
-    kr: '대화 나누고 싶은 주제를 게시하세요'
+    kr: '영작하고 싶은 표현이나 문구가 있다면 올려보세요'
   },
   postSubjectPlaceholder: {
     en: 'A subject users can talk about',
-    kr: '무엇에 대해 이야기 나누고 싶으신가요?'
+    kr: '표현 혹은 문구를 올려보세요'
   },
   postContent: {
     en: 'Share interesting videos or webpages',
