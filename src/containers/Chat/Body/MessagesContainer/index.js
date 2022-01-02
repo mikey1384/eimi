@@ -175,7 +175,11 @@ function MessagesContainer({
 
   const selectedChannelIdAndPathIdNotSynced = useMemo(() => {
     const pathId = Number(currentPathId);
-    return !isNaN(pathId) && parseChannelPath(pathId) !== selectedChannelId;
+    return (
+      !isNaN(pathId) &&
+      pathId !== 0 &&
+      parseChannelPath(pathId) !== selectedChannelId
+    );
   }, [currentPathId, selectedChannelId]);
 
   useEffect(() => {

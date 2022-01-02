@@ -170,6 +170,9 @@ function MessageInput({
     innerRef.current.focus();
     if (stringIsEmpty(text)) return;
     try {
+      if (currentChannelId === 0) {
+        handleSetText('');
+      }
       await onMessageSubmit(finalizeEmoji(text));
       if (mounted.current) {
         handleSetText('');

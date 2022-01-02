@@ -2,7 +2,7 @@ import React, { memo, useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Nav from './Nav';
 import Icon from 'components/Icon';
-import { matchPath } from 'react-router';
+import { matchPath } from 'react-router-dom';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { getSectionFromPathname } from 'helpers';

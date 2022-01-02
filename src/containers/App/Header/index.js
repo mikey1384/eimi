@@ -8,7 +8,7 @@ import Peer from 'simple-peer';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth, desktopMinWidth } from 'constants/css';
 import { socket } from 'constants/io';
-import { useHistory, useLocation } from 'react-router-dom';
+import { useHistory, useLocation, matchPath } from 'react-router-dom';
 import { getSectionFromPathname, parseChannelPath } from 'helpers';
 import { useMyState } from 'helpers/hooks';
 import {
@@ -34,6 +34,13 @@ Header.propTypes = {
 
 export default function Header({ onMobileMenuOpen, style = {} }) {
   const { pathname } = useLocation();
+  const chatMatch = useMemo(
+    () =>
+      matchPath(pathname, {
+        path: '/chat'
+      }),
+    [pathname]
+  );
   const history = useHistory();
   const currentPathId = useMemo(() => pathname.split('chat/')[1], [pathname]);
   const usingChat = useMemo(
@@ -309,7 +316,13 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       handleCheckOutdated();
       if (userId) {
         handleGetNumberOfUnreadMessages();
-        socket.emit('bind_uid_to_socket', { userId, username, profilePicUrl });
+        socket.emit(
+          'bind_uid_to_socket',
+          { userId, username, profilePicUrl },
+          () => {
+            socket.emit('change_busy_status', !chatMatch);
+          }
+        );
         socket.emit('enter_my_notification_channel', userId);
         handleLoadChat();
       }
