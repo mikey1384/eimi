@@ -498,6 +498,7 @@ function MessagesContainer({
           if (mounted.current) {
             onSendFirstDirectMessage({ channel, message });
           }
+          onSetChessModalShown(false);
           history.replace(`/chat/${pathId}`);
           return;
         }
