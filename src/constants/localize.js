@@ -412,6 +412,10 @@ const languageObj = {
     en: "Enter Description (Optional, you don't need to write this)",
     kr: '소개글을 입력하세요 (선택사항, 입력하지 않으셔도 됩니다)'
   },
+  enterDescriptionEimi: {
+    en: "Enter Description (Optional, you don't need to write this)",
+    kr: '이 영상 또는 노래를 함께 이해하고 배우고 싶은 이유를 알려주세요 (예. 영감을 받고 싶은데 유익한 내용 같아서, 멜로디가 너무 좋아 따라 부르고 싶은데 가사가 너무 어려워서, 등)'
+  },
   enterDetails: {
     en: 'Enter Details',
     kr: '상세정보를 입력하세요'
@@ -1362,7 +1366,7 @@ const languageObj = {
   },
   typeWordInBoxBelow: {
     en: 'Type a word in the text box below',
-    kr: '아래의 입력란에 단어를 입력하세요'
+    kr: '아래의 입력란에 수집할 영어 단어를 입력하세요'
   },
   undo: {
     en: 'Undo',

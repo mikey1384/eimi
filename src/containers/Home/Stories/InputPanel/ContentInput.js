@@ -26,6 +26,7 @@ import localize from 'constants/localize';
 import VideoRewardLevelExplainer from 'components/VideoRewardLevelExplainer';
 
 const BodyRef = document.scrollingElement || document.documentElement;
+const enterDescriptionEimiLabel = localize('enterDescriptionEimi');
 const enterDescriptionOptionalLabel = localize('enterDescriptionOptional');
 const enterTitleHereLabel = localize('enterTitleHere');
 const postContentLabel = localize('postContent');
@@ -275,7 +276,11 @@ function ContentInput() {
                 <Textarea
                   value={description}
                   minRows={4}
-                  placeholder={enterDescriptionOptionalLabel}
+                  placeholder={
+                    contentIsVideo
+                      ? enterDescriptionEimiLabel
+                      : enterDescriptionOptionalLabel
+                  }
                   onChange={(event) => handleSetDescription(event.target.value)}
                   onKeyUp={(event) => {
                     if (event.key === ' ') {
