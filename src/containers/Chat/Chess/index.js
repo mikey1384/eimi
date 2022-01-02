@@ -95,6 +95,10 @@ function Chess({
   });
   const enPassantTarget = useRef(null);
   const capturedPiece = useRef(null);
+  const parsedState = useMemo(
+    () => (initialState ? JSON.parse(JSON.stringify(initialState)) : undefined),
+    [initialState]
+  );
 
   const awaitingMoveLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
@@ -114,23 +118,23 @@ function Chess({
   }, [opponentName]);
 
   const move = useMemo(() => {
-    if (initialState) {
-      return initialState.move;
+    if (parsedState) {
+      return parsedState.move;
     } else {
       return {};
     }
-  }, [initialState]);
+  }, [parsedState]);
 
   const myColor = useMemo(
-    () => initialState?.playerColors[myId] || 'white',
-    [myId, initialState]
+    () => parsedState?.playerColors[myId] || 'white',
+    [myId, parsedState]
   );
 
   const userMadeLastMove = useMemo(() => move.by === myId, [move.by, myId]);
-  const isCheck = initialState?.isCheck;
-  const isCheckmate = initialState?.isCheckmate;
-  const isStalemate = initialState?.isStalemate;
-  const isDraw = initialState?.isDraw;
+  const isCheck = parsedState?.isCheck;
+  const isCheckmate = parsedState?.isCheckmate;
+  const isStalemate = parsedState?.isStalemate;
+  const isDraw = parsedState?.isDraw;
   const statusText = isCheckmate
     ? 'Checkmate!'
     : isStalemate
@@ -157,19 +161,19 @@ function Chess({
 
   useEffect(() => {
     if (newChessState) return;
-    playerColors.current = initialState
-      ? initialState.playerColors
+    playerColors.current = parsedState
+      ? parsedState.playerColors
       : {
           [myId]: 'white',
           [opponentId]: 'black'
         };
     setSquares(initializeChessBoard({ initialState, loading: !loaded, myId }));
     capturedPiece.current = null;
-    if (initialState) {
-      enPassantTarget.current = initialState.enPassantTarget || null;
-      setBlackFallenPieces(initialState.fallenPieces.black);
-      setWhiteFallenPieces(initialState.fallenPieces.white);
-      fallenPieces.current = initialState.fallenPieces;
+    if (parsedState) {
+      enPassantTarget.current = parsedState.enPassantTarget || null;
+      setBlackFallenPieces(parsedState.fallenPieces.black);
+      setWhiteFallenPieces(parsedState.fallenPieces.white);
+      fallenPieces.current = parsedState.fallenPieces;
     } else {
       enPassantTarget.current = null;
       setBlackFallenPieces([]);
@@ -204,6 +208,7 @@ function Chess({
     myId,
     newChessState,
     opponentId,
+    parsedState,
     userMadeLastMove
   ]);
 
@@ -223,41 +228,37 @@ function Chess({
               srcIndex: myColor === 'black' ? 63 - selectedIndex : selectedIndex
             }
           : {};
-      onChessMove({
-        state: {
-          move: {
-            number: moveNumber,
-            by: myId,
-            ...moveDetail
-          },
-          capturedPiece: capturedPiece.current?.type,
-          playerColors: playerColors.current || {
-            [myId]: 'white',
-            [opponentId]: 'black'
-          },
-          board: (myColor === 'black'
-            ? newSquares.map(
-                (square, index) => newSquares[newSquares.length - 1 - index]
-              )
-            : newSquares
-          ).map((square) =>
-            square.state === 'highlighted'
-              ? { ...square, state: '' }
-              : square.state === 'check' && isCheckmate
-              ? { ...square, state: 'checkmate' }
-              : square
-          ),
-          fallenPieces: fallenPieces.current,
-          enPassantTarget: enPassantTarget.current,
-          isCheck,
-          isCheckmate,
-          isDraw,
-          isStalemate
+      const json = {
+        move: {
+          number: moveNumber,
+          by: myId,
+          ...moveDetail
         },
+        capturedPiece: capturedPiece.current?.type,
+        playerColors: playerColors.current || {
+          [myId]: 'white',
+          [opponentId]: 'black'
+        },
+        board: (myColor === 'black'
+          ? newSquares.map(
+              (square, index) => newSquares[newSquares.length - 1 - index]
+            )
+          : newSquares
+        ).map((square) =>
+          square.state === 'highlighted'
+            ? { ...square, state: '' }
+            : square.state === 'check' && isCheckmate
+            ? { ...square, state: 'checkmate' }
+            : square
+        ),
+        fallenPieces: fallenPieces.current,
+        enPassantTarget: enPassantTarget.current,
+        isCheck,
         isCheckmate,
-        isStalemate,
-        moveNumber
-      });
+        isDraw,
+        isStalemate
+      };
+      onChessMove({ state: json, isCheckmate, isStalemate, moveNumber });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [move.number, myColor, myId, opponentId, selectedIndex, squares]
@@ -600,7 +601,7 @@ function Chess({
       }}
     >
       {loaded &&
-        initialState &&
+        parsedState &&
         (userMadeLastMove ||
           spoilerOff ||
           isCheckmate ||
@@ -669,16 +670,16 @@ function Chess({
                       <span>
                         to <b>{move.to}</b>
                       </span>
-                      {initialState?.capturedPiece && (
+                      {parsedState?.capturedPiece && (
                         <>
                           {' '}
                           <span>capturing</span>{' '}
                           <span>
-                            {initialState?.capturedPiece === 'queen'
+                            {parsedState?.capturedPiece === 'queen'
                               ? 'the'
                               : 'a'}{' '}
                           </span>
-                          <b>{initialState?.capturedPiece}</b>
+                          <b>{parsedState?.capturedPiece}</b>
                         </>
                       )}
                     </>
