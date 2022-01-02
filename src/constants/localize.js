@@ -530,7 +530,7 @@ const languageObj = {
   },
   fromTwinkleWebsite: {
     en: 'from Twinkle Website',
-    kr: '트윈클 웹사이트에서 가져오기'
+    kr: '웹사이트에서 가져오기'
   },
   grammarRank: {
     en: 'Grammar Rank',
