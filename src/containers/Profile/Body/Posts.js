@@ -23,7 +23,7 @@ const filterTable = {
   comments: 'comment',
   likes: 'like',
   watched: 'watched',
-  subjects: 'subject',
+  // subjects: 'subject',
   videos: 'video',
   links: 'url'
 };
@@ -104,7 +104,7 @@ export default function Posts({
         >
           {[
             { key: 'all', label: 'All' },
-            { key: 'subject', label: 'Subjects' },
+            // { key: 'subject', label: 'Subjects' },
             { key: 'video', label: 'Videos' },
             { key: 'url', label: 'Links' }
           ].map((type) => {
@@ -213,7 +213,7 @@ export default function Posts({
             menuItems={[
               { key: 'all', label: 'All' },
               { key: 'comment', label: 'Comments' },
-              { key: 'subject', label: 'Subjects' },
+              // { key: 'subject', label: 'Subjects' },
               { key: 'video', label: 'Videos' },
               { key: 'url', label: 'Links' }
             ]}
@@ -262,8 +262,8 @@ export default function Posts({
     switch (section) {
       case 'all':
         return `${username} has not uploaded anything, yet`;
-      case 'subjects':
-        return `${username} has not uploaded a subject, yet`;
+      // case 'subjects':
+      // return `${username} has not uploaded a subject, yet`;
       case 'comments':
         return `${username} has not uploaded a comment, yet`;
       case 'links':
