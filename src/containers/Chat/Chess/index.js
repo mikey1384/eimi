@@ -223,37 +223,41 @@ function Chess({
               srcIndex: myColor === 'black' ? 63 - selectedIndex : selectedIndex
             }
           : {};
-      const json = JSON.stringify({
-        move: {
-          number: moveNumber,
-          by: myId,
-          ...moveDetail
+      onChessMove({
+        state: {
+          move: {
+            number: moveNumber,
+            by: myId,
+            ...moveDetail
+          },
+          capturedPiece: capturedPiece.current?.type,
+          playerColors: playerColors.current || {
+            [myId]: 'white',
+            [opponentId]: 'black'
+          },
+          board: (myColor === 'black'
+            ? newSquares.map(
+                (square, index) => newSquares[newSquares.length - 1 - index]
+              )
+            : newSquares
+          ).map((square) =>
+            square.state === 'highlighted'
+              ? { ...square, state: '' }
+              : square.state === 'check' && isCheckmate
+              ? { ...square, state: 'checkmate' }
+              : square
+          ),
+          fallenPieces: fallenPieces.current,
+          enPassantTarget: enPassantTarget.current,
+          isCheck,
+          isCheckmate,
+          isDraw,
+          isStalemate
         },
-        capturedPiece: capturedPiece.current?.type,
-        playerColors: playerColors.current || {
-          [myId]: 'white',
-          [opponentId]: 'black'
-        },
-        board: (myColor === 'black'
-          ? newSquares.map(
-              (square, index) => newSquares[newSquares.length - 1 - index]
-            )
-          : newSquares
-        ).map((square) =>
-          square.state === 'highlighted'
-            ? { ...square, state: '' }
-            : square.state === 'check' && isCheckmate
-            ? { ...square, state: 'checkmate' }
-            : square
-        ),
-        fallenPieces: fallenPieces.current,
-        enPassantTarget: enPassantTarget.current,
-        isCheck,
         isCheckmate,
-        isDraw,
-        isStalemate
+        isStalemate,
+        moveNumber
       });
-      onChessMove({ state: json, isCheckmate, isStalemate, moveNumber });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [move.number, myColor, myId, opponentId, selectedIndex, squares]
