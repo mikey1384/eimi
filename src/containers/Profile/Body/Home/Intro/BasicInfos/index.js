@@ -21,9 +21,7 @@ import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import localize from 'constants/localize';
 
 const editLabel = localize('edit');
-const emailHasBeenSentLabel = localize('emailHasBeenSent');
 const memberSinceLabel = localize('memberSince');
-const pleaseVerifyEmailLabel = localize('pleaseVerifyEmail');
 const userEmailNotVerifiedLabel = localize('userEmailNotVerified');
 const wasLastActiveLabel = localize('wasLastActive');
 const websiteLabel = localize('Website');
@@ -205,31 +203,6 @@ export default function BasicInfos({
                     }
                   />
                 </div>
-                {myId === userId && !emailVerified && (
-                  <div>
-                    <a
-                      onMouseEnter={() =>
-                        setEmailCheckHighlighted(!verificationEmailSent)
-                      }
-                      onMouseLeave={() => setEmailCheckHighlighted(false)}
-                      style={{
-                        textDecoration: emailCheckHighlighted
-                          ? 'underline'
-                          : undefined,
-                        cursor: 'pointer',
-                        fontSize: '1.2rem',
-                        color: Color[selectedTheme]()
-                      }}
-                      onClick={
-                        verificationEmailSent ? goToEmail : onVerifyEmail
-                      }
-                    >
-                      {verificationEmailSent
-                        ? emailHasBeenSentLabel
-                        : pleaseVerifyEmailLabel}
-                    </a>
-                  </div>
-                )}
                 {myId !== userId && !emailVerified && (
                   <div style={{ color: Color.gray(), fontSize: '1.2rem' }}>
                     {userEmailNotVerifiedLabel}
@@ -355,11 +328,6 @@ export default function BasicInfos({
       }
       history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
     }
-  }
-
-  function goToEmail() {
-    const emailProvider = 'http://www.' + email.split('@')[1];
-    window.location = emailProvider;
   }
 
   async function onEditedInfoSubmit({
