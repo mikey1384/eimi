@@ -65,7 +65,7 @@ function RewardStatus({
     if (SELECTED_LANGUAGE === 'kr') {
       return (
         <>
-          총 {amountRewarded}개의 트윈클(
+          총 {amountRewarded}개의 에이미 토큰(
           {addCommasToNumber(amountRewarded * 200)} XP)이 지급되었습니다 (최대{' '}
           {maxRewards}개)
         </>
