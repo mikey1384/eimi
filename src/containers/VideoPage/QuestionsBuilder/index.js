@@ -115,7 +115,9 @@ export default function QuestionsBuilder({
             className={Styles.leftSection}
             ref={LeftMenuRef}
             style={{
-              width: reorderModeOn && '80%'
+              width: reorderModeOn && '80%',
+              overflow: 'scroll',
+              height: 'CALC(100vh - 21rem)'
             }}
           >
             {reorderModeOn ? (
