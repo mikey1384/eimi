@@ -635,7 +635,6 @@ export default function VideoPage({
       contentId: videoId,
       questions: data
     });
-    setQuestionsBuilderShown(false);
     setCurrentSlide(0);
     setUserAnswers({});
   }

@@ -21,6 +21,7 @@ export default function EditModeratorModal({ accountTypes, onHide, target }) {
   const onChangeModeratorAccountType = useManagementContext(
     (v) => v.actions.onChangeModeratorAccountType
   );
+  const [dropdownShown, setDropdownShown] = useState(false);
   const [selectedAccountType, setSelectedAccountType] = useState(
     target.userType
   );
@@ -46,7 +47,7 @@ export default function EditModeratorModal({ accountTypes, onHide, target }) {
   }, [accountTypes, selectedAccountType]);
 
   return (
-    <Modal closeWhenClickedOutside={false} onHide={onHide}>
+    <Modal closeWhenClickedOutside={!dropdownShown} onHide={onHide}>
       <header
         style={{ display: 'block' }}
       >{`Change Moderator Account Type:`}</header>
@@ -67,6 +68,7 @@ export default function EditModeratorModal({ accountTypes, onHide, target }) {
           text={selectedAccountType || 'Not Selected'}
           color="darkerGray"
           menuProps={editMenuItems}
+          onDropdownShown={setDropdownShown}
         />
       </main>
       <footer>

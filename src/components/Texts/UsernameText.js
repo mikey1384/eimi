@@ -17,6 +17,7 @@ const profileLabel = localize('Profile');
 UsernameText.propTypes = {
   className: PropTypes.string,
   color: PropTypes.string,
+  onMenuShownChange: PropTypes.func,
   style: PropTypes.object,
   user: PropTypes.object,
   wordBreakEnabled: PropTypes.bool
@@ -25,6 +26,7 @@ UsernameText.propTypes = {
 export default function UsernameText({
   className,
   color,
+  onMenuShownChange,
   style = {},
   user = {},
   wordBreakEnabled
@@ -68,7 +70,8 @@ export default function UsernameText({
 
   useEffect(() => {
     menuShownRef.current = !!dropdownContext;
-  }, [dropdownContext]);
+    onMenuShownChange?.(!!dropdownContext);
+  }, [dropdownContext, onMenuShownChange]);
 
   return (
     <div

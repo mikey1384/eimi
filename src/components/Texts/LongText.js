@@ -97,7 +97,7 @@ export default function LongText({
       replace: (domNode) => {
         if (domNode.name === 'a' && domNode.attribs.class === 'mention') {
           const node = domNode.children[0];
-          return <Link to={domNode.attribs.href}>{node.data}</Link>;
+          return <Link to={domNode.attribs.href}>{node?.data}</Link>;
         }
       }
     });

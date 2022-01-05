@@ -13,21 +13,16 @@ import URL from 'constants/URL';
 const API_URL = `${URL}/chat`;
 
 SubjectMsgsModal.propTypes = {
-  closeWhenClickedOutside: PropTypes.bool,
   onHide: PropTypes.func,
   subjectId: PropTypes.number,
   subjectTitle: PropTypes.string
 };
 
-export default function SubjectMsgsModal({
-  closeWhenClickedOutside = true,
-  onHide,
-  subjectId,
-  subjectTitle
-}) {
+export default function SubjectMsgsModal({ onHide, subjectId, subjectTitle }) {
   const [loading, setLoading] = useState(false);
   const [loadMoreButtonShown, setLoadMoreButtonShown] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [usermenuShown, setUsermenuShown] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
     mounted.current = true;
@@ -56,7 +51,7 @@ export default function SubjectMsgsModal({
   return (
     <Modal
       modalOverModal
-      closeWhenClickedOutside={closeWhenClickedOutside}
+      closeWhenClickedOutside={!usermenuShown}
       onHide={onHide}
     >
       <header>
@@ -73,7 +68,11 @@ export default function SubjectMsgsModal({
         )}
         {messages.length === 0 && <Loading />}
         {messages.map((message) => (
-          <Message key={message.id} {...message} />
+          <Message
+            key={message.id}
+            onUsermenuShownChange={setUsermenuShown}
+            {...message}
+          />
         ))}
       </main>
       <footer>

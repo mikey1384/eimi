@@ -13,6 +13,7 @@ import { DndProvider } from 'react-dnd';
 import { TouchBackend } from 'react-dnd-touch-backend';
 import { HTML5Backend } from 'react-dnd-html5-backend';
 import localize from 'constants/localize';
+import Icon from 'components/Icon';
 
 const Styles = {
   Player: css`
@@ -55,6 +56,7 @@ const pleaseEnterTitleLabel = localize('pleaseEnterTitle');
 const pleaseMarkTheCorrectChoiceLabel = localize('pleaseMarkTheCorrectChoice');
 const reorderLabel = localize('reorder');
 const resetLabel = localize('reset');
+const saveLabel = localize('save');
 const submitLabel = localize('submit2');
 const thereMustBeAtLeastTwoChoicesLabel = localize(
   'thereMustBeAtLeastTwoChoices'
@@ -106,8 +108,7 @@ export default function QuestionsBuilder({
             flexDirection: 'row',
             justifyContent: reorderModeOn ? 'center' : 'space-between',
             alignItems: 'center',
-            width: '100%',
-            height: 'CALC(100vh - 21rem)'
+            width: '100%'
           }}
         >
           <section
@@ -174,7 +175,7 @@ export default function QuestionsBuilder({
                           }
                         });
                       }}
-                      onEditDone={onChoiceEditDone}
+                      onEditDone={handleChoiceEditDone}
                     />
                   );
                 })}
@@ -220,9 +221,21 @@ export default function QuestionsBuilder({
                     }}
                   >
                     <Button
+                      color="logoBlue"
+                      filled
+                      onClick={handleSave}
+                      style={{ fontSize: '2rem', marginRight: '1rem' }}
+                    >
+                      <Icon
+                        style={{ marginRight: '0.7rem' }}
+                        icon="cloud-upload-alt"
+                      />
+                      {saveLabel}
+                    </Button>
+                    <Button
                       color="blue"
                       filled
-                      onClick={handleSubmit}
+                      onClick={() => handleSave({ isSubmit: true })}
                       style={{ fontSize: '2rem' }}
                     >
                       {submitLabel}
@@ -269,7 +282,7 @@ export default function QuestionsBuilder({
     });
   }
 
-  function onChoiceEditDone({
+  function handleChoiceEditDone({
     questionId,
     choices,
     choiceIds,
@@ -336,7 +349,7 @@ export default function QuestionsBuilder({
     );
   }
 
-  function handleSubmit() {
+  function handleSave({ isSubmit } = {}) {
     let errorObj = {
       questionId: null,
       message: '',
@@ -395,6 +408,9 @@ export default function QuestionsBuilder({
       .map((questionId) => questions[questionId]);
 
     onSubmit(finishedQuestions);
+    if (isSubmit) {
+      onHide();
+    }
 
     function errorInQuestion(question) {
       if (question.onEdit) return 'notDone';

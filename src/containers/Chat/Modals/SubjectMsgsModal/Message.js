@@ -16,6 +16,7 @@ Message.propTypes = {
   filePath: PropTypes.string,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   isReloadedSubject: PropTypes.number,
+  onUsermenuShownChange: PropTypes.func,
   profilePicUrl: PropTypes.string,
   timeStamp: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   thumbUrl: PropTypes.string,
@@ -34,7 +35,8 @@ export default function Message({
   profilePicUrl,
   thumbUrl,
   timeStamp,
-  isReloadedSubject
+  isReloadedSubject,
+  onUsermenuShownChange
 }) {
   const displayedTime = useMemo(
     () => unix(timeStamp).format('lll'),
@@ -78,6 +80,7 @@ export default function Message({
               id: userId,
               username: username
             }}
+            onMenuShownChange={onUsermenuShownChange}
           />{' '}
           <span className={MessageStyle.timeStamp}>{displayedTime}</span>
         </div>

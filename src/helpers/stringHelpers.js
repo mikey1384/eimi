@@ -2,9 +2,9 @@ import { charLimit } from 'constants/defaultValues';
 /* eslint-disable no-useless-escape */
 
 const urlRegex =
-  /(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{1,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\n\) ])/giu;
+  /(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{1,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()\[\]])*[^.,;:?!\n\)\]* ])/giu;
 const urlRegex2 =
-  /^(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{1,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()])*[^.,;:?!\n\) ])/i;
+  /^(((http[s]?:\/\/|ftp:\/\/)|www\.)+([0-9a-zA-Z\p{L}\-])+(\.[a-zA-Z]{1,3})+([0-9\p{L}.,;:?!&@%_\-\+~#=\/()\[\]])*[^.,;:?!\n\)\]* ])/i;
 
 export function addCommasToNumber(number) {
   const numArray = `${number}`.split('');
@@ -122,6 +122,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:divide\:)/gi, '÷')
     .replace(/(\:dog\:)/gi, '🐶')
     .replace(/(\:dolphin\:)/gi, '🐬')
+    .replace(/(\:duck\:)/gi, '🦆')
     .replace(/(\:elephant\:)/gi, '🐘')
     .replace(/(\:evil\:)/gi, '😈')
     .replace(/(\:exclamation\:)/gi, '❗')
@@ -194,6 +195,7 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:shocked\:)/gi, '😱')
     .replace(/(\:sick\:)/gi, '🤒')
     .replace(/(\:shrug\:)/gi, '🤷')
+    .replace(/(\:smh\:)/gi, '🤦')
     .replace(/(\:smile\:)/gi, '😊')
     .replace(/(\:smirk\:)/gi, '😏')
     .replace(/(\:snail\:)/gi, '🐌')
@@ -206,6 +208,8 @@ export function addAdvancedEmoji(string) {
     .replace(/(\:swan\:)/gi, '🦢')
     .replace(/(\:taco\:)/gi, '🌮')
     .replace(/(\:tasty\:)/gi, '😋')
+    .replace(/(\:tears\:)/gi, '😢')
+    .replace(/(\:thanks\:)/gi, '🙏')
     .replace(/(\:thank you\:)/gi, '🙏')
     .replace(/(\:theta\:)/gi, '⍬')
     .replace(/(\:thumb\:)/gi, '👍')
@@ -481,7 +485,7 @@ export function processedStringWithURL(string) {
     }
     return [splitPart[0], applyTextEffects(splitPart[1])].join('</a>');
   });
-  return splitNewStringWithTextEffects.join('<a href');
+  return applyTextEffects(splitNewStringWithTextEffects.join('<a href'));
 
   // eslint-disable-next-line no-unused-vars
   function applyTextEffects(string) {

@@ -27,6 +27,7 @@ export default function AddModeratorModal({ accountTypes, onHide }) {
     (v) => v.actions.onEditModerators
   );
   const { authLevel } = useMyState();
+  const [dropdownShown, setDropdownShown] = useState(false);
   const [searchText, setSearchText] = useState('');
   const [searchedUsers, setSearchedUsers] = useState([]);
   const [selectedUsers, setSelectedUsers] = useState([]);
@@ -84,6 +85,7 @@ export default function AddModeratorModal({ accountTypes, onHide }) {
               skeuomorphic
               text={user.userType || 'Not Selected'}
               color="darkerGray"
+              onDropdownShown={setDropdownShown}
               menuProps={dropdownMenu}
             />
           </td>
@@ -93,7 +95,7 @@ export default function AddModeratorModal({ accountTypes, onHide }) {
   }, [accountTypes, selectedUsers]);
 
   return (
-    <Modal closeWhenClickedOutside={false} onHide={onHide}>
+    <Modal closeWhenClickedOutside={!dropdownShown} onHide={onHide}>
       <header>Add / Edit Moderators</header>
       <main>
         <SearchInput

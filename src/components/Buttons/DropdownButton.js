@@ -1,5 +1,5 @@
 import PropTypes from 'prop-types';
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Button from 'components/Button';
 import DropdownList from 'components/DropdownList';
 import Icon from 'components/Icon';
@@ -21,6 +21,7 @@ DropdownButton.propTypes = {
     })
   ),
   noBorderRadius: PropTypes.bool,
+  onDropdownShown: PropTypes.func,
   opacity: PropTypes.number,
   stretch: PropTypes.bool,
   style: PropTypes.object,
@@ -29,6 +30,7 @@ DropdownButton.propTypes = {
 
 export default function DropdownButton({
   buttonStyle = {},
+  onDropdownShown,
   opacity = 1,
   style,
   icon = 'pencil-alt',
@@ -45,6 +47,9 @@ export default function DropdownButton({
   const [dropdownContext, setDropdownContext] = useState(null);
   const coolDownRef = useRef(null);
   const ButtonRef = useRef(null);
+  useEffect(() => {
+    onDropdownShown?.(!!dropdownContext);
+  }, [dropdownContext, onDropdownShown]);
 
   return (
     <ErrorBoundary

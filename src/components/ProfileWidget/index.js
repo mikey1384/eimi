@@ -45,9 +45,6 @@ export default function ProfileWidget({ history, onLoadImage, onShowAlert }) {
               }}
               userId={userId}
               profilePicUrl={profilePicUrl}
-              onClick={() => {
-                if (userId) history.push(`/users/${username}`);
-              }}
             />
             <div className="names">
               <a>{username}</a>

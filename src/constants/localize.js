@@ -1200,6 +1200,10 @@ const languageObj = {
     en: 'Rewards',
     kr: '선물'
   },
+  save: {
+    en: 'Save',
+    kr: '저장'
+  },
   search: {
     en: 'Search',
     kr: '검색'

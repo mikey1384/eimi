@@ -281,7 +281,7 @@ function Chat({ onFileUpload }) {
     ) {
       prevPathId.current = currentPathId;
       if (currentPathId === 'new') {
-        if (channelsObj[0]?.twoPeople) {
+        if (history.action !== 'POP') {
           onEnterEmptyChat();
         } else {
           history.replace(`/chat`);
