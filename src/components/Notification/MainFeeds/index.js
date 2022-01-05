@@ -98,7 +98,7 @@ function MainFeeds({
 
   const twinkleLabel = useMemo(() => {
     return SELECTED_LANGUAGE === 'kr'
-      ? `트윈클 ${totalTwinkles}개`
+      ? `에이미 토큰 ${totalTwinkles}개`
       : `${totalTwinkles} Twinkle${totalTwinkles > 0 ? 's' : ''}`;
   }, [totalTwinkles]);
 

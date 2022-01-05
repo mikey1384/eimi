@@ -12,7 +12,7 @@ const karmaCalculationLabel =
   SELECTED_LANGUAGE === 'kr' ? (
     <>
       회원님의 카마포인트 = 회원님이 보상한{' '}
-      <b style={{ color: Color.pink() }}>트윈클 개수</b> + (
+      <b style={{ color: Color.pink() }}>에이미 토큰 개수</b> + (
       {karmaMultiplier.recommendation} × 선생님 유저들이 승인한 회원님의{' '}
       <b style={{ color: Color.brownOrange() }}>추천 개수</b>)
     </>
@@ -28,7 +28,7 @@ const karmaCalculationLabel =
 const rewardedTwinklesLabel =
   SELECTED_LANGUAGE === 'kr' ? (
     <>
-      회원님이 보상한 <b style={{ color: Color.pink() }}>트윈클 개수</b>
+      회원님이 보상한 <b style={{ color: Color.pink() }}>에이미 토큰 개수</b>
     </>
   ) : (
     <>

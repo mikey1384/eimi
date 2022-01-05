@@ -114,7 +114,7 @@ function Comment({
                   : Color.logoBlue()
             }}
           >
-            트윈클 {reward.rewardAmount}개를 보상했습니다
+            에이미 토큰 {reward.rewardAmount}개를 보상했습니다
           </span>
         </>
       );

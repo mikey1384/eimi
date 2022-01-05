@@ -105,7 +105,7 @@ export default function renderEnglishMessage({
                 fontWeight: 'bold'
               }}
             >
-              트윈클 {actionObj.amount}개를 선물했습니다
+              에이미 토큰 {actionObj.amount}개를 선물했습니다
             </span>
             :{' '}
             <ContentLink

@@ -38,7 +38,7 @@ export default function renderEnglishText({
             fontWeight: 'bold'
           }}
         >
-          트윈클 {rewardAmount}개를 선물했습니다
+          에이미 토큰 {rewardAmount}개를 선물했습니다
         </span>
         :{' '}
         <ContentLink
