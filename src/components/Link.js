@@ -54,7 +54,7 @@ export default function Link({
     event.preventDefault();
     if (target) return window.open(to, target);
     if (typeof onClickAsync === 'function') {
-      return onClickAsync().then(clickSafe => {
+      return onClickAsync().then((clickSafe) => {
         if (!clickSafe) history.push(to);
       });
     }

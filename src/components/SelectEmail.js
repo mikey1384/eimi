@@ -45,7 +45,7 @@ export default function SelectEmail({
         }}
       >
         <div style={{ display: 'flex', alignItems: 'center' }}>
-          <p>{hiddenEmail}</p>
+          <p>{hiddenEmail || email}</p>
           <Button
             style={{ marginLeft: '1rem' }}
             filled
@@ -62,7 +62,7 @@ export default function SelectEmail({
         <div
           style={{ marginTop: '1rem', display: 'flex', alignItems: 'center' }}
         >
-          <p>{hiddenVerifiedEmail}</p>
+          <p>{hiddenVerifiedEmail || verifiedEmail}</p>
           <Button
             style={{ marginLeft: '1rem' }}
             filled

@@ -11,6 +11,7 @@ import Modal from 'components/Modal';
 import Button from 'components/Button';
 import Loading from 'components/Loading';
 import FileInfo from './FileInfo';
+import { useMyState } from 'helpers/hooks';
 import { v1 as uuidv1 } from 'uuid';
 import {
   exceedsCharLimit,
@@ -40,11 +41,11 @@ function UploadModal({
   recepientId,
   subjectId
 }) {
+  const { profilePicUrl, userId, username } = useMyState();
   const {
     onFileUpload,
     state: { isRespondingToSubject },
-    actions: { onSubmitMessage },
-    myState: { profilePicUrl, userId, username }
+    actions: { onSubmitMessage }
   } = useContext(LocalContext);
   const [caption, setCaption] = useState(initialCaption);
   const [imageUrl, setImageUrl] = useState('');

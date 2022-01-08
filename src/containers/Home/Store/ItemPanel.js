@@ -8,6 +8,9 @@ import { css } from '@emotion/css';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import localize from 'constants/localize';
+
+const freeLabel = localize('free');
 
 ItemPanel.propTypes = {
   children: PropTypes.node,
@@ -111,6 +114,14 @@ export default function ItemPanel({
             </div>
           )}
         </>
+      )}
+      {!requiredKarmaPoints && (
+        <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{freeLabel}</p>
+      )}
+      {!requiredKarmaPoints && !userId && itemDescription && (
+        <div style={{ fontSize: '1.5rem', marginTop: '1rem' }}>
+          {itemDescription}
+        </div>
       )}
       {userId &&
         (locked ? (

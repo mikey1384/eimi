@@ -5,12 +5,13 @@ import Button from 'components/Button';
 
 AlertModal.propTypes = {
   onHide: PropTypes.func.isRequired,
+  modalOverModal: PropTypes.bool,
   title: PropTypes.string.isRequired,
   content: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired
 };
-export default function AlertModal({ onHide, title, content }) {
+export default function AlertModal({ onHide, modalOverModal, title, content }) {
   return (
-    <Modal onHide={onHide}>
+    <Modal modalOverModal={modalOverModal} onHide={onHide}>
       <header>{title}</header>
       <main>{content}</main>
       <footer>

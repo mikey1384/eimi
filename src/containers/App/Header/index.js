@@ -50,6 +50,9 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
   const onSetLastChatPath = useAppContext(
     (v) => v.user.actions.onSetLastChatPath
   );
+  const checkChatAccessible = useAppContext(
+    (v) => v.requestHelpers.checkChatAccessible
+  );
   const checkIfHomeOutdated = useAppContext(
     (v) => v.requestHelpers.checkIfHomeOutdated
   );
@@ -330,10 +333,18 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       async function handleLoadChat() {
         onSetReconnecting(true);
         const pathId = Number(currentPathId);
+        let currentChannelIsAccessible = true;
+        if (!isNaN(pathId)) {
+          const { isAccessible } = await checkChatAccessible(pathId);
+          currentChannelIsAccessible = isAccessible;
+        }
         const data = await loadChat(
           !isNaN(pathId) ? parseChannelPath(pathId) : selectedChannelId
         );
         onInitChat(data);
+        if (!currentChannelIsAccessible) {
+          return history.replace(`/chat/${GENERAL_CHAT_PATH_ID}`);
+        }
         socket.emit(
           'check_online_members',
           selectedChannelId,

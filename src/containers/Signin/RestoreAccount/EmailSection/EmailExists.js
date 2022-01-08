@@ -1,7 +1,7 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import CheckYourEmail from './CheckYourEmail';
-import SelectEmail from './SelectEmail';
+import CheckYourEmail from 'components/CheckYourEmail';
+import SelectEmail from 'components/SelectEmail';
 import Loading from 'components/Loading';
 
 EmailExists.propTypes = {

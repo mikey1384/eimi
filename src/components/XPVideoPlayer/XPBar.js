@@ -192,7 +192,7 @@ function XPBar({
         `}
       >
         {Bar}
-        {!!rewardLevel && (
+        {rewardLevel ? (
           <div
             className={css`
               height: 2.7rem;
@@ -243,7 +243,7 @@ function XPBar({
                   ? `${rewardLevel}-STAR`
                   : Stars}
               </div>
-              {xpHovered && (
+              {xpHovered ? (
                 <FullTextReveal
                   show
                   direction="left"
@@ -256,7 +256,7 @@ function XPBar({
                   }}
                   text={`You have earned all the XP you can earn from this video`}
                 />
-              )}
+              ) : null}
             </div>
             {canEarnCoins && (
               <div>
@@ -313,7 +313,7 @@ function XPBar({
               </div>
             )}
           </div>
-        )}
+        ) : null}
       </div>
     </ErrorBoundary>
   ) : null;

@@ -31,7 +31,7 @@ import {
   fetchURLFromText,
   getFileInfoFromFileName
 } from 'helpers/stringHelpers';
-import { useContentState, useLazyLoad } from 'helpers/hooks';
+import { useContentState, useMyState, useLazyLoad } from 'helpers/hooks';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -136,19 +136,19 @@ function Message({
       onUpdateChessMoveViewTimeStamp,
       onUpdateRecentChessMessage
     },
-    myState: {
-      authLevel,
-      canDelete,
-      canEdit,
-      canReward,
-      isCreator,
-      userId: myId,
-      username: myUsername,
-      profilePicUrl: myProfilePicUrl
-    },
     requests: { editChatMessage, saveChatMessage, setChessMoveViewTimeStamp },
     state: { filesBeingUploaded, socketConnected }
   } = useContext(LocalContext);
+  const {
+    authLevel,
+    canDelete,
+    canEdit,
+    canReward,
+    isCreator,
+    userId: myId,
+    username: myUsername,
+    profilePicUrl: myProfilePicUrl
+  } = useMyState();
   const {
     thumbUrl: recentThumbUrl,
     isEditing,
@@ -286,7 +286,7 @@ function Message({
   }, []);
 
   useEffect(() => {
-    const userMadeLastMove = chessState ? chessState?.move?.by === myId : false;
+    const userMadeLastMove = chessState?.move?.by === myId;
     if (!userMadeLastMove && !moveViewTimeStamp) {
       setSpoilerOff(false);
     } else {

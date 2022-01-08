@@ -29,7 +29,7 @@ import {
   useViewContext,
   useChatContext
 } from 'contexts';
-import { GENERAL_CHAT_ID } from 'constants/defaultValues';
+import { GENERAL_CHAT_ID, GENERAL_CHAT_PATH_ID } from 'constants/defaultValues';
 import ErrorBoundary from 'components/ErrorBoundary';
 
 Chat.propTypes = {
@@ -37,6 +37,7 @@ Chat.propTypes = {
 };
 
 function Chat({ onFileUpload }) {
+  const { lastChatPath, userId } = useMyState();
   const { pathname } = useLocation();
   const history = useHistory();
   const acceptInvitation = useAppContext(
@@ -106,23 +107,6 @@ function Chat({ onFileUpload }) {
     (v) => v.requestHelpers.uploadChatSubject
   );
   const uploadThumb = useAppContext((v) => v.requestHelpers.uploadThumb);
-
-  const {
-    authLevel,
-    banned,
-    canDelete,
-    canEdit,
-    canReward,
-    fileUploadLvl,
-    lastChatPath,
-    isCreator,
-    userId,
-    username,
-    profilePicUrl,
-    profileTheme,
-    rank,
-    twinkleXP
-  } = useMyState();
   const state = useInputContext((v) => v.state);
   const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
   const allFavoriteChannelIds = useChatContext(
@@ -294,11 +278,9 @@ function Chat({ onFileUpload }) {
     async function handleChannelEnter(pathId) {
       loadingRef.current = true;
       onUpdateChatType('default');
-      const { isAccessible, generalChatPathId } = await checkChatAccessible(
-        pathId
-      );
+      const { isAccessible } = await checkChatAccessible(pathId);
       if (!isAccessible) {
-        return history.replace(`/chat/${generalChatPathId}`);
+        return history.replace(`/chat/${GENERAL_CHAT_PATH_ID}`);
       }
       const channelId = channelPathIdHash[pathId] || parseChannelPath(pathId);
       if (!channelPathIdHash[pathId] && mounted.current) {
@@ -563,21 +545,6 @@ function Chat({ onFileUpload }) {
           onUpdateChannelPathIdHash
         },
         inputState: state,
-        myState: {
-          authLevel,
-          banned,
-          canDelete,
-          canEdit,
-          canReward,
-          fileUploadLvl,
-          isCreator,
-          profileTheme,
-          profilePicUrl,
-          rank,
-          twinkleXP,
-          userId,
-          username
-        },
         requests: {
           acceptInvitation,
           changeChannelOwner,

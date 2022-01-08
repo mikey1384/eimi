@@ -2,12 +2,13 @@ import React, { useContext } from 'react';
 import BottomMenu from './BottomMenu';
 import TopMenu from './TopMenu';
 import LocalContext from '../../Context';
+import { useMyState } from 'helpers/hooks';
 
 export default function VocabInfo() {
   const {
-    myState: { rank, twinkleXP, userId },
     state: { allRanks }
   } = useContext(LocalContext);
+  const { rank, twinkleXP, userId } = useMyState();
   return (
     <div style={{ height: '100%' }}>
       <TopMenu />

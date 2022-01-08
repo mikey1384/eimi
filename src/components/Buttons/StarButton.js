@@ -144,14 +144,14 @@ export default function StarButton({
         >
           <Icon icon="star" />
         </Button>
-        {dropdownContext && (
+        {!!dropdownContext && (
           <DropdownList
             dropdownContext={dropdownContext}
             onHideMenu={handleHideMenuWithCoolDown}
             style={{ minWidth: '20rem' }}
           >
             {(contentType === 'video' || contentType === 'subject') &&
-              canEditRewardLevel && (
+              !!canEditRewardLevel && (
                 <li onClick={handleShowRewardLevelModal}>
                   {setRewardLevelLabel}
                 </li>
@@ -222,6 +222,7 @@ export default function StarButton({
     });
     if (cannotChange) {
       setModeratorName(modName);
+      setDropdownContext(null);
       return setCannotChangeModalShown(true);
     }
     onToggleByUser(byUser);

@@ -95,11 +95,10 @@ function Chess({
   });
   const enPassantTarget = useRef(null);
   const capturedPiece = useRef(null);
-  const parsedState = useMemo(
-    () => (initialState ? JSON.parse(JSON.stringify(initialState)) : undefined),
+  const boardState = useMemo(
+    () => (initialState ? { ...initialState } : null),
     [initialState]
   );
-
   const awaitingMoveLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
       return (
@@ -118,23 +117,23 @@ function Chess({
   }, [opponentName]);
 
   const move = useMemo(() => {
-    if (parsedState) {
-      return parsedState.move;
+    if (boardState) {
+      return boardState.move;
     } else {
       return {};
     }
-  }, [parsedState]);
+  }, [boardState]);
 
   const myColor = useMemo(
-    () => parsedState?.playerColors[myId] || 'white',
-    [myId, parsedState]
+    () => boardState?.playerColors?.[myId] || 'white',
+    [myId, boardState]
   );
 
   const userMadeLastMove = useMemo(() => move.by === myId, [move.by, myId]);
-  const isCheck = parsedState?.isCheck;
-  const isCheckmate = parsedState?.isCheckmate;
-  const isStalemate = parsedState?.isStalemate;
-  const isDraw = parsedState?.isDraw;
+  const isCheck = boardState?.isCheck;
+  const isCheckmate = boardState?.isCheckmate;
+  const isStalemate = boardState?.isStalemate;
+  const isDraw = boardState?.isDraw;
   const statusText = isCheckmate
     ? 'Checkmate!'
     : isStalemate
@@ -161,19 +160,19 @@ function Chess({
 
   useEffect(() => {
     if (newChessState) return;
-    playerColors.current = parsedState
-      ? parsedState.playerColors
+    playerColors.current = boardState
+      ? boardState.playerColors
       : {
           [myId]: 'white',
           [opponentId]: 'black'
         };
     setSquares(initializeChessBoard({ initialState, loading: !loaded, myId }));
     capturedPiece.current = null;
-    if (parsedState) {
-      enPassantTarget.current = parsedState.enPassantTarget || null;
-      setBlackFallenPieces(parsedState.fallenPieces.black);
-      setWhiteFallenPieces(parsedState.fallenPieces.white);
-      fallenPieces.current = parsedState.fallenPieces;
+    if (boardState) {
+      enPassantTarget.current = boardState.enPassantTarget || null;
+      setBlackFallenPieces(boardState.fallenPieces?.black);
+      setWhiteFallenPieces(boardState.fallenPieces?.white);
+      fallenPieces.current = boardState?.fallenPieces;
     } else {
       enPassantTarget.current = null;
       setBlackFallenPieces([]);
@@ -208,7 +207,7 @@ function Chess({
     myId,
     newChessState,
     opponentId,
-    parsedState,
+    boardState,
     userMadeLastMove
   ]);
 
@@ -228,37 +227,41 @@ function Chess({
               srcIndex: myColor === 'black' ? 63 - selectedIndex : selectedIndex
             }
           : {};
-      const json = {
-        move: {
-          number: moveNumber,
-          by: myId,
-          ...moveDetail
+      onChessMove({
+        state: {
+          move: {
+            number: moveNumber,
+            by: myId,
+            ...moveDetail
+          },
+          capturedPiece: capturedPiece.current?.type,
+          playerColors: playerColors.current || {
+            [myId]: 'white',
+            [opponentId]: 'black'
+          },
+          board: (myColor === 'black'
+            ? newSquares.map(
+                (square, index) => newSquares[newSquares.length - 1 - index]
+              )
+            : newSquares
+          ).map((square) =>
+            square.state === 'highlighted'
+              ? { ...square, state: '' }
+              : square.state === 'check' && isCheckmate
+              ? { ...square, state: 'checkmate' }
+              : square
+          ),
+          fallenPieces: fallenPieces.current,
+          enPassantTarget: enPassantTarget.current,
+          isCheck,
+          isCheckmate,
+          isDraw,
+          isStalemate
         },
-        capturedPiece: capturedPiece.current?.type,
-        playerColors: playerColors.current || {
-          [myId]: 'white',
-          [opponentId]: 'black'
-        },
-        board: (myColor === 'black'
-          ? newSquares.map(
-              (square, index) => newSquares[newSquares.length - 1 - index]
-            )
-          : newSquares
-        ).map((square) =>
-          square.state === 'highlighted'
-            ? { ...square, state: '' }
-            : square.state === 'check' && isCheckmate
-            ? { ...square, state: 'checkmate' }
-            : square
-        ),
-        fallenPieces: fallenPieces.current,
-        enPassantTarget: enPassantTarget.current,
-        isCheck,
         isCheckmate,
-        isDraw,
-        isStalemate
-      };
-      onChessMove({ state: json, isCheckmate, isStalemate, moveNumber });
+        isStalemate,
+        moveNumber
+      });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
     [move.number, myColor, myId, opponentId, selectedIndex, squares]
@@ -601,7 +604,7 @@ function Chess({
       }}
     >
       {loaded &&
-        parsedState &&
+        boardState &&
         (userMadeLastMove ||
           spoilerOff ||
           isCheckmate ||
@@ -670,16 +673,16 @@ function Chess({
                       <span>
                         to <b>{move.to}</b>
                       </span>
-                      {parsedState?.capturedPiece && (
+                      {boardState?.capturedPiece && (
                         <>
                           {' '}
                           <span>capturing</span>{' '}
                           <span>
-                            {parsedState?.capturedPiece === 'queen'
+                            {boardState?.capturedPiece === 'queen'
                               ? 'the'
                               : 'a'}{' '}
                           </span>
-                          <b>{parsedState?.capturedPiece}</b>
+                          <b>{boardState?.capturedPiece}</b>
                         </>
                       )}
                     </>
@@ -811,7 +814,6 @@ function Chess({
               !!isStalemate ||
               !!isDraw
             }
-            initialState={initialState}
             interactable={interactable && !newChessState && !userMadeLastMove}
             squares={squares}
             myColor={myColor}

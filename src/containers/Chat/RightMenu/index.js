@@ -4,6 +4,7 @@ import ChatInfo from './ChatInfo';
 import VocabInfo from './VocabInfo';
 import { css } from '@emotion/css';
 import { Color, phoneMaxWidth } from 'constants/css';
+import { useMyState } from 'helpers/hooks';
 import LocalContext from '../Context';
 
 RightMenu.propTypes = {
@@ -21,9 +22,9 @@ function RightMenu({
   currentChannelOnlineMembers,
   selectedChannelId
 }) {
+  const { userId, twinkleXP } = useMyState();
   const {
     actions: { onGetRanks },
-    myState: { userId, twinkleXP },
     requests: { loadRankings },
     state: { chatType }
   } = useContext(LocalContext);

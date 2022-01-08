@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from 'react';
 import KarmaStatus from './KarmaStatus';
 import ItemPanel from './ItemPanel';
+import ChangePassword from './ChangePassword';
 import ChangeUsername from './ChangeUsername';
 import FileSizeItem from './FileSizeItem';
 import ProfilePictureItem from './ProfilePictureItem';
@@ -16,6 +17,8 @@ import { useMyState } from 'helpers/hooks';
 import RewardBoostItem from './RewardBoostItem';
 import localize from 'constants/localize';
 
+const changePasswordLabel = localize('changePassword');
+const changePasswordDescriptionLabel = localize('changePasswordDescription');
 const changeUsernameLabel = localize('changeUsername');
 const changeUsernameDescriptionLabel =
   SELECTED_LANGUAGE === 'kr'
@@ -111,12 +114,20 @@ export default function Store() {
       <KarmaStatus />
       <ItemPanel
         karmaPoints={karmaPoints}
+        itemName={changePasswordLabel}
+        style={{ marginTop: userId ? '4rem' : 0 }}
+        itemDescription={changePasswordDescriptionLabel}
+      >
+        <ChangePassword style={{ marginTop: '1rem' }} />
+      </ItemPanel>
+      <ItemPanel
+        karmaPoints={karmaPoints}
         requiredKarmaPoints={karmaPointTable.username}
         locked={!canChangeUsername}
         itemName={changeUsernameLabel}
         itemDescription={changeUsernameDescriptionLabel}
         onUnlock={handleUnlockUsernameChange}
-        style={{ marginTop: userId ? '4rem' : 0 }}
+        style={{ marginTop: '3rem' }}
       >
         <ChangeUsername style={{ marginTop: '1rem' }} />
       </ItemPanel>

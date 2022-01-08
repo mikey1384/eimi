@@ -53,7 +53,11 @@ export default function TakeScreenshot({
 
   useEffect(() => {
     mounted.current = true;
-    setTimeout(() => setButtonShown(true), 3200);
+    setTimeout(() => {
+      if (mounted.current) {
+        setButtonShown(true);
+      }
+    }, 3200);
     return function onUnmount() {
       mounted.current = false;
     };

@@ -38,6 +38,7 @@ import { Color } from 'constants/css';
 import { socket } from 'constants/io';
 import { isMobile, parseChannelPath } from 'helpers';
 import { useLocation, useHistory } from 'react-router-dom';
+import { useMyState } from 'helpers/hooks';
 import LocalContext from '../../Context';
 import localize from 'constants/localize';
 
@@ -85,7 +86,6 @@ function MessagesContainer({
       onSubmitMessage,
       onUpdateChannelPathIdHash
     },
-    myState: { banned, profilePicUrl, userId, username },
     requests: {
       acceptInvitation,
       changeChannelOwner,
@@ -113,6 +113,7 @@ function MessagesContainer({
       subjectObj
     }
   } = useContext(LocalContext);
+  const { banned, profilePicUrl, userId, username } = useMyState();
   const {
     isRespondingToSubject = false,
     messageIds = [],

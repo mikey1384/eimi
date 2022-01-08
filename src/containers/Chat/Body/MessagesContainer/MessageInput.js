@@ -25,6 +25,7 @@ import {
   exceedsCharLimit
 } from 'helpers/stringHelpers';
 import { mb, returnMaxUploadSize } from 'constants/defaultValues';
+import { useMyState } from 'helpers/hooks';
 import LocalContext from '../../Context';
 import localize from 'constants/localize';
 
@@ -64,10 +65,10 @@ function MessageInput({
   subjectId
 }) {
   const mounted = useRef(true);
+  const { banned, profileTheme, fileUploadLvl } = useMyState();
   const {
     actions: { onEnterComment, onSetIsRespondingToSubject, onSetReplyTarget },
-    inputState,
-    myState: { banned, profileTheme, fileUploadLvl }
+    inputState
   } = useContext(LocalContext);
   const FileInputRef = useRef(null);
   const prevChannelId = useRef(currentChannelId);

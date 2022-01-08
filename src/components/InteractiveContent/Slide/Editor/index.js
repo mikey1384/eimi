@@ -123,8 +123,8 @@ export default function Editor({
     editedIsFork,
     editedIsPortal,
     editedAttachment,
-    editedHeading,
-    editedDescription,
+    editedHeading = '',
+    editedDescription = '',
     editedForkButtonIds,
     editedForkButtonsObj
   } = editForm;
@@ -408,7 +408,7 @@ export default function Editor({
                       <span style={{ marginLeft: '0.7rem' }}>fork buttons</span>
                     </>
                   }
-                  checked={editedIsFork}
+                  checked={!!editedIsFork}
                   onChange={() =>
                     handleSetInputState({
                       ...editForm,

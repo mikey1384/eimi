@@ -85,6 +85,7 @@ export default function ChangeUsername({ style }) {
     <div style={style}>
       <div>
         <Input
+          name="username-to-change-to"
           maxLength={20}
           placeholder={`${enterNewUsernameLabel}...`}
           onChange={setNewUsername}
@@ -94,7 +95,6 @@ export default function ChangeUsername({ style }) {
       <div
         style={{
           position: 'relative',
-          height: '4rem',
           marginTop: '0.5rem'
         }}
       >
@@ -103,6 +103,8 @@ export default function ChangeUsername({ style }) {
         )}
         <div
           style={{
+            position: 'absolute',
+            top: 0,
             color: usernameAvailable ? Color.green() : 'red',
             fontSize: '1.3rem',
             fontWeight: usernameAvailable ? 'bold' : 'normal'
@@ -110,19 +112,26 @@ export default function ChangeUsername({ style }) {
         >
           {usernameAvailable ? usernameAvailableLabel : errorMessage}
         </div>
-        <Button
-          style={{ position: 'absolute', top: '0.5rem', right: 0 }}
-          filled
-          color="green"
-          disabled={disabled || changing}
-          onClick={handleChangeUsername}
+        <div
+          style={{ width: '100%', display: 'flex', justifyContent: 'flex-end' }}
         >
-          {changeLabel}
-          <div style={{ marginLeft: '0.7rem' }}>
-            (<Icon icon={['far', 'badge-dollar']} />
-            <span style={{ marginLeft: '0.3rem' }}>{priceTable.username}</span>)
-          </div>
-        </Button>
+          <Button
+            filled
+            style={{ marginTop: '0.5rem' }}
+            color="green"
+            disabled={disabled || changing}
+            onClick={handleChangeUsername}
+          >
+            {changeLabel}
+            <div style={{ marginLeft: '0.7rem' }}>
+              (<Icon icon={['far', 'badge-dollar']} />
+              <span style={{ marginLeft: '0.3rem' }}>
+                {priceTable.username}
+              </span>
+              )
+            </div>
+          </Button>
+        </div>
       </div>
     </div>
   );

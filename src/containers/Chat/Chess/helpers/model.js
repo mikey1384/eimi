@@ -39,25 +39,21 @@ export function initializeChessBoard({ initialState, loading, myId }) {
     { type: 'knight', color: 'white', isPiece: true },
     { type: 'rook', color: 'white', isPiece: true }
   ];
-  let board;
+  let resultBoard;
   let defaultBoard = [...blackPieces, ...Array(32).fill({}), ...whitePieces];
   if (initialState) {
-    let {
-      board: parsedBoard,
-      playerColors,
-      move
-    } = JSON.parse(JSON.stringify(initialState));
-    board = parsedBoard;
+    let { board, playerColors, move } = { ...initialState };
     if (typeof move?.srcIndex === 'number') {
       board[myColor === 'black' ? 63 - move.srcIndex : move.srcIndex] =
         move.piece;
     }
     myColor = playerColors[myId];
     if (myColor === 'black') {
-      board.reverse();
+      board = board.slice().reverse();
     }
+    resultBoard = board;
   }
-  return board || defaultBoard;
+  return resultBoard || defaultBoard;
 }
 
 export function checkerPos({ squares, kingIndex, myColor }) {

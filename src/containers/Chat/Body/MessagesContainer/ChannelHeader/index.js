@@ -18,7 +18,7 @@ import {
 } from 'constants/defaultValues';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-import { useInterval } from 'helpers/hooks';
+import { useInterval, useMyState } from 'helpers/hooks';
 import LocalContext from '../../../Context';
 import localize from 'constants/localize';
 
@@ -70,9 +70,9 @@ export default function ChannelHeader({
       searchChatSubject,
       uploadChatSubject
     },
-    state: { allFavoriteChannelIds, subjectObj, subjectSearchResults },
-    myState: { authLevel, banned, profilePicUrl, userId, username }
+    state: { allFavoriteChannelIds, subjectObj, subjectSearchResults }
   } = useContext(LocalContext);
+  const { authLevel, banned, profilePicUrl, userId, username } = useMyState();
   const [onEdit, setOnEdit] = useState(false);
   const [onHover, setOnHover] = useState(false);
   const [submitting, setSubmitting] = useState(false);

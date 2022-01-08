@@ -86,6 +86,7 @@ export default function RewardLevelModal({
       </ErrorBoundary>
       {cannotChangeModalShown && (
         <AlertModal
+          modalOverModal
           title={settingCannotBeChangedLabel}
           content={moderatorHasDisabledChangeLabel}
           onHide={() => setCannotChangeModalShown(false)}

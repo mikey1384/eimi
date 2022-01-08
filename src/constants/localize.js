@@ -152,6 +152,18 @@ const languageObj = {
     en: 'Change Account Type',
     kr: '계정유형 변경'
   },
+  changeMyPassword: {
+    en: 'Change My Password',
+    kr: '비밀번호 변경'
+  },
+  changePassword: {
+    en: 'Change your password',
+    kr: '비밀번호 변경'
+  },
+  changePasswordDescription: {
+    en: 'Change your password anytime you want. This item is free',
+    kr: '비밀번호 변경은 무료로 제공됩니다'
+  },
   changePic: {
     en: 'Change Pic',
     kr: '사진 변경'
@@ -304,6 +316,10 @@ const languageObj = {
     en: 'Current Mission',
     kr: '현재 미션'
   },
+  currentPassword: {
+    en: 'Current Password',
+    kr: '현재 비밀번호'
+  },
   delete: {
     en: 'Delete',
     kr: '삭제'
@@ -404,6 +420,10 @@ const languageObj = {
     en: 'Enter Comment',
     kr: '댓글을 입력하세요'
   },
+  enterCurrentPassword: {
+    en: 'Enter your current password',
+    kr: '현재 사용중인 비밀번호를 입력하세요'
+  },
   enterDescription: {
     en: 'Enter Description',
     kr: '소개글을 입력하세요'
@@ -468,6 +488,10 @@ const languageObj = {
     en: 'Enter Title Here',
     kr: '제목을 입력하세요'
   },
+  enterNewPassword: {
+    en: 'Enter a New Password',
+    kr: '새로운 비밀번호를 입력하세요'
+  },
   enterUrl: {
     en: 'Enter URL',
     kr: 'URL을 입력하세요'
@@ -528,6 +552,10 @@ const languageObj = {
     en: 'For every star you add, the maximum amount of XP that could be rewarded to each participant of this subject rises by 2,000 XP.',
     kr: '별 한개를 추가할 때마다, 이 주제의 참가자들에게 보상 가능한 XP량이 2,000씩 증가합니다'
   },
+  free: {
+    en: 'Free',
+    kr: '무료'
+  },
   fromTwinkleWebsite: {
     en: 'from Twinkle Website',
     kr: '웹사이트에서 가져오기'
@@ -583,6 +611,10 @@ const languageObj = {
   imageTooLarge10MB: {
     en: 'Image is too large (limit: 10mb)',
     kr: '이미지 크기가 너무 큽니다 (최대 10mb)'
+  },
+  incorrectPassword: {
+    en: 'Incorrect password',
+    kr: '비밀번호가 올바르지 않습니다'
   },
   inProgress: {
     en: 'In Progress',
@@ -799,6 +831,14 @@ const languageObj = {
   newGroup: {
     en: 'New Group',
     kr: '새로운 그룹'
+  },
+  newPassword: {
+    en: 'New Password',
+    kr: '새로운 비밀번호'
+  },
+  newPasswordMatchesCurrentPassword: {
+    en: 'Your new password is the same as your current one',
+    kr: '새로운 비밀번호가 현재 비밀번호와 같습니다'
   },
   newToOld: {
     en: 'New to Old',
@@ -1176,6 +1216,14 @@ const languageObj = {
     en: 'Restricted Accounts',
     kr: '제한된 계정'
   },
+  retypeNewPassword: {
+    en: 'Retype New Password',
+    kr: '새 비밀번호 재입력'
+  },
+  retypePasswordDoesNotMatch: {
+    en: 'The passwords do not match',
+    kr: '재입력 비밀번호가 일치하지 않습니다'
+  },
   revoke: {
     en: 'Revoke',
     kr: '취소'
@@ -1413,7 +1461,7 @@ const languageObj = {
     kr: '이미 사용중인 아이디입니다'
   },
   usernameAvailable: {
-    en: `This username is available. Tap "Change"`,
+    en: `This username is available`,
     kr: '사용 가능한 아이디입니다'
   },
   users: {

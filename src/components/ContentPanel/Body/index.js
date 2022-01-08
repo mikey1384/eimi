@@ -396,13 +396,14 @@ export default function Body({
                           ? respondLabel
                           : replyLabel}
                       </span>
-                      {(numComments > 0 || numReplies > 0) &&
-                        !commentsShown &&
-                        !autoExpand && (
-                          <span style={{ marginLeft: '0.5rem' }}>
-                            ({numComments || numReplies})
-                          </span>
-                        )}
+                      {numComments > 0 || numReplies > 0
+                        ? !commentsShown &&
+                          !autoExpand && (
+                            <span style={{ marginLeft: '0.5rem' }}>
+                              ({numComments || numReplies})
+                            </span>
+                          )
+                        : null}
                     </Button>
                   )}
                   {userCanRewardThis && !secretHidden && (
@@ -423,7 +424,7 @@ export default function Body({
                       </span>
                     </Button>
                   )}
-                  {editButtonShown && (
+                  {editButtonShown ? (
                     <DropdownButton
                       transparent
                       style={{
@@ -433,7 +434,7 @@ export default function Body({
                       size={contentType !== 'subject' ? 'sm' : null}
                       menuProps={editMenuItems}
                     />
-                  )}
+                  ) : null}
                   {!secretHidden && (
                     <div
                       className={css`

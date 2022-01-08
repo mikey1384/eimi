@@ -40,20 +40,6 @@ export default function userRequestHelpers({ auth, handleError, token }) {
         return handleError(error);
       }
     },
-    async changePassword({ userId, password }) {
-      try {
-        const { data } = await request.put(`${URL}/user/password`, {
-          userId,
-          password
-        });
-        if (data.token) {
-          localStorage.setItem('token', data.token);
-        }
-        return Promise.resolve(data);
-      } catch (error) {
-        return handleError(error);
-      }
-    },
     async checkIfUsernameExists(username) {
       try {
         const {
@@ -73,6 +59,34 @@ export default function userRequestHelpers({ auth, handleError, token }) {
           data: { online }
         } = await request.get(`${URL}/user/online?userId=${userId}`);
         return Promise.resolve(online);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async changePassword({ userId, password }) {
+      try {
+        const { data } = await request.put(`${URL}/user/password`, {
+          userId,
+          password
+        });
+        if (data.token) {
+          localStorage.setItem('token', data.token);
+        }
+        return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async changePasswordFromStore({ currentPassword, newPassword }) {
+      try {
+        const {
+          data: { isSuccess }
+        } = await request.put(
+          `${URL}/user/password/change`,
+          { currentPassword, newPassword },
+          auth()
+        );
+        return Promise.resolve({ isSuccess });
       } catch (error) {
         return handleError(error);
       }

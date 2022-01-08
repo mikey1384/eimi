@@ -405,6 +405,10 @@ export function isValidYoutubeUrl(url = '') {
   );
 }
 
+export function isValidPassword(password) {
+  return password.length > 4 && !stringIsEmpty(password);
+}
+
 export function isValidUsername(username) {
   const pattern = new RegExp(/^(?!.*___.*)[a-zA-Z0-9_]+$/);
   return (
@@ -485,10 +489,10 @@ export function processedStringWithURL(string) {
     }
     return [splitPart[0], applyTextEffects(splitPart[1])].join('</a>');
   });
-  return applyTextEffects(splitNewStringWithTextEffects.join('<a href'));
+  return applyTextEffects(splitNewStringWithTextEffects.join('<a href'), true);
 
   // eslint-disable-next-line no-unused-vars
-  function applyTextEffects(string) {
+  function applyTextEffects(string, finalProcessing) {
     const blueWordRegex = /(b\|[^\s]+\|b)/gi;
     const blueSentenceRegex =
       /((b\|[^\s]){1}((?!(b\||\|b))[^\n])+([^\s]\|b){1})/gi;
@@ -551,7 +555,7 @@ export function processedStringWithURL(string) {
     const fakeAtSymbolRegex = /＠/gi;
     const mentionRegex = /((?!([a-zA-Z1-9])).|^|\n)@[a-zA-Z0-9_]{3,}/gi;
 
-    return string
+    const result = string
       .replace(/(<br>)/gi, '\n')
       .replace(
         boldItalicWordRegex,
@@ -838,8 +842,8 @@ export function processedStringWithURL(string) {
         const firstChar = string.split('@')?.[0];
         return `${firstChar}<a class="mention" href="/users/${path}">@${path}</a>`;
       })
-      .replace(/\n/g, '<br>')
-      .replace(fakeAtSymbolRegex, '@');
+      .replace(/\n/g, '<br>');
+    return finalProcessing ? result.replace(fakeAtSymbolRegex, '@') : result;
   }
 }
 

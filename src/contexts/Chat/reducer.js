@@ -552,6 +552,10 @@ export default function ChatReducer(state, action) {
         recentChessMessage: undefined,
         loaded: true
       };
+      if (alreadyUsingChat) {
+        newChannelsObj[state.selectedChannelId] =
+          state.channelsObj[state.selectedChannelId];
+      }
       for (let channelId in newChannelsObj) {
         if (
           state.channelsObj[channelId]?.loaded &&

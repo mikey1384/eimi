@@ -5,7 +5,11 @@ import Button from 'components/Button';
 import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
 import { css } from '@emotion/css';
-import { isValidUsername, stringIsEmpty } from 'helpers/stringHelpers';
+import {
+  isValidPassword,
+  isValidUsername,
+  stringIsEmpty
+} from 'helpers/stringHelpers';
 import { useAppContext, useContentContext } from 'contexts';
 import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import localize from 'constants/localize';
@@ -294,8 +298,4 @@ function isValidEmailAddress(email) {
 function isValidRealname(realName) {
   const pattern = new RegExp(/^[a-zA-Z가-힣]+$/);
   return pattern.test(realName);
-}
-
-function isValidPassword(password) {
-  return password.length > 4 && !stringIsEmpty(password);
 }

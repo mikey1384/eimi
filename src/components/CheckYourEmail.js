@@ -4,7 +4,7 @@ import { useAppContext } from 'contexts';
 
 CheckYourEmail.propTypes = {
   email: PropTypes.string,
-  hiddenEmail: PropTypes.string.isRequired,
+  hiddenEmail: PropTypes.string,
   userId: PropTypes.number.isRequired
 };
 
@@ -23,7 +23,7 @@ export default function CheckYourEmail({ email, hiddenEmail, userId }) {
 
   return (
     <div style={{ fontSize: '1.7rem' }}>
-      <p>We have just sent a message to {hiddenEmail}</p>
+      <p>We have just sent a message to {hiddenEmail || email}</p>
       <p style={{ marginTop: '1rem' }}>
         Please check your inbox and follow the instructions in the email
       </p>

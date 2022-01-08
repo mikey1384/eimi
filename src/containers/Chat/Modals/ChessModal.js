@@ -114,21 +114,24 @@ export default function ChessModal({
     }
   }, [channelId, countdownNumber]);
 
+  const boardState = useMemo(
+    () => (initialState ? { ...initialState } : null),
+    [initialState]
+  );
+
   const gameFinished = useMemo(
     () =>
-      initialState?.isCheckmate ||
-      initialState?.isStalemate ||
-      initialState?.isDraw,
-    [initialState?.isCheckmate, initialState?.isStalemate, initialState?.isDraw]
+      boardState?.isCheckmate || boardState?.isStalemate || boardState?.isDraw,
+    [boardState]
   );
 
   const gameEndButtonShown = useMemo(
     () =>
-      !!initialState?.move?.number > 0 &&
+      !!boardState?.move?.number > 0 &&
       !newChessState &&
       !gameFinished &&
       !userMadeLastMove,
-    [gameFinished, newChessState, initialState?.move?.number, userMadeLastMove]
+    [gameFinished, newChessState, boardState?.move?.number, userMadeLastMove]
   );
 
   const drawOffererId = useMemo(() => {
@@ -141,7 +144,7 @@ export default function ChessModal({
   const drawButtonShown = useMemo(() => {
     return (
       !drawOffererId &&
-      !!initialState?.move?.number > 0 &&
+      !!boardState?.move?.number > 0 &&
       !newChessState &&
       !gameFinished &&
       userMadeLastMove
@@ -150,7 +153,7 @@ export default function ChessModal({
     drawOffererId,
     gameFinished,
     newChessState,
-    initialState?.move?.number,
+    boardState?.move?.number,
     userMadeLastMove
   ]);
 
@@ -174,7 +177,7 @@ export default function ChessModal({
               isFromModal
               channelId={channelId}
               countdownNumber={countdownNumber}
-              interactable={!initialState?.isDraw}
+              interactable={!boardState?.isDraw}
               initialState={initialState}
               loaded={loaded}
               myId={myId}
@@ -203,7 +206,7 @@ export default function ChessModal({
               {drawOfferPending ? acceptDrawLabel : resignLabel}
             </Button>
           )}
-          {drawButtonShown && (
+          {drawButtonShown ? (
             <Button
               style={{ marginRight: '1rem' }}
               color="orange"
@@ -211,7 +214,7 @@ export default function ChessModal({
             >
               {offerDrawLabel}
             </Button>
-          )}
+          ) : null}
           <Button transparent onClick={onHide}>
             {closeLabel}
           </Button>

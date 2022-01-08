@@ -34,9 +34,11 @@ export default function Achievements({
     (v) => v.actions.onLoadMoreNotables
   );
   const {
-    notables: { feeds, loaded, loadMoreButton }
+    notables: { feeds, loaded, loadMoreButton: loadMoreButtonShown }
   } = useProfileState(username);
   const [loading, setLoading] = useState(false);
+  const [loadingMore, setLoadingMore] = useState(false);
+  const loadingMoreRef = useRef(false);
   const mounted = useRef(true);
 
   useEffect(() => {
@@ -96,9 +98,10 @@ export default function Achievements({
             />
           );
         })}
-        {loadMoreButton && (
+        {loadMoreButtonShown && (
           <LoadMoreButton
             style={{ fontSize: '1.7rem' }}
+            loading={loadingMore}
             label={showMoreLabel}
             transparent
             onClick={handleLoadMoreNotables}
@@ -110,6 +113,9 @@ export default function Achievements({
   );
 
   async function handleLoadMoreNotables() {
+    if (loadingMoreRef.current) return;
+    loadingMoreRef.current = true;
+    setLoadingMore(true);
     const { results, loadMoreButton } = await loadMoreNotableContents({
       userId: profile.id,
       notables: feeds
@@ -119,5 +125,7 @@ export default function Achievements({
       loadMoreButton,
       username
     });
+    setLoadingMore(false);
+    loadingMoreRef.current = false;
   }
 }
