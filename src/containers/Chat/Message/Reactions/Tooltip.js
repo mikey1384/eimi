@@ -1,11 +1,13 @@
 import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
+import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 import { createPortal } from 'react-dom';
 
 Tooltip.propTypes = {
+  myId: PropTypes.number,
   onMouseEnter: PropTypes.func.isRequired,
   onMouseLeave: PropTypes.func.isRequired,
   parentContext: PropTypes.object.isRequired,
@@ -15,6 +17,7 @@ Tooltip.propTypes = {
 };
 
 export default function Tooltip({
+  myId,
   parentContext,
   onMouseEnter,
   onMouseLeave,
@@ -35,7 +38,37 @@ export default function Tooltip({
 
   const peopleWhoReactedText = useMemo(() => {
     if (displayedReactedUsers.length === 2 && otherReactedUserNumber === 0) {
+      if (SELECTED_LANGUAGE === 'kr') {
+        return `${displayedReactedUsers[0].username}${
+          displayedReactedUsers[0].id === myId ? '' : '님'
+        }과 ${displayedReactedUsers[1].username}${
+          displayedReactedUsers[1].id === myId ? '' : '님'
+        }`;
+      }
       return `${displayedReactedUsers[0].username} and ${displayedReactedUsers[1].username}`;
+    }
+    if (SELECTED_LANGUAGE === 'kr') {
+      return (
+        <>
+          {displayedReactedUsers
+            .map((user) => `${user.username}${user.id === myId ? '' : '님'}`)
+            .join(', ')}
+          {otherReactedUserNumber > 0 ? (
+            <>
+              {', '}
+              <a
+                style={{
+                  fontWeight: 'bold',
+                  cursor: 'pointer'
+                }}
+                onClick={onShowAllReactedUsers}
+              >
+                외 {otherReactedUserNumber}명
+              </a>
+            </>
+          ) : null}
+        </>
+      );
     }
     return (
       <>
@@ -57,7 +90,12 @@ export default function Tooltip({
         ) : null}
       </>
     );
-  }, [displayedReactedUsers, onShowAllReactedUsers, otherReactedUserNumber]);
+  }, [
+    displayedReactedUsers,
+    myId,
+    onShowAllReactedUsers,
+    otherReactedUserNumber
+  ]);
 
   return createPortal(
     <ErrorBoundary

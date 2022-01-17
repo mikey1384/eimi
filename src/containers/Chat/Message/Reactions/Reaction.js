@@ -19,8 +19,10 @@ import { Color, borderRadius, innerBorderRadius } from 'constants/css';
 import { useMyState } from 'helpers/hooks';
 import { isMobile } from 'helpers';
 import { isEqual } from 'lodash';
+import localize from 'constants/localize';
 
 const deviceIsMobile = isMobile(navigator);
+const youLabel = localize('You');
 
 Reaction.propTypes = {
   reaction: PropTypes.string,
@@ -106,7 +108,7 @@ function Reaction({
     if (userReacted) {
       users.push({
         id: userId,
-        username: 'You',
+        username: youLabel,
         profilePicUrl: profilePicUrl
       });
     }
@@ -223,6 +225,7 @@ function Reaction({
       </div>
       {tooltipContext && reactedUsers.length > 0 && (
         <Tooltip
+          myId={userId}
           onMouseEnter={() => {
             clearTimeout(hideTimerRef.current);
             clearTimeout(hideTimerRef2.current);
