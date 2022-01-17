@@ -542,7 +542,7 @@ export default function Body({
             recommendations={recommendations}
           />
         )}
-        {recommendationInterfaceShown && (
+        {false && recommendationInterfaceShown && (
           <RecommendationInterface
             contentId={contentId}
             contentType={contentType}

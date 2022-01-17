@@ -414,7 +414,7 @@ export default function SubjectPanel({
                 recommendations={recommendations}
               />
             )}
-            {recommendationInterfaceShown && (
+            {false && recommendationInterfaceShown && (
               <RecommendationInterface
                 contentId={subjectId}
                 contentType="subject"

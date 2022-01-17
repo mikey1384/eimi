@@ -430,7 +430,7 @@ export default function LinkPage({
             </Button>
           )}
         </div>
-        {recommendationInterfaceShown && (
+        {false && recommendationInterfaceShown && (
           <RecommendationInterface
             style={{
               marginTop: likes.length > 0 ? '0.5rem' : '1rem',

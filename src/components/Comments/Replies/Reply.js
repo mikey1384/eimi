@@ -495,7 +495,7 @@ function Reply({
               contentType="comment"
               recommendations={recommendations}
             />
-            {recommendationInterfaceShown && (
+            {false && recommendationInterfaceShown && (
               <RecommendationInterface
                 style={{ marginTop: '0.5rem' }}
                 contentId={reply.id}

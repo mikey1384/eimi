@@ -808,7 +808,7 @@ function Comment({
                     recommendations={recommendations}
                   />
                 )}
-                {!isPreview && recommendationInterfaceShown && (
+                {false && !isPreview && recommendationInterfaceShown && (
                   <RecommendationInterface
                     style={{ marginTop: likes.length > 0 ? '0.5rem' : '1rem' }}
                     contentId={commentId}

@@ -472,7 +472,7 @@ export default function TargetContent({
                   recommendations={comment.recommendations}
                 />
               )}
-              {recommendationInterfaceShown && (
+              {false && recommendationInterfaceShown && (
                 <RecommendationInterface
                   style={{
                     marginTop: '0.5rem'
