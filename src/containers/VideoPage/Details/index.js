@@ -483,7 +483,7 @@ export default function Details({
             recommendations={recommendations}
           />
         )}
-        {recommendationInterfaceShown && (
+        {false && recommendationInterfaceShown && (
           <RecommendationInterface
             style={{
               marginTop: '1rem',
