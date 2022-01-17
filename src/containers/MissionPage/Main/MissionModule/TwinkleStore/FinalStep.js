@@ -2,7 +2,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import { useAppContext, useMissionContext, useContentContext } from 'contexts';
+import { useAppContext, useMissionContext } from 'contexts';
 import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 
@@ -13,15 +13,12 @@ FinalStep.propTypes = {
 };
 
 export default function FinalStep({ mission, style, userId }) {
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const uploadMissionAttempt = useAppContext(
     (v) => v.requestHelpers.uploadMissionAttempt
   );
   const onUpdateMissionAttempt = useMissionContext(
     (v) => v.actions.onUpdateMissionAttempt
-  );
-  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
   );
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const mounted = useRef(true);
@@ -79,14 +76,16 @@ export default function FinalStep({ mission, style, userId }) {
     });
     if (success) {
       if (newXpAndRank.xp && mounted.current) {
-        onChangeUserXP({
-          xp: newXpAndRank.xp,
-          rank: newXpAndRank.rank,
-          userId
+        onSetUserState({
+          userId,
+          newState: { xp: newXpAndRank.xp, rank: newXpAndRank.rank }
         });
       }
       if (newCoins.netCoins && mounted.current) {
-        onUpdateUserCoins({ coins: newCoins.netCoins, userId });
+        onSetUserState({
+          userId,
+          newState: { twinkleCoins: newCoins.netCoins }
+        });
       }
       if (mounted.current) {
         onUpdateMissionAttempt({

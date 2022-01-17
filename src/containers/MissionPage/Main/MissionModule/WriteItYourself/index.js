@@ -21,17 +21,17 @@ export default function WriteItYourself({
   tutorialRef
 }) {
   const { codeObj = {} } = task;
-  const { state = {} } = useMyState();
+  const { missions } = useMyState();
   const allPassed = useMemo(() => {
     let passed = true;
     for (let key of exerciseKeys) {
-      if (state?.missions?.[task.missionType]?.[key] !== 'pass') {
+      if (missions[task.missionType]?.[key] !== 'pass') {
         passed = false;
         break;
       }
     }
     return passed;
-  }, [state?.missions, task.missionType]);
+  }, [missions, task.missionType]);
 
   return (
     <ErrorBoundary

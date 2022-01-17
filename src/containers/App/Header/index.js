@@ -47,6 +47,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     () => getSectionFromPathname(pathname)?.section === 'chat',
     [pathname]
   );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const onSetLastChatPath = useAppContext(
     (v) => v.user.actions.onSetLastChatPath
   );
@@ -71,7 +72,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     (v) => v.requestHelpers.updateChatLastRead
   );
 
-  const { defaultSearchFilter, userId, username, loggedIn, profilePicUrl } =
+  const { searchFilter, userId, username, loggedIn, profilePicUrl } =
     useMyState();
   const channelOnCall = useChatContext((v) => v.state.channelOnCall);
   const channelsObj = useChatContext((v) => v.state.channelsObj);
@@ -80,6 +81,9 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
   const myStream = useChatContext((v) => v.state.myStream);
   const numUnreads = useChatContext((v) => v.state.numUnreads);
   const chatStatus = useChatContext((v) => v.state.chatStatus);
+  const onAddReactionToMessage = useChatContext(
+    (v) => v.actions.onAddReactionToMessage
+  );
   const onChangeAwayStatus = useChatContext(
     (v) => v.actions.onChangeAwayStatus
   );
@@ -124,6 +128,9 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
   );
   const onReceiveVocabActivity = useChatContext(
     (v) => v.actions.onReceiveVocabActivity
+  );
+  const onRemoveReactionFromMessage = useChatContext(
+    (v) => v.actions.onRemoveReactionFromMessage
   );
   const onResetChat = useChatContext((v) => v.actions.onResetChat);
   const onSetCall = useChatContext((v) => v.actions.onSetCall);
@@ -183,13 +190,6 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
   );
   const pageVisible = useViewContext((v) => v.state.pageVisible);
   const onAttachReward = useContentContext((v) => v.actions.onAttachReward);
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
-  );
-  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
   const onLikeContent = useContentContext((v) => v.actions.onLikeContent);
   const onRecommendContent = useContentContext(
     (v) => v.actions.onRecommendContent
@@ -233,6 +233,8 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     socket.on('chat_invitation_received', handleChatInvitation);
     socket.on('chat_message_deleted', onDeleteMessage);
     socket.on('chat_message_edited', onEditMessage);
+    socket.on('chat_reaction_added', onAddReactionToMessage);
+    socket.on('chat_reaction_removed', onRemoveReactionFromMessage);
     socket.on('chat_subject_purchased', onEnableChatSubject);
     socket.on('channel_owner_changed', handleChangeChannelOwner);
     socket.on('channel_settings_changed', onChangeChannelSettings);
@@ -268,6 +270,11 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
       socket.removeListener('chat_invitation_received', handleChatInvitation);
       socket.removeListener('chat_message_deleted', onDeleteMessage);
       socket.removeListener('chat_message_edited', onEditMessage);
+      socket.removeListener('chat_reaction_added', onAddReactionToMessage);
+      socket.removeListener(
+        'chat_reaction_removed',
+        onRemoveReactionFromMessage
+      );
       socket.removeListener('chat_subject_purchased', onEnableChatSubject);
       socket.removeListener('channel_owner_changed', handleChangeChannelOwner);
       socket.removeListener(
@@ -303,7 +310,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     };
 
     function handleBanStatusUpdate(banStatus) {
-      onUpdateProfileInfo({ userId, banned: banStatus });
+      onSetUserState({ userId, newState: { banned: banStatus } });
     }
 
     function handleChangeChannelOwner({ channelId, message, newOwner }) {
@@ -628,7 +635,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
     }
 
     function handleUsernameChange({ userId, newUsername }) {
-      onUpdateProfileInfo({ userId, username: newUsername });
+      onSetUserState({ userId, newState: { username: newUsername } });
     }
 
     function handleReceiveVocabActivity(activity) {
@@ -783,7 +790,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
           <TwinkleLogo style={{ marginLeft: '3rem' }} />
           <MainNavs
             loggedIn={loggedIn}
-            defaultSearchFilter={defaultSearchFilter}
+            defaultSearchFilter={searchFilter}
             numChatUnreads={numUnreads}
             numNewNotis={numNewNotis}
             numNewPosts={numNewPosts}
@@ -855,13 +862,13 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
 
   async function handleUpdateMyCoins() {
     const coins = await loadCoins();
-    onUpdateUserCoins({ coins, userId });
+    onSetUserState({ userId, newState: { twinkleCoins: coins } });
   }
 
   async function handleUpdateMyXp() {
     const { all, top30s } = await loadRankings();
     onGetRanks({ all, top30s });
     const { xp, rank } = await loadXP();
-    onChangeUserXP({ xp, rank, userId });
+    onSetUserState({ userId, newState: { twinkleXP: xp, rank } });
   }
 }

@@ -11,7 +11,7 @@ import { css } from '@emotion/css';
 import { mobileMaxWidth } from 'constants/css';
 import { Switch, Route, useLocation, useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext, useMissionContext } from 'contexts';
+import { useAppContext, useMissionContext } from 'contexts';
 
 MissionPage.propTypes = {
   match: PropTypes.object.isRequired
@@ -34,9 +34,7 @@ export default function MissionPage({
   const updateCurrentMission = useAppContext(
     (v) => v.requestHelpers.updateCurrentMission
   );
-  const onUpdateCurrentMission = useContentContext(
-    (v) => v.actions.onUpdateCurrentMission
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const onLoadMission = useMissionContext((v) => v.actions.onLoadMission);
   const onLoadMissionTypeIdHash = useMissionContext(
     (v) => v.actions.onLoadMissionTypeIdHash
@@ -63,7 +61,7 @@ export default function MissionPage({
 
     async function handleUpdateCurrentMission() {
       await updateCurrentMission(missionId);
-      onUpdateCurrentMission({ missionId, userId });
+      onSetUserState({ userId, newState: { currentMissionId: missionId } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [missionId, userId]);

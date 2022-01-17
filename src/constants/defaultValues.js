@@ -1,6 +1,6 @@
 import localize from 'constants/localize';
 
-export const clientVersion = '1.5.80';
+export const clientVersion = '1.5.86';
 export const defaultChatSubject = 'Welcome!';
 export const defaultContentState = {
   isEditing: false,
@@ -40,50 +40,7 @@ export const REWARD_VALUE = 200;
 export const SELECTED_LANGUAGE =
   process.env.REACT_APP_SELECTED_LANGUAGE || 'en';
 export const mb = 1000;
-export const priceTable = {
-  chatSubject: 20,
-  chatTheme: 30,
-  username: 10,
-  recommendation: 2,
-  reward: 2
-};
-export const karmaPointTable = {
-  username: 50,
-  file: {
-    0: 500,
-    1: 1000,
-    2: 2000,
-    3: 10000,
-    4: 25000,
-    5: 50000,
-    6: 100000
-  },
-  profilePicture: {
-    0: 1000,
-    1: 1500,
-    2: 2000,
-    3: 3000,
-    4: 4000,
-    5: 5000,
-    6: 6000
-  },
-  rewardBoost: {
-    0: 100,
-    1: 250,
-    2: 500,
-    3: 1000,
-    4: 2500,
-    5: 5000,
-    6: 10000,
-    7: 25000,
-    8: 50000,
-    9: 100000
-  }
-};
-export const karmaMultiplier = {
-  post: 3,
-  recommendation: 10
-};
+
 export const charLimit = {
   chat: {
     subject: 200,
@@ -118,6 +75,83 @@ export const charLimit = {
     title: 200,
     description: 10000,
     url: 300
+  }
+};
+
+export const karmaPointTable = {
+  username: 50,
+  file: {
+    0: 500,
+    1: 1000,
+    2: 2000,
+    3: 10000,
+    4: 25000,
+    5: 50000,
+    6: 100000
+  },
+  profilePicture: {
+    0: 1000,
+    1: 1500,
+    2: 2000,
+    3: 3000,
+    4: 4000,
+    5: 5000,
+    6: 6000
+  },
+  rewardBoost: {
+    0: 100,
+    1: 250,
+    2: 500,
+    3: 1000,
+    4: 2500,
+    5: 5000,
+    6: 10000,
+    7: 25000,
+    8: 50000,
+    9: 100000
+  }
+};
+
+export const karmaMultiplier = {
+  post: 2,
+  recommendation: {
+    student: 10,
+    teacher: 5
+  }
+};
+
+export const priceTable = {
+  chatSubject: 20,
+  chatTheme: 30,
+  username: 10,
+  recommendation: 2,
+  reward: 2
+};
+
+export const reactionsObj = {
+  thumb: {
+    label: 'thumb',
+    position: '84% 82.5%'
+  },
+  heart: {
+    label: 'heart',
+    position: '84% 72.5%'
+  },
+  laughing: {
+    label: 'laughing',
+    position: '82% 7.5%'
+  },
+  surprised: {
+    label: 'surprised',
+    position: '84% 20%'
+  },
+  crying: {
+    label: 'crying',
+    position: '84% 2.5%'
+  },
+  angry: {
+    label: 'angry',
+    position: '84% 5%'
   }
 };
 

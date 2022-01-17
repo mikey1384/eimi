@@ -11,12 +11,7 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { unix } from 'moment';
 import { useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
-import {
-  useAppContext,
-  useChatContext,
-  useContentContext,
-  useInputContext
-} from 'contexts';
+import { useAppContext, useChatContext, useInputContext } from 'contexts';
 import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import localize from 'constants/localize';
 
@@ -75,11 +70,9 @@ export default function BasicInfos({
   const uploadProfileInfo = useAppContext(
     (v) => v.requestHelpers.uploadProfileInfo
   );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const sendVerificationEmail = useAppContext(
     (v) => v.requestHelpers.sendVerificationEmail
-  );
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
   );
   const onOpenNewChatTab = useChatContext((v) => v.actions.onOpenNewChatTab);
   const userInfoOnEdit = useInputContext(
@@ -345,7 +338,7 @@ export default function BasicInfos({
       youtubeName,
       youtubeUrl
     });
-    onUpdateProfileInfo({ userId, ...data });
+    onSetUserState({ userId, newState: data });
     if (mounted.current) {
       onSetUserInfoOnEdit(false);
     }

@@ -4,8 +4,8 @@ import Cover from './Cover';
 import Body from './Body';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from '@emotion/css';
-import { useAppContext, useContentContext, useProfileContext } from 'contexts';
-import { useContentState, useMyState, useProfileState } from 'helpers/hooks';
+import { useAppContext, useProfileContext } from 'contexts';
+import { useMyState, useProfileState } from 'helpers/hooks';
 import InvalidPage from 'components/InvalidPage';
 import Loading from 'components/Loading';
 
@@ -21,19 +21,13 @@ export default function Profile({ history, location, match }) {
   );
   const setTheme = useAppContext((v) => v.requestHelpers.setTheme);
   const { userId, username } = useMyState();
-  const onChangeProfileTheme = useContentContext(
-    (v) => v.actions.onChangeProfileTheme
-  );
-  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const onSetProfileId = useProfileContext((v) => v.actions.onSetProfileId);
   const onUserNotExist = useProfileContext((v) => v.actions.onUserNotExist);
   const [selectedTheme, setSelectedTheme] = useState('logoBlue');
   const [loading, setLoading] = useState(false);
   const { notExist, profileId } = useProfileState(match.params.username);
-  const profile = useContentState({
-    contentType: 'user',
-    contentId: profileId
-  });
+  const profile = useAppContext((v) => v.user.state.userObj[profileId] || {});
   useEffect(() => {
     if (!notExist && !profile.loaded) {
       init();
@@ -49,12 +43,15 @@ export default function Profile({ history, location, match }) {
           return onUserNotExist(match.params.username);
         }
         onSetProfileId({ username: match.params.username, profileId: user.id });
-        onInitContent({
-          contentType: 'user',
-          contentId: user.id,
+        onSetUserState({
           userId: user.id,
-          username: match.params.username,
-          ...user
+          newState: {
+            userId: user.id,
+            contentId: user.id,
+            username: match.params.username,
+            ...user,
+            loaded: true
+          }
         });
       } catch (error) {
         onUserNotExist(match.params.username);
@@ -129,6 +126,6 @@ export default function Profile({ history, location, match }) {
 
   async function handleSetTheme() {
     await setTheme({ color: selectedTheme });
-    onChangeProfileTheme({ userId, theme: selectedTheme });
+    onSetUserState({ userId, newState: { profileTheme: selectedTheme } });
   }
 }

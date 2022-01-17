@@ -11,10 +11,11 @@ import EditTextArea from 'components/Texts/EditTextArea';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { isValidSpoiler } from 'helpers/stringHelpers';
 import { socket } from 'constants/io';
 import { isMobile } from 'helpers';
+import { css } from '@emotion/css';
 import Spoiler from './Spoiler';
 import LocalContext from '../Context';
 
@@ -102,7 +103,14 @@ function TextMessage({
 
   return (
     <ErrorBoundary>
-      <div>
+      <div
+        className={css`
+          padding-bottom: ${isEditing ? 0 : '1rem'};
+          @media (max-width: ${mobileMaxWidth}) {
+            padding-bottom: ${isEditing ? 0 : '0.5rem'};
+          }
+        `}
+      >
         {isEditing ? (
           <EditTextArea
             allowEmptyText

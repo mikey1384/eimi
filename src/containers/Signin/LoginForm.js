@@ -6,7 +6,7 @@ import Input from 'components/Texts/Input';
 import Banner from 'components/Banner';
 import { mobileMaxWidth } from 'constants/css';
 import { stringIsEmpty } from 'helpers/stringHelpers';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { css } from '@emotion/css';
 import localize from 'constants/localize';
 
@@ -32,7 +32,7 @@ export default function LoginForm({
 }) {
   const onLogin = useAppContext((v) => v.user.actions.onLogin);
   const login = useAppContext((v) => v.requestHelpers.login);
-  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
@@ -130,7 +130,7 @@ export default function LoginForm({
     try {
       const data = await login({ username, password });
       onLogin(data);
-      onInitContent({ contentType: 'user', contentId: data.id, ...data });
+      onSetUserState({ userId: data.id, newState: { ...data, loaded: true } });
     } catch (error) {
       setErrorMessage(error);
     }

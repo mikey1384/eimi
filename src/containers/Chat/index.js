@@ -40,6 +40,8 @@ function Chat({ onFileUpload }) {
   const { lastChatPath, userId } = useMyState();
   const { pathname } = useLocation();
   const history = useHistory();
+  const userObj = useAppContext((v) => v.user.state.userObj);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const acceptInvitation = useAppContext(
     (v) => v.requestHelpers.acceptInvitation
   );
@@ -75,8 +77,14 @@ function Chat({ onFileUpload }) {
   );
   const loadRankings = useAppContext((v) => v.requestHelpers.loadRankings);
   const loadVocabulary = useAppContext((v) => v.requestHelpers.loadVocabulary);
+  const postChatReaction = useAppContext(
+    (v) => v.requestHelpers.postChatReaction
+  );
   const putFavoriteChannel = useAppContext(
     (v) => v.requestHelpers.putFavoriteChannel
+  );
+  const removeChatReaction = useAppContext(
+    (v) => v.requestHelpers.removeChatReaction
   );
   const reloadChatSubject = useAppContext(
     (v) => v.requestHelpers.reloadChatSubject
@@ -135,6 +143,9 @@ function Chat({ onFileUpload }) {
   const subjectSearchResults = useChatContext(
     (v) => v.state.subjectSearchResults
   );
+  const onAddReactionToMessage = useChatContext(
+    (v) => v.actions.onAddReactionToMessage
+  );
   const onClearNumUnreads = useChatContext((v) => v.actions.onClearNumUnreads);
   const onClearSubjectSearchResults = useChatContext(
     (v) => v.actions.onClearSubjectSearchResults
@@ -168,6 +179,9 @@ function Chat({ onFileUpload }) {
   );
   const onReloadChatSubject = useChatContext(
     (v) => v.actions.onReloadChatSubject
+  );
+  const onRemoveReactionFromMessage = useChatContext(
+    (v) => v.actions.onRemoveReactionFromMessage
   );
   const onSaveMessage = useChatContext((v) => v.actions.onSaveMessage);
   const onSendFirstDirectMessage = useChatContext(
@@ -510,6 +524,7 @@ function Chat({ onFileUpload }) {
         actions: {
           onClearSubjectSearchResults,
           onDeleteMessage,
+          onAddReactionToMessage,
           onEditChannelSettings,
           onEditMessage,
           onEnterChannelWithId,
@@ -522,6 +537,7 @@ function Chat({ onFileUpload }) {
           onLoadMoreMessages,
           onReceiveMessageOnDifferentChannel,
           onReloadChatSubject,
+          onRemoveReactionFromMessage,
           onSaveMessage,
           onSearchChatSubject,
           onSendFirstDirectMessage,
@@ -537,6 +553,7 @@ function Chat({ onFileUpload }) {
           onSetReplyTarget,
           onSetSiteUrl,
           onSetThumbUrl,
+          onSetUserState,
           onShowIncoming,
           onSubmitMessage,
           onUpdateChessMoveViewTimeStamp,
@@ -559,7 +576,9 @@ function Chat({ onFileUpload }) {
           loadChatSubject,
           loadRankings,
           parseChannelPath,
+          postChatReaction,
           putFavoriteChannel,
+          removeChatReaction,
           reloadChatSubject,
           saveChatMessage,
           searchChatSubject,
@@ -587,7 +606,8 @@ function Chat({ onFileUpload }) {
           selectedChannelId,
           socketConnected,
           subjectObj,
-          subjectSearchResults
+          subjectSearchResults,
+          userObj
         },
         onFileUpload
       }}

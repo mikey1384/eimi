@@ -489,7 +489,7 @@ const languageObj = {
     kr: '제목을 입력하세요'
   },
   enterNewPassword: {
-    en: 'Enter a New Password',
+    en: 'Enter a new password',
     kr: '새로운 비밀번호를 입력하세요'
   },
   enterUrl: {
@@ -1217,7 +1217,7 @@ const languageObj = {
     kr: '제한된 계정'
   },
   retypeNewPassword: {
-    en: 'Retype New Password',
+    en: 'Retype new password',
     kr: '새 비밀번호 재입력'
   },
   retypePasswordDoesNotMatch: {

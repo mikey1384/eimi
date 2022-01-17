@@ -12,7 +12,7 @@ import Store from './Store';
 import Stories from './Stories';
 import LocalContext from './Context';
 import { Route, Switch } from 'react-router-dom';
-import { useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { container, Left, Center, Right } from './Styles';
 
@@ -24,9 +24,7 @@ Home.propTypes = {
 
 function Home({ history, location, onFileUpload }) {
   const { userId } = useMyState();
-  const onUploadProfilePic = useContentContext(
-    (v) => v.actions.onUploadProfilePic
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);
@@ -112,7 +110,10 @@ function Home({ history, location, onFileUpload }) {
   );
 
   function handleImageEditDone({ filePath }) {
-    onUploadProfilePic({ userId, imageUrl: `/profile/${filePath}` });
+    onSetUserState({
+      userId,
+      newState: { profilePicUrl: `/profile/${filePath}` }
+    });
     setImageEditModalShown(false);
   }
 }

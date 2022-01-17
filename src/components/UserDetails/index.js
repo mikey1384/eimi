@@ -4,7 +4,6 @@ import Link from 'components/Link';
 import StatusInput from './StatusInput';
 import Button from 'components/Button';
 import Icon from 'components/Icon';
-import BioEditModal from 'components/Modals/BioEditModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import request from 'axios';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -26,12 +25,12 @@ const doesNotHaveBioLabel = localize('doesNotHaveBio');
 
 UserDetails.propTypes = {
   noLink: PropTypes.bool,
+  onSetBioEditModalShown: PropTypes.func.isRequired,
   profile: PropTypes.object.isRequired,
   removeStatusMsg: PropTypes.func,
   style: PropTypes.object,
   unEditable: PropTypes.bool,
   updateStatusMsg: PropTypes.func,
-  onUpdateBio: PropTypes.func,
   userId: PropTypes.number,
   small: PropTypes.bool
 };
@@ -42,13 +41,12 @@ export default function UserDetails({
   removeStatusMsg,
   small,
   style = {},
+  onSetBioEditModalShown,
   unEditable,
   updateStatusMsg,
-  onUpdateBio,
   userId
 }) {
   const auth = useAppContext((v) => v.requestHelpers.auth);
-  const uploadBio = useAppContext((v) => v.requestHelpers.uploadBio);
   const onReloadContent = useContentContext((v) => v.actions.onReloadContent);
   const editedStatusColor = useInputContext((v) => v.state.editedStatusColor);
   const editedStatusMsg = useInputContext((v) => v.state.editedStatusMsg);
@@ -59,7 +57,6 @@ export default function UserDetails({
     (v) => v.actions.onSetEditedStatusMsg
   );
   const onResetProfile = useProfileContext((v) => v.actions.onResetProfile);
-  const [bioEditModalShown, setBioEditModalShown] = useState(false);
   const [confirmModalShown, setConfirmModalShown] = useState(false);
   useEffect(() => {
     onSetEditedStatusColor('');
@@ -196,7 +193,7 @@ export default function UserDetails({
                 cursor: 'pointer',
                 fontSize: '2rem'
               }}
-              onClick={() => setBioEditModalShown(true)}
+              onClick={() => onSetBioEditModalShown(true)}
             >
               Introduce yourself!
             </a>
@@ -216,15 +213,6 @@ export default function UserDetails({
             </span>
           </div>
         ))}
-      {bioEditModalShown && (
-        <BioEditModal
-          firstLine={profileFirstRow}
-          secondLine={profileSecondRow}
-          thirdLine={profileThirdRow}
-          onSubmit={handleUploadBio}
-          onHide={() => setBioEditModalShown(false)}
-        />
-      )}
       {confirmModalShown && (
         <ConfirmModal
           onConfirm={onRemoveStatus}
@@ -245,7 +233,7 @@ export default function UserDetails({
 
   async function onRemoveStatus() {
     await request.delete(`${URL}/user/statusMsg`, auth());
-    removeStatusMsg(userId);
+    removeStatusMsg(profile.id);
     setConfirmModalShown(false);
   }
 
@@ -263,16 +251,5 @@ export default function UserDetails({
     onSetEditedStatusColor('');
     onSetEditedStatusMsg('');
     if (typeof updateStatusMsg === 'function') updateStatusMsg(data);
-  }
-
-  async function handleUploadBio(params) {
-    if (typeof uploadBio === 'function') {
-      const data = await uploadBio({
-        ...params,
-        profileId: profile.id
-      });
-      onUpdateBio(data);
-      setBioEditModalShown(false);
-    }
   }
 }

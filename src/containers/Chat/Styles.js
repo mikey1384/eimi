@@ -6,7 +6,7 @@ export const MessageStyle = {
     display: flex;
     justify-content: space-between;
     width: 100%;
-    padding: 1rem 0;
+    padding: 1rem;
     position: relative;
   `,
   profilePic: css`

@@ -41,7 +41,11 @@ export default function Home({ profile, selectedTheme }) {
   const onUploadComment = useContentContext((v) => v.actions.onUploadComment);
   const onUploadReply = useContentContext((v) => v.actions.onUploadReply);
 
-  const { commentsLoaded, id, numPics, username, pictures } = profile;
+  const { id, numPics, username, pictures } = profile;
+  const { comments, commentsLoaded, commentsLoadMoreButton } = useContentState({
+    contentType: 'user',
+    contentId: profile.id
+  });
   const [loadingComments, setLoadingComments] = useState(false);
   const mounted = useRef(true);
   const CommentInputAreaRef = useRef(null);
@@ -80,11 +84,6 @@ export default function Home({ profile, selectedTheme }) {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [id]);
-
-  const { comments, commentsLoadMoreButton } = useContentState({
-    contentType: 'user',
-    contentId: profile.id
-  });
 
   return (
     <ErrorBoundary

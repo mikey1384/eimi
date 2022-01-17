@@ -14,6 +14,7 @@ export default function TargetSubject({ subject }) {
         marginTop: '0.5rem',
         marginBottom: '1rem',
         padding: '1rem',
+        border: `1px solid ${Color.lightGray()}`,
         background: Color.wellGray(),
         display: 'flex',
         justifyContent: 'space-between',

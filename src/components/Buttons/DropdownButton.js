@@ -8,6 +8,7 @@ import { css } from '@emotion/css';
 
 DropdownButton.propTypes = {
   buttonStyle: PropTypes.object,
+  className: PropTypes.string,
   icon: PropTypes.string,
   iconSize: PropTypes.string,
   direction: PropTypes.string,
@@ -25,11 +26,14 @@ DropdownButton.propTypes = {
   opacity: PropTypes.number,
   stretch: PropTypes.bool,
   style: PropTypes.object,
-  text: PropTypes.any
+  transparent: PropTypes.bool,
+  text: PropTypes.any,
+  xAdjustment: PropTypes.number
 };
 
 export default function DropdownButton({
   buttonStyle = {},
+  className,
   onDropdownShown,
   opacity = 1,
   style,
@@ -42,6 +46,8 @@ export default function DropdownButton({
   text = '',
   stretch,
   innerRef,
+  transparent,
+  xAdjustment,
   ...props
 }) {
   const [dropdownContext, setDropdownContext] = useState(null);
@@ -59,12 +65,14 @@ export default function DropdownButton({
       <div ref={ButtonRef}>
         <Button
           {...props}
-          className={css`
-            opacity: ${dropdownContext ? 1 : opacity};
+          filled={!!dropdownContext && !transparent}
+          transparent={transparent}
+          opacity={transparent ? 0 : dropdownContext ? 1 : opacity}
+          className={`${className ? `${className} ` : ''}${css`
             &:hover {
               opacity: 1;
             }
-          `}
+          `}`}
           style={{
             borderRadius: noBorderRadius && 0,
             border: noBorderRadius && 0,
@@ -72,7 +80,7 @@ export default function DropdownButton({
             ...(stretch ? { width: '100%' } : {}),
             ...buttonStyle
           }}
-          onClick={onClick}
+          onClick={handleClick}
         >
           <Icon icon={icon} size={iconSize} />
           {text && <span>&nbsp;&nbsp;</span>}
@@ -85,6 +93,7 @@ export default function DropdownButton({
               minWidth: '12rem',
               ...listStyle
             }}
+            xAdjustment={xAdjustment}
             dropdownContext={dropdownContext}
             onHideMenu={handleHideMenuWithCoolDown}
           >
@@ -95,7 +104,7 @@ export default function DropdownButton({
     </ErrorBoundary>
   );
 
-  function onClick() {
+  function handleClick() {
     if (coolDownRef.current) return;
     const menuDisplayed = !!dropdownContext;
     if (typeof onButtonClick === 'function') {
@@ -116,7 +125,7 @@ export default function DropdownButton({
     setDropdownContext(null);
     setTimeout(() => {
       coolDownRef.current = false;
-    }, 10);
+    }, 100);
   }
 
   function renderMenu() {

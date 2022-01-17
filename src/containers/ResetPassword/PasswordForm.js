@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import Input from 'components/Texts/Input';
 import Button from 'components/Button';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useHistory } from 'react-router-dom';
 
@@ -18,7 +18,7 @@ export default function PasswordForm({ profilePicUrl, userId, username }) {
   const [errorMsg, setErrorMsg] = useState('');
   const onLogin = useAppContext((v) => v.user.actions.onLogin);
   const changePassword = useAppContext((v) => v.requestHelpers.changePassword);
-  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
 
   return (
     <div>
@@ -74,13 +74,7 @@ export default function PasswordForm({ profilePicUrl, userId, username }) {
     }
     await changePassword({ userId, password });
     onLogin({ userId, username });
-    onInitContent({
-      contentType: 'user',
-      contentId: userId,
-      profilePicUrl,
-      userId,
-      username
-    });
+    onSetUserState({ userId, newState: { profilePicUrl, userId, username } });
     history.push('/');
   }
 

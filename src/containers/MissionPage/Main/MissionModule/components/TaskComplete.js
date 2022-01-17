@@ -1,7 +1,7 @@
 import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { Color } from 'constants/css';
-import { useAppContext, useMissionContext, useContentContext } from 'contexts';
+import { useAppContext, useMissionContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Button from 'components/Button';
@@ -31,10 +31,7 @@ export default function TaskComplete({
     (v) => v.actions.onUpdateMissionAttempt
   );
   const myAttempt = useMemo(() => myAttempts[taskId], [myAttempts, taskId]);
-  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const [submitDisabled, setSubmitDisabled] = useState(false);
   const mounted = useRef(true);
   useEffect(() => {
@@ -92,14 +89,16 @@ export default function TaskComplete({
     });
     if (success) {
       if (newXpAndRank.xp && mounted.current) {
-        onChangeUserXP({
-          xp: newXpAndRank.xp,
-          rank: newXpAndRank.rank,
-          userId
+        onSetUserState({
+          userId,
+          newState: { twinkeXP: newXpAndRank.xp, rank: newXpAndRank.rank }
         });
       }
       if (newCoins.netCoins && mounted.current) {
-        onUpdateUserCoins({ coins: newCoins.netCoins, userId });
+        onSetUserState({
+          userId,
+          newState: { twinkleCoins: newCoins.netCoins }
+        });
       }
       if (mounted.current) {
         onUpdateMissionAttempt({

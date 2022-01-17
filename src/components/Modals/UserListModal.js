@@ -5,6 +5,7 @@ import Button from 'components/Button';
 import RoundList from 'components/RoundList';
 import Icon from 'components/Icon';
 import ProfilePic from 'components/ProfilePic';
+import Loading from 'components/Loading';
 import { Color } from 'constants/css';
 import { useHistory } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
@@ -14,8 +15,9 @@ UserListModal.propTypes = {
   description: PropTypes.string,
   descriptionShown: PropTypes.func,
   descriptionColor: PropTypes.string,
+  loading: PropTypes.bool,
   onHide: PropTypes.func.isRequired,
-  title: PropTypes.string.isRequired,
+  title: PropTypes.oneOfType([PropTypes.string, PropTypes.node]).isRequired,
   users: PropTypes.arrayOf(PropTypes.shape({ id: PropTypes.number.isRequired }))
     .isRequired
 };
@@ -24,6 +26,7 @@ export default function UserListModal({
   description = '',
   descriptionColor = Color.green(),
   descriptionShown,
+  loading,
   onHide,
   title,
   users
@@ -54,61 +57,65 @@ export default function UserListModal({
       <header>{title}</header>
       <main style={{ paddingTop: 0 }}>
         <RoundList>
-          {allUsers.map((user) => {
-            let userStatusDisplayed =
-              typeof descriptionShown === 'function'
-                ? descriptionShown(user)
-                : user.id === userId;
-            return (
-              <nav
-                key={user.id}
-                style={{
-                  background: '#fff',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between'
-                }}
-              >
-                <div style={{ display: 'flex', alignItems: 'center' }}>
-                  <ProfilePic
-                    style={{
-                      width: '3rem',
-                      height: '3rem',
-                      cursor: 'pointer'
-                    }}
-                    userId={user.id}
-                    profilePicUrl={user.profilePicUrl}
-                    online={!!user.online}
-                    onClick={() => history.push(`/users/${user.username}`)}
-                    statusShown
-                  />
-                  <div style={{ marginLeft: '1rem' }}>
-                    <b>{user.username}</b>{' '}
-                    <span
+          {loading ? (
+            <Loading />
+          ) : (
+            allUsers.map((user) => {
+              let userStatusDisplayed =
+                typeof descriptionShown === 'function'
+                  ? descriptionShown(user)
+                  : user.id === userId;
+              return (
+                <nav
+                  key={user.id}
+                  style={{
+                    background: '#fff',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between'
+                  }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center' }}>
+                    <ProfilePic
                       style={{
-                        color: descriptionColor,
-                        fontWeight: 'bold'
+                        width: '3rem',
+                        height: '3rem',
+                        cursor: 'pointer'
                       }}
-                    >
-                      {userStatusDisplayed && description}
-                    </span>
+                      userId={user.id}
+                      profilePicUrl={user.profilePicUrl}
+                      online={!!user.online}
+                      onClick={() => history.push(`/users/${user.username}`)}
+                      statusShown
+                    />
+                    <div style={{ marginLeft: '1rem' }}>
+                      <b>{user.username}</b>{' '}
+                      <span
+                        style={{
+                          color: descriptionColor,
+                          fontWeight: 'bold'
+                        }}
+                      >
+                        {userStatusDisplayed && description}
+                      </span>
+                    </div>
                   </div>
-                </div>
-                {userId && user.id !== userId && (
-                  <div>
-                    <Button
-                      color="logoBlue"
-                      filled
-                      style={{ fontSize: '1.5rem' }}
-                      onClick={() => handleTalkClick(user)}
-                    >
-                      <Icon icon="comments" />
-                    </Button>
-                  </div>
-                )}
-              </nav>
-            );
-          })}
+                  {userId && user.id !== userId && (
+                    <div>
+                      <Button
+                        color="logoBlue"
+                        filled
+                        style={{ fontSize: '1.5rem' }}
+                        onClick={() => handleTalkClick(user)}
+                      >
+                        <Icon icon="comments" />
+                      </Button>
+                    </div>
+                  )}
+                </nav>
+              );
+            })
+          )}
         </RoundList>
       </main>
       <footer>

@@ -4,7 +4,7 @@ import Input from 'components/Texts/Input';
 import Button from 'components/Button';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { useAppContext, useContentContext, useMissionContext } from 'contexts';
+import { useAppContext, useMissionContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { css } from '@emotion/css';
 
@@ -36,12 +36,9 @@ export default function CopyAndPaste({ mission, onSetMissionState, style }) {
   const uploadMissionAttempt = useAppContext(
     (v) => v.requestHelpers.uploadMissionAttempt
   );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const onUpdateMissionAttempt = useMissionContext(
     (v) => v.actions.onUpdateMissionAttempt
-  );
-  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
   );
 
   const { content = '' } = mission;
@@ -136,14 +133,16 @@ export default function CopyAndPaste({ mission, onSetMissionState, style }) {
     });
     if (success) {
       if (newXpAndRank.xp && mounted.current) {
-        onChangeUserXP({
-          xp: newXpAndRank.xp,
-          rank: newXpAndRank.rank,
-          userId
+        onSetUserState({
+          userId,
+          newState: { twinkeXP: newXpAndRank.xp, rank: newXpAndRank.rank }
         });
       }
       if (newCoins.netCoins && mounted.current) {
-        onUpdateUserCoins({ coins: newCoins.netCoins, userId });
+        onSetUserState({
+          userId,
+          newState: { twinkleCoins: newCoins.netCoins }
+        });
       }
       if (mounted.current) {
         onUpdateMissionAttempt({

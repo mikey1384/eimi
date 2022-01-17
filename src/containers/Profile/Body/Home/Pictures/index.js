@@ -9,7 +9,7 @@ import Icon from 'components/Icon';
 import DeleteInterface from './DeleteInterface';
 import AddPictureModal from './AddPictureModal';
 import { objectify } from 'helpers';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import ErrorBoundary from 'components/ErrorBoundary';
@@ -52,9 +52,7 @@ export default function Pictures({
   const updateUserPictures = useAppContext(
     (v) => v.requestHelpers.updateUserPictures
   );
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const addPictureButtonDisabled = useMemo(() => {
     return pictures.length >= numPics;
   }, [numPics, pictures]);
@@ -155,7 +153,10 @@ export default function Pictures({
     async function handlePictureDeleteConfirm() {
       const success = await deleteProfilePictures(remainingPictures);
       if (success) {
-        onUpdateProfileInfo({ userId: profileId, pictures: remainingPictures });
+        onSetUserState({
+          userId: profileId,
+          newState: { pictures: remainingPictures }
+        });
       }
       setDeleteMode(false);
     }
@@ -164,11 +165,13 @@ export default function Pictures({
       const success = await reorderProfilePictures(reorderedPictureIds);
       if (success) {
         const pictureObj = objectify(pictures);
-        onUpdateProfileInfo({
+        onSetUserState({
           userId: profileId,
-          pictures: reorderedPictureIds.map(
-            (pictureId) => pictureObj[pictureId]
-          )
+          newState: {
+            pictures: reorderedPictureIds.map(
+              (pictureId) => pictureObj[pictureId]
+            )
+          }
         });
       }
       setReorderMode(false);
@@ -286,21 +289,23 @@ export default function Pictures({
       ...selectedPictureIds,
       ...pictures.map((picture) => picture.id)
     ]);
-    onUpdateProfileInfo({ userId: profileId, pictures: pics });
+    onSetUserState({ userId: profileId, newState: { pictures: pics } });
     setAddPictureModalShown(false);
   }
 
   function handleUpdatePictureCaption({ caption, pictureId }) {
-    onUpdateProfileInfo({
+    onSetUserState({
       userId: profileId,
-      pictures: pictures.map((picture) =>
-        picture.id === pictureId
-          ? {
-              ...picture,
-              caption
-            }
-          : picture
-      )
+      newState: {
+        pictures: pictures.map((picture) =>
+          picture.id === pictureId
+            ? {
+                ...picture,
+                caption
+              }
+            : picture
+        )
+      }
     });
   }
 }

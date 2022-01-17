@@ -4,7 +4,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import Input from 'components/Texts/Input';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 
 VerificationCodeInput.propTypes = {
@@ -19,9 +19,7 @@ export default function VerificationCodeInput({ onRetry, email }) {
   const verifyEmailViaOTP = useAppContext(
     (v) => v.requestHelpers.verifyEmailViaOTP
   );
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const { userId } = useMyState();
 
   return (
@@ -87,10 +85,9 @@ export default function VerificationCodeInput({ onRetry, email }) {
       const success = await verifyEmailViaOTP({ otp: text, email });
       if (success) {
         setVerifying(false);
-        onUpdateProfileInfo({
+        onSetUserState({
           userId,
-          verifiedEmail: email,
-          emailMissionAttempted: true
+          newState: { verifiedEmail: email, emailMissionAttempted: true }
         });
       } else {
         setErrorMsg(`That is not the number we sent you. Please try again`);

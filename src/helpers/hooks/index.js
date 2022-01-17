@@ -4,7 +4,10 @@ import { stringIsEmpty } from '../stringHelpers';
 import { useAppContext, useContentContext, useProfileContext } from 'contexts';
 export { default as useScrollToBottom } from './useScrollToBottom';
 export { default as useInfiniteScroll } from './useInfiniteScroll';
-import { defaultContentState } from 'constants/defaultValues';
+import {
+  defaultContentState,
+  DEFAULT_PROFILE_THEME
+} from 'constants/defaultValues';
 
 const BodyRef = document.scrollingElement || document.documentElement;
 
@@ -74,32 +77,35 @@ export function useLazyLoad({
 }
 
 export function useMyState() {
-  const hideWatched = useAppContext((v) => v.user.state.hideWatched);
-  const lastChatPath = useAppContext((v) => v.user.state.lastChatPath);
-  const loaded = useAppContext((v) => v.user.state.loaded);
+  const hideWatched = useAppContext((v) => v.user.state.myState.hideWatched);
+  const lastChatPath = useAppContext((v) => v.user.state.myState.lastChatPath);
+  const missions = useAppContext((v) => v.user.state.missions);
   const numWordsCollected = useAppContext(
-    (v) => v.user.state.numWordsCollected
+    (v) => v.user.state.myState.numWordsCollected
   );
-  const userId = useAppContext((v) => v.user.state.userId);
-  const searchFilter = useAppContext((v) => v.user.state.searchFilter);
+  const searchFilter = useAppContext((v) => v.user.state.myState.searchFilter);
+  const xpThisMonth = useAppContext((v) => v.user.state.myState.xpThisMonth);
+  const userId = useAppContext((v) => v.user.state.myState.userId);
+  const loaded = useAppContext((v) => v.user.state.loaded);
   const signinModalShown = useAppContext((v) => v.user.state.signinModalShown);
-  const xpThisMonth = useAppContext((v) => v.user.state.xpThisMonth);
+  const myState = useAppContext((v) => v.user.state.userObj[userId] || {});
 
-  const myState = useContentState({
-    contentId: userId,
-    contentType: 'user'
-  });
   return myState.loaded
     ? {
         ...myState,
+        missions: {
+          ...(myState?.state?.missions || {}),
+          ...missions
+        },
         lastChatPath,
         loaded,
         numWordsCollected,
         userId,
-        defaultSearchFilter: searchFilter,
+        searchFilter,
         hideWatched,
         isCreator: myState.userType === '관리자',
         loggedIn: true,
+        profileTheme: myState.profileTheme || DEFAULT_PROFILE_THEME,
         signinModalShown,
         xpThisMonth
       }
@@ -107,7 +113,7 @@ export function useMyState() {
         loaded,
         lastChatPath: '',
         rewardBoostLvl: 0,
-        profileTheme: 'logoBlue',
+        profileTheme: DEFAULT_PROFILE_THEME,
         signinModalShown
       };
 }

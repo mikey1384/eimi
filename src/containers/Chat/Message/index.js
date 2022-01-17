@@ -23,6 +23,11 @@ import RewardMessage from './RewardMessage';
 import Invitation from './Invitation';
 import DrawOffer from './DrawOffer';
 import MessageRewardModal from '../Modals/MessageRewardModal';
+import ErrorBoundary from 'components/ErrorBoundary';
+import LocalContext from '../Context';
+import ReactionButton from './ReactionButton';
+import Reactions from './Reactions';
+import localize from 'constants/localize';
 import { useInView } from 'react-intersection-observer';
 import { socket } from 'constants/io';
 import { unix } from 'moment';
@@ -34,10 +39,9 @@ import {
 import { useContentState, useMyState, useLazyLoad } from 'helpers/hooks';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-import ErrorBoundary from 'components/ErrorBoundary';
-import LocalContext from '../Context';
-import localize from 'constants/localize';
+import { isMobile } from 'helpers';
 
+const deviceIsMobile = isMobile(navigator);
 const replyLabel = localize('reply2');
 const rewardLabel = localize('reward');
 const removeLabel = localize('remove');
@@ -121,9 +125,13 @@ function Message({
   onShowSubjectMsgsModal,
   zIndex
 }) {
+  const [highlighted, setHighlighted] = useState(false);
+  const [reactionsMenuShown, setReactionsMenuShown] = useState(false);
   const {
     actions: {
+      onAddReactionToMessage,
       onEditMessage,
+      onRemoveReactionFromMessage,
       onSaveMessage,
       onSetEmbeddedUrl,
       onSetActualDescription,
@@ -136,7 +144,13 @@ function Message({
       onUpdateChessMoveViewTimeStamp,
       onUpdateRecentChessMessage
     },
-    requests: { editChatMessage, saveChatMessage, setChessMoveViewTimeStamp },
+    requests: {
+      editChatMessage,
+      saveChatMessage,
+      setChessMoveViewTimeStamp,
+      postChatReaction,
+      removeChatReaction
+    },
     state: { filesBeingUploaded, socketConnected }
   } = useContext(LocalContext);
   const {
@@ -437,8 +451,13 @@ function Message({
   );
 
   const dropdownButtonShown = useMemo(
-    () => !!messageId && !isNotification && !isChessMsg && !isEditing,
-    [isChessMsg, isEditing, isNotification, messageId]
+    () =>
+      !!messageId &&
+      !isNotification &&
+      !isChessMsg &&
+      !isEditing &&
+      !fileToUpload,
+    [fileToUpload, isChessMsg, isEditing, isNotification, messageId]
   );
 
   const handleChessSpoilerClick = useCallback(async () => {
@@ -502,6 +521,36 @@ function Message({
     [channelId, isReloadedSubject, isSubject, messageId, subjectId]
   );
 
+  const handleAddReaction = useCallback(
+    async (reaction) => {
+      if (message.reactions) {
+        for (const reactionObj of message.reactions) {
+          if (reactionObj.type === reaction && reactionObj.userId === myId) {
+            return;
+          }
+        }
+      }
+      onAddReactionToMessage({ channelId, messageId, reaction, userId: myId });
+      postChatReaction({ messageId, reaction });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [channelId, message?.reactions, messageId, myId]
+  );
+
+  const handleRemoveReaction = useCallback(
+    async (reaction) => {
+      onRemoveReactionFromMessage({
+        channelId,
+        messageId,
+        reaction,
+        userId: myId
+      });
+      removeChatReaction({ messageId, reaction });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [channelId, messageId, myId]
+  );
+
   if (!chessState && (gameWinnerId || isDraw)) {
     return (
       <GameOverMessage
@@ -518,7 +567,29 @@ function Message({
     <ErrorBoundary>
       <div
         ref={ComponentRef}
-        className={MessageStyle.container}
+        className={css`
+          ${highlighted ? `background-color: ${Color.whiteGray()};` : ''}
+          .menu-button {
+            display: ${highlighted ? 'block' : 'none'};
+          }
+          &:hover {
+            ${dropdownButtonShown
+              ? `background-color: ${Color.whiteGray()};`
+              : ''}
+            .menu-button {
+              display: block;
+            }
+          }
+          @media (max-width: ${mobileMaxWidth}) {
+            background-color: #fff;
+            .menu-button {
+              display: block;
+            }
+            &:hover {
+              background-color: #fff;
+            }
+          }
+        `}
         style={{
           width: '100%',
           display: 'block',
@@ -664,19 +735,53 @@ function Message({
                         userCanEditThis={userCanEditThis}
                       />
                     )}
+                    {!isEditing && !isNotification && (
+                      <div style={{ marginTop: '1rem', height: '2.5rem' }}>
+                        {dropdownButtonShown && (
+                          <Reactions
+                            reactions={message.reactions}
+                            reactionsMenuShown={reactionsMenuShown}
+                            onRemoveReaction={handleRemoveReaction}
+                            onAddReaction={handleAddReaction}
+                          />
+                        )}
+                      </div>
+                    )}
                   </>
                 )}
               </div>
               {dropdownButtonShown && (
-                <DropdownButton
-                  skeuomorphic
-                  innerRef={DropdownButtonRef}
-                  color="darkerGray"
-                  icon="chevron-down"
-                  style={{ position: 'absolute', top: 0, right: 0 }}
-                  opacity={0.8}
-                  menuProps={messageMenuItems}
-                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: 0,
+                    right: 0,
+                    display: 'flex'
+                  }}
+                >
+                  {!invitePath && !isDrawOffer && !isChessMsg && (
+                    <ReactionButton
+                      onReactionClick={handleAddReaction}
+                      reactionsMenuShown={reactionsMenuShown}
+                      onSetReactionsMenuShown={setReactionsMenuShown}
+                      style={{ marginRight: '0.5rem' }}
+                    />
+                  )}
+                  <DropdownButton
+                    skeuomorphic
+                    buttonStyle={{
+                      fontSize: '1rem',
+                      lineHeight: 1
+                    }}
+                    className="menu-button"
+                    innerRef={DropdownButtonRef}
+                    color="darkerGray"
+                    icon={deviceIsMobile ? 'chevron-down' : 'ellipsis-h'}
+                    opacity={0.5}
+                    menuProps={messageMenuItems}
+                    onDropdownShown={(shown) => setHighlighted(shown)}
+                  />
+                </div>
               )}
             </div>
             {messageRewardModalShown && (

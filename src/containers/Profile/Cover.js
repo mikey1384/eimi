@@ -9,7 +9,7 @@ import ErrorBoundary from 'components/ErrorBoundary';
 import { css } from '@emotion/css';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import localize from 'constants/localize';
 
@@ -31,6 +31,7 @@ export default function Cover({
   const checkIfUserOnline = useAppContext(
     (v) => v.requestHelpers.checkIfUserOnline
   );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const { userId } = useMyState();
   const {
     id,
@@ -42,10 +43,6 @@ export default function Cover({
     username,
     userType
   } = profile;
-  const onSetOnline = useContentContext((v) => v.actions.onSetOnline);
-  const onUploadProfilePic = useContentContext(
-    (v) => v.actions.onUploadProfilePic
-  );
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [colorSelectorShown, setColorSelectorShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
@@ -59,7 +56,7 @@ export default function Cover({
     }
     async function handleCheckIfUserOnline() {
       const online = await checkIfUserOnline(id);
-      onSetOnline({ contentId: id, contentType: 'user', online });
+      onSetUserState({ userId: id, newState: { online } });
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
@@ -262,7 +259,10 @@ export default function Cover({
   }
 
   function handleImageEditDone({ filePath }) {
-    onUploadProfilePic({ userId, imageUrl: `/profile/${filePath}` });
+    onSetUserState({
+      userId,
+      newState: { profilePicUrl: `/profile/${filePath}` }
+    });
     setImageEditModalShown(false);
   }
 

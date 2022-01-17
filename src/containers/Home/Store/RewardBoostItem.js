@@ -5,7 +5,7 @@ import Icon from 'components/Icon';
 import MaxLevelItemInfo from './MaxLevelItemInfo';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import {
   karmaPointTable,
@@ -174,9 +174,7 @@ RewardBoostItem.propTypes = {
 
 export default function RewardBoostItem({ style }) {
   const { rewardBoostLvl, karmaPoints, userId } = useMyState();
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const upgradeRewardBoost = useAppContext(
     (v) => v.requestHelpers.upgradeRewardBoost
   );
@@ -216,7 +214,10 @@ export default function RewardBoostItem({ style }) {
   async function handleUpgrade() {
     const success = await upgradeRewardBoost();
     if (success) {
-      onUpdateProfileInfo({ userId, rewardBoostLvl: rewardBoostLvl + 1 });
+      onSetUserState({
+        userId,
+        newState: { rewardBoostLvl: rewardBoostLvl + 1 }
+      });
     }
   }
 }

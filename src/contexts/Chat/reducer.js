@@ -30,6 +30,63 @@ export default function ChatReducer(state, action) {
           }
         }
       };
+    case 'ADD_REACTION_TO_MESSAGE': {
+      const message =
+        state.channelsObj[action.channelId]?.messagesObj?.[action.messageId] ||
+        {};
+      return {
+        ...state,
+        channelsObj: {
+          ...state.channelsObj,
+          [action.channelId]: {
+            ...state.channelsObj[action.channelId],
+            messagesObj: {
+              ...state.channelsObj[action.channelId]?.messagesObj,
+              [action.messageId]: {
+                ...message,
+                reactions: (message.reactions || [])
+                  .filter((reaction) => {
+                    return (
+                      reaction.userId !== action.userId ||
+                      reaction.type !== action.reaction
+                    );
+                  })
+                  .concat({
+                    userId: action.userId,
+                    type: action.reaction
+                  })
+              }
+            }
+          }
+        }
+      };
+    }
+    case 'REMOVE_REACTION_FROM_MESSAGE': {
+      const message =
+        state.channelsObj[action.channelId]?.messagesObj?.[action.messageId] ||
+        {};
+      return {
+        ...state,
+        channelsObj: {
+          ...state.channelsObj,
+          [action.channelId]: {
+            ...state.channelsObj[action.channelId],
+            messagesObj: {
+              ...state.channelsObj[action.channelId]?.messagesObj,
+              [action.messageId]: {
+                ...message,
+                reactions: (message.reactions || []).filter((reaction) => {
+                  return (
+                    reaction.userId !== action.userId ||
+                    reaction.type !== action.reaction
+                  );
+                })
+              }
+            }
+          }
+        }
+      };
+    }
     case 'EDIT_CHANNEL_SETTINGS':
       return {
         ...state,
@@ -170,7 +227,7 @@ export default function ChatReducer(state, action) {
           ...state.channelsObj,
           [action.channelId]: {
             ...state.channelsObj[action.channelId],
-            recentChessMessage: undefined
+            recentChessMessage: null
           }
         }
       };
@@ -395,7 +452,15 @@ export default function ChatReducer(state, action) {
         }),
         channelsObj: {
           ...state.channelsObj,
-          recentChessMessage: undefined,
+          ...(state.selectedChannelId
+            ? {
+                [state.selectedChannelId]: {
+                  ...state.channelsObj[state.selectedChannelId],
+                  recentChessMessage: null,
+                  numUnreads: 0
+                }
+              }
+            : {}),
           [selectedChannel.id]: {
             ...selectedChannel,
             messagesLoadMoreButton,
@@ -420,13 +485,14 @@ export default function ChatReducer(state, action) {
             ? {
                 [state.selectedChannelId]: {
                   ...state.channelsObj[state.selectedChannelId],
+                  recentChessMessage: null,
                   numUnreads: 0
                 }
               }
             : {}),
           0: {
             ...state.channelsObj[0],
-            recentChessMessage: undefined,
+            recentChessMessage: null,
             messageIds: [],
             messagesLoadMoreButton: false,
             loaded: true
@@ -549,7 +615,7 @@ export default function ChatReducer(state, action) {
         messagesLoadMoreButton,
         messageIds: newMessageIds,
         messagesObj: newMessagesObj,
-        recentChessMessage: undefined,
+        recentChessMessage: null,
         loaded: true
       };
       if (alreadyUsingChat) {
@@ -735,6 +801,18 @@ export default function ChatReducer(state, action) {
       action.vocabActivities?.reverse();
       return {
         ...state,
+        channelsObj: {
+          ...state.channelsObj,
+          ...(state.selectedChannelId
+            ? {
+                [state.selectedChannelId]: {
+                  ...state.channelsObj[state.selectedChannelId],
+                  recentChessMessage: null,
+                  numUnreads: 0
+                }
+              }
+            : {})
+        },
         selectedChannelId: null,
         chatType: 'vocabulary',
         vocabActivities: action.vocabActivities,
@@ -849,7 +927,6 @@ export default function ChatReducer(state, action) {
           ...state.channelsObj,
           messagesLoadMoreButton: false,
           messageIds: [],
-          recentChessMessage: undefined,
           0: {
             id: 0,
             pathId: '',

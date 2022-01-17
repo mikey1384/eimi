@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Icon from 'components/Icon';
 import { Color } from 'constants/css';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { scrollElementToCenter } from 'helpers';
 
@@ -21,16 +21,16 @@ export default function MultiStepContainer({
   taskId,
   taskType
 }) {
-  const { userId, state } = useMyState();
+  const { missions } = useMyState();
   const updateMissionStatus = useAppContext(
     (v) => v.requestHelpers.updateMissionStatus
   );
-  const onUpdateUserMissionState = useContentContext(
-    (v) => v.actions.onUpdateUserMissionState
+  const onUpdateUserMissionState = useAppContext(
+    (v) => v.user.actions.onUpdateUserMissionState
   );
   const selectedIndex = useMemo(
-    () => state?.missions?.[taskType]?.selectedIndex || 0,
-    [state?.missions, taskType]
+    () => missions[taskType]?.selectedIndex || 0,
+    [missions, taskType]
   );
   const [helpButtonPressed, setHelpButtonPressed] = useState(false);
   useEffect(() => {
@@ -163,7 +163,6 @@ export default function MultiStepContainer({
       newStatus: { selectedIndex: newIndex }
     });
     onUpdateUserMissionState({
-      userId,
       missionType: taskType,
       newState: { selectedIndex: newIndex }
     });

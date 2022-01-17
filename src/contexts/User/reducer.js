@@ -1,11 +1,14 @@
-import { initialUserState } from '../AppContext';
+import { initialMyState } from '../AppContext';
 
 export default function UserReducer(state, action) {
   switch (action.type) {
     case 'CHANGE_DEFAULT_FILTER':
       return {
         ...state,
-        searchFilter: action.filter
+        myState: {
+          ...state.myState,
+          searchFilter: action.filter
+        }
       };
     case 'CLEAR_USER_SEARCH':
       return {
@@ -17,10 +20,14 @@ export default function UserReducer(state, action) {
         ...state,
         signinModalShown: false
       };
-    case 'INIT_USER':
+    case 'INIT_MY_STATE':
       return {
         ...state,
-        ...action.data
+        myState: {
+          ...state.myState,
+          ...action.data
+        },
+        loaded: true
       };
     case 'LOAD_USERS': {
       let loadMoreButton = false;
@@ -50,26 +57,18 @@ export default function UserReducer(state, action) {
     case 'LOGIN':
       return {
         ...state,
-        ...action.data,
+        myState: action.data,
         signinModalShown: false
       };
     case 'LOGOUT':
       return {
-        ...initialUserState,
-        loaded: true,
-        loadMoreButton: state.loadMoreButton,
-        profiles: state.profiles,
-        profilesLoaded: state.profilesLoaded,
-        searchedProfiles: state.searchedProfiles
+        ...state,
+        myState: initialMyState
       };
     case 'LOGOUT_AND_OPEN_SIGNIN_MODAL':
       return {
-        ...initialUserState,
-        loadMoreButton: state.loadMoreButton,
-        signinModalShown: true,
-        profiles: state.profiles,
-        profilesLoaded: state.profilesLoaded,
-        searchedProfiles: state.searchedProfiles
+        ...state,
+        myState: initialMyState
       };
     case 'OPEN_SIGNIN_MODAL':
       return {
@@ -98,13 +97,16 @@ export default function UserReducer(state, action) {
     case 'SIGNUP':
       return {
         ...state,
-        ...action.data,
+        myState: action.data,
         signinModalShown: false
       };
     case 'SET_LAST_CHAT_PATH':
       return {
         ...state,
-        lastChatPath: action.lastChatPath
+        myState: {
+          ...state.myState,
+          lastChatPath: action.lastChatPath
+        }
       };
     case 'SET_ORDER_USERS_BY':
       return {
@@ -116,15 +118,43 @@ export default function UserReducer(state, action) {
         ...state,
         profilesLoaded: action.loaded
       };
+    case 'SET_USER_STATE':
+      return {
+        ...state,
+        userObj: {
+          ...state.userObj,
+          [action.userId]: {
+            ...(state.userObj[action.userId] || {}),
+            ...action.newState
+          }
+        }
+      };
     case 'TOGGLE_HIDE_WATCHED':
       return {
         ...state,
-        hideWatched: action.hideWatched
+        myState: {
+          ...state.myState,
+          hideWatched: action.hideWatched
+        }
       };
     case 'UPDATE_NUM_WORDS_COLLECTED':
       return {
         ...state,
-        numWordsCollected: action.numWordsCollected
+        myState: {
+          ...state.myState,
+          numWordsCollected: action.numWordsCollected
+        }
+      };
+    case 'UPDATE_MISSION_STATE':
+      return {
+        ...state,
+        missions: {
+          ...state.missions,
+          [action.missionType]: {
+            ...state.missions[action.missionType],
+            ...action.newState
+          }
+        }
       };
     default:
       return state;

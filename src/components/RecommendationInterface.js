@@ -51,13 +51,9 @@ export default function RecommendationInterface({
       mounted.current = false;
     };
   }, []);
-
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const recommendContent = useAppContext(
     (v) => v.requestHelpers.recommendContent
-  );
-
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
   );
   const onRecommendContent = useContentContext(
     (v) => v.actions.onRecommendContent
@@ -224,7 +220,7 @@ export default function RecommendationInterface({
         setHidden(true);
       }
       if (mounted.current) {
-        onUpdateUserCoins({ coins, userId });
+        onSetUserState({ userId, newState: { twinkleCoins: coins } });
       }
       if (recommendations && mounted.current) {
         onRecommendContent({ contentId, contentType, recommendations });

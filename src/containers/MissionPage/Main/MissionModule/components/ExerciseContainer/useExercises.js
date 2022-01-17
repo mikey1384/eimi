@@ -5,11 +5,10 @@ export default function useExercises({
   exercises,
   exerciseKey,
   prevExerciseKey,
-  state = {},
+  missions,
   onUpdateUserMissionState,
   onSetCode,
   taskType,
-  userId,
   username,
   updateMissionStatus
 } = {}) {
@@ -18,10 +17,10 @@ export default function useExercises({
   const passObj = useMemo(() => {
     const result = {};
     for (let key of Object.keys(exercises)) {
-      result[key] = state?.missions?.[taskType]?.[key] === 'pass';
+      result[key] = missions[taskType]?.[key] === 'pass';
     }
     return result;
-  }, [exercises, state?.missions, taskType]);
+  }, [exercises, missions, taskType]);
 
   const passed = useMemo(() => {
     return passObj[exerciseKey];
@@ -58,7 +57,7 @@ export default function useExercises({
         })
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [codeObj, exerciseKey, userId]);
+  }, [codeObj, exerciseKey]);
 
   return {
     passed,
@@ -71,7 +70,6 @@ export default function useExercises({
 
   function handleNextClick() {
     onUpdateUserMissionState({
-      userId,
       missionType: taskType,
       newState: { [exerciseKey]: 'pass' }
     });

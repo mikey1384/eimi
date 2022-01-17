@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ItemPanel from './ItemPanel';
 import Icon from 'components/Icon';
 import MaxLevelItemInfo from './MaxLevelItemInfo';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import {
   translateMBToGB,
@@ -71,9 +71,7 @@ FileSizeItem.propTypes = {
 
 export default function FileSizeItem({ style }) {
   const { fileUploadLvl = 0, karmaPoints, userId } = useMyState();
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const upgradeFileUploadSize = useAppContext(
     (v) => v.requestHelpers.upgradeFileUploadSize
   );
@@ -102,7 +100,10 @@ export default function FileSizeItem({ style }) {
   async function handleUpgrade() {
     const success = await upgradeFileUploadSize();
     if (success) {
-      onUpdateProfileInfo({ userId, fileUploadLvl: fileUploadLvl + 1 });
+      onSetUserState({
+        userId,
+        newState: { fileUploadLvl: fileUploadLvl + 1 }
+      });
     }
   }
 }

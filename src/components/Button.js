@@ -41,10 +41,11 @@ function Button({
   const ButtonRef = useRef(null);
   const ButtonStyle = useMemo(() => {
     const colorKey = onHover ? hoverColor : color;
-    const backgroundOpacity = filled ? 1 : skeuomorphic ? 0.5 : opacity || 0;
+    const backgroundOpacity = opacity || (filled ? 1 : skeuomorphic ? 0.5 : 0);
     const backgroundHoverOpacity = transparent ? 0 : 0.9;
     const backgroundDisabledOpacity = filled || skeuomorphic ? 0.2 : 0;
     const textOpacity = disabled ? 0.2 : transparent ? 0.7 : 1;
+
     return `${css`
       cursor: ${disabled ? 'default' : 'pointer'};
       display: flex;
@@ -68,12 +69,18 @@ function Button({
         ${Color[colorKey](
           disabled ? backgroundDisabledOpacity : backgroundOpacity
         )};
+      ${skeuomorphic && filled
+        ? `border-color: ${Color[colorKey](
+            disabled ? backgroundDisabledOpacity : backgroundHoverOpacity
+          )};`
+        : ''};
       border-radius: ${borderRadius};
       ${skeuomorphic
         ? disabled
           ? 'opacity: 0.5;'
           : `box-shadow: 0 0 1px ${Color[colorKey](0.5)};`
-        : ''} &:focus {
+        : ''}
+      &:focus {
         outline: ${(transparent || disabled || skeuomorphic) && 0};
       }
       ${skeuomorphic && filled
@@ -106,9 +113,16 @@ function Button({
           color: ${!skeuomorphic && (filled || opacity)
             ? '#fff'
             : Color[colorKey](textOpacity)};
+          box-shadow: ${skeuomorphic && filled
+            ? `box-shadow: 0 0 1px ${Color[colorKey](0.5)};`
+            : 'none'};
           border: 1px solid
             ${Color[colorKey](
-              disabled ? backgroundDisabledOpacity : backgroundOpacity
+              disabled
+                ? backgroundDisabledOpacity
+                : skeuomorphic && filled
+                ? backgroundHoverOpacity
+                : backgroundOpacity
             )};
         }
         ${stretch ? 'border-radius: 0;' : ''};

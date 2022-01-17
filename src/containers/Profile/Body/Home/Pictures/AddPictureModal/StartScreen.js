@@ -5,7 +5,7 @@ import Icon from 'components/Icon';
 import AlertModal from 'components/Modals/AlertModal';
 import ErrorBoundary from 'components/ErrorBoundary';
 import ImageEditModal from 'components/Modals/ImageEditModal';
-import { useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { isMobile } from 'helpers';
 import { Color } from 'constants/css';
 import { MAX_PROFILE_PIC_SIZE } from 'constants/defaultValues';
@@ -19,9 +19,7 @@ StartScreen.propTypes = {
 const deviceIsMobile = isMobile(navigator);
 
 export default function StartScreen({ navigateTo, onHide, profileId }) {
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const [alertModalShown, setAlertModalShown] = useState(false);
   const [imageEditModalShown, setImageEditModalShown] = useState(false);
   const [imageUri, setImageUri] = useState(null);
@@ -133,9 +131,9 @@ export default function StartScreen({ navigateTo, onHide, profileId }) {
   );
 
   function handleImageEditDone({ pictures }) {
-    onUpdateProfileInfo({
+    onSetUserState({
       userId: profileId,
-      pictures
+      newState: { pictures }
     });
     onHide();
   }

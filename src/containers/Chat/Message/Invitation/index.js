@@ -83,15 +83,15 @@ export default function Invitation({
   const desktopHeight = useMemo(() => {
     if (userId === sender.id) {
       if (!invitationChannel || invitationChannel.members?.length > 3) {
-        return '9rem';
+        return '10rem';
       } else {
-        return '7rem';
+        return '8rem';
       }
     } else {
       if (!invitationChannel || invitationChannel.members?.length > 3) {
-        return '14rem';
+        return '15rem';
       } else {
-        return '12rem';
+        return '13rem';
       }
     }
   }, [invitationChannel, sender.id, userId]);
@@ -99,15 +99,15 @@ export default function Invitation({
   const mobileHeight = useMemo(() => {
     if (userId === sender.id) {
       if (!invitationChannel || invitationChannel.members?.length > 3) {
-        return '7rem';
+        return '8rem';
       } else {
-        return '5rem';
+        return '6rem';
       }
     } else {
       if (!invitationChannel || invitationChannel.members?.length > 3) {
-        return '12rem';
+        return '13rem';
       } else {
-        return '10rem';
+        return '11rem';
       }
     }
   }, [invitationChannel, sender.id, userId]);

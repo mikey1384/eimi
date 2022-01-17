@@ -47,6 +47,7 @@ ProfilePanel.propTypes = {
 
 function ProfilePanel({ expandable, profileId, style }) {
   const mounted = useRef(true);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   useEffect(() => {
     mounted.current = true;
     return function cleanUp() {
@@ -55,10 +56,11 @@ function ProfilePanel({ expandable, profileId, style }) {
   }, []);
 
   const history = useHistory();
-  const profile = useContentState({
+  const profilePanelState = useContentState({
     contentType: 'user',
     contentId: profileId
   });
+  const profile = useAppContext((v) => v.user.state.userObj[profileId] || {});
 
   const {
     comments = [],
@@ -66,20 +68,23 @@ function ProfilePanel({ expandable, profileId, style }) {
     commentsLoadMoreButton,
     commentsShown,
     visible: previousVisible,
-    lastActive,
-    loaded,
-    numMessages,
-    online,
     placeholderHeight: previousPlaceholderHeight,
-    previewLoaded,
+    previewLoaded
+  } = profilePanelState;
+
+  const {
+    online,
+    lastActive,
+    loaded: profileLoaded,
+    numMessages,
+    username: profileName,
+    twinkleXP,
+    userType,
     profileFirstRow,
     profileSecondRow,
     profileThirdRow,
     profilePicUrl,
     profileTheme,
-    twinkleXP,
-    username: profileName,
-    userType,
     website,
     youtubeUrl
   } = profile;
@@ -106,23 +111,12 @@ function ProfilePanel({ expandable, profileId, style }) {
   const onSetCommentsShown = useContentContext(
     (v) => v.actions.onSetCommentsShown
   );
-  const onSetOnline = useContentContext((v) => v.actions.onSetOnline);
   const onUploadComment = useContentContext((v) => v.actions.onUploadComment);
   const onUploadReply = useContentContext((v) => v.actions.onUploadReply);
-  const onRemoveStatusMsg = useContentContext(
-    (v) => v.actions.onRemoveStatusMsg
-  );
   const onSetPlaceholderHeight = useContentContext(
     (v) => v.actions.onSetPlaceholderHeight
   );
   const onSetVisible = useContentContext((v) => v.actions.onSetVisible);
-  const onUpdateStatusMsg = useContentContext(
-    (v) => v.actions.onUpdateStatusMsg
-  );
-  const onUpdateBio = useContentContext((v) => v.actions.onUpdateBio);
-  const onUploadProfilePic = useContentContext(
-    (v) => v.actions.onUploadProfilePic
-  );
 
   const [ComponentRef, inView] = useInView({
     rootMargin: '50px 0px 0px 0px',
@@ -193,7 +187,7 @@ function ProfilePanel({ expandable, profileId, style }) {
         handleCheckIfUserOnline();
       }
     }, 100);
-    if (!profile.loaded && !loading.current && profileId) {
+    if (!profileLoaded && !loading.current && profileId) {
       handleInitProfile();
     }
     if (!commentsLoaded && !previewLoaded) {
@@ -202,14 +196,21 @@ function ProfilePanel({ expandable, profileId, style }) {
     async function handleCheckIfUserOnline() {
       const online = await checkIfUserOnline(profileId);
       if (mounted.current) {
-        onSetOnline({ contentId: profileId, contentType: 'user', online });
+        onSetUserState({ userId: profileId, newState: { online } });
       }
     }
     async function handleInitProfile() {
       loading.current = true;
       const data = await loadProfile(profileId);
       if (mounted.current) {
-        onInitContent({ contentId: profileId, contentType: 'user', ...data });
+        onInitContent({
+          contentType: 'user',
+          contentId: profileId
+        });
+        onSetUserState({
+          userId: profileId,
+          newState: { ...data, loaded: true }
+        });
         loading.current = false;
       }
     }
@@ -233,7 +234,7 @@ function ProfilePanel({ expandable, profileId, style }) {
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [profileId, userId, profile.loaded, commentsLoaded, previewLoaded]);
+  }, [profileId, userId, profileLoaded, commentsLoaded, previewLoaded]);
 
   const canEdit = useMemo(
     () => userId === profileId || isCreator,
@@ -248,8 +249,8 @@ function ProfilePanel({ expandable, profileId, style }) {
     [placeholderHeight, previousPlaceholderHeight]
   );
   const contentShown = useMemo(
-    () => !loaded || heightNotSet || visible || inView,
-    [heightNotSet, inView, loaded, visible]
+    () => !profileLoaded || heightNotSet || visible || inView,
+    [heightNotSet, inView, profileLoaded, visible]
   );
   const leaveMessageLabel = useMemo(() => {
     if (SELECTED_LANGUAGE === 'kr') {
@@ -337,7 +338,7 @@ function ProfilePanel({ expandable, profileId, style }) {
                 }
               `}
             >
-              {loaded ? (
+              {profileLoaded ? (
                 <div
                   style={{ display: 'flex', height: '100%', marginTop: '1rem' }}
                 >
@@ -423,14 +424,19 @@ function ProfilePanel({ expandable, profileId, style }) {
                   >
                     <UserDetails
                       profile={profile}
-                      removeStatusMsg={onRemoveStatusMsg}
+                      removeStatusMsg={(userId) =>
+                        onSetUserState({
+                          userId,
+                          newState: { statusMsg: '', statusColor: '' }
+                        })
+                      }
                       updateStatusMsg={(data) => {
                         if (banned?.posting) {
                           return;
                         }
-                        onUpdateStatusMsg(data);
+                        onSetUserState({ userId: data.userId, newState: data });
                       }}
-                      onUpdateBio={onUpdateBio}
+                      onSetBioEditModalShown={setBioEditModalShown}
                       userId={userId}
                     />
                     {canEdit && (
@@ -529,7 +535,7 @@ function ProfilePanel({ expandable, profileId, style }) {
               ) : (
                 <Loading />
               )}
-              {loaded && (
+              {profileLoaded && (
                 <Comments
                   comments={comments}
                   commentsLoadLimit={5}
@@ -551,7 +557,11 @@ function ProfilePanel({ expandable, profileId, style }) {
                   onPreviewClick={onExpandComments}
                   onReplySubmit={onUploadReply}
                   onRewardCommentEdit={onEditRewardComment}
-                  parent={{ ...profile, contentType: 'user' }}
+                  parent={{
+                    ...profile,
+                    ...profilePanelState,
+                    contentType: 'user'
+                  }}
                   style={{ marginTop: '1rem' }}
                   userId={userId}
                 />
@@ -572,7 +582,10 @@ function ProfilePanel({ expandable, profileId, style }) {
   );
 
   function handleImageEditDone({ filePath }) {
-    onUploadProfilePic({ userId, imageUrl: `/profile/${filePath}` });
+    onSetUserState({
+      userId,
+      newState: { profilePicUrl: `/profile/${filePath}` }
+    });
     setImageEditModalShown(false);
   }
 
@@ -674,7 +687,7 @@ function ProfilePanel({ expandable, profileId, style }) {
       profileId
     });
     if (mounted.current) {
-      onUpdateBio(data);
+      onSetUserState({ userId: data.userId, newState: data.bio });
       setBioEditModalShown(false);
     }
   }

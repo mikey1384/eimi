@@ -13,9 +13,7 @@ import SwitchButton from 'components/Buttons/SwitchButton';
 // import { useMyState } from 'helpers/hooks';
 import { stringIsEmpty } from 'helpers/stringHelpers';
 // eslint-disable-next-line standard/object-curly-even-spacing
-import {
-  /* useAppContext, */ useChatContext /* useContentContext */
-} from 'contexts';
+import { useChatContext } from 'contexts';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 // import localize from 'constants/localize';
@@ -55,19 +53,7 @@ export default function SettingsModal({
   // unlockedThemes,
   userIsChannelOwner
 }) {
-  /*
-  const {
-    requestHelpers: { buyChatSubject, buyChatTheme }
-  } = useAppContext();
-  */
   const customChannelNames = useChatContext((v) => v.state.customChannelNames);
-  /*
-  const {
-    actions: { onUpdateUserCoins }
-  } = useContentContext();
-  */
-  // const { twinkleCoins, userId } = useMyState();
-  // const [hovered, setHovered] = useState(false);
   const [selectNewOwnerModalShown, setSelectNewOwnerModalShown] =
     useState(false);
   // const [confirmModalShown, setConfirmModalShown] = useState(false);
@@ -365,7 +351,7 @@ export default function SettingsModal({
     try {
       const { coins } = await buyChatSubject(channelId);
       onEnableChatSubject(channelId);
-      onUpdateUserCoins({ coins, userId });
+      onSetUserState({ userId, newState: { twinkleCoins: coins } });
       onPurchaseSubject();
       setEditedCanChangeSubject('owner');
       onScrollToBottom();
@@ -385,7 +371,7 @@ export default function SettingsModal({
         theme: themeToPurchase
       });
       onEnableTheme({ channelId, theme: themeToPurchase });
-      onUpdateUserCoins({ coins, userId });
+      onSetUserState({ userId, newState: { twinkleCoins: coins } });
       setThemeToPurchase('');
     } catch (error) {
       console.error(error);

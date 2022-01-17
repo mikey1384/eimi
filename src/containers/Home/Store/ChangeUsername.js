@@ -6,7 +6,7 @@ import Icon from 'components/Icon';
 import Loading from 'components/Loading';
 import { socket } from 'constants/io';
 import { Color } from 'constants/css';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { priceTable } from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
 import { isValidUsername, stringIsEmpty } from 'helpers/stringHelpers';
@@ -25,12 +25,10 @@ ChangeUsername.propTypes = {
 };
 
 export default function ChangeUsername({ style }) {
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const changeUsername = useAppContext((v) => v.requestHelpers.changeUsername);
   const checkIfUsernameExists = useAppContext(
     (v) => v.requestHelpers.checkIfUsernameExists
-  );
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
   );
   const { twinkleCoins, userId, banned } = useMyState();
   const [loading, setLoading] = useState(false);
@@ -147,7 +145,7 @@ export default function ChangeUsername({ style }) {
       setErrorMessage(usernameAlreadyTakenLabel);
     } else {
       socket.emit('change_username', newUsername);
-      onUpdateUserCoins({ coins, userId });
+      onSetUserState({ userId, newState: { twinkleCoins: coins } });
       setNewUsername('');
     }
     setChanging(false);

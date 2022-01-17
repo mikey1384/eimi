@@ -254,14 +254,16 @@ export default function userRequestHelpers({ auth, handleError, token }) {
             karmaPoints,
             numTwinklesRewarded,
             numApprovedRecommendations,
-            numPostsRewarded
+            numPostsRewarded,
+            numRecommended
           }
         } = await request.get(`${URL}/user/karma`, auth());
         return Promise.resolve({
           karmaPoints,
           numTwinklesRewarded,
           numApprovedRecommendations,
-          numPostsRewarded
+          numPostsRewarded,
+          numRecommended
         });
       } catch (error) {
         return handleError(error);

@@ -16,7 +16,6 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import {
   useAppContext,
   useChatContext,
-  useContentContext,
   useInputContext,
   useNotiContext
 } from 'contexts';
@@ -32,6 +31,7 @@ const lookingUpLabel = localize('lookingUp');
 const typeWordInBoxBelowLabel = localize('typeWordInBoxBelow');
 
 function Vocabulary() {
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const lookUpWord = useAppContext((v) => v.requestHelpers.lookUpWord);
   const registerWord = useAppContext((v) => v.requestHelpers.registerWord);
   const onUpdateNumWordsCollected = useAppContext(
@@ -48,10 +48,6 @@ function Vocabulary() {
   const onUpdateCollectorsRankings = useChatContext(
     (v) => v.actions.onUpdateCollectorsRankings
   );
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
-  );
-  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
   const state = useInputContext((v) => v.state);
   const onEnterComment = useInputContext((v) => v.actions.onEnterComment);
   const socketConnected = useNotiContext((v) => v.state.socketConnected);
@@ -159,8 +155,10 @@ function Vocabulary() {
         const { coins, xp, rank, word, rankings } = await registerWord(
           definitions
         );
-        onChangeUserXP({ xp, rank, userId });
-        onUpdateUserCoins({ coins, userId });
+        onSetUserState({
+          userId,
+          newState: { twinkleXP: xp, twinkleCoins: coins, rank }
+        });
         onUpdateNumWordsCollected(word.numWordsCollected);
         onRegisterWord(word);
         onUpdateCollectorsRankings({ rankings });

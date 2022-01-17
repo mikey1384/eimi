@@ -2,7 +2,7 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useLocation } from 'react-router-dom';
 import { Color } from 'constants/css';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import queryString from 'query-string';
 import GitHubButton from './GitHubButton';
@@ -17,9 +17,7 @@ GitHubVerifier.propTypes = {
 
 export default function GitHubVerifier({ task }) {
   const loadGitHubData = useAppContext((v) => v.requestHelpers.loadGitHubData);
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const { userId } = useMyState();
   const location = useLocation();
   const { search } = location;
@@ -44,9 +42,9 @@ export default function GitHubVerifier({ task }) {
         setLoading(true);
         const githubUsername = await loadGitHubData(code);
         if (mounted.current) {
-          onUpdateProfileInfo({
+          onSetUserState({
             userId,
-            githubUsername
+            newState: { githubUsername }
           });
         }
       } catch (error) {

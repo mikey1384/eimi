@@ -48,14 +48,12 @@ export default function XPRewardInterface({
   uploaderId,
   uploaderAuthLevel
 }) {
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const rewardUser = useAppContext((v) => v.requestHelpers.rewardUser);
   const { authLevel, twinkleCoins, userId, banned } = useMyState();
   const state = useInputContext((v) => v.state);
   const onSetRewardForm = useInputContext((v) => v.actions.onSetRewardForm);
   const onAttachReward = useContentContext((v) => v.actions.onAttachReward);
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
-  );
   const onSetXpRewardInterfaceShown = useContentContext(
     (v) => v.actions.onSetXpRewardInterfaceShown
   );
@@ -340,7 +338,7 @@ export default function XPRewardInterface({
         });
       }
       if (typeof netCoins === 'number' && mounted.current) {
-        onUpdateUserCoins({ coins: netCoins, userId });
+        onSetUserState({ userId, newState: { twinkleCoins: netCoins } });
       }
       if (selectedAmount === myRewardables && mounted.current) {
         onReward?.();

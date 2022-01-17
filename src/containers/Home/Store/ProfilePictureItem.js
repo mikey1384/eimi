@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import ItemPanel from './ItemPanel';
 import Icon from 'components/Icon';
 import MaxLevelItemInfo from './MaxLevelItemInfo';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { karmaPointTable, SELECTED_LANGUAGE } from 'constants/defaultValues';
 import localize from 'constants/localize';
@@ -33,9 +33,7 @@ ProfilePictureItem.propTypes = {
 export default function ProfilePictureItem({ style }) {
   const { karmaPoints, numPics = 0, userId } = useMyState();
   const upgradeNumPics = useAppContext((v) => v.requestHelpers.upgradeNumPics);
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const descriptionLabel = useMemo(() => {
     if (numPics > 0) {
       if (SELECTED_LANGUAGE === 'kr') {
@@ -84,7 +82,7 @@ export default function ProfilePictureItem({ style }) {
   async function handleUpgrade() {
     const success = await upgradeNumPics();
     if (success) {
-      onUpdateProfileInfo({ userId, numPics: numPics + 1 });
+      onSetUserState({ userId, newState: { numPics: numPics + 1 } });
     }
   }
 }

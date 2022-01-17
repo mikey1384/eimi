@@ -12,7 +12,7 @@ import Loading from 'components/Loading';
 import { REWARD_VALUE, SELECTED_LANGUAGE } from 'constants/defaultValues';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext, useNotiContext } from 'contexts';
+import { useAppContext, useNotiContext } from 'contexts';
 import localize from 'constants/localize';
 
 const tapToCollectRewardsLabel = localize('tapToCollectRewards');
@@ -68,10 +68,7 @@ function MainFeeds({
     (v) => v.actions.onLoadMoreNotifications
   );
   const onLoadMoreRewards = useNotiContext((v) => v.actions.onLoadMoreRewards);
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
-  );
-  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const [loading, setLoading] = useState(false);
   const [loadingNewFeeds, setLoadingNewFeeds] = useState(false);
   const [collectingReward, setCollectingReward] = useState(false);
@@ -228,10 +225,10 @@ function MainFeeds({
       action: 'collect'
     });
     if (mounted.current) {
-      onUpdateUserCoins({ coins, userId });
-    }
-    if (mounted.current) {
-      onChangeUserXP({ xp, rank, userId });
+      onSetUserState({
+        userId,
+        newState: { twinkleXP: xp, twinkleCoins: coins, rank }
+      });
     }
     if (mounted.current) {
       onClearRewards();

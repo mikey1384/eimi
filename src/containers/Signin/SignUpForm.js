@@ -10,7 +10,7 @@ import {
   isValidUsername,
   stringIsEmpty
 } from 'helpers/stringHelpers';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import localize from 'constants/localize';
 
@@ -44,7 +44,7 @@ export default function SignUpForm({
 }) {
   const onSignup = useAppContext((v) => v.user.actions.onSignup);
   const signup = useAppContext((v) => v.requestHelpers.signup);
-  const onInitContent = useContentContext((v) => v.actions.onInitContent);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const [password, setPassword] = useState('');
   const [firstname, setFirstname] = useState('');
   const [lastname, setLastname] = useState('');
@@ -281,7 +281,7 @@ export default function SignUpForm({
         email
       });
       onSignup(data);
-      onInitContent({ contentType: 'user', contentId: data.id, ...data });
+      onSetUserState({ userId: data.id, newState: { ...data, loaded: true } });
     } catch (error) {
       setErrorMessage(error?.data);
     }

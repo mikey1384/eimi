@@ -92,14 +92,14 @@ function AccountMenu({ className, history }) {
         <DropdownButton
           className={className}
           transparent
+          xAdjustment={-30}
           listStyle={{
-            top: '4.5rem',
-            width: '13rem'
+            top: '4.5rem'
           }}
           text={
             <div
               style={{
-                maxWidth: '10rem',
+                maxWidth: '12rem',
                 overflow: 'hidden',
                 whiteSpace: 'nowrap',
                 textOverflow: 'ellipsis'

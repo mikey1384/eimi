@@ -7,7 +7,7 @@ import FileSizeItem from './FileSizeItem';
 import ProfilePictureItem from './ProfilePictureItem';
 import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-import { useAppContext, useContentContext, useViewContext } from 'contexts';
+import { useAppContext, useViewContext } from 'contexts';
 import {
   priceTable,
   karmaPointTable,
@@ -44,10 +44,7 @@ export default function Store() {
   const unlockUsernameChange = useAppContext(
     (v) => v.requestHelpers.unlockUsernameChange
   );
-  const onInitContent = useContentContext((v) => v.actions.onInitContent);
-  const onUpdateProfileInfo = useContentContext(
-    (v) => v.actions.onUpdateProfileInfo
-  );
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const pageVisible = useViewContext((v) => v.state.pageVisible);
   const { canChangeUsername, karmaPoints, userId } = useMyState();
   const mounted = useRef(true);
@@ -60,7 +57,7 @@ export default function Store() {
     async function init() {
       const data = await loadMyData();
       if (mounted.current) {
-        onInitContent({ contentType: 'user', contentId: data.userId, ...data });
+        onSetUserState({ userId: data.userId, newState: data });
       }
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -113,7 +110,6 @@ export default function Store() {
       </div>
       <KarmaStatus />
       <ItemPanel
-        karmaPoints={karmaPoints}
         itemName={changePasswordLabel}
         style={{ marginTop: userId ? '4rem' : 0 }}
         itemDescription={changePasswordDescriptionLabel}
@@ -154,7 +150,7 @@ export default function Store() {
   async function handleUnlockUsernameChange() {
     const success = await unlockUsernameChange();
     if (success) {
-      onUpdateProfileInfo({ userId, canChangeUsername: true });
+      onSetUserState({ userId, newState: { canChangeUsername: true } });
     }
   }
 }

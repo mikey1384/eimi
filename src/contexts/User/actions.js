@@ -16,10 +16,10 @@ export default function UserActions(dispatch) {
         type: 'CLOSE_SIGNIN_MODAL'
       });
     },
-    onInitUser(data) {
+    onInitMyState(data) {
       return dispatch({
-        type: 'INIT_USER',
-        data: { ...data, loggedIn: true }
+        type: 'INIT_MY_STATE',
+        data: data
       });
     },
     onLoadUsers(data) {
@@ -86,6 +86,13 @@ export default function UserActions(dispatch) {
         type: 'SET_SESSION_LOADED'
       });
     },
+    onSetUserState({ userId, newState }) {
+      return dispatch({
+        type: 'SET_USER_STATE',
+        userId,
+        newState
+      });
+    },
     onToggleHideWatched(hideWatched) {
       return dispatch({
         type: 'TOGGLE_HIDE_WATCHED',
@@ -96,6 +103,13 @@ export default function UserActions(dispatch) {
       return dispatch({
         type: 'UPDATE_NUM_WORDS_COLLECTED',
         numWordsCollected
+      });
+    },
+    onUpdateUserMissionState({ missionType, newState }) {
+      return dispatch({
+        type: 'UPDATE_MISSION_STATE',
+        missionType,
+        newState
       });
     }
   };

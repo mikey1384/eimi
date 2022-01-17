@@ -3,8 +3,8 @@ import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
 import { useHistory } from 'react-router-dom';
-import { useContentState, useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext, useChatContext } from 'contexts';
+import { useMyState } from 'helpers/hooks';
+import { useAppContext, useChatContext } from 'contexts';
 import { isMobile } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
 import localize from 'constants/localize';
@@ -41,11 +41,10 @@ export default function UsernameText({
   const mouseEntered = useRef(false);
   const loadDMChannel = useAppContext((v) => v.requestHelpers.loadDMChannel);
   const loadProfile = useAppContext((v) => v.requestHelpers.loadProfile);
-  const onInitContent = useContentContext((v) => v.actions.onInitContent);
-  const { rank, twinkleXP } = useContentState({
-    contentType: 'user',
-    contentId: user.id
-  });
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
+  const { rank, twinkleXP } = useAppContext(
+    (v) => v.user.state.userObj[user.id] || {}
+  );
   const { userId, username, profilePicUrl, authLevel } = useMyState();
   const onOpenNewChatTab = useChatContext((v) => v.actions.onOpenNewChatTab);
   const [dropdownContext, setDropdownContext] = useState(null);
@@ -214,10 +213,9 @@ export default function UsernameText({
           const data = await loadProfile(user.id);
           if (mouseEntered.current) {
             if (mounted.current) {
-              onInitContent({
-                contentId: user.id,
-                contentType: 'user',
-                ...data
+              onSetUserState({
+                userId: user.id,
+                newState: { ...data, loaded: true }
               });
             }
             if (mounted.current) {
@@ -266,7 +264,10 @@ export default function UsernameText({
       if (!twinkleXP && !user.twinkleXP && !menuShownRef.current) {
         const data = await loadProfile(user.id);
         if (mounted.current) {
-          onInitContent({ contentId: user.id, contentType: 'user', ...data });
+          onSetUserState({
+            userId: user.id,
+            newState: { ...data, loaded: true }
+          });
         }
         if (mounted.current) {
           setDropdownContext(elementContext);

@@ -7,7 +7,7 @@ import CopyAndPasteCode from './CopyAndPasteCode';
 import MultiStepContainer from '../../components/MultiStepContainer';
 import TaskComplete from '../../components/TaskComplete';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { scrollElementToCenter } from 'helpers';
 import RequiresComputer from '../../components/RequiresComputer';
 
@@ -16,17 +16,17 @@ ReplitVerifier.propTypes = {
 };
 
 export default function ReplitVerifier({ task }) {
-  const { userId, state } = useMyState();
+  const { missions } = useMyState();
   const updateMissionStatus = useAppContext(
     (v) => v.requestHelpers.updateMissionStatus
   );
-  const onUpdateUserMissionState = useContentContext(
-    (v) => v.actions.onUpdateUserMissionState
+  const onUpdateUserMissionState = useAppContext(
+    (v) => v.user.actions.onUpdateUserMissionState
   );
 
   const taskState = useMemo(
-    () => state?.missions?.[task?.missionType] || {},
-    [state?.missions, task?.missionType]
+    () => missions[task?.missionType] || {},
+    [missions, task?.missionType]
   );
 
   const {
@@ -119,7 +119,6 @@ export default function ReplitVerifier({ task }) {
       newStatus: newState
     });
     onUpdateUserMissionState({
-      userId,
       missionType: task.missionType,
       newState
     });

@@ -115,7 +115,7 @@ export default function ItemPanel({
           )}
         </>
       )}
-      {!requiredKarmaPoints && (
+      {!requiredKarmaPoints && !karmaPoints && (
         <p style={{ fontSize: '1.5rem', fontWeight: 'bold' }}>{freeLabel}</p>
       )}
       {!requiredKarmaPoints && !userId && itemDescription && (

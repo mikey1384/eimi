@@ -1,10 +1,12 @@
 export default function ChatActions(dispatch) {
   return {
-    onSetCall({ channelId, imCalling }) {
-      return dispatch({
-        type: 'SET_CALL',
+    onAddReactionToMessage({ channelId, messageId, reaction, userId }) {
+      dispatch({
+        type: 'ADD_REACTION_TO_MESSAGE',
         channelId,
-        imCalling
+        messageId,
+        reaction,
+        userId
       });
     },
     onCallReceptionConfirm(channelId) {
@@ -384,6 +386,15 @@ export default function ChatActions(dispatch) {
         message
       });
     },
+    onRemoveReactionFromMessage({ channelId, messageId, reaction, userId }) {
+      return dispatch({
+        type: 'REMOVE_REACTION_FROM_MESSAGE',
+        channelId,
+        messageId,
+        reaction,
+        userId
+      });
+    },
     onRemoveNewActivityStatus(word) {
       return dispatch({
         type: 'REMOVE_NEW_ACTIVITY_STATUS',
@@ -433,6 +444,13 @@ export default function ChatActions(dispatch) {
         type: 'CREATE_NEW_DM_CHANNEL',
         channel,
         message
+      });
+    },
+    onSetCall({ channelId, imCalling }) {
+      return dispatch({
+        type: 'SET_CALL',
+        channelId,
+        imCalling
       });
     },
     onSetChatInvitationDetail({ messageId, channelId, channel }) {

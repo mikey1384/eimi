@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import StepSlide from '../components/StepSlide';
 import Button from 'components/Button';
-import { useMyState } from 'helpers/hooks';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 
@@ -23,11 +22,10 @@ export default function ConnectReplToGitHub({
   const updateMissionStatus = useAppContext(
     (v) => v.requestHelpers.updateMissionStatus
   );
-  const onUpdateUserMissionState = useContentContext(
-    (v) => v.actions.onUpdateUserMissionState
+  const onUpdateUserMissionState = useAppContext(
+    (v) => v.user.actions.onUpdateUserMissionState
   );
   const [noPressed, setNoPressed] = useState(false);
-  const { userId } = useMyState();
 
   return (
     <StepSlide
@@ -119,7 +117,6 @@ export default function ConnectReplToGitHub({
       newStatus: { selectedIndex: newIndex }
     });
     onUpdateUserMissionState({
-      userId,
       missionType: taskType,
       newState: { selectedIndex: newIndex }
     });

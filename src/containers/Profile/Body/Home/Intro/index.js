@@ -18,7 +18,7 @@ import URL from 'constants/URL';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { useAppContext, useContentContext, useInputContext } from 'contexts';
+import { useAppContext, useInputContext } from 'contexts';
 import { SELECTED_LANGUAGE } from 'constants/defaultValues';
 import {
   addEmoji,
@@ -38,17 +38,10 @@ Intro.propTypes = {
 };
 
 export default function Intro({ profile, selectedTheme }) {
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const auth = useAppContext((v) => v.requestHelpers.auth);
   const uploadGreeting = useAppContext((v) => v.requestHelpers.uploadGreeting);
   const uploadBio = useAppContext((v) => v.requestHelpers.uploadBio);
-  const onRemoveStatusMsg = useContentContext(
-    (v) => v.actions.onRemoveStatusMsg
-  );
-  const onUpdateStatusMsg = useContentContext(
-    (v) => v.actions.onUpdateStatusMsg
-  );
-  const onUpdateGreeting = useContentContext((v) => v.actions.onUpdateGreeting);
-  const onUpdateBio = useContentContext((v) => v.actions.onUpdateBio);
   const editedStatusMsg = useInputContext((v) => v.state.editedStatusMsg);
   const editedStatusColor = useInputContext((v) => v.state.editedStatusColor);
   const onSetEditedStatusColor = useInputContext(
@@ -393,7 +386,7 @@ export default function Intro({ profile, selectedTheme }) {
       ...params,
       profileId: profile.id
     });
-    onUpdateBio(data);
+    onSetUserState({ userId: data.userId, newState: data.bio });
     setBioEditModalShown(false);
   }
 
@@ -402,12 +395,15 @@ export default function Intro({ profile, selectedTheme }) {
       return;
     }
     await uploadGreeting({ greeting });
-    onUpdateGreeting({ greeting, userId });
+    onSetUserState({ userId, newState: { greeting } });
   }
 
   async function handleRemoveStatus() {
     await request.delete(`${URL}/user/statusMsg`, auth());
-    onRemoveStatusMsg(userId);
+    onSetUserState({
+      userId,
+      newState: { statusMsg: '', statusColor: '' }
+    });
     setConfirmModalShown(false);
   }
 
@@ -427,6 +423,6 @@ export default function Intro({ profile, selectedTheme }) {
     );
     onSetEditedStatusColor('');
     onSetEditedStatusMsg('');
-    onUpdateStatusMsg(data);
+    onSetUserState({ userId, newState: data });
   }
 }

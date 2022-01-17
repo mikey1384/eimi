@@ -1,12 +1,12 @@
-import React, { memo } from 'react';
+import React, { memo, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import ProfilePic from 'components/ProfilePic';
 import UsernameText from 'components/Texts/UsernameText';
 import Icon from 'components/Icon';
-import { useChatContext } from 'contexts';
+import { useAppContext, useChatContext } from 'contexts';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
-import { useMyState, useContentState } from 'helpers/hooks';
+import { useMyState } from 'helpers/hooks';
 
 MemberListItem.propTypes = {
   onlineMembers: PropTypes.object,
@@ -17,10 +17,13 @@ MemberListItem.propTypes = {
 
 function MemberListItem({ onlineMembers, creatorId, member, style }) {
   const chatStatus = useChatContext((v) => v.state.chatStatus);
-  const { isAway, isBusy, username, profilePicUrl } =
-    chatStatus[member.id] || {};
   const { username: memberName, profilePicUrl: memberProfilePicUrl } =
-    useContentState({ contentId: member.id, contentType: 'user' });
+    useAppContext((v) => v.user.state.userObj[member.id] || {});
+  const { isAway, isBusy, username, profilePicUrl } = useMemo(
+    () => chatStatus[member.id] || {},
+    [chatStatus, member.id]
+  );
+
   const { userId: myId } = useMyState();
   return username || member.username ? (
     <div

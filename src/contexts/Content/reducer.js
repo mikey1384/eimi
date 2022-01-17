@@ -1,7 +1,4 @@
-import {
-  DEFAULT_PROFILE_THEME,
-  defaultContentState
-} from 'constants/defaultValues';
+import { defaultContentState } from 'constants/defaultValues';
 
 export default function ContentReducer(state, action) {
   const contentKey =
@@ -21,7 +18,6 @@ export default function ContentReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           ...action.data,
-          profileTheme: action.data.profileTheme || DEFAULT_PROFILE_THEME,
           loaded: true,
           contentId: action.contentId,
           contentType: action.contentType
@@ -162,14 +158,6 @@ export default function ContentReducer(state, action) {
           fileUploadComplete: false
         }
       };
-    case 'CHANGE_PROFILE_THEME':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          profileTheme: action.theme
-        }
-      };
     case 'CHANGE_SPOILER_STATUS': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);
@@ -220,15 +208,6 @@ export default function ContentReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           twinkleCoins: action.coins
-        }
-      };
-    case 'CHANGE_USER_XP':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          twinkleXP: action.xp,
-          rank: action.rank
         }
       };
     case 'DELETE_COMMENT': {
@@ -325,16 +304,6 @@ export default function ContentReducer(state, action) {
           isDeleted: true
         }
       };
-    case 'DELETE_STATUS_MSG': {
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          statusMsg: '',
-          statusColor: ''
-        }
-      };
-    }
     case 'DELETE_SUBJECT': {
       const newState = { ...state };
       const contentKeys = Object.keys(newState);
@@ -497,15 +466,6 @@ export default function ContentReducer(state, action) {
         };
       }
       return newState;
-    }
-    case 'EDIT_PROFILE_PICTURE': {
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          profilePicUrl: action.imageUrl
-        }
-      };
     }
     case 'EDIT_REWARD_COMMENT': {
       const newState = { ...state };
@@ -1479,14 +1439,6 @@ export default function ContentReducer(state, action) {
             : { thumbUrl: action.thumbUrl })
         }
       };
-    case 'SET_USER_ONLINE':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          online: action.online
-        }
-      };
     case 'SET_VIDEO_CURRENT_TIME':
       return {
         ...state,
@@ -1577,64 +1529,6 @@ export default function ContentReducer(state, action) {
         [contentKey]: {
           ...prevContentState,
           pinnedCommentId: action.commentId
-        }
-      };
-    case 'UPDATE_CURRENT_MISSION':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          currentMissionId: action.missionId
-        }
-      };
-    case 'UPDATE_USER_MISSION_STATE':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          state: {
-            ...prevContentState.state,
-            missions: {
-              ...prevContentState.state?.missions,
-              [action.missionType]: {
-                ...prevContentState.state?.missions?.[action.missionType],
-                ...action.newState
-              }
-            }
-          }
-        }
-      };
-    case 'UPDATE_PROFILE_INFO':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          ...action.data
-        }
-      };
-    case 'UPDATE_STATUS_MSG':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          statusMsg: action.statusMsg,
-          statusColor: action.statusColor
-        }
-      };
-    case 'UPDATE_USER_BIO':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          ...action.bio
-        }
-      };
-    case 'UPDATE_USER_GREETING':
-      return {
-        ...state,
-        [contentKey]: {
-          ...prevContentState,
-          greeting: action.greeting
         }
       };
     case 'UPLOAD_COMMENT': {

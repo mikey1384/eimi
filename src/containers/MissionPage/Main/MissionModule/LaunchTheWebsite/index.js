@@ -9,7 +9,7 @@ import ConnectReplToGitHub from './ConnectReplToGitHub';
 import UpdateYourRepl from './UpdateYourRepl';
 import defaultCode from './defaultCode';
 import RequiresComputer from '../components/RequiresComputer';
-import { useAppContext, useContentContext } from 'contexts';
+import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { isMobile } from 'helpers';
 
@@ -21,16 +21,16 @@ LaunchTheWebsite.propTypes = {
 const deviceIsMobile = isMobile(navigator);
 
 export default function LaunchTheWebsite({ style, task }) {
-  const { userId, state, username } = useMyState();
+  const { missions, username } = useMyState();
   const updateMissionStatus = useAppContext(
     (v) => v.requestHelpers.updateMissionStatus
   );
-  const onUpdateUserMissionState = useContentContext(
-    (v) => v.actions.onUpdateUserMissionState
+  const onUpdateUserMissionState = useAppContext(
+    (v) => v.user.actions.onUpdateUserMissionState
   );
   const taskState = useMemo(
-    () => state?.missions?.[task?.missionType] || {},
-    [state?.missions, task?.missionType]
+    () => missions[task?.missionType] || {},
+    [missions, task?.missionType]
   );
   const { makeAccountOkayPressed, connectReplToGitHubOkayPressed } = taskState;
   const FirstButton = useMemo(() => {
@@ -154,7 +154,6 @@ export default function LaunchTheWebsite({ style, task }) {
 
   function handleSetCode(code) {
     onUpdateUserMissionState({
-      userId,
       missionType: task.missionType,
       newState: { code }
     });
@@ -166,7 +165,6 @@ export default function LaunchTheWebsite({ style, task }) {
       newStatus: newState
     });
     onUpdateUserMissionState({
-      userId,
       missionType: task.missionType,
       newState
     });

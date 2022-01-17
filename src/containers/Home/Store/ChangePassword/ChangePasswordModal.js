@@ -42,6 +42,7 @@ export default function ChangePasswordModal({ onHide }) {
     currentPassword: '',
     newPassword: ''
   });
+  const mounted = useRef(true);
   const newPasswordTimerRef = useRef(null);
   const retypeNewPasswordTimerRef = useRef(null);
   const passwordIsValid = useMemo(() => {
@@ -106,6 +107,13 @@ export default function ChangePasswordModal({ onHide }) {
       }
     }, 500);
   }, [retypeNewPassword, retypePasswordMatches]);
+
+  useEffect(() => {
+    mounted.current = true;
+    return function cleanup() {
+      mounted.current = false;
+    };
+  }, []);
 
   return (
     <Modal closeWhenClickedOutside={false} small onHide={onHide}>
@@ -247,14 +255,24 @@ export default function ChangePasswordModal({ onHide }) {
         newPassword
       });
       if (isSuccess) {
-        setSuccess(true);
-        setTimeout(() => onHide(), 1300);
+        if (mounted.current) {
+          setSuccess(true);
+        }
+        setTimeout(() => {
+          if (mounted.current) {
+            onHide();
+          }
+        }, 1300);
       } else {
-        setErrorMsgObj((obj) => ({
-          ...obj,
-          currentPassword: incorrectPasswordLabel
-        }));
-        setChanging(false);
+        if (mounted.current) {
+          setErrorMsgObj((obj) => ({
+            ...obj,
+            currentPassword: incorrectPasswordLabel
+          }));
+        }
+        if (mounted.current) {
+          setChanging(false);
+        }
       }
     } catch (error) {
       console.error(error);

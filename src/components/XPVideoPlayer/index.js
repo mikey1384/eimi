@@ -56,6 +56,7 @@ function XPVideoPlayer({
       mounted.current = false;
     };
   }, []);
+  const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const addVideoView = useAppContext((v) => v.requestHelpers.addVideoView);
   const checkCurrentlyWatchingAnotherVideo = useAppContext(
     (v) => v.requestHelpers.checkCurrentlyWatchingAnotherVideo
@@ -97,10 +98,6 @@ function XPVideoPlayer({
   useEffect(() => {
     xpRewardAmountRef.current = xpRewardAmount;
   }, [xpRewardAmount]);
-  const onChangeUserXP = useContentContext((v) => v.actions.onChangeUserXP);
-  const onUpdateUserCoins = useContentContext(
-    (v) => v.actions.onUpdateUserCoins
-  );
   const onIncreaseNumCoinsEarned = useContentContext(
     (v) => v.actions.onIncreaseNumCoinsEarned
   );
@@ -259,7 +256,7 @@ function XPVideoPlayer({
               type: 'increase'
             });
             if (mounted.current) {
-              onUpdateUserCoins({ coins, userId });
+              onSetUserState({ userId, newState: { twinkleCoins: coins } });
             }
             rewardingCoin.current = false;
           } catch (error) {
@@ -283,7 +280,7 @@ function XPVideoPlayer({
               if (alreadyDone) {
                 setReachedMaxWatchDuration(true);
               } else {
-                onChangeUserXP({ xp, rank, userId });
+                onSetUserState({ userId, newState: { twinkleXP: xp, rank } });
               }
             }
             rewardingXP.current = false;
