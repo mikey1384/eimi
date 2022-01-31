@@ -22,13 +22,16 @@ export default function TwinkleLogo({ style }) {
       <div
         onClick={() => (document.getElementById('App').scrollTop = 0)}
         className={css`
+          width: 13rem;
+          height: 5rem;
+          margin-top: -17px;
           font-size: 2rem;
           font-weight: bold;
           font-family: 'Ubuntu', sans-serif, Arial, Helvetica;
           line-height: 0.9;
         `}
       >
-        EIMICC
+        <img style={{ width: '100%', height: '100%' }} src="/favicon.png" />
       </div>
     </div>
   );

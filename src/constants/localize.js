@@ -1406,7 +1406,7 @@ const languageObj = {
   },
   toAccessAllFeatures: {
     en: 'to access all features',
-    kr: '모든 기능에 액세스하세요'
+    kr: '여러분의 흥미를 찾아보세요'
   },
   top30: {
     en: 'Top 30',

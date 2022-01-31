@@ -18,13 +18,9 @@ export default function PleaseLogIn() {
         <p>
           다른 유저들과{' '}
           <span style={{ color: Color.vantaBlack(), fontWeight: 'bold' }}>
-            채팅
+            체스, 단어수집, 퀴즈게임
           </span>
-          하고{' '}
-          <span style={{ color: Color.vantaBlack(), fontWeight: 'bold' }}>
-            단어게임과 체스
-          </span>
-          를 즐기고 싶으신가요?
+          으로 내 실력을 겨뤄보고 싶으신가요?
         </p>
       );
     }
