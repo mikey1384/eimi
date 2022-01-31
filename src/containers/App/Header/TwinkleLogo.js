@@ -22,8 +22,6 @@ export default function TwinkleLogo({ style }) {
       <div
         onClick={() => (document.getElementById('App').scrollTop = 0)}
         className={css`
-          width: 13rem;
-          height: 5rem;
           margin-top: -17px;
           font-size: 2rem;
           font-weight: bold;
@@ -31,7 +29,7 @@ export default function TwinkleLogo({ style }) {
           line-height: 0.9;
         `}
       >
-        <img style={{ width: '100%', height: '100%' }} src="/favicon.png" />
+        <img style={{ width: '13rem', height: '5rem' }} src="/favicon.png" />
       </div>
     </div>
   );
