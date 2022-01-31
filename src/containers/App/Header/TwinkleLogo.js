@@ -29,7 +29,10 @@ export default function TwinkleLogo({ style }) {
           line-height: 0.9;
         `}
       >
-        <img style={{ width: '13rem', height: '5rem' }} src="/favicon.png" />
+        <img
+          style={{ width: '13rem', height: '5rem', objectFit: 'cover' }}
+          src="/favicon.png"
+        />
       </div>
     </div>
   );
