@@ -112,6 +112,7 @@ export default function ChatActions(dispatch) {
       });
     },
     onDisplayAttachedFile({
+      id,
       channelId,
       filePath,
       fileSize,
@@ -122,6 +123,7 @@ export default function ChatActions(dispatch) {
     }) {
       return dispatch({
         type: 'DISPLAY_ATTACHED_FILE',
+        messageId: id,
         channelId,
         filePath,
         fileInfo: {

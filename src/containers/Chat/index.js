@@ -16,6 +16,7 @@ import Loading from 'components/Loading';
 import PleaseLogIn from './PleaseLogIn';
 import LocalContext from './Context';
 import { parseChannelPath } from 'helpers';
+import { stringIsEmpty } from 'helpers/stringHelpers';
 import { phoneMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from '@emotion/css';
@@ -271,6 +272,8 @@ function Chat({ onFileUpload }) {
       handleEnterVocabulary();
       prevPathId.current = currentPathId;
       return;
+    } else if (!stringIsEmpty(currentPathId)) {
+      onUpdateChatType('default');
     }
     if (
       currentPathId &&
@@ -332,7 +335,7 @@ function Chat({ onFileUpload }) {
       loadingRef.current = false;
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [currentPathId, currentChannel.pathId, chatType]);
+  }, [currentPathId, currentChannel.pathId]);
 
   useEffect(() => {
     if (!currentPathId) {

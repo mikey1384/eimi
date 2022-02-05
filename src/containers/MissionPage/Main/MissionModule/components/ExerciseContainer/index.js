@@ -10,7 +10,6 @@ import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext } from 'contexts';
-import { scrollElementToCenter } from 'helpers';
 
 ExerciseContainer.propTypes = {
   codeObj: PropTypes.object,
@@ -19,10 +18,10 @@ ExerciseContainer.propTypes = {
   index: PropTypes.number.isRequired,
   prevExerciseKey: PropTypes.string,
   prevUserId: PropTypes.number,
+  onOpenTutorial: PropTypes.func,
   onSetCode: PropTypes.func.isRequired,
   style: PropTypes.object,
-  taskType: PropTypes.string,
-  tutorialRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  taskType: PropTypes.string
 };
 
 export default function ExerciseContainer({
@@ -31,11 +30,11 @@ export default function ExerciseContainer({
   exerciseKey,
   index,
   prevExerciseKey,
+  onOpenTutorial,
   onSetCode,
   prevUserId,
   style,
-  taskType,
-  tutorialRef
+  taskType
 }) {
   const updateMissionStatus = useAppContext(
     (v) => v.requestHelpers.updateMissionStatus
@@ -129,10 +128,9 @@ export default function ExerciseContainer({
                   cursor: 'pointer',
                   color: Color.logoBlue()
                 }}
-                onClick={() => scrollElementToCenter(tutorialRef.current)}
+                onClick={onOpenTutorial}
               >
-                Read the tutorial for {`"${exercise.title}"`}{' '}
-                <Icon icon="arrow-down" />
+                Read the tutorial for {`"${exercise.title}"`}
               </a>
             </div>
           )}

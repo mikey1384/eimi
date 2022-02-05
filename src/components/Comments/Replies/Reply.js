@@ -98,7 +98,8 @@ function Reply({
     uploader,
     filePath,
     fileName,
-    fileSize
+    fileSize,
+    thumbUrl: initialThumbUrl
   },
   rootContent,
   onSubmitReply,
@@ -120,11 +121,15 @@ function Reply({
   const onSetXpRewardInterfaceShown = useContentContext(
     (v) => v.actions.onSetXpRewardInterfaceShown
   );
-  const { isDeleted, isEditing, thumbUrl, xpRewardInterfaceShown } =
-    useContentState({
-      contentType: 'comment',
-      contentId: reply.id
-    });
+  const {
+    isDeleted,
+    isEditing,
+    thumbUrl: thumbUrlFromContext,
+    xpRewardInterfaceShown
+  } = useContentState({
+    contentType: 'comment',
+    contentId: reply.id
+  });
   const { onEditDone, onLikeClick, onRewardCommentEdit } =
     useContext(LocalContext);
   const { fileType } = getFileInfoFromFileName(fileName);
@@ -363,7 +368,7 @@ function Reply({
                       fileName={fileName}
                       filePath={filePath}
                       fileSize={Number(fileSize)}
-                      thumbUrl={thumbUrl}
+                      thumbUrl={thumbUrlFromContext || initialThumbUrl}
                       videoHeight="100%"
                       style={{
                         display: 'flex',
@@ -601,8 +606,9 @@ function Reply({
     ReplyInputAreaRef.current.focus();
     setLoadingReplies(true);
     if (reply.numReplies > 0) {
-      const { replies } = await loadReplies({
-        commentId: reply.id
+      const { replies, loadMoreButton } = await loadReplies({
+        commentId: reply.id,
+        isReverse: true
       });
       if (replies.length > 0) {
         onLoadRepliesOfReply({
@@ -610,7 +616,8 @@ function Reply({
           commentId: reply.commentId,
           replyId: reply.id,
           contentId: parent.contentId,
-          contentType: parent.contentType
+          contentType: parent.contentType,
+          loadMoreButton
         });
       }
     }

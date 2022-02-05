@@ -2,11 +2,12 @@ import React, { useEffect, useMemo, useRef, useState } from 'react';
 import PropTypes from 'prop-types';
 import DropdownList from 'components/DropdownList';
 import { Color } from 'constants/css';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useLocation } from 'react-router-dom';
 import { useMyState } from 'helpers/hooks';
 import { useAppContext, useChatContext } from 'contexts';
-import { isMobile } from 'helpers';
+import { isMobile, getSectionFromPathname } from 'helpers';
 import { addCommasToNumber } from 'helpers/stringHelpers';
+import Icon from 'components/Icon';
 import localize from 'constants/localize';
 
 const deviceIsMobile = isMobile(navigator);
@@ -31,8 +32,13 @@ export default function UsernameText({
   user = {},
   wordBreakEnabled
 }) {
-  const mounted = useRef(true);
   const history = useHistory();
+  const location = useLocation();
+  const usingChat = useMemo(
+    () => getSectionFromPathname(location?.pathname)?.section === 'chat',
+    [location?.pathname]
+  );
+  const mounted = useRef(true);
   const coolDownRef = useRef(null);
   const showTimerRef = useRef(null);
   const hideTimerRef = useRef(null);
@@ -46,6 +52,9 @@ export default function UsernameText({
     (v) => v.user.state.userObj[user.id] || {}
   );
   const { userId, username, profilePicUrl, authLevel } = useMyState();
+  const onUpdateSelectedChannelId = useChatContext(
+    (v) => v.actions.onUpdateSelectedChannelId
+  );
   const onOpenNewChatTab = useChatContext((v) => v.actions.onOpenNewChatTab);
   const [dropdownContext, setDropdownContext] = useState(null);
   const menuShownRef = useRef(false);
@@ -53,10 +62,10 @@ export default function UsernameText({
     if (!twinkleXP && !user.twinkleXP) {
       return null;
     }
-    return addCommasToNumber(twinkleXP || user.twinkleXP);
+    return addCommasToNumber(user.twinkleXP || twinkleXP);
   }, [twinkleXP, user.twinkleXP]);
   const userRank = useMemo(() => {
-    return rank || user.rank;
+    return user.rank || rank;
   }, [rank, user.rank]);
 
   useEffect(() => {
@@ -134,17 +143,24 @@ export default function UsernameText({
             }, 500);
           }}
         >
-          <li onClick={() => history.push(`/users/${user.username}`)}>
-            <a
-              style={{ color: Color.darkerGray(), cursor: 'pointer' }}
-              onClick={(e) => e.preventDefault()}
-            >
-              {profileLabel}
-            </a>
+          <li
+            style={{
+              color: Color.darkerGray()
+            }}
+            onClick={() => history.push(`/users/${user.username}`)}
+          >
+            <Icon icon="user" />
+            <span style={{ marginLeft: '1rem' }}>{profileLabel}</span>
           </li>
           {user.id !== userId && (
-            <li onClick={onLinkClick}>
-              <a style={{ color: Color.darkerGray() }}>{chatLabel}</a>
+            <li
+              style={{
+                color: Color.darkerGray()
+              }}
+              onClick={onLinkClick}
+            >
+              <Icon icon="comment" />
+              <span style={{ marginLeft: '1rem' }}>{chatLabel}</span>
             </li>
           )}
           {userXP && (
@@ -235,7 +251,7 @@ export default function UsernameText({
   async function onLinkClick() {
     setDropdownContext(null);
     if (user.id !== userId) {
-      const { pathId } = await loadDMChannel({ recepient: user });
+      const { channelId, pathId } = await loadDMChannel({ recepient: user });
       if (mounted.current) {
         if (!pathId) {
           onOpenNewChatTab({
@@ -247,6 +263,9 @@ export default function UsernameText({
               authLevel: user.authLevel
             }
           });
+        }
+        if (!usingChat) {
+          onUpdateSelectedChannelId(channelId);
         }
         history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
       }

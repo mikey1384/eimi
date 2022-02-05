@@ -62,7 +62,7 @@ Comment.propTypes = {
     commentId: PropTypes.number,
     content: PropTypes.string.isRequired,
     isDeleted: PropTypes.oneOfType([PropTypes.bool, PropTypes.number]),
-    id: PropTypes.number.isRequired,
+    id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
     likes: PropTypes.array,
     numReplies: PropTypes.number,
     profilePicUrl: PropTypes.string,

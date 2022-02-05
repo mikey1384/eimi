@@ -7,6 +7,7 @@ import TextareaAutosize from 'react-textarea-autosize';
 Textarea.propTypes = {
   className: PropTypes.string,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
+  maxRows: PropTypes.number,
   type: PropTypes.string
 };
 
@@ -14,11 +15,13 @@ export default function Textarea({
   className,
   innerRef,
   type = 'text',
+  maxRows = 20,
   ...props
 }) {
   return (
     <TextareaAutosize
       {...props}
+      maxRows={maxRows}
       type={type}
       ref={innerRef}
       className={`${className} ${css`

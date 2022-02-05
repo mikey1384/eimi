@@ -40,6 +40,7 @@ TextMessage.propTypes = {
   socketConnected: PropTypes.bool,
   subjectId: PropTypes.number,
   theme: PropTypes.string,
+  thumbUrl: PropTypes.string,
   userCanEditThis: PropTypes.bool
 };
 
@@ -61,6 +62,7 @@ function TextMessage({
   subjectId,
   onShowSubjectMsgsModal,
   socketConnected,
+  thumbUrl,
   userCanEditThis,
   theme
 }) {
@@ -160,6 +162,8 @@ function TextMessage({
             style={{ marginTop: '1rem' }}
             contentId={messageId}
             contentType="chat"
+            defaultThumbUrl={thumbUrl}
+            extractedUrl={extractedUrl}
             loadingHeight="30vw"
             mobileLoadingHeight="70vw"
             onHideAttachment={handleHideAttachment}

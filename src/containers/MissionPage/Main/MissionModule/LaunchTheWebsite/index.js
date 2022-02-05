@@ -14,13 +14,14 @@ import { useMyState } from 'helpers/hooks';
 import { isMobile } from 'helpers';
 
 LaunchTheWebsite.propTypes = {
+  onSetMissionState: PropTypes.func.isRequired,
   style: PropTypes.object,
   task: PropTypes.object
 };
 
 const deviceIsMobile = isMobile(navigator);
 
-export default function LaunchTheWebsite({ style, task }) {
+export default function LaunchTheWebsite({ onSetMissionState, style, task }) {
   const { missions, username } = useMyState();
   const updateMissionStatus = useAppContext(
     (v) => v.requestHelpers.updateMissionStatus
@@ -125,6 +126,12 @@ export default function LaunchTheWebsite({ style, task }) {
         ]}
         taskId={task.id}
         taskType={task.missionType}
+        onOpenTutorial={() =>
+          onSetMissionState({
+            missionId: task.id,
+            newState: { tutorialStarted: true }
+          })
+        }
       >
         <FinalizeYourCode
           code={taskState.code}
@@ -144,6 +151,12 @@ export default function LaunchTheWebsite({ style, task }) {
         <RequiresComputer>
           <ConnectReplToGitHub
             taskType={task.missionType}
+            onOpenTutorial={() =>
+              onSetMissionState({
+                missionId: task.id,
+                newState: { tutorialStarted: true }
+              })
+            }
             okayPressed={connectReplToGitHubOkayPressed}
           />
         </RequiresComputer>

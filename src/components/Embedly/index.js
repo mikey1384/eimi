@@ -34,6 +34,7 @@ Embedly.propTypes = {
   defaultThumbUrl: PropTypes.string,
   defaultActualTitle: PropTypes.string,
   defaultActualDescription: PropTypes.string,
+  extractedUrl: PropTypes.string,
   imageWidth: PropTypes.string,
   imageOnly: PropTypes.bool,
   loadingHeight: PropTypes.string,
@@ -54,6 +55,7 @@ function Embedly({
   defaultThumbUrl,
   defaultActualTitle,
   defaultActualDescription,
+  extractedUrl,
   imageWidth,
   imageOnly,
   loadingHeight = '100%',
@@ -101,8 +103,13 @@ function Embedly({
     [translator.actualDescription]: actualDescription,
     [translator.actualTitle]: actualTitle,
     [translator.siteUrl]: siteUrl,
-    [translator.url]: url
+    [translator.url]: contentStateUrl
   } = useContentState({ contentType, contentId });
+
+  const url = useMemo(
+    () => contentStateUrl || extractedUrl,
+    [contentStateUrl, extractedUrl]
+  );
 
   const thumbUrl = useMemo(() => {
     if (rawThumbUrl?.split('/')[1] === 'thumbs') {

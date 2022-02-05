@@ -8,6 +8,7 @@ import { cloudFrontURL } from 'constants/defaultValues';
 import { getFileInfoFromFileName } from 'helpers/stringHelpers';
 
 FileViewer.propTypes = {
+  isOnModal: PropTypes.bool,
   small: PropTypes.bool,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   src: PropTypes.string.isRequired,
@@ -19,6 +20,7 @@ FileViewer.propTypes = {
 
 export default function FileViewer({
   fileSize,
+  isOnModal,
   onThumbnailLoad,
   small,
   src,
@@ -115,6 +117,7 @@ export default function FileViewer({
       )}
       {imageModalShown && (
         <ImageModal
+          modalOverModal={isOnModal}
           downloadable={false}
           onHide={() => setImageModalShown(false)}
           src={`${cloudFrontURL}${filePath}`}

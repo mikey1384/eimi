@@ -6,10 +6,11 @@ import DidNotPassCopyAndPaste from './DidNotPassCopyAndPaste';
 import { useMissionContext } from 'contexts';
 
 Replit.propTypes = {
+  onSetMissionState: PropTypes.func.isRequired,
   task: PropTypes.object.isRequired
 };
 
-export default function Replit({ task }) {
+export default function Replit({ task, onSetMissionState }) {
   const missionTypeIdHash = useMissionContext((v) => v.state.missionTypeIdHash);
   const myAttempts = useMissionContext((v) => v.state.myAttempts);
   const copyAndPasteId = useMemo(
@@ -28,7 +29,9 @@ export default function Replit({ task }) {
   return (
     <ErrorBoundary style={{ width: '100%' }}>
       {!copyAndPasteAttemptPassed && <DidNotPassCopyAndPaste />}
-      {copyAndPasteAttemptPassed && <ReplitVerifier task={task} />}
+      {copyAndPasteAttemptPassed && (
+        <ReplitVerifier task={task} onSetMissionState={onSetMissionState} />
+      )}
     </ErrorBoundary>
   );
 }

@@ -6,7 +6,7 @@ import { css } from '@emotion/css';
 
 SubMission.propTypes = {
   index: PropTypes.number,
-  isCreator: PropTypes.bool,
+  isManager: PropTypes.bool,
   subMission: PropTypes.object.isRequired,
   missionType: PropTypes.string.isRequired,
   previousSubmissionPassed: PropTypes.bool,
@@ -15,15 +15,15 @@ SubMission.propTypes = {
 
 export default function SubMission({
   index,
-  isCreator,
+  isManager,
   subMission,
   missionType,
   previousSubmissionPassed,
   subMissionProgress
 }) {
   const subMissionIsLocked = useMemo(
-    () => index !== 0 && !previousSubmissionPassed && !isCreator,
-    [index, previousSubmissionPassed, isCreator]
+    () => index !== 0 && !previousSubmissionPassed && !isManager,
+    [index, previousSubmissionPassed, isManager]
   );
   return (
     <div
@@ -48,7 +48,7 @@ export default function SubMission({
         {subMission?.tasks?.map((task, index) => {
           const taskIsLocked =
             index !== 0 &&
-            !isCreator &&
+            !isManager &&
             !subMissionProgress.passed &&
             index > subMissionProgress.currentTaskIndex;
           return (

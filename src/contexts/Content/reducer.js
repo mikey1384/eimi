@@ -1,4 +1,5 @@
 import { defaultContentState } from 'constants/defaultValues';
+import { v1 as uuidv1 } from 'uuid';
 
 export default function ContentReducer(state, action) {
   const contentKey =
@@ -850,14 +851,19 @@ export default function ContentReducer(state, action) {
               const replies = comment.replies || [];
               const targetReplyIndex = replies
                 .map((reply) => reply.id)
-                .indexOf(action.replyId);
+                .indexOf(action.loadMoreButtonId || action.replyId);
               return {
                 ...comment,
                 replies: [
                   ...replies
-                    .filter((reply, index) => index <= targetReplyIndex)
+                    .filter(
+                      (reply, index) =>
+                        index <= targetReplyIndex &&
+                        reply.id !== action.loadMoreButtonId
+                    )
                     .map((reply) =>
-                      reply.id === action.replyId
+                      reply.id ===
+                      (action.rootReplyId ? action.rootReplyId : action.replyId)
                         ? {
                             ...reply,
                             isExpanded: true,
@@ -866,7 +872,24 @@ export default function ContentReducer(state, action) {
                         : reply
                     ),
                   ...action.replies,
-                  ...replies.filter((reply, index) => index > targetReplyIndex)
+                  ...(action.loadMoreButton
+                    ? [
+                        {
+                          id: uuidv1(),
+                          userId: uuidv1(),
+                          commentId: action.commentId,
+                          rootReplyId: action.rootReplyId || action.replyId,
+                          lastReplyId:
+                            action.replies[action.replies.length - 1].id,
+                          isLoadMoreButton: true
+                        }
+                      ]
+                    : []),
+                  ...replies.filter(
+                    (reply, index) =>
+                      index > targetReplyIndex &&
+                      reply.id !== action.loadMoreButtonId
+                  )
                 ]
               };
             }

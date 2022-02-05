@@ -15,6 +15,7 @@ ContentFileViewer.propTypes = {
   fileName: PropTypes.string.isRequired,
   fileSize: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
   modalOverModal: PropTypes.bool,
+  onMediaPause: PropTypes.func,
   onMediaPlay: PropTypes.func,
   style: PropTypes.object,
   thumbUrl: PropTypes.string,
@@ -30,6 +31,7 @@ export default function ContentFileViewer({
   fileName,
   fileSize,
   modalOverModal,
+  onMediaPause = () => {},
   onMediaPlay = () => {},
   style,
   thumbUrl,
@@ -104,6 +106,7 @@ export default function ContentFileViewer({
             isThumb={isThumb}
             isSecretAttachment={isSecretAttachment}
             onPlay={onMediaPlay}
+            onPause={onMediaPause}
             src={src}
             thumbUrl={thumbUrl}
             videoHeight={videoHeight}

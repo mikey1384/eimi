@@ -17,12 +17,12 @@ const item = {
   maxLvl: 7,
   name: [
     postPicturesOnYourProfilePageLabel,
-    `${postPicturesOnYourProfilePageLabel} (level 2)'`,
-    `${postPicturesOnYourProfilePageLabel} (level 3)'`,
-    `${postPicturesOnYourProfilePageLabel} (level 4)'`,
-    `${postPicturesOnYourProfilePageLabel} (level 5)'`,
-    `${postPicturesOnYourProfilePageLabel} (level 6)'`,
-    `${postPicturesOnYourProfilePageLabel} (level 7)'`
+    `${postPicturesOnYourProfilePageLabel} (level 2)`,
+    `${postPicturesOnYourProfilePageLabel} (level 3)`,
+    `${postPicturesOnYourProfilePageLabel} (level 4)`,
+    `${postPicturesOnYourProfilePageLabel} (level 5)`,
+    `${postPicturesOnYourProfilePageLabel} (level 6)`,
+    `${postPicturesOnYourProfilePageLabel} (level 7)`
   ]
 };
 

@@ -84,25 +84,6 @@ export default function Modal({
               justify-content: flex-start;
               flex-direction: column;
               height: auto;
-              .close {
-                color: ${Color.darkerGray()};
-                background: #fff;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-size: 1.5rem;
-                position: absolute;
-                top: 1rem;
-                right: 1rem;
-                border: none;
-                width: 1.5rem;
-                height: 1.5rem;
-                cursor: pointer;
-                opacity: 0.5;
-                &:hover {
-                  opacity: 1;
-                }
-              }
               > header {
                 display: flex;
                 align-items: center;

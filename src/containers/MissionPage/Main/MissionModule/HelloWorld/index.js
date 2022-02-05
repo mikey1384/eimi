@@ -9,13 +9,12 @@ import { css } from '@emotion/css';
 
 HelloWorld.propTypes = {
   task: PropTypes.object.isRequired,
-  onSetMissionState: PropTypes.func.isRequired,
-  tutorialRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  onSetMissionState: PropTypes.func.isRequired
 };
 
 const exerciseKeys = Object.keys(exercises);
 
-export default function HelloWorld({ task, onSetMissionState, tutorialRef }) {
+export default function HelloWorld({ task, onSetMissionState }) {
   const { codeObj = {} } = task;
   const { missions } = useMyState();
   const allPassed = useMemo(() => {
@@ -57,10 +56,15 @@ export default function HelloWorld({ task, onSetMissionState, tutorialRef }) {
               newState: { codeObj: { ...codeObj, [exerciseLabel]: code } }
             })
           }
+          onOpenTutorial={() =>
+            onSetMissionState({
+              missionId: task.id,
+              newState: { tutorialStarted: true }
+            })
+          }
           prevUserId={task.prevUserId}
           taskType={task.missionType}
           style={{ marginTop: index === 0 ? 0 : '10rem' }}
-          tutorialRef={tutorialRef}
         />
       ))}
       {allPassed && (

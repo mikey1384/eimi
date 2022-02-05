@@ -28,11 +28,26 @@ export default function NotiActions(dispatch) {
         data
       });
     },
-    onGetRanks({ all, top30s }) {
+    onGetRanks({
+      all,
+      top30s,
+      allMonthly,
+      top30sMonthly,
+      myMonthlyRank,
+      myAllTimeRank,
+      myAllTimeXP,
+      myMonthlyXP
+    }) {
       return dispatch({
         type: 'LOAD_RANKS',
         all,
-        top30s
+        top30s,
+        allMonthly,
+        top30sMonthly,
+        myMonthlyRank,
+        myAllTimeRank,
+        myAllTimeXP,
+        myMonthlyXP
       });
     },
     onIncreaseNumNewNotis() {

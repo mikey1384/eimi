@@ -9,17 +9,12 @@ import { css } from '@emotion/css';
 
 WriteItYourself.propTypes = {
   task: PropTypes.object.isRequired,
-  onSetMissionState: PropTypes.func.isRequired,
-  tutorialRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  onSetMissionState: PropTypes.func.isRequired
 };
 
 const exerciseKeys = Object.keys(exercises);
 
-export default function WriteItYourself({
-  task,
-  onSetMissionState,
-  tutorialRef
-}) {
+export default function WriteItYourself({ task, onSetMissionState }) {
   const { codeObj = {} } = task;
   const { missions } = useMyState();
   const allPassed = useMemo(() => {
@@ -55,6 +50,12 @@ export default function WriteItYourself({
           exerciseKey={exerciseKey}
           prevExerciseKey={index === 0 ? null : exerciseKeys[index - 1]}
           codeObj={codeObj}
+          onOpenTutorial={() =>
+            onSetMissionState({
+              missionId: task.id,
+              newState: { tutorialStarted: true }
+            })
+          }
           onSetCode={({ code, exerciseLabel }) =>
             onSetMissionState({
               missionId: task.id,
@@ -64,7 +65,6 @@ export default function WriteItYourself({
           prevUserId={task.prevUserId}
           taskType={task.missionType}
           style={{ marginTop: index === 0 ? 0 : '10rem' }}
-          tutorialRef={tutorialRef}
         />
       ))}
       {allPassed && (

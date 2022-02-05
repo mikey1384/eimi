@@ -27,6 +27,7 @@ export default function UserReducer(state, action) {
           ...state.myState,
           ...action.data
         },
+        missions: action.data.state?.missions || {},
         loaded: true
       };
     case 'LOAD_USERS': {
@@ -68,6 +69,7 @@ export default function UserReducer(state, action) {
     case 'LOGOUT_AND_OPEN_SIGNIN_MODAL':
       return {
         ...state,
+        signinModalShown: true,
         myState: initialMyState
       };
     case 'OPEN_SIGNIN_MODAL':
@@ -125,7 +127,8 @@ export default function UserReducer(state, action) {
           ...state.userObj,
           [action.userId]: {
             ...(state.userObj[action.userId] || {}),
-            ...action.newState
+            ...action.newState,
+            contentId: action.userId
           }
         }
       };

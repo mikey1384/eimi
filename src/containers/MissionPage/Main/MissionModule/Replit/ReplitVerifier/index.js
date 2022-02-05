@@ -12,10 +12,11 @@ import { scrollElementToCenter } from 'helpers';
 import RequiresComputer from '../../components/RequiresComputer';
 
 ReplitVerifier.propTypes = {
-  task: PropTypes.object.isRequired
+  task: PropTypes.object.isRequired,
+  onSetMissionState: PropTypes.func.isRequired
 };
 
-export default function ReplitVerifier({ task }) {
+export default function ReplitVerifier({ task, onSetMissionState }) {
   const { missions } = useMyState();
   const updateMissionStatus = useAppContext(
     (v) => v.requestHelpers.updateMissionStatus
@@ -86,6 +87,12 @@ export default function ReplitVerifier({ task }) {
           buttons={[FirstButton, SecondButton]}
           taskId={task.id}
           taskType={task.missionType}
+          onOpenTutorial={() =>
+            onSetMissionState({
+              missionId: task.id,
+              newState: { tutorialStarted: true }
+            })
+          }
         >
           <MakeAccount
             onSetOkayPressed={() =>

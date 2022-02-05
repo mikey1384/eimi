@@ -90,6 +90,9 @@ function ProfilePanel({ expandable, profileId, style }) {
   } = profile;
 
   const onOpenNewChatTab = useChatContext((v) => v.actions.onOpenNewChatTab);
+  const onUpdateSelectedChannelId = useChatContext(
+    (v) => v.actions.onUpdateSelectedChannelId
+  );
   const onDeleteComment = useContentContext((v) => v.actions.onDeleteComment);
   const onEditComment = useContentContext((v) => v.actions.onEditComment);
   const onEditRewardComment = useContentContext(
@@ -612,7 +615,7 @@ function ProfilePanel({ expandable, profileId, style }) {
   }
 
   async function handleTalkClick() {
-    const { pathId } = await loadDMChannel({ recepient: profile });
+    const { channelId, pathId } = await loadDMChannel({ recepient: profile });
     if (mounted.current) {
       if (!pathId) {
         onOpenNewChatTab({
@@ -625,6 +628,7 @@ function ProfilePanel({ expandable, profileId, style }) {
           }
         });
       }
+      onUpdateSelectedChannelId(channelId);
       history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
     }
   }

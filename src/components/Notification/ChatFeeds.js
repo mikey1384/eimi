@@ -9,7 +9,8 @@ import { timeSince } from 'helpers/timeStampHelpers';
 import { Color } from 'constants/css';
 import { css } from '@emotion/css';
 import { useHistory } from 'react-router-dom';
-import { GENERAL_CHAT_PATH_ID } from 'constants/defaultValues';
+import { useChatContext } from 'contexts';
+import { GENERAL_CHAT_ID, GENERAL_CHAT_PATH_ID } from 'constants/defaultValues';
 import localize from 'constants/localize';
 
 const joinConversationLabel = localize('joinConversation');
@@ -39,6 +40,9 @@ function ChatFeeds({
   userId,
   username
 }) {
+  const onUpdateSelectedChannelId = useChatContext(
+    (v) => v.actions.onUpdateSelectedChannelId
+  );
   const mounted = useRef(true);
   const [loadingChat, setLoadingChat] = useState(false);
   const history = useHistory();
@@ -143,7 +147,11 @@ function ChatFeeds({
   async function initChatFromThis() {
     if (myId) {
       setLoadingChat(true);
-      return history.push(`/chat/${GENERAL_CHAT_PATH_ID}`);
+      onUpdateSelectedChannelId(GENERAL_CHAT_ID);
+      return setTimeout(
+        () => history.push(`/chat/${GENERAL_CHAT_PATH_ID}`),
+        10
+      );
     }
     history.push('/chat');
   }

@@ -329,32 +329,23 @@ export default function ChatReducer(state, action) {
         }
       };
     case 'DISPLAY_ATTACHED_FILE': {
-      const newMessagesObj = {
-        ...state.channelsObj[action.channelId].messagesObj
-      };
-      for (let messageId of state.channelsObj[action.channelId]?.messageIds ||
-        []) {
-        const message =
-          state.channelsObj[action.channelId].messagesObj[messageId];
-        if (message.filePath !== action.filePath) {
-          continue;
-        }
-        newMessagesObj[messageId] = {
-          ...message,
-          ...action.fileInfo,
-          id: state.filesBeingUploaded[action.channelId]?.filter(
-            (file) => file.filePath === action.filePath
-          )?.[0]?.id,
-          fileToUpload: undefined
-        };
-      }
       return {
         ...state,
         channelsObj: {
           ...state.channelsObj,
           [action.channelId]: {
             ...state.channelsObj[action.channelId],
-            messagesObj: newMessagesObj
+            messagesObj: {
+              ...state.channelsObj[action.channelId].messagesObj,
+              [action.messageId]: {
+                ...state.channelsObj[action.channelId].messagesObj[
+                  action.messageId
+                ],
+                ...action.fileInfo,
+                id: action.messageId,
+                fileToUpload: undefined
+              }
+            }
           }
         }
       };
@@ -435,7 +426,6 @@ export default function ChatReducer(state, action) {
         action.data.messageIds.pop();
         messagesLoadMoreButton = true;
       }
-
       return {
         ...state,
         chatType: 'default',
@@ -636,8 +626,7 @@ export default function ChatReducer(state, action) {
         numUnreads: state.numUnreads,
         chatStatus: state.chatStatus,
         allFavoriteChannelIds: action.data.allFavoriteChannelIds,
-        chatType:
-          state.chatType === 'vocabulary' ? 'vocabulary' : action.data.chatType,
+        chatType: state.chatType ? state.chatType : action.data.chatType,
         vocabActivities:
           state.chatType === 'vocabulary'
             ? state.vocabActivities
@@ -1013,7 +1002,10 @@ export default function ChatReducer(state, action) {
                     .includes(newMember.id)
               )
             ],
-            numUnreads: 0,
+            numUnreads: action.usingChat
+              ? 0
+              : Number(state.channelsObj[action.message.channelId].numUnreads) +
+                1,
             gameState: {
               ...state.channelsObj[action.message.channelId].gameState,
               ...(action.message.isChessMsg
@@ -1582,14 +1574,6 @@ export default function ChatReducer(state, action) {
         selectedChannelId: action.channelId,
         channelsObj: {
           ...state.channelsObj,
-          ...(state.selectedChannelId
-            ? {
-                [state.selectedChannelId]: {
-                  ...state.channelsObj[state.selectedChannelId],
-                  numUnreads: 0
-                }
-              }
-            : {}),
           [action.channelId]: {
             ...state.channelsObj[action.channelId],
             numUnreads: 0

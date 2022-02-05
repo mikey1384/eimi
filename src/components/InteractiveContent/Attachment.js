@@ -15,6 +15,7 @@ Attachment.propTypes = {
   fileUrl: PropTypes.string,
   interactiveId: PropTypes.number,
   linkUrl: PropTypes.string,
+  isOnModal: PropTypes.bool,
   isYouTubeVideo: PropTypes.bool,
   onSetEmbedProps: PropTypes.func.isRequired,
   thumbUrl: PropTypes.string,
@@ -33,6 +34,7 @@ export default function Attachment({
   fileUrl,
   interactiveId,
   linkUrl,
+  isOnModal,
   isYouTubeVideo,
   onSetEmbedProps,
   thumbUrl,
@@ -66,6 +68,7 @@ export default function Attachment({
         >
           <FileViewer
             showImageModalOnClick
+            isOnModal={isOnModal}
             small={small}
             thumbUrl={thumbUrl}
             src={fileUrl}

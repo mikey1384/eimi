@@ -10,6 +10,7 @@ ConnectReplToGitHub.propTypes = {
   index: PropTypes.number,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object]),
   okayPressed: PropTypes.bool,
+  onOpenTutorial: PropTypes.func.isRequired,
   taskType: PropTypes.string
 };
 
@@ -17,6 +18,7 @@ export default function ConnectReplToGitHub({
   index,
   innerRef,
   okayPressed,
+  onOpenTutorial,
   taskType
 }) {
   const updateMissionStatus = useAppContext(
@@ -41,8 +43,17 @@ export default function ConnectReplToGitHub({
       >
         <p>
           Follow the instructions in the{' '}
-          <b style={{ color: Color.brownOrange() }}>tutorial</b> to connect your
-          Repl to your GitHub.
+          <a
+            onClick={onOpenTutorial}
+            style={{
+              color: Color.blue(),
+              cursor: 'pointer',
+              fontWeight: 'bold'
+            }}
+          >
+            tutorial
+          </a>{' '}
+          to connect your Repl to your GitHub.
         </p>
         {okayPressed && (
           <div

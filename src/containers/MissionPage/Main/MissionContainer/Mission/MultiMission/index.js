@@ -14,7 +14,7 @@ export default function MultiMission({
   mission: { missionType, subMissions },
   myAttempts
 }) {
-  const { isCreator } = useMyState();
+  const { managementLevel } = useMyState();
   const missionProgress = useMemo(() => {
     const result = {};
     for (let i = 0; i < subMissions.length; i++) {
@@ -45,7 +45,7 @@ export default function MultiMission({
         <SubMission
           key={index}
           index={index}
-          isCreator={isCreator}
+          isManager={managementLevel >= 2}
           subMission={subMission}
           missionType={missionType}
           subMissionProgress={missionProgress[index]}

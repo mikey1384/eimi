@@ -28,17 +28,7 @@ export default function Definition({ style, wordObj }) {
   } = wordObj;
 
   return (
-    <div
-      style={{ padding: '1rem', position: 'relative', ...style }}
-      className={css`
-        > section {
-          > p {
-            font-size: 1.7rem;
-            font-style: italic;
-          }
-        }
-      `}
-    >
+    <div style={{ padding: '1rem', position: 'relative', ...style }}>
       {wordObj.id && (
         <div style={{ position: 'absolute', top: 0, right: 0 }}>
           <Button

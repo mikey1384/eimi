@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React, { useEffect, useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import Embedly from 'components/Embedly';
 import LongText from 'components/Texts/LongText';
@@ -15,7 +15,7 @@ import Link from 'components/Link';
 import SecretComment from 'components/SecretComment';
 import MissionContent from './MissionContent';
 import { strongColors } from 'constants/defaultValues';
-import { isMobile } from 'helpers';
+import { isMobile, scrollElementToCenter } from 'helpers';
 import { stringIsEmpty, getFileInfoFromFileName } from 'helpers/stringHelpers';
 import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
@@ -40,6 +40,7 @@ export default function MainContent({
   secretHidden,
   userId
 }) {
+  const ContainerRef = useRef(null);
   const history = useHistory();
   const editContent = useAppContext((v) => v.requestHelpers.editContent);
   const { profileTheme } = useMyState();
@@ -65,9 +66,13 @@ export default function MainContent({
     tags,
     title
   } = useContentState({ contentId, contentType });
+  const prevIsEditingRef = useRef(isEditing);
   const onAddTags = useContentContext((v) => v.actions.onAddTags);
   const onAddTagToContents = useContentContext(
     (v) => v.actions.onAddTagToContents
+  );
+  const onSetMediaStarted = useContentContext(
+    (v) => v.actions.onSetMediaStarted
   );
   const onEditContent = useContentContext((v) => v.actions.onEditContent);
   const onLoadTags = useContentContext((v) => v.actions.onLoadTags);
@@ -93,9 +98,16 @@ export default function MainContent({
     [content, rootContent]
   );
 
+  useEffect(() => {
+    if (isEditing !== prevIsEditingRef.current) {
+      scrollElementToCenter(ContainerRef.current);
+    }
+    prevIsEditingRef.current = isEditing;
+  }, [isEditing]);
+
   return (
     <ErrorBoundary>
-      <div>
+      <div ref={ContainerRef}>
         {contentType === 'pass' && (
           <MissionContent uploader={uploader} rootObj={rootObj} />
         )}
@@ -175,6 +187,12 @@ export default function MainContent({
               filePath={filePath}
               fileSize={fileSize}
               thumbUrl={thumbUrl}
+              onMediaPause={() =>
+                onSetMediaStarted({ contentType, contentId, started: false })
+              }
+              onMediaPlay={() =>
+                onSetMediaStarted({ contentType, contentId, started: true })
+              }
               videoHeight="100%"
               style={{
                 display: 'flex',

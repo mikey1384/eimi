@@ -10,6 +10,15 @@ Spoiler.propTypes = {
 export default function Spoiler({ content }) {
   const [spoilerShown, setSpoilerShown] = useState(false);
   const [grayness, setGrayness] = useState(105);
+  const contentLength = useMemo(() => {
+    if (content.startsWith('/spoiler ')) {
+      return content.substr(9).length;
+    }
+    if (content.startsWith('/secret ')) {
+      return content.substr(8).length;
+    }
+  }, [content]);
+
   const displayedContent = useMemo(() => {
     if (content.startsWith('/spoiler ')) {
       return processedStringWithURL(content.substr(9));
@@ -38,10 +47,7 @@ export default function Spoiler({ content }) {
             background: `rgb(${grayness},${grayness},${grayness})`,
             height: '2.5rem',
             maxWidth: '100%',
-            width:
-              displayedContent.length > 50
-                ? '80%'
-                : 0.8 * displayedContent.length + 'rem',
+            width: contentLength > 50 ? '80%' : 0.8 * contentLength + 'rem',
             borderRadius: '5px'
           }}
           onClick={handleSpoilerClick}

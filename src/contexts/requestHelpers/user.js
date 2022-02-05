@@ -302,9 +302,27 @@ export default function userRequestHelpers({ auth, handleError, token }) {
     async loadRankings() {
       try {
         const {
-          data: { all, top30s }
+          data: {
+            all,
+            top30s,
+            allMonthly,
+            top30sMonthly,
+            myAllTimeRank,
+            myMonthlyRank,
+            myAllTimeXP,
+            myMonthlyXP
+          }
         } = await request.get(`${URL}/user/leaderBoard`, auth());
-        return Promise.resolve({ all, top30s });
+        return Promise.resolve({
+          all,
+          top30s,
+          allMonthly,
+          top30sMonthly,
+          myAllTimeRank,
+          myMonthlyRank,
+          myAllTimeXP,
+          myMonthlyXP
+        });
       } catch (error) {
         return handleError(error);
       }

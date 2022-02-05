@@ -691,6 +691,13 @@ function Message({
                         filePath={filePath}
                         fileName={fileName}
                         fileSize={fileSize}
+                        onMediaPause={() =>
+                          onSetMediaStarted({
+                            contentType: 'chat',
+                            contentId: messageId,
+                            started: false
+                          })
+                        }
                         onMediaPlay={() =>
                           onSetMediaStarted({
                             contentType: 'chat',
@@ -730,6 +737,7 @@ function Message({
                         onShowSubjectMsgsModal={onShowSubjectMsgsModal}
                         socketConnected={socketConnected}
                         subjectId={subjectId}
+                        thumbUrl={thumbUrl}
                         targetMessage={targetMessage}
                         theme={currentChannel.theme}
                         userCanEditThis={userCanEditThis}

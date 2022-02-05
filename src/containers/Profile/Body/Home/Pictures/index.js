@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import SectionPanel from 'components/SectionPanel';
 import Button from 'components/Button';
 import DropdownButton from 'components/Buttons/DropdownButton';
-import Carousel from 'components/Carousel';
 import Frame from './Frame';
 import Icon from 'components/Icon';
 import DeleteInterface from './DeleteInterface';
@@ -222,40 +221,27 @@ export default function Pictures({
                 numPictures={pictures.length}
                 onSetReorderedPictureIds={setReorderedPictureIds}
               />
-            ) : pictures.length > 2 ? (
-              <Carousel
-                className={css`
-                  width: 75%;
-                `}
-                allowDrag={false}
-                slidesToShow={3}
-                slidesToScroll={1}
-              >
-                {pictures.map((picture, index) => (
-                  <Frame
-                    forCarousel
-                    key={index}
-                    picture={picture}
-                    userIsUploader={profileId === userId}
-                    onUpdatePictureCaption={handleUpdatePictureCaption}
-                  />
-                ))}
-              </Carousel>
             ) : (
               <div
-                style={{
-                  width: '75%',
-                  display: 'flex',
-                  justifyContent: 'center'
-                }}
+                className={css`
+                  width: ${pictures.length > 5
+                    ? '100%'
+                    : pictures.length > 3
+                    ? '95%'
+                    : '75%'};
+                  display: flex;
+                  justify-content: center;
+                  height: auto;
+                `}
               >
                 {pictures.map((picture, index) => (
                   <Frame
                     key={index}
+                    numPictures={pictures.length}
                     picture={picture}
-                    style={{ marginLeft: index === 0 ? 0 : '1rem' }}
                     userIsUploader={profileId === userId}
                     onUpdatePictureCaption={handleUpdatePictureCaption}
+                    style={{ marginLeft: index === 0 ? 0 : '1rem' }}
                   />
                 ))}
               </div>

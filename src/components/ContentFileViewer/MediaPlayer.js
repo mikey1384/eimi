@@ -13,6 +13,7 @@ MediaPlayer.propTypes = {
   fileType: PropTypes.string,
   isThumb: PropTypes.bool,
   isSecretAttachment: PropTypes.bool,
+  onPause: PropTypes.func,
   onPlay: PropTypes.func,
   src: PropTypes.string,
   thumbUrl: PropTypes.string,
@@ -27,6 +28,7 @@ export default function MediaPlayer({
   fileType,
   isSecretAttachment,
   isThumb,
+  onPause = () => {},
   onPlay = () => {},
   src,
   thumbUrl,
@@ -106,6 +108,7 @@ export default function MediaPlayer({
           ref={PlayerRef}
           playsinline
           onPlay={onPlay}
+          onPause={onPause}
           onProgress={handleVideoProgress}
           onReady={handleReady}
           style={{

@@ -16,8 +16,9 @@ Replies.propTypes = {
   parent: PropTypes.object.isRequired,
   replies: PropTypes.arrayOf(
     PropTypes.shape({
-      id: PropTypes.number.isRequired,
-      userId: PropTypes.number.isRequired
+      id: PropTypes.oneOfType([PropTypes.number, PropTypes.string]).isRequired,
+      userId: PropTypes.oneOfType([PropTypes.number, PropTypes.string])
+        .isRequired
     })
   ).isRequired,
   pinnedCommentId: PropTypes.number,
@@ -48,6 +49,8 @@ function Replies({
   const [deleting, setDeleting] = useState(false);
   const [replying, setReplying] = useState(false);
   const [loadingMoreReplies, setLoadingMoreReplies] = useState(false);
+  const [loadingMoreRepliesOfReply, setLoadingMoreRepliesOfReply] =
+    useState(false);
   const prevReplies = useRef(replies);
   const ContainerRef = useRef(null);
 
@@ -91,7 +94,26 @@ function Replies({
         />
       )}
       {replies.map((reply, index) => {
-        return (
+        return reply.isLoadMoreButton ? (
+          <LoadMoreButton
+            key={reply.id}
+            style={{
+              marginTop: '0.5rem',
+              width: '100%'
+            }}
+            filled
+            color="lightBlue"
+            loading={loadingMoreRepliesOfReply}
+            onClick={() =>
+              handleLoadMoreRepliesOfReply({
+                lastReplyId: reply.lastReplyId,
+                rootReplyId: reply.rootReplyId,
+                commentId: reply.commentId,
+                loadMoreButtonId: reply.id
+              })
+            }
+          />
+        ) : (
           <Reply
             index={index}
             innerRef={(ref) => (ReplyRefs[reply.id] = ref)}
@@ -128,6 +150,33 @@ function Replies({
     } catch (error) {
       console.error(error.response, error);
     }
+  }
+
+  async function handleLoadMoreRepliesOfReply({
+    lastReplyId,
+    rootReplyId,
+    commentId,
+    loadMoreButtonId
+  }) {
+    setLoadingMoreRepliesOfReply(true);
+    const { replies, loadMoreButton } = await loadReplies({
+      lastReplyId,
+      commentId: rootReplyId,
+      isReverse: true
+    });
+    if (replies.length > 0) {
+      onLoadRepliesOfReply({
+        replies,
+        commentId,
+        replyId: lastReplyId,
+        rootReplyId,
+        contentId: parent.contentId,
+        contentType: parent.contentType,
+        loadMoreButton,
+        loadMoreButtonId
+      });
+    }
+    setLoadingMoreRepliesOfReply(false);
   }
 
   function handleDeleteReply(replyId) {

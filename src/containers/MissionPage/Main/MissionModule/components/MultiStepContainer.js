@@ -1,9 +1,8 @@
-import React, { Children, useEffect, useMemo, useRef, useState } from 'react';
+import React, { Children, useEffect, useMemo, useRef } from 'react';
 import Button from 'components/Button';
 import PropTypes from 'prop-types';
 import ErrorBoundary from 'components/ErrorBoundary';
 import Icon from 'components/Icon';
-import { Color } from 'constants/css';
 import { useAppContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
 import { scrollElementToCenter } from 'helpers';
@@ -11,6 +10,7 @@ import { scrollElementToCenter } from 'helpers';
 MultiStepContainer.propTypes = {
   children: PropTypes.node,
   buttons: PropTypes.array,
+  onOpenTutorial: PropTypes.func,
   taskId: PropTypes.number.isRequired,
   taskType: PropTypes.string.isRequired
 };
@@ -18,6 +18,7 @@ MultiStepContainer.propTypes = {
 export default function MultiStepContainer({
   children,
   buttons = [],
+  onOpenTutorial,
   taskId,
   taskType
 }) {
@@ -32,10 +33,6 @@ export default function MultiStepContainer({
     () => missions[taskType]?.selectedIndex || 0,
     [missions, taskType]
   );
-  const [helpButtonPressed, setHelpButtonPressed] = useState(false);
-  useEffect(() => {
-    setHelpButtonPressed(false);
-  }, [selectedIndex]);
   const SlideRefs = useRef({});
   const childrenArray = useMemo(() => Children.toArray(children), [children]);
   const DisplayedSlide = useMemo(() => {
@@ -138,20 +135,9 @@ export default function MultiStepContainer({
             marginTop: '5rem'
           }}
         >
-          {!helpButtonPressed ? (
-            <Button
-              skeuomorphic
-              color="pink"
-              onClick={() => setHelpButtonPressed(true)}
-            >
-              {`I don't understand what I am supposed to do`}
-            </Button>
-          ) : (
-            <div style={{ marginTop: '3rem', marginBottom: '-1rem' }}>
-              Read the <b style={{ color: Color.brownOrange() }}>tutorial</b>{' '}
-              below <Icon icon="arrow-down" />
-            </div>
-          )}
+          <Button skeuomorphic color="pink" onClick={onOpenTutorial}>
+            {`I don't understand what I am supposed to do`}
+          </Button>
         </div>
       </div>
     </ErrorBoundary>

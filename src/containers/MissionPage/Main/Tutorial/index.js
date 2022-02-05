@@ -1,18 +1,18 @@
-import React, { useRef } from 'react';
+import React, { useMemo, useRef } from 'react';
 import PropTypes from 'prop-types';
 import AddTutorial from './AddTutorial';
 import ViewTutorial from './ViewTutorial';
 import InteractiveContent from 'components/InteractiveContent';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { useMyState } from 'helpers/hooks';
-import { scrollElementToCenter } from 'helpers';
+import { useMissionContext } from 'contexts';
+import { scrollElementTo, scrollElementToCenter } from 'helpers';
 
 Tutorial.propTypes = {
   onSetMissionState: PropTypes.func,
   className: PropTypes.string,
   style: PropTypes.object,
   mission: PropTypes.object.isRequired,
-  myAttempts: PropTypes.object.isRequired,
   innerRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
 };
 
@@ -21,11 +21,24 @@ export default function Tutorial({
   onSetMissionState,
   style,
   mission,
-  myAttempts,
   innerRef
 }) {
-  const { isCreator } = useMyState();
+  const { managementLevel } = useMyState();
+  const myAttempts = useMissionContext((v) => v.state.myAttempts);
+  const canEditTutorial = useMemo(
+    () => managementLevel >= 2,
+    [managementLevel]
+  );
   const divToCenter = useRef(null);
+  const myAttempt = useMemo(
+    () => myAttempts[mission.id],
+    [mission.id, myAttempts]
+  );
+  const tutorialButtonShownForNonManager = useMemo(
+    () => mission.tutorialIsPublished && myAttempt?.status !== 'pass',
+    [mission.tutorialIsPublished, myAttempt?.status]
+  );
+
   return (
     <ErrorBoundary
       className={className}
@@ -38,16 +51,15 @@ export default function Tutorial({
     >
       <div ref={innerRef} />
       <div ref={divToCenter} />
-      {isCreator && !mission.tutorialId && (
+      {canEditTutorial && !mission.tutorialId && (
         <AddTutorial missionId={mission.id} missionTitle={mission.title} />
       )}
       {!!mission.tutorialId &&
-        (isCreator ||
-          (mission.tutorialIsPublished && !mission.tutorialStarted)) && (
+        (canEditTutorial || tutorialButtonShownForNonManager) && (
           <ViewTutorial
-            isCreator={isCreator}
+            canEditTutorial={canEditTutorial}
             missionId={mission.id}
-            style={isCreator ? { marginBottom: '5rem' } : {}}
+            style={canEditTutorial ? { marginBottom: '5rem' } : {}}
             onSetMissionState={onSetMissionState}
             tutorialPrompt={mission.tutorialPrompt}
             tutorialButtonLabel={mission.tutorialButtonLabel}
@@ -59,13 +71,15 @@ export default function Tutorial({
             }
           />
         )}
-      {!!mission.tutorialId && (mission.tutorialStarted || isCreator) && (
-        <InteractiveContent
-          autoFocus={!isCreator && !myAttempts[mission.id]?.status}
-          interactiveId={mission.tutorialId}
-          onGoBackToMission={handleGoBackToMission}
-        />
-      )}
+      {!!mission.tutorialId &&
+        (canEditTutorial || myAttempt?.status === 'pass') && (
+          <InteractiveContent
+            onScrollElementTo={scrollElementTo}
+            onScrollElementToCenter={scrollElementToCenter}
+            interactiveId={mission.tutorialId}
+            onGoBackToMission={handleGoBackToMission}
+          />
+        )}
     </ErrorBoundary>
   );
 

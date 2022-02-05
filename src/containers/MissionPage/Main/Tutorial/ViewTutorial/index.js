@@ -5,7 +5,7 @@ import CreatorView from './CreatorView';
 import { panel } from '../../../Styles';
 
 ViewTutorial.propTypes = {
-  isCreator: PropTypes.bool,
+  canEditTutorial: PropTypes.bool,
   missionId: PropTypes.number,
   onStartClick: PropTypes.func.isRequired,
   onSetMissionState: PropTypes.func.isRequired,
@@ -15,7 +15,7 @@ ViewTutorial.propTypes = {
 };
 
 export default function ViewTutorial({
-  isCreator,
+  canEditTutorial,
   missionId,
   onStartClick,
   onSetMissionState,
@@ -32,7 +32,7 @@ export default function ViewTutorial({
         ...style
       }}
     >
-      {isCreator ? (
+      {canEditTutorial ? (
         <CreatorView
           missionId={missionId}
           onSetMissionState={onSetMissionState}

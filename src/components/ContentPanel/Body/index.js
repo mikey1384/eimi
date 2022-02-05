@@ -219,14 +219,24 @@ export default function Body({
       !(isSecretAnswerPoster || isHigherAuthThanSecretAnswerPoster);
     if ((userId === uploader.id || canEdit) && !isForSecretSubject) {
       items.push({
-        label: editLabel,
+        label: (
+          <>
+            <Icon icon="pencil-alt" />
+            <span style={{ marginLeft: '1rem' }}>{editLabel}</span>
+          </>
+        ),
         onClick: () =>
           onSetIsEditing({ contentId, contentType, isEditing: true })
       });
     }
     if (userId === uploader.id || canDelete) {
       items.push({
-        label: removeLabel,
+        label: (
+          <>
+            <Icon icon="trash-alt" />
+            <span style={{ marginLeft: '1rem' }}>{removeLabel}</span>
+          </>
+        ),
         onClick: () => setConfirmModalShown(true)
       });
     }
@@ -424,21 +434,10 @@ export default function Body({
                       </span>
                     </Button>
                   )}
-                  {editButtonShown ? (
-                    <DropdownButton
-                      transparent
-                      style={{
-                        marginLeft: secretHidden ? 0 : '0.5rem',
-                        display: 'inline-block'
-                      }}
-                      size={contentType !== 'subject' ? 'sm' : null}
-                      menuProps={editMenuItems}
-                    />
-                  ) : null}
                   {!secretHidden && (
                     <div
                       className={css`
-                        margin-left: 1rem;
+                        margin-left: 0.5rem;
                         @media (max-width: ${mobileMaxWidth}) {
                           margin-left: 0;
                         }
@@ -472,6 +471,17 @@ export default function Body({
                       </div>
                     </div>
                   )}
+                  {editButtonShown ? (
+                    <DropdownButton
+                      transparent
+                      style={{
+                        marginLeft: secretHidden ? 0 : '1rem',
+                        display: 'inline-block'
+                      }}
+                      size={contentType !== 'subject' ? 'sm' : null}
+                      menuProps={editMenuItems}
+                    />
+                  ) : null}
                 </div>
               )}
               {!secretHidden && (

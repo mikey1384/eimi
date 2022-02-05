@@ -289,12 +289,15 @@ export default function Carousel({
                 <Button
                   skeuomorphic
                   color="darkerGray"
-                  style={{
-                    position: 'absolute',
-                    top: 'CALC(50% - 2rem)',
-                    right: '-0.5rem',
-                    opacity: 0.9
-                  }}
+                  className={css`
+                    position: absolute;
+                    top: CALC(50% - 2rem);
+                    right: -0.5rem;
+                    opacity: 0.9;
+                    &:hover {
+                      opacity: 1;
+                    }
+                  `}
                   onClick={onShowAll}
                 >
                   {showAllLabel}

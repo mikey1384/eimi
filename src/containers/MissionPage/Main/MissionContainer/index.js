@@ -5,6 +5,7 @@ import Tutorial from '../Tutorial';
 import RepeatMissionAddons from '../RepeatMissionAddons';
 import { mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
+import TutorialModal from '../TutorialModal';
 
 MissionContainer.propTypes = {
   mission: PropTypes.object.isRequired,
@@ -47,6 +48,25 @@ export default function MissionContainer({
             }
           `}
           onSetMissionState={onSetMissionState}
+        />
+      )}
+      {mission.tutorialStarted && (
+        <TutorialModal
+          missionTitle={mission.title}
+          tutorialId={mission.tutorialId}
+          tutorialSlideId={mission.tutorialSlideId}
+          onCurrentSlideIdChange={(slideId) =>
+            onSetMissionState({
+              missionId: mission.id,
+              newState: { tutorialSlideId: slideId }
+            })
+          }
+          onHide={() =>
+            onSetMissionState({
+              missionId: mission.id,
+              newState: { tutorialStarted: false }
+            })
+          }
         />
       )}
     </div>

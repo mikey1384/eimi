@@ -12,10 +12,11 @@ import StepSlide from '../components/StepSlide';
 import MultiStepContainer from '../components/MultiStepContainer';
 
 GitHubVerifier.propTypes = {
+  onSetMissionState: PropTypes.func.isRequired,
   task: PropTypes.object.isRequired
 };
 
-export default function GitHubVerifier({ task }) {
+export default function GitHubVerifier({ onSetMissionState, task }) {
   const loadGitHubData = useAppContext((v) => v.requestHelpers.loadGitHubData);
   const onSetUserState = useAppContext((v) => v.user.actions.onSetUserState);
   const { userId } = useMyState();
@@ -74,6 +75,12 @@ export default function GitHubVerifier({ task }) {
                 skeuomorphic: true
               }
             ]}
+            onOpenTutorial={() =>
+              onSetMissionState({
+                missionId: task.id,
+                newState: { tutorialStarted: true }
+              })
+            }
           >
             <StepSlide
               title={

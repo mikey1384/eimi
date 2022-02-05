@@ -89,7 +89,7 @@ export default function PosBlock({ pos, wordObj }) {
 
   return (
     <section key={pos}>
-      <p>{pos}</p>
+      <p style={{ fontSize: '1.7rem', fontStyle: 'italic' }}>{pos}</p>
       <div
         style={{
           width: '80%',

@@ -19,8 +19,7 @@ MissionModule.propTypes = {
   isRepeating: PropTypes.bool,
   mission: PropTypes.object.isRequired,
   onSetMissionState: PropTypes.func,
-  style: PropTypes.object,
-  tutorialRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  style: PropTypes.object
 };
 
 export default function MissionModule({
@@ -29,8 +28,7 @@ export default function MissionModule({
   fileUploadProgress,
   isRepeating,
   onSetMissionState,
-  style,
-  tutorialRef
+  style
 }) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', ...style }}>
@@ -56,31 +54,26 @@ export default function MissionModule({
         <Grammar mission={mission} isRepeating={isRepeating} />
       )}
       {mission.missionType === 'email' && <Email taskId={mission.id} />}
-      {mission.missionType === 'github' && <GitHub task={mission} />}
-      {mission.missionType === 'replit' && <Replit task={mission} />}
+      {mission.missionType === 'github' && (
+        <GitHub task={mission} onSetMissionState={onSetMissionState} />
+      )}
+      {mission.missionType === 'replit' && (
+        <Replit task={mission} onSetMissionState={onSetMissionState} />
+      )}
       {mission.missionType === 'hello-world' && (
-        <HelloWorld
-          task={mission}
-          onSetMissionState={onSetMissionState}
-          tutorialRef={tutorialRef}
-        />
+        <HelloWorld task={mission} onSetMissionState={onSetMissionState} />
       )}
       {mission.missionType === 'fix-bugs' && (
-        <FixingBugs
-          task={mission}
-          onSetMissionState={onSetMissionState}
-          tutorialRef={tutorialRef}
-        />
+        <FixingBugs task={mission} onSetMissionState={onSetMissionState} />
       )}
       {mission.missionType === 'write-it-yourself' && (
-        <WriteItYourself
-          task={mission}
-          onSetMissionState={onSetMissionState}
-          tutorialRef={tutorialRef}
-        />
+        <WriteItYourself task={mission} onSetMissionState={onSetMissionState} />
       )}
       {mission.missionType === 'launch-the-website' && (
-        <LaunchTheWebsite task={mission} />
+        <LaunchTheWebsite
+          task={mission}
+          onSetMissionState={onSetMissionState}
+        />
       )}
     </div>
   );

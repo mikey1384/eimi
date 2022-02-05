@@ -1,4 +1,4 @@
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import PropTypes from 'prop-types';
 import { useAppContext, useInteractiveContext } from 'contexts';
 import { useMyState } from 'helpers/hooks';
@@ -12,6 +12,7 @@ import Icon from 'components/Icon';
 import InsertSlide from './InsertSlide';
 import DropdownButton from 'components/Buttons/DropdownButton';
 import ConfirmModal from 'components/Modals/ConfirmModal';
+import { useInView } from 'react-intersection-observer';
 
 Slide.propTypes = {
   archivedSlides: PropTypes.array,
@@ -32,6 +33,7 @@ Slide.propTypes = {
   isPublished: PropTypes.bool,
   isLastSlide: PropTypes.bool,
   isFork: PropTypes.bool,
+  isOnModal: PropTypes.bool,
   isPortal: PropTypes.bool,
   forkedFrom: PropTypes.number,
   description: PropTypes.string,
@@ -39,6 +41,7 @@ Slide.propTypes = {
   onMoveSlide: PropTypes.func,
   forkButtonIds: PropTypes.array,
   forkButtonsObj: PropTypes.object,
+  onCurrentSlideIdChange: PropTypes.func,
   onGoBackToMission: PropTypes.func,
   portalButton: PropTypes.object,
   slideId: PropTypes.number,
@@ -62,11 +65,13 @@ export default function Slide({
   interactiveId,
   isDeleted,
   isLastSlide,
+  isOnModal,
   isPublished,
   isEditing,
   isFork,
   isPortal,
   forkedFrom,
+  onCurrentSlideIdChange,
   onExpandPath,
   onMoveSlide,
   forkButtonIds,
@@ -80,6 +85,15 @@ export default function Slide({
   slideObj,
   style
 }) {
+  const [ComponentRef, inView] = useInView({
+    threshold: 1
+  });
+  useEffect(() => {
+    if (inView) {
+      onCurrentSlideIdChange?.(slideId);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [inView, slideId]);
   const deleteInteractiveSlide = useAppContext(
     (v) => v.requestHelpers.deleteInteractiveSlide
   );
@@ -286,6 +300,7 @@ export default function Slide({
           />
         ) : (
           <Content
+            centerRef={ComponentRef}
             forkedFrom={forkedFrom}
             isPublished={isPublished}
             isPortal={isPortal}
@@ -302,6 +317,7 @@ export default function Slide({
             onThumbnailUpload={handleThumbnailUpload}
             slideId={slideId}
             selectedForkButtonId={selectedForkButtonId}
+            isOnModal={isOnModal}
           />
         )}
         {!isPublished && !isEditing && !isDeleted && (
@@ -318,6 +334,7 @@ export default function Slide({
             title="Remove Fork Slide"
             description="Are you sure? This action cannot be undone"
             onConfirm={() => handleDeleteSlide({ noUndelete: true })}
+            modalOverModal={isOnModal}
           />
         )}
       </div>

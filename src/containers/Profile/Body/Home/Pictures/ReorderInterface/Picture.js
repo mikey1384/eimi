@@ -63,7 +63,7 @@ export default function Picture({ numPictures, picture, style, onMove }) {
           right: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'contain',
+          objectFit: 'cover',
           objectPosition: 'center'
         }}
         src={imageUrl}

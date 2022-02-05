@@ -43,7 +43,7 @@ export default function Picture({ numPictures, onDelete, picture, style }) {
           right: 0,
           width: '100%',
           height: '100%',
-          objectFit: 'contain',
+          objectFit: 'cover',
           objectPosition: 'center'
         }}
         src={imageUrl}

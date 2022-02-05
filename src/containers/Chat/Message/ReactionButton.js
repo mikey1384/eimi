@@ -1,7 +1,6 @@
 import React, { useRef } from 'react';
 import PropTypes from 'prop-types';
 import Button from 'components/Button';
-import Emojis from './emojis.png';
 import ErrorBoundary from 'components/ErrorBoundary';
 import { reactionsObj } from 'constants/defaultValues';
 import { Color, mobileMaxWidth } from 'constants/css';
@@ -77,8 +76,8 @@ export default function ReactionButton({
                   cursor: pointer;
                   width: 2rem;
                   height: 2rem;
-                  background: url(${Emojis}) ${reactionsObj[reaction].position} /
-                    5100%;
+                  background: url('${process.env.PUBLIC_URL}/img/emojis.png')
+                    ${reactionsObj[reaction].position} / 5100%;
                   transition: all 0.1s ease-in-out;
                   &:hover {
                     transform: scale(1.5);

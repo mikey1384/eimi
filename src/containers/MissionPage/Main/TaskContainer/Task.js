@@ -17,8 +17,7 @@ Task.propTypes = {
   task: PropTypes.object,
   onSetMissionState: PropTypes.func.isRequired,
   style: PropTypes.object,
-  nextTaskType: PropTypes.string,
-  tutorialRef: PropTypes.oneOfType([PropTypes.func, PropTypes.object])
+  nextTaskType: PropTypes.string
 };
 
 export default function Task({
@@ -38,8 +37,7 @@ export default function Task({
   },
   onSetMissionState,
   style,
-  nextTaskType,
-  tutorialRef
+  nextTaskType
 }) {
   const checkMissionStatus = useAppContext(
     (v) => v.requestHelpers.checkMissionStatus
@@ -172,7 +170,6 @@ export default function Task({
           fileUploadProgress={fileUploadProgress}
           onSetMissionState={onSetMissionState}
           style={{ marginTop: '4.5rem' }}
-          tutorialRef={tutorialRef}
         />
       )}
       {myAttempt?.status === 'pending' ? (

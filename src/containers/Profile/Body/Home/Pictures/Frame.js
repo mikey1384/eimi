@@ -8,6 +8,7 @@ import { useAppContext } from 'contexts';
 
 Frame.propTypes = {
   forCarousel: PropTypes.bool,
+  numPictures: PropTypes.number,
   picture: PropTypes.object.isRequired,
   userIsUploader: PropTypes.bool,
   onUpdatePictureCaption: PropTypes.func,
@@ -16,6 +17,7 @@ Frame.propTypes = {
 
 export default function Frame({
   forCarousel,
+  numPictures,
   onUpdatePictureCaption,
   picture,
   style,
@@ -28,7 +30,11 @@ export default function Frame({
     return picture?.src ? `${cloudFrontURL}${picture?.src}` : '';
   }, [picture]);
   const [imageModalShown, setImageModalShown] = useState(false);
-  const frameWidth = forCarousel ? 100 : 33;
+  const width = useMemo(() => Math.min(100 / numPictures, 33), [numPictures]);
+  const frameWidth = useMemo(
+    () => (forCarousel ? 100 : width),
+    [forCarousel, width]
+  );
 
   return (
     <div
@@ -38,9 +44,9 @@ export default function Frame({
         position: relative;
         border: 1px solid ${Color.borderGray()};
         border-radius: ${borderRadius};
-        width: CALC(${frameWidth}% - 2rem);
-        height: ${frameWidth}%;
-        padding-bottom: CALC(${frameWidth}% - 2rem - 2px);
+        width: ${frameWidth}%;
+        height: CALC(${frameWidth}% - 2px);
+        padding-bottom: CALC(${frameWidth}% - ${numPictures}px);
       `}
     >
       {imageUrl && (
@@ -56,7 +62,7 @@ export default function Frame({
             right: 0,
             width: '100%',
             height: '100%',
-            objectFit: 'contain',
+            objectFit: 'cover',
             objectPosition: 'center'
           }}
           onClick={() => setImageModalShown(true)}

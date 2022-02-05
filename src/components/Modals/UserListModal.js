@@ -34,6 +34,9 @@ export default function UserListModal({
   const history = useHistory();
   const { userId, username, profilePicUrl, authLevel } = useMyState();
   const loadDMChannel = useAppContext((v) => v.requestHelpers.loadDMChannel);
+  const onUpdateSelectedChannelId = useChatContext(
+    (v) => v.actions.onUpdateSelectedChannelId
+  );
   const onOpenNewChatTab = useChatContext((v) => v.actions.onOpenNewChatTab);
   const allUsers = useMemo(() => {
     const otherUsers = users.filter((user) => user.id !== userId);
@@ -128,7 +131,7 @@ export default function UserListModal({
 
   async function handleTalkClick(user) {
     if (user.id !== userId) {
-      const { pathId } = await loadDMChannel({ recepient: user });
+      const { channelId, pathId } = await loadDMChannel({ recepient: user });
       if (mounted.current) {
         if (!pathId) {
           onOpenNewChatTab({
@@ -141,6 +144,7 @@ export default function UserListModal({
             }
           });
         }
+        onUpdateSelectedChannelId(channelId);
         history.push(pathId ? `/chat/${pathId}` : `/chat/new`);
       }
     }

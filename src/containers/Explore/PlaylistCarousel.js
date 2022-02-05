@@ -8,6 +8,7 @@ import EditPlaylistModal from './Modals/EditPlaylistModal';
 import PlaylistModal from 'components/Modals/PlaylistModal';
 import ConfirmModal from 'components/Modals/ConfirmModal';
 import Link from 'components/Link';
+import Icon from 'components/Icon';
 import { css } from '@emotion/css';
 import { Color, mobileMaxWidth } from 'constants/css';
 import { charLimit } from 'constants/defaultValues';
@@ -19,6 +20,7 @@ const byLabel = localize('by');
 const changeVideosLabel = localize('changeVideos');
 const editTitleLabel = localize('editTitle');
 const reorderVideosLabel = localize('reorderVideos');
+const removeLabel = localize('remove');
 const removePlaylistLabel = localize('removePlaylist');
 const cellSpacing = 12;
 
@@ -118,26 +120,52 @@ export default function PlaylistCarousel({
         {!onEdit && (userIsUploader || canEditPlaylists) && (
           <DropdownButton
             skeuomorphic
+            icon="chevron-down"
             color="darkerGray"
+            listStyle={{ minWidth: '15rem' }}
             style={{ position: 'absolute', right: 0 }}
             menuProps={[
               {
-                label: editTitleLabel,
+                label: (
+                  <>
+                    <Icon icon="pencil-alt" />
+                    <span style={{ marginLeft: '1rem' }}>{editTitleLabel}</span>
+                  </>
+                ),
                 onClick: () => setOnEdit(true)
               },
               {
-                label: changeVideosLabel,
+                label: (
+                  <>
+                    <Icon icon="film" />
+                    <span style={{ marginLeft: '1rem' }}>
+                      {changeVideosLabel}
+                    </span>
+                  </>
+                ),
                 onClick: () => setChangePLVideosModalShown(true)
               },
               {
-                label: reorderVideosLabel,
+                label: (
+                  <>
+                    <Icon icon="sort" />
+                    <span style={{ marginLeft: '1rem' }}>
+                      {reorderVideosLabel}
+                    </span>
+                  </>
+                ),
                 onClick: () => setReorderPLVideosModalShown(true)
               },
               {
                 separator: true
               },
               {
-                label: removePlaylistLabel,
+                label: (
+                  <>
+                    <Icon icon="trash-alt" />
+                    <span style={{ marginLeft: '1rem' }}>{removeLabel}</span>
+                  </>
+                ),
                 onClick: () => setDeleteConfirmModalShown(true)
               }
             ]}

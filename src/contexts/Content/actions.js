@@ -227,26 +227,39 @@ export default function ContentActions(dispatch) {
       replies,
       commentId,
       replyId,
+      rootReplyId,
       contentType,
-      contentId
+      contentId,
+      loadMoreButton,
+      loadMoreButtonId
     }) {
       return dispatch({
         type: 'LOAD_REPLIES_OF_REPLY',
         replies,
         commentId,
         replyId,
+        rootReplyId,
         contentType,
-        contentId
+        contentId,
+        loadMoreButton,
+        loadMoreButtonId
       });
     },
-    onLoadSubjectRepliesOfReply({ replies, commentId, replyId, subjectId }) {
+    onLoadSubjectRepliesOfReply({
+      replies,
+      commentId,
+      loadMoreButton,
+      replyId,
+      subjectId
+    }) {
       return dispatch({
         type: 'LOAD_SUBJECT_REPLIES_OF_REPLY',
         replies,
         commentId,
         replyId,
         contentId: subjectId,
-        contentType: 'subject'
+        contentType: 'subject',
+        loadMoreButton
       });
     },
     onLoadSubjects({ contentId, contentType, subjects, loadMoreButton }) {

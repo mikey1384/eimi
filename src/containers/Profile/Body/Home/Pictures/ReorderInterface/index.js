@@ -31,7 +31,12 @@ export default function ReorderInterface({
       <DndProvider backend={Backend}>
         <div
           style={{
-            width: '100%',
+            width:
+              pictures.length > 5
+                ? '100%'
+                : pictures.length > 3
+                ? '95%'
+                : '75%',
             height: 'auto',
             display: 'flex',
             justifyContent: 'center'

@@ -11,6 +11,7 @@ import { stringIsEmpty } from 'helpers/stringHelpers';
 import { useMyState } from 'helpers/hooks';
 
 Content.propTypes = {
+  centerRef: PropTypes.func,
   forkedFrom: PropTypes.number,
   heading: PropTypes.string,
   interactiveId: PropTypes.number,
@@ -20,6 +21,7 @@ Content.propTypes = {
   attachment: PropTypes.object,
   forkButtonIds: PropTypes.array,
   forkButtonsObj: PropTypes.object,
+  isOnModal: PropTypes.bool,
   onForkButtonClick: PropTypes.func,
   onPortalButtonClick: PropTypes.func,
   onSetEmbedProps: PropTypes.func,
@@ -30,6 +32,7 @@ Content.propTypes = {
 };
 
 export default function Content({
+  centerRef,
   forkedFrom,
   heading,
   interactiveId,
@@ -39,6 +42,7 @@ export default function Content({
   attachment,
   forkButtonIds,
   forkButtonsObj,
+  isOnModal,
   onForkButtonClick,
   onPortalButtonClick,
   onSetEmbedProps,
@@ -87,6 +91,7 @@ export default function Content({
   return (
     <div
       style={{
+        position: 'relative',
         width: '100%',
         height: '100%',
         minHeight: '30rem',
@@ -95,6 +100,13 @@ export default function Content({
         ...(headingShown && !bodyShown ? { justifyContent: 'center' } : {})
       }}
     >
+      <div
+        style={{
+          top: '50%',
+          position: 'absolute'
+        }}
+        ref={centerRef}
+      />
       {!isPublished && (
         <div
           style={{
@@ -179,6 +191,7 @@ export default function Content({
               <Attachment
                 type={attachment.type}
                 interactiveId={interactiveId}
+                isOnModal={isOnModal}
                 isYouTubeVideo={attachment.isYouTubeVideo}
                 fileUrl={attachment.fileUrl}
                 linkUrl={attachment.linkUrl}

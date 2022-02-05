@@ -25,7 +25,7 @@ const doesNotHaveBioLabel = localize('doesNotHaveBio');
 
 UserDetails.propTypes = {
   noLink: PropTypes.bool,
-  onSetBioEditModalShown: PropTypes.func.isRequired,
+  onSetBioEditModalShown: PropTypes.func,
   profile: PropTypes.object.isRequired,
   removeStatusMsg: PropTypes.func,
   style: PropTypes.object,
@@ -193,7 +193,7 @@ export default function UserDetails({
                 cursor: 'pointer',
                 fontSize: '2rem'
               }}
-              onClick={() => onSetBioEditModalShown(true)}
+              onClick={() => onSetBioEditModalShown?.(true)}
             >
               Introduce yourself!
             </a>

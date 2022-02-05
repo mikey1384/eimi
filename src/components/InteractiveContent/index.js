@@ -4,26 +4,37 @@ import PropTypes from 'prop-types';
 import Slide from './Slide';
 import Loading from 'components/Loading';
 import BottomInterface from './BottomInterface';
-import Button from 'components/Button';
-import Icon from 'components/Icon';
 import { useAppContext, useInteractiveContext, useViewContext } from 'contexts';
-import { scrollElementToCenter, scrollElementTo } from 'helpers';
-import { borderRadius, Color, mobileMaxWidth } from 'constants/css';
+import { mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
-
-const BodyRef = document.scrollingElement || document.documentElement;
 
 InteractiveContent.propTypes = {
   autoFocus: PropTypes.bool,
+  currentTutorialSlideId: PropTypes.number,
   interactiveId: PropTypes.oneOfType([PropTypes.number, PropTypes.string]),
-  onGoBackToMission: PropTypes.func
+  onGoBackToMission: PropTypes.func,
+  onCurrentSlideIdChange: PropTypes.func,
+  onScrollElementTo: PropTypes.func.isRequired,
+  onScrollElementToCenter: PropTypes.func.isRequired,
+  isOnModal: PropTypes.bool
 };
 
 export default function InteractiveContent({
   autoFocus,
+  currentTutorialSlideId,
   interactiveId,
-  onGoBackToMission
+  onCurrentSlideIdChange,
+  onGoBackToMission,
+  onScrollElementTo,
+  onScrollElementToCenter,
+  isOnModal
 }) {
+  useEffect(() => {
+    if (currentTutorialSlideId) {
+      onScrollElementToCenter(SlideRefs.current[currentTutorialSlideId]);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const checkInteractiveNumUpdates = useAppContext(
     (v) => v.requestHelpers.checkInteractiveNumUpdates
   );
@@ -56,14 +67,14 @@ export default function InteractiveContent({
   const onSetSlideState = useInteractiveContext(
     (v) => v.actions.onSetSlideState
   );
-
-  const { canEdit, userId } = useMyState();
+  const { managementLevel, userId } = useMyState();
 
   const mounted = useRef(true);
   const expanded = useRef(false);
   const SlideRefs = useRef({});
   const prevDisplayedSlideIds = useRef([]);
 
+  const canEdit = useMemo(() => managementLevel >= 2, [managementLevel]);
   const {
     numUpdates,
     prevUserId,
@@ -117,11 +128,11 @@ export default function InteractiveContent({
 
   useEffect(() => {
     if (autoFocus && displayedSlideIds?.length === 1) {
-      scrollElementToCenter(
+      onScrollElementToCenter(
         SlideRefs.current[slideObj[displayedSlideIds[0]].id]
       );
     }
-  }, [autoFocus, displayedSlideIds, slideObj]);
+  }, [autoFocus, displayedSlideIds, slideObj, onScrollElementToCenter]);
 
   useEffect(() => {
     if (
@@ -129,7 +140,7 @@ export default function InteractiveContent({
       slideObj[displayedSlideIds[displayedSlideIds.length - 1]]?.forkedFrom
     ) {
       setTimeout(() => {
-        scrollElementTo({
+        onScrollElementTo({
           element:
             SlideRefs.current[
               slideObj[
@@ -146,7 +157,7 @@ export default function InteractiveContent({
       }, 10);
     }
     expanded.current = false;
-  }, [displayedSlideIds, slideObj]);
+  }, [displayedSlideIds, slideObj, onScrollElementTo]);
 
   useEffect(() => {
     if (displayedSlideIds?.length < prevDisplayedSlideIds?.current?.length) {
@@ -154,7 +165,7 @@ export default function InteractiveContent({
         displayedSlideIds[displayedSlideIds.length - 1] !==
         prevDisplayedSlideIds.current[prevDisplayedSlideIds.current.length - 1]
       ) {
-        scrollElementToCenter(
+        onScrollElementToCenter(
           SlideRefs.current[
             slideObj[displayedSlideIds[displayedSlideIds.length - 1]]?.id
           ]
@@ -162,7 +173,7 @@ export default function InteractiveContent({
       }
     }
     prevDisplayedSlideIds.current = displayedSlideIds;
-  }, [displayedSlideIds, slideObj]);
+  }, [displayedSlideIds, slideObj, onScrollElementToCenter]);
 
   useEffect(() => {
     mounted.current = true;
@@ -207,8 +218,7 @@ export default function InteractiveContent({
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
-        justifyContent: 'center',
-        paddingBottom: '10rem'
+        justifyContent: 'center'
       }}
     >
       {(isPublished || canEdit) && (
@@ -237,53 +247,19 @@ export default function InteractiveContent({
               interactiveId={interactiveId}
               onExpandPath={slideObj[slideId].isFork ? handleExpandPath : null}
               onMoveSlide={handleMoveInteractiveSlide}
+              onCurrentSlideIdChange={onCurrentSlideIdChange}
               portalButton={slideObj[slideId].portalButton}
               slideId={slideId}
               slideObj={slideObj}
               isLastSlide={
                 index === displayedSlidesThatAreNotDeleted.length - 1
               }
+              isOnModal={isOnModal}
               onGoBackToMission={onGoBackToMission}
             />
           ))}
         </>
       )}
-      {loaded &&
-        displayedSlideIds.length > 0 &&
-        !slideObj[displayedSlideIds[displayedSlideIds.length - 1].isFork] && (
-          <div
-            style={{
-              width: '100%',
-              padding: '1rem',
-              background: '#fff',
-              display: 'flex',
-              justifyContent: 'center'
-            }}
-            className={css`
-              margin-top: 5rem;
-              border: 1px solid ${Color.borderGray()};
-              border-radius: ${borderRadius};
-              @media (max-width: ${mobileMaxWidth}) {
-                margin-top: 2rem;
-                border-left: 0;
-                border-right: 0;
-                border-radius: 0;
-              }
-            `}
-          >
-            <Button
-              style={{ fontSize: '1.7rem' }}
-              skeuomorphic
-              onClick={() => {
-                document.getElementById('App').scrollTop = 0;
-                BodyRef.scrollTop = 0;
-              }}
-            >
-              <Icon icon="arrow-up" />
-              <span style={{ marginLeft: '0.7rem' }}>Back to Top</span>
-            </Button>
-          </div>
-        )}
       {loaded && canEdit && (
         <BottomInterface
           archivedSlides={archivedSlides}

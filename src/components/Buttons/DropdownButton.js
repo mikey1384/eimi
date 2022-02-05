@@ -37,7 +37,7 @@ export default function DropdownButton({
   onDropdownShown,
   opacity = 1,
   style,
-  icon = 'pencil-alt',
+  icon = 'ellipsis-h',
   iconSize = '1x',
   listStyle = {},
   menuProps,

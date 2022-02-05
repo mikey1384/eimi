@@ -238,13 +238,23 @@ export default function Details({
     const items = [];
     if (userIsUploader || canEdit) {
       items.push({
-        label: editLabel,
+        label: (
+          <>
+            <Icon icon="pencil-alt" />
+            <span style={{ marginLeft: '1rem' }}>{editLabel}</span>
+          </>
+        ),
         onClick: handleEditStart
       });
     }
     if (userIsUploader || canDelete) {
       items.push({
-        label: deleteLabel,
+        label: (
+          <>
+            <Icon icon="trash-alt" />
+            <span style={{ marginLeft: '1rem' }}>{deleteLabel}</span>
+          </>
+        ),
         onClick: onDelete
       });
     }
@@ -427,6 +437,7 @@ export default function Details({
               {editButtonShown && !isEditing && (
                 <DropdownButton
                   skeuomorphic
+                  icon="pencil-alt"
                   color="darkerGray"
                   style={{ marginRight: '1rem' }}
                   text={editOrDeleteLabel}
