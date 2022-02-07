@@ -86,20 +86,22 @@ export default function LoginForm({
         </div>
       </main>
       <footer>
-        <Button
-          className={css`
-            margin-right: 1.5rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              max-width: 30%;
-              margin-right: 0;
-            }
-          `}
-          color="blue"
-          transparent
-          onClick={onShowForgotPasswordForm}
-        >
-          {iForgotMyPasswordLabel}
-        </Button>
+        {false && (
+          <Button
+            className={css`
+              margin-right: 1.5rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                max-width: 30%;
+                margin-right: 0;
+              }
+            `}
+            color="blue"
+            transparent
+            onClick={onShowForgotPasswordForm}
+          >
+            {iForgotMyPasswordLabel}
+          </Button>
+        )}
         <Button
           className={css`
             margin-right: 1.5rem;

@@ -38,18 +38,20 @@ export default function Main({
         >
           {noIDontHaveAnAccountLabel}
         </Button>
-        <Button
-          color="purple"
-          style={{
-            marginTop: '1.5rem',
-            fontSize: '2rem',
-            padding: '1rem',
-            marginBottom: '1rem'
-          }}
-          onClick={onShowForgotPasswordForm}
-        >
-          {iForgotMyPasswordLabel}
-        </Button>
+        {false && (
+          <Button
+            color="purple"
+            style={{
+              marginTop: '1.5rem',
+              fontSize: '2rem',
+              padding: '1rem',
+              marginBottom: '1rem'
+            }}
+            onClick={onShowForgotPasswordForm}
+          >
+            {iForgotMyPasswordLabel}
+          </Button>
+        )}
       </main>
     </ErrorBoundary>
   );
