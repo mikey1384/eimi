@@ -324,6 +324,10 @@ const languageObj = {
     en: 'Current Password',
     kr: '현재 비밀번호'
   },
+  dashboard: {
+    en: 'Dashboard',
+    kr: '대시보드'
+  },
   delete: {
     en: 'Delete',
     kr: '삭제'

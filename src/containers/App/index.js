@@ -569,6 +569,7 @@ function App({ location, history }) {
           />
           <Route path="/management" exact component={Management} />
           <Route path="/management/mod-activities" component={Management} />
+          <Route path="/management/dashboard" component={Management} />
           <Route path="/reset" component={ResetPassword} />
           <Route path="/verify" component={Verify} />
           <Route path="/privacy" component={Privacy} />

@@ -13,6 +13,7 @@ import { useManagementContext } from 'contexts';
 import localize from 'constants/localize';
 
 const accountMgmtLabel = localize('accountMgmt');
+const dashboardLabel = localize('dashboard');
 const modActivitiesLabel = localize('modActivities');
 
 Management.propTypes = {
@@ -41,6 +42,9 @@ export default function Management({ location }) {
         </NavLink>
         <NavLink to="/management/mod-activities" activeClassName="active">
           <span style={{ marginLeft: '1.1rem' }}>{modActivitiesLabel}</span>
+        </NavLink>
+        <NavLink to="/management/dashboard" activeClassName="active">
+          <span style={{ marginLeft: '1.1rem' }}>{dashboardLabel}</span>
         </NavLink>
       </SideMenu>
       <FilterBar
