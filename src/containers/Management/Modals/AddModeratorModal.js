@@ -82,6 +82,7 @@ export default function AddModeratorModal({ accountTypes, onHide }) {
           <td style={{ display: 'flex', alignItems: 'center' }}>
             <DropdownButton
               style={{ position: 'absolute' }}
+              icon="chevron-down"
               skeuomorphic
               text={user.userType || 'Not Selected'}
               color="darkerGray"

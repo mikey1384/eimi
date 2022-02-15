@@ -244,7 +244,7 @@ export default function Activity({
     <div className={MessageStyle.container}>
       <div className={MessageStyle.profilePic}>
         <ProfilePic
-          style={{ width: '100%', height: '100%' }}
+          style={{ width: '100%' }}
           userId={userId}
           profilePicUrl={profilePicUrl}
         />

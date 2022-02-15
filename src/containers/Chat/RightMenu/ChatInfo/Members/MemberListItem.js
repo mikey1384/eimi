@@ -42,24 +42,24 @@ function MemberListItem({ onlineMembers, creatorId, member, style }) {
           alignItems: 'center'
         }}
       >
-        <ProfilePic
-          className={css`
-            height: 4rem;
-            width: 4rem;
-            @media (max-width: ${mobileMaxWidth}) {
-              height: 3rem;
-              width: 3rem;
+        <div>
+          <ProfilePic
+            className={css`
+              width: 4rem;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 3rem;
+              }
+            `}
+            userId={member.id}
+            profilePicUrl={
+              memberProfilePicUrl || member.profilePicUrl || profilePicUrl
             }
-          `}
-          userId={member.id}
-          profilePicUrl={
-            memberProfilePicUrl || member.profilePicUrl || profilePicUrl
-          }
-          online={!!onlineMembers[member.id]}
-          isAway={member.id === myId ? false : isAway}
-          isBusy={member.id === myId ? false : isBusy}
-          statusShown
-        />
+            online={!!onlineMembers[member.id]}
+            isAway={member.id === myId ? false : isAway}
+            isBusy={member.id === myId ? false : isBusy}
+            statusShown
+          />
+        </div>
         <UsernameText
           style={{
             color: Color.darkerGray(),

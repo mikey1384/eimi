@@ -62,7 +62,7 @@ function ChatInfo({
     }
     return [me, ...currentChannelOnlineMembersOtherThanMe];
   }, [
-    currentChannel,
+    currentChannel?.members,
     myId,
     username,
     profilePicUrl,

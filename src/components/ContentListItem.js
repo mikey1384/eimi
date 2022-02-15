@@ -15,6 +15,7 @@ import { useContentContext } from 'contexts';
 ContentListItem.propTypes = {
   contentObj: PropTypes.object.isRequired,
   expandable: PropTypes.bool,
+  modalOverModal: PropTypes.bool,
   onClick: PropTypes.func,
   selectable: PropTypes.bool,
   selected: PropTypes.bool,
@@ -26,6 +27,7 @@ function ContentListItem({
   contentObj,
   contentObj: { id: contentId, contentType, notFound },
   expandable,
+  modalOverModal,
   selectable,
   selected,
   style
@@ -271,6 +273,7 @@ function ContentListItem({
                 fileName={fileName}
                 filePath={filePath}
                 fileSize={fileSize}
+                modalOverModal={modalOverModal}
                 thumbUrl={thumbUrl}
                 videoHeight="100%"
                 isThumb

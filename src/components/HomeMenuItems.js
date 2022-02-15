@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { Link, Route } from 'react-router-dom';
 import Icon from 'components/Icon';
@@ -20,16 +20,16 @@ const storiesLabel = localize('stories');
 const earnXPLabel = localize('earnXP');
 const storeLabel = localize('store');
 const deviceIsMobile = isMobile(navigator);
+const year = (() => {
+  const dt = new Date();
+  return dt.getFullYear();
+})();
 
 export default function HomeMenuItems({ history, style = {} }) {
   const onSetProfilesLoaded = useAppContext(
     (v) => v.user.actions.onSetProfilesLoaded
   );
   const { managementLevel, profileTheme } = useMyState();
-  const year = useMemo(() => {
-    const dt = new Date();
-    return dt.getFullYear();
-  }, []);
 
   return (
     <ErrorBoundary>

@@ -46,7 +46,6 @@ export const container = css`
   }
   .widget__profile-pic {
     width: 8rem;
-    height: 8rem;
   }
   .details {
     font-size: 1.3rem;

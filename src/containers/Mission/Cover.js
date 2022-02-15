@@ -88,20 +88,21 @@ export default function Cover({ missionIds, missionObj, myAttempts }) {
       `}
     >
       <div style={{ display: 'flex', alignItems: 'center' }}>
-        <ProfilePic
-          className={css`
-            width: 9rem;
-            height: 9rem;
-            font-size: 2rem;
-            z-index: 10;
-            @media (max-width: ${mobileMaxWidth}) {
-              width: 5rem;
-              height: 5rem;
-            }
-          `}
-          userId={userId}
-          profilePicUrl={profilePicUrl}
-        />
+        <div>
+          <ProfilePic
+            className={css`
+              width: 9rem;
+              font-size: 2rem;
+              z-index: 10;
+              @media (max-width: ${mobileMaxWidth}) {
+                width: 5rem;
+                height: 5rem;
+              }
+            `}
+            userId={userId}
+            profilePicUrl={profilePicUrl}
+          />
+        </div>
         <div
           className={css`
             margin-left: 3rem;

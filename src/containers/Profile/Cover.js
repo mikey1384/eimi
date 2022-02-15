@@ -206,32 +206,40 @@ export default function Cover({
           accept="image/*"
         />
       </div>
-      <ProfilePic
-        isProfilePage
+      <div
         className={css`
-          width: 22rem;
-          height: 22rem;
-          left: 3rem;
+          position: absolute;
           top: 7rem;
-          font-size: 2rem;
-          z-index: 10;
+          left: 3rem;
           @media (max-width: ${mobileMaxWidth}) {
-            width: 10rem;
-            height: 10rem;
             left: 1rem;
             top: 5rem;
           }
         `}
-        style={{ position: 'absolute' }}
-        userId={profile.id}
-        onClick={
-          userId === profile.id ? () => FileInputRef.current.click() : undefined
-        }
-        profilePicUrl={profilePicUrl}
-        online={!!online}
-        large
-        statusShown
-      />
+      >
+        <ProfilePic
+          isProfilePage
+          className={css`
+            width: 22rem;
+            font-size: 2rem;
+            z-index: 10;
+            @media (max-width: ${mobileMaxWidth}) {
+              width: 10rem;
+              height: 10rem;
+            }
+          `}
+          userId={profile.id}
+          onClick={
+            userId === profile.id
+              ? () => FileInputRef.current.click()
+              : undefined
+          }
+          profilePicUrl={profilePicUrl}
+          online={!!online}
+          large
+          statusShown
+        />
+      </div>
       {imageEditModalShown && (
         <ImageEditModal
           isProfilePic

@@ -420,13 +420,22 @@ function Comment({
         ref={innerRef}
       >
         <div className="content-wrapper">
-          <aside>
-            <ProfilePic
-              style={{ height: '5rem', width: '5rem' }}
-              userId={uploader?.id}
-              profilePicUrl={uploader.profilePicUrl}
-            />
-          </aside>
+          <div
+            style={{
+              display: 'flex',
+              width: '7rem',
+              marginTop: '1rem',
+              justifyContent: 'center'
+            }}
+          >
+            <div style={{ width: '5rem' }}>
+              <ProfilePic
+                style={{ width: '100%' }}
+                userId={uploader?.id}
+                profilePicUrl={uploader?.profilePicUrl}
+              />
+            </div>
+          </div>
           {dropdownButtonShown && !isEditing && (
             <div className="dropdown-wrapper">
               <DropdownButton

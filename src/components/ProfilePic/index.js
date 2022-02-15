@@ -51,6 +51,7 @@ export default function ProfilePic({
         position: 'relative',
         userSelect: 'none',
         borderRadius: '50%',
+        paddingBottom: '100%',
         cursor: myId === userId && isProfilePage ? 'pointer' : 'default',
         ...style
       }}

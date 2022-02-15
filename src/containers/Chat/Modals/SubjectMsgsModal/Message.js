@@ -44,11 +44,13 @@ export default function Message({
   );
   return (
     <div className={MessageStyle.container}>
-      <ProfilePic
-        className={MessageStyle.profilePic}
-        userId={userId}
-        profilePicUrl={profilePicUrl}
-      />
+      <div className={MessageStyle.profilePic}>
+        <ProfilePic
+          style={{ width: '100%' }}
+          userId={userId}
+          profilePicUrl={profilePicUrl}
+        />
+      </div>
       <div
         className={css`
           width: CALC(100% - 5vw - 3rem);

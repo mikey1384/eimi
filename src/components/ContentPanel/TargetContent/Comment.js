@@ -96,11 +96,13 @@ function Comment({
         </div>
       )}
       <div style={{ display: 'flex', width: '100%' }}>
-        <ProfilePic
-          style={{ width: '5rem', height: '5rem' }}
-          userId={userId}
-          profilePicUrl={profilePicUrl}
-        />
+        <div>
+          <ProfilePic
+            style={{ width: '5rem' }}
+            userId={userId}
+            profilePicUrl={profilePicUrl}
+          />
+        </div>
         <div style={{ width: '90%', marginLeft: '2%' }}>
           <div>
             <UsernameText

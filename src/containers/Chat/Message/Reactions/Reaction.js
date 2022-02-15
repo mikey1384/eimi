@@ -208,7 +208,7 @@ function Reaction({
           className={css`
             width: 1.7rem;
             height: 1.7rem;
-            background: url('${process.env.PUBLIC_URL}/img/emojis.png')
+            background: url('/img/emojis.png')
               ${reactionsObj[reaction].position} / 5100%;
           `}
         />
@@ -253,7 +253,7 @@ function Reaction({
                 className={css`
                   width: 2rem;
                   height: 2rem;
-                  background: url('${process.env.PUBLIC_URL}/img/emojis.png')
+                  background: url('/img/emojis.png')
                     ${reactionsObj[reaction].position} / 5100%;
                 `}
               />

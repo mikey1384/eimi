@@ -3,7 +3,6 @@ import PropTypes from 'prop-types';
 import Icon from 'components/Icon';
 import Button from 'components/Button';
 import ProfilePic from 'components/ProfilePic';
-import { mobileMaxWidth } from 'constants/css';
 import { socket } from 'constants/io';
 import { css } from '@emotion/css';
 import LocalContext from '../../Context';
@@ -57,20 +56,18 @@ export default function CallScreen({ style }) {
         >
           {peers.map((peerId, index) => {
             return (
-              <ProfilePic
+              <div
                 key={peerId}
-                className={css`
-                  height: 10rem;
-                  width: 10rem;
-                  margin-left: ${index === 0 ? 0 : '1.5rem'};
-                  @media (max-width: ${mobileMaxWidth}) {
-                    height: 7rem;
-                    width: 7rem;
-                  }
-                `}
-                userId={peerId}
-                profilePicUrl={chatStatus[peerId]?.profilePicUrl}
-              />
+                style={{ marginLeft: index === 0 ? 0 : '1.5rem' }}
+              >
+                <ProfilePic
+                  className={css`
+                    width: 10rem;
+                  `}
+                  userId={peerId}
+                  profilePicUrl={chatStatus[peerId]?.profilePicUrl}
+                />
+              </div>
             );
           })}
         </div>

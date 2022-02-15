@@ -36,7 +36,7 @@ export default function Profile({ profile }) {
           }}
         >
           <ProfilePic
-            style={{ width: '15rem', height: '15rem', cursor: 'pointer' }}
+            style={{ width: '15rem', cursor: 'pointer' }}
             userId={profile.id}
             profilePicUrl={profile.profilePicUrl}
             online={userId === profile.id || !!profile.online}

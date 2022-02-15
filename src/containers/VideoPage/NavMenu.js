@@ -41,9 +41,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
     (v) => v.user.actions.onToggleHideWatched
   );
   const auth = useAppContext((v) => v.requestHelpers.auth);
-  const fetchNotifications = useAppContext(
-    (v) => v.requestHelpers.fetchNotifications
-  );
+  const loadRewards = useAppContext((v) => v.requestHelpers.loadRewards);
   const loadRightMenuVideos = useAppContext(
     (v) => v.requestHelpers.loadRightMenuVideos
   );
@@ -58,9 +56,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
   const totalRewardedTwinkleCoins = useNotiContext(
     (v) => v.state.totalRewardedTwinkleCoins
   );
-  const onFetchNotifications = useNotiContext(
-    (v) => v.actions.onFetchNotifications
-  );
+  const onLoadRewards = useNotiContext((v) => v.actions.onLoadRewards);
 
   const [continueWatchingVideos, setContinueWatchingVideos] = useState([]);
   const [nextVideos, setNextVideos] = useState([]);
@@ -108,7 +104,7 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
 
     async function handleNewReward({ receiverId }) {
       if (receiverId === userId) {
-        handleFetchNotifications();
+        handleLoadRewards();
       }
     }
 
@@ -312,10 +308,20 @@ export default function NavMenu({ playlistId, videoId, isContinuing }) {
     </ErrorBoundary>
   );
 
-  async function handleFetchNotifications() {
-    const data = await fetchNotifications();
+  async function handleLoadRewards() {
+    const {
+      rewards,
+      loadMoreRewards,
+      totalRewardedTwinkles,
+      totalRewardedTwinkleCoins
+    } = await loadRewards();
     if (mounted.current) {
-      onFetchNotifications(data);
+      onLoadRewards({
+        rewards,
+        loadMoreRewards,
+        totalRewardedTwinkles,
+        totalRewardedTwinkleCoins
+      });
     }
   }
 

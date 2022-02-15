@@ -8,24 +8,29 @@ import Loading from 'components/Loading';
 import { container } from './Styles';
 import { defaultChatSubject } from 'constants/defaultValues';
 import { useMyState } from 'helpers/hooks';
-import { useAppContext, useNotiContext } from 'contexts';
+import { useAppContext, useNotiContext, useViewContext } from 'contexts';
+import { isMobile } from 'helpers';
 import localize from 'constants/localize';
 
+const deviceIsMobile = isMobile(navigator);
 const newsLabel = localize('news');
 const rankingsLabel = localize('rankings');
 
 Notification.propTypes = {
   className: PropTypes.string,
   location: PropTypes.string,
-  style: PropTypes.object
+  style: PropTypes.object,
+  trackScrollPosition: PropTypes.bool
 };
 
-function Notification({ className, location, style }) {
+function Notification({ className, location, style, trackScrollPosition }) {
+  const ContainerRef = useRef(null);
   const loadRankings = useAppContext((v) => v.requestHelpers.loadRankings);
   const fetchNotifications = useAppContext(
     (v) => v.requestHelpers.fetchNotifications
   );
-  const { userId, twinkleXP } = useMyState();
+  const loadRewards = useAppContext((v) => v.requestHelpers.loadRewards);
+  const { userId } = useMyState();
   const loadMore = useNotiContext((v) => v.state.loadMore);
   const notifications = useNotiContext((v) => v.state.notifications);
   const numNewNotis = useNotiContext((v) => v.state.numNewNotis);
@@ -48,16 +53,20 @@ function Notification({ className, location, style }) {
   const onFetchNotifications = useNotiContext(
     (v) => v.actions.onFetchNotifications
   );
+  const onLoadRewards = useNotiContext((v) => v.actions.onLoadRewards);
   const onGetRanks = useNotiContext((v) => v.actions.onGetRanks);
   const onResetRewards = useNotiContext((v) => v.actions.onResetRewards);
   const onSetPrevUserId = useNotiContext((v) => v.actions.onSetPrevUserId);
+  const scrollPositions = useViewContext((v) => v.state.scrollPositions);
+  const onRecordScrollPosition = useViewContext(
+    (v) => v.actions.onRecordScrollPosition
+  );
 
   const loadingNotificationRef = useRef(false);
   const [loadingNotifications, setLoadingNotifications] = useState(false);
   const [activeTab, setActiveTab] = useState('rankings');
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
-  const prevTwinkleXP = useRef(twinkleXP);
 
   useEffect(() => {
     mounted.current = true;
@@ -97,19 +106,23 @@ function Notification({ className, location, style }) {
   ]);
 
   useEffect(() => {
-    userChangedTab.current = false;
-    handleFetchNotifications();
+    if (!userId && !prevUserId) {
+      fetchRankings();
+    }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [userId]);
+  }, []);
 
   useEffect(() => {
+    userChangedTab.current = false;
     onResetRewards();
-    if (userId !== prevUserId) {
-      if (activeTab === 'reward') {
-        setActiveTab('notification');
-      }
+    if (activeTab === 'reward') {
+      setActiveTab('notification');
+    }
+    if (!userId) {
       onClearNotifications();
-      handleFetchNotifications(true);
+    }
+    if ((userId && userId !== prevUserId) || (!userId && prevUserId)) {
+      handleFetchNotifications();
     }
     onSetPrevUserId(userId);
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -117,14 +130,18 @@ function Notification({ className, location, style }) {
 
   useEffect(() => {
     if (
-      typeof twinkleXP === 'number' &&
-      twinkleXP > (prevTwinkleXP.current || 0)
+      trackScrollPosition &&
+      !deviceIsMobile &&
+      scrollPositions?.[`notification-${location}`] &&
+      activeTab === 'notification'
     ) {
-      fetchRankings();
+      setTimeout(() => {
+        ContainerRef.current.scrollTop =
+          scrollPositions[`notification-${location}`];
+      }, 10);
     }
-    prevTwinkleXP.current = twinkleXP;
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [twinkleXP]);
+  }, [activeTab]);
 
   const rewardTabShown = useMemo(() => {
     return (
@@ -134,7 +151,12 @@ function Notification({ className, location, style }) {
 
   return (
     <ErrorBoundary>
-      <div style={style} className={`${container} ${className}`}>
+      <div
+        ref={ContainerRef}
+        onScroll={handleScroll}
+        style={style}
+        className={`${container} ${className}`}
+      >
         <section
           style={{
             marginBottom: '1rem',
@@ -226,20 +248,40 @@ function Notification({ className, location, style }) {
     </ErrorBoundary>
   );
 
-  function handleFetchNotifications(reloading) {
-    if (reloading || notifications.length === 0) {
+  async function handleFetchNotifications() {
+    await fetchRankings();
+    if (notifications.length === 0) {
       fetchNews();
     }
-    fetchRankings();
   }
 
   async function fetchNews() {
     if (!loadingNotificationRef.current) {
       setLoadingNotifications(true);
       loadingNotificationRef.current = true;
-      const data = await fetchNotifications();
+      const [
+        { currentChatSubject, loadMoreNotifications, notifications },
+        {
+          rewards,
+          loadMoreRewards,
+          totalRewardedTwinkles,
+          totalRewardedTwinkleCoins
+        }
+      ] = await Promise.all([fetchNotifications(), loadRewards()]);
       if (mounted.current) {
-        onFetchNotifications(data);
+        onLoadRewards({
+          rewards,
+          loadMoreRewards,
+          totalRewardedTwinkles,
+          totalRewardedTwinkleCoins
+        });
+      }
+      if (mounted.current) {
+        onFetchNotifications({
+          currentChatSubject,
+          loadMoreNotifications,
+          notifications
+        });
       }
       if (mounted.current) {
         setLoadingNotifications(false);
@@ -270,6 +312,15 @@ function Notification({ className, location, style }) {
         myMonthlyXP
       });
     }
+    return Promise.resolve();
+  }
+
+  function handleScroll(event) {
+    if (!trackScrollPosition || activeTab !== 'notification') return;
+    onRecordScrollPosition({
+      section: `notification-${location}`,
+      position: event.target.scrollTop
+    });
   }
 }
 

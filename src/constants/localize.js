@@ -664,6 +664,10 @@ const languageObj = {
     en: 'Leaderboard',
     kr: '리더보드'
   },
+  leaderboards: {
+    en: 'Leaderboards',
+    kr: '리더보드'
+  },
   leave: {
     en: 'Leave',
     kr: '나가기'

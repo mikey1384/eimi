@@ -124,6 +124,7 @@ export default function SelectFeaturedSubjectsModal({
                 displayedSubjects.map((subjectId) => (
                   <ContentListItem
                     selectable
+                    modalOverModal
                     selected={selected.includes(subjectId)}
                     key={subjectId}
                     style={{ width: '100%', marginBottom: '1rem' }}
@@ -150,6 +151,7 @@ export default function SelectFeaturedSubjectsModal({
                 selected.map((selectedId, index) => (
                   <ContentListItem
                     selectable
+                    modalOverModal
                     selected={selected.includes(selectedId)}
                     key={selectedId}
                     style={{

@@ -349,10 +349,12 @@ function ProfilePanel({ expandable, profileId, style }) {
                     style={{
                       width: '20rem',
                       display: 'flex',
+                      alignItems: 'center',
                       flexDirection: 'column'
                     }}
                   >
                     <div
+                      style={{ width: 'CALC(100% - 2rem)' }}
                       onMouseEnter={() => setMouseEnteredProfile(true)}
                       onMouseLeave={() => setMouseEnteredProfile(false)}
                     >
@@ -360,18 +362,19 @@ function ProfilePanel({ expandable, profileId, style }) {
                         onClick={handleReloadProfile}
                         to={`/users/${profileName}`}
                       >
-                        <ProfilePic
-                          style={{
-                            width: '18rem',
-                            height: '18rem',
-                            cursor: 'pointer'
-                          }}
-                          userId={profileId}
-                          profilePicUrl={profilePicUrl}
-                          online={!!online}
-                          statusShown
-                          large
-                        />
+                        <div>
+                          <ProfilePic
+                            style={{
+                              width: '100%',
+                              cursor: 'pointer'
+                            }}
+                            userId={profileId}
+                            profilePicUrl={profilePicUrl}
+                            online={!!online}
+                            statusShown
+                            large
+                          />
+                        </div>
                       </Link>
                     </div>
                     <div

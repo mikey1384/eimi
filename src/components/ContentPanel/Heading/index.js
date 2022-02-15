@@ -38,11 +38,13 @@ function Heading({
 
   return (
     <header className="heading">
-      <ProfilePic
-        style={{ width: '6rem', height: '6rem' }}
-        userId={uploader.id}
-        profilePicUrl={uploader.profilePicUrl}
-      />
+      <div>
+        <ProfilePic
+          style={{ width: '6rem' }}
+          userId={uploader.id}
+          profilePicUrl={uploader.profilePicUrl}
+        />
+      </div>
       <div
         style={{
           width: '90%',

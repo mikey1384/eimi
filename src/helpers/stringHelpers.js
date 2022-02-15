@@ -583,7 +583,7 @@ export function processedStringWithURL(string) {
       .replace(
         blueWordRegex,
         (string) =>
-          `<span style="color: blue;">${string.substring(
+          `<span style="color: rgb(5,110,178);">${string.substring(
             2,
             string.length - 2
           )}</span>`
@@ -607,7 +607,7 @@ export function processedStringWithURL(string) {
       .replace(
         logoBlueWordRegex,
         (string) =>
-          `<span style="color: rgb(75, 155, 225);">${string.substring(
+          `<span style="color: rgb(65, 140, 235);">${string.substring(
             3,
             string.length - 3
           )}</span>`
@@ -639,7 +639,7 @@ export function processedStringWithURL(string) {
       .replace(
         purpleWordRegex,
         (string) =>
-          `<span style="color: purple;">${string.substring(
+          `<span style="color: rgb(152,28,235);">${string.substring(
             3,
             string.length - 3
           )}</span>`
@@ -723,7 +723,7 @@ export function processedStringWithURL(string) {
       .replace(
         blueSentenceRegex,
         (string) =>
-          `<span style="color: blue;">${string.substring(
+          `<span style="color: rgb(5,110,178);">${string.substring(
             2,
             string.length - 2
           )}</span>`
@@ -747,7 +747,7 @@ export function processedStringWithURL(string) {
       .replace(
         logoBlueSentenceRegex,
         (string) =>
-          `<span style="color: rgb(75, 155, 225);">${string.substring(
+          `<span style="color: rgb(65, 140, 235);">${string.substring(
             3,
             string.length - 3
           )}</span>`
@@ -771,7 +771,7 @@ export function processedStringWithURL(string) {
       .replace(
         purpleSentenceRegex,
         (string) =>
-          `<span style="color: purple;">${string.substring(
+          `<span style="color: rgb(152,28,235);">${string.substring(
             3,
             string.length - 3
           )}</span>`
@@ -904,14 +904,9 @@ export function replaceFakeAtSymbol(string) {
 }
 
 export function stringIsEmpty(string) {
-  if (typeof string === 'string' && string.length > 0) {
-    return false;
-  }
-  const checkedString =
-    string && typeof string === 'string'
-      ? string.replace(/\s/g, '').replace(/\r?\n/g, '')
-      : '';
-  return checkedString === '';
+  const evalString = string || '';
+  if (evalString && typeof evalString !== 'string') return true;
+  return evalString.length === 0 || !evalString.trim();
 }
 
 export function translateMBToGB(size) {

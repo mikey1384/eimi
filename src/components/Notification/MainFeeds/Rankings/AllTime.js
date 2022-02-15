@@ -5,7 +5,8 @@ import RankingsListItem from 'components/RankingsListItem';
 import localize from 'constants/localize';
 import FilterBar from 'components/FilterBar';
 import MyRank from 'components/MyRank';
-import { Color, borderRadius } from 'constants/css';
+import { css } from '@emotion/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 
 const myRankingLabel = localize('myRanking');
 const top30Label = localize('top30');
@@ -26,7 +27,7 @@ export default function AllTime({
   myAllTimeXP,
   top30s
 }) {
-  const [allSelected, setAllSelected] = useState(true);
+  const [allSelected, setAllSelected] = useState(!!myId);
   const users = useMemo(() => {
     if (allSelected) {
       return allRanks;
@@ -67,12 +68,17 @@ export default function AllTime({
       )}
       {users.length === 0 || (allSelected && loggedIn && myAllTimeXP === 0) ? (
         <div
-          style={{
-            background: '#fff',
-            borderRadius,
-            padding: '1rem',
-            border: `1px solid ${Color.borderGray()}`
-          }}
+          className={css`
+            border-radius: ${borderRadius};
+            border: 1px solid ${Color.borderGray()};
+            background: #fff;
+            padding: 1rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              border-radius: 0;
+              border-left: none;
+              border-right: none;
+            }
+          `}
         >
           {notRankedDescriptionLabel}
         </div>

@@ -81,8 +81,8 @@ export default function ImageEditModal({
                 // eslint-disable-next-line no-undef
                 src={originalImageUrl}
                 crop={crop}
-                minWidth={250}
-                minHeight={250}
+                minWidth={50}
+                minHeight={50}
                 keepSelection
                 ruleOfThirds
                 onImageLoaded={(image) => (ImageRef.current = image)}

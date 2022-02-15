@@ -68,11 +68,13 @@ export default function Collector({ myId, style, user }) {
             alignItems: 'center'
           }}
         >
-          <ProfilePic
-            style={{ width: '3rem', height: '3rem' }}
-            profilePicUrl={user.profilePicUrl}
-            userId={user.id}
-          />
+          <div>
+            <ProfilePic
+              style={{ width: '3rem' }}
+              profilePicUrl={user.profilePicUrl}
+              userId={user.id}
+            />
+          </div>
           <UsernameText
             color={textColor}
             user={{ ...user, username: user.username }}

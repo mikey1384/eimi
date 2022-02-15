@@ -61,6 +61,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
   const fetchNotifications = useAppContext(
     (v) => v.requestHelpers.fetchNotifications
   );
+  const loadRewards = useAppContext((v) => v.requestHelpers.loadRewards);
   const getNumberOfUnreadMessages = useAppContext(
     (v) => v.requestHelpers.getNumberOfUnreadMessages
   );
@@ -175,6 +176,7 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
   const onFetchNotifications = useNotiContext(
     (v) => v.actions.onFetchNotifications
   );
+  const onLoadRewards = useNotiContext((v) => v.actions.onLoadRewards);
   const onGetRanks = useNotiContext((v) => v.actions.onGetRanks);
   const onIncreaseNumNewPosts = useNotiContext(
     (v) => v.actions.onIncreaseNumNewPosts
@@ -553,8 +555,26 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
         });
       }
       if (receiverId === userId) {
-        const data = await fetchNotifications();
-        onFetchNotifications(data);
+        const [
+          { currentChatSubject, loadMoreNotifications, notifications },
+          {
+            rewards,
+            loadMoreRewards,
+            totalRewardedTwinkles,
+            totalRewardedTwinkleCoins
+          }
+        ] = await Promise.all([fetchNotifications(), loadRewards()]);
+        onLoadRewards({
+          rewards,
+          loadMoreRewards,
+          totalRewardedTwinkles,
+          totalRewardedTwinkleCoins
+        });
+        onFetchNotifications({
+          currentChatSubject,
+          loadMoreNotifications,
+          notifications
+        });
       }
     }
 
@@ -634,7 +654,8 @@ export default function Header({ onMobileMenuOpen, style = {} }) {
           message,
           channel,
           pageVisible,
-          usingChat
+          usingChat,
+          newMembers
         });
       }
       if (message.targetMessage?.userId === userId && message.rewardAmount) {

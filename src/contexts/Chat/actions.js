@@ -356,7 +356,8 @@ export default function ChatActions(dispatch) {
       channel,
       pageVisible,
       usingChat,
-      isMyMessage
+      isMyMessage,
+      newMembers = []
     }) {
       return dispatch({
         type: 'RECEIVE_MSG_ON_DIFF_CHANNEL',
@@ -364,7 +365,8 @@ export default function ChatActions(dispatch) {
         channel,
         pageVisible,
         usingChat,
-        isMyMessage
+        isMyMessage,
+        newMembers
       });
     },
     onReceiveVocabActivity({ activity, usingVocabSection }) {

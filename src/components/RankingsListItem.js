@@ -10,10 +10,17 @@ RankingsListItem.propTypes = {
   myId: PropTypes.number,
   small: PropTypes.bool,
   style: PropTypes.object,
-  user: PropTypes.object
+  user: PropTypes.object,
+  onUsermenuShownChange: PropTypes.func
 };
 
-export default function RankingsListItem({ myId, small, style, user }) {
+export default function RankingsListItem({
+  myId,
+  small,
+  style,
+  user,
+  onUsermenuShownChange = () => {}
+}) {
   const rankColor = useMemo(() => {
     return user.rank === 1
       ? Color.gold()
@@ -99,11 +106,13 @@ export default function RankingsListItem({ myId, small, style, user }) {
             alignItems: 'center'
           }}
         >
-          <ProfilePic
-            style={{ width: profileSize, height: profileSize }}
-            profilePicUrl={user.profilePicUrl}
-            userId={user.id}
-          />
+          <div>
+            <ProfilePic
+              style={{ width: profileSize }}
+              profilePicUrl={user.profilePicUrl}
+              userId={user.id}
+            />
+          </div>
           <UsernameText
             color={
               rankColor ||
@@ -111,6 +120,7 @@ export default function RankingsListItem({ myId, small, style, user }) {
             }
             user={{ ...user, username: user.username }}
             userId={myId}
+            onMenuShownChange={onUsermenuShownChange}
             className={css`
               max-width: 15rem;
               margin-top: 0.5rem;

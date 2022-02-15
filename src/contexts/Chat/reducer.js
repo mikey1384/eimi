@@ -991,7 +991,7 @@ export default function ChatReducer(state, action) {
             ),
             messagesObj: {
               ...state.channelsObj[action.message.channelId].messagesObj,
-              [messageId]: action.message
+              [messageId]: { ...action.message, id: messageId }
             },
             members: [
               ...state.channelsObj[action.message.channelId].members,
@@ -1076,12 +1076,26 @@ export default function ChatReducer(state, action) {
           [action.channel.id]: {
             ...state.channelsObj[action.channel.id],
             ...action.channel,
+            ...(state.channelsObj[action.channel.id]?.members &&
+            action.newMembers.length > 0
+              ? {
+                  members: [
+                    ...state.channelsObj[action.channel.id]?.members,
+                    ...action.newMembers.filter(
+                      (newMember) =>
+                        !state.channelsObj[action.channel.id].members
+                          .map((member) => member.id)
+                          .includes(newMember.id)
+                    )
+                  ]
+                }
+              : {}),
             messageIds: [messageId].concat(
               state.channelsObj[action.channel.id]?.messageIds || []
             ),
             messagesObj: {
               ...state.channelsObj[action.channel.id]?.messagesObj,
-              [messageId]: action.message
+              [messageId]: { ...action.message, id: messageId }
             },
             numUnreads: action.isMyMessage
               ? Number(state.channelsObj[action.channel.id]?.numUnreads || 0)

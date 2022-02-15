@@ -59,9 +59,10 @@ export default function StarButton({
     () =>
       contentType === 'subject' &&
       !filePath &&
-      (description || defaultDescription)?.length >
-        DESCRIPTION_LENGTH_FOR_EXTRA_REWARD_LEVEL,
-    [contentType, defaultDescription, description, filePath]
+      (byUser ||
+        (description || defaultDescription)?.length >
+          DESCRIPTION_LENGTH_FOR_EXTRA_REWARD_LEVEL),
+    [byUser, contentType, defaultDescription, description, filePath]
   );
   const showsDropdownWhenClicked = useMemo(() => {
     return (

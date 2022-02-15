@@ -5,7 +5,8 @@ import RankingsListItem from 'components/RankingsListItem';
 import localize from 'constants/localize';
 import FilterBar from 'components/FilterBar';
 import MyRank from 'components/MyRank';
-import { Color, borderRadius } from 'constants/css';
+import { css } from '@emotion/css';
+import { Color, borderRadius, mobileMaxWidth } from 'constants/css';
 
 const noRankersThisMonthLabel = localize('noRankersThisMonth');
 const myRankingLabel = localize('myRanking');
@@ -27,51 +28,58 @@ export default function ThisMonth({
   myMonthlyRank,
   myMonthlyXP
 }) {
-  const [allSelected, setAllSelected] = useState(true);
+  const [allSelected, setAllSelected] = useState(!!myId);
   const users = useMemo(() => {
     if (allSelected) {
       return allMonthly;
     }
-    return top30sMonthly;
+    return top30sMonthly || [];
   }, [allMonthly, allSelected, top30sMonthly]);
   const loggedIn = !!myId;
   return (
     <>
-      <FilterBar
-        bordered
-        style={{
-          height: '4.5rem',
-          fontSize: '1.6rem'
-        }}
-      >
-        <nav
-          className={allSelected ? 'active' : ''}
-          onClick={() => {
-            setAllSelected(true);
+      {loggedIn && (
+        <FilterBar
+          bordered
+          style={{
+            height: '4.5rem',
+            fontSize: '1.6rem'
           }}
         >
-          {myRankingLabel}
-        </nav>
-        <nav
-          className={allSelected ? '' : 'active'}
-          onClick={() => {
-            setAllSelected(false);
-          }}
-        >
-          {top30Label}
-        </nav>
-      </FilterBar>
+          <nav
+            className={allSelected ? 'active' : ''}
+            onClick={() => {
+              setAllSelected(true);
+            }}
+          >
+            {myRankingLabel}
+          </nav>
+          <nav
+            className={allSelected ? '' : 'active'}
+            onClick={() => {
+              setAllSelected(false);
+            }}
+          >
+            {top30Label}
+          </nav>
+        </FilterBar>
+      )}
       {loggedIn && allSelected && (
         <MyRank myId={myId} rank={myMonthlyRank} twinkleXP={myMonthlyXP} />
       )}
       {users.length === 0 || (allSelected && myMonthlyXP === 0) ? (
         <div
-          style={{
-            background: '#fff',
-            borderRadius,
-            padding: '1rem',
-            border: `1px solid ${Color.borderGray()}`
-          }}
+          className={css`
+            border-radius: ${borderRadius};
+            border: 1px solid ${Color.borderGray()};
+            background: #fff;
+            padding: 1rem;
+            @media (max-width: ${mobileMaxWidth}) {
+              border-radius: 0;
+              border-left: none;
+              border-right: none;
+            }
+          `}
         >
           {myMonthlyXP === 0
             ? notRankedForThisMonthLabel

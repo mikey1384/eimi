@@ -38,14 +38,16 @@ export default function ProfileWidget({ history, onLoadImage, onShowAlert }) {
               username ? history.push(`/users/${username}`) : null
             }
           >
-            <ProfilePic
-              className="widget__profile-pic"
-              style={{
-                cursor: userId ? 'pointer' : 'default'
-              }}
-              userId={userId}
-              profilePicUrl={profilePicUrl}
-            />
+            <div>
+              <ProfilePic
+                className="widget__profile-pic"
+                style={{
+                  cursor: userId ? 'pointer' : 'default'
+                }}
+                userId={userId}
+                profilePicUrl={profilePicUrl}
+              />
+            </div>
             <div className="names">
               <a>{username}</a>
               {realName && (

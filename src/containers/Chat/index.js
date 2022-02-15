@@ -249,7 +249,6 @@ function Chat({ onFileUpload }) {
   const [creatingChat, setCreatingChat] = useState(false);
   const [createNewChatModalShown, setCreateNewChatModalShown] = useState(false);
   const [userListModalShown, setUserListModalShown] = useState(false);
-  const [partner, setPartner] = useState(null);
   const [loading, setLoading] = useState(false);
   const loadingRef = useRef(false);
   const prevPathId = useRef('');
@@ -388,18 +387,20 @@ function Chat({ onFileUpload }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [pageVisible, socketConnected]);
 
-  useEffect(() => {
-    const otherMember = currentChannel.twoPeople
+  const partner = useMemo(() => {
+    return currentChannel?.twoPeople
       ? currentChannel?.members?.filter(
           (member) => Number(member.id) !== userId
         )?.[0]
       : null;
-    setPartner(otherMember);
+  }, [currentChannel?.members, currentChannel?.twoPeople, userId]);
+
+  useEffect(() => {
     onSetCurrentChannelName(
-      otherMember?.username || channelsObj[currentChannel?.id]?.channelName
+      partner?.username || channelsObj[currentChannel?.id]?.channelName
     );
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [channelsObj, currentChannel, userId]);
+  }, [partner, channelsObj, currentChannel]);
 
   useEffect(() => {
     socket.on('chess_move_made', onNotifiedMoveMade);

@@ -1,6 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
-import { Color } from 'constants/css';
+import { Color, mobileMaxWidth } from 'constants/css';
 import { css } from '@emotion/css';
 import TextareaAutosize from 'react-textarea-autosize';
 
@@ -25,10 +25,10 @@ export default function Textarea({
       type={type}
       ref={innerRef}
       className={`${className} ${css`
+        font-family: 'Noto Sans', Helvetica, sans-serif, Arial;
         width: 100%;
-        line-height: 1.5;
         position: relative;
-        font-size: 1.6rem;
+        font-size: 1.7rem;
         padding: 1rem;
         border: 1px solid ${Color.darkerBorderGray()};
         &:focus {
@@ -41,6 +41,10 @@ export default function Textarea({
         }
         ::placeholder {
           color: ${Color.gray()};
+        }
+        @media (max-width: ${mobileMaxWidth}) {
+          line-height: 1.6;
+          font-size: 1.5rem;
         }
       `}`}
     />

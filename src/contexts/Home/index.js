@@ -17,7 +17,8 @@ export const initialHomeState = {
   loadMoreButton: false,
   subFilter: 'all',
   submittingSubject: false,
-  uploadingFile: false
+  uploadingFile: false,
+  leaderboardsObj: {}
 };
 
 HomeContextProvider.propTypes = {

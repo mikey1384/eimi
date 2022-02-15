@@ -66,6 +66,7 @@ function App({ location, history }) {
   );
   const auth = useAppContext((v) => v.requestHelpers.auth);
   const loadMyData = useAppContext((v) => v.requestHelpers.loadMyData);
+  const loadRankings = useAppContext((v) => v.requestHelpers.loadRankings);
   const recordUserTraffic = useAppContext(
     (v) => v.requestHelpers.recordUserTraffic
   );
@@ -74,8 +75,14 @@ function App({ location, history }) {
   const uploadFileOnChat = useAppContext(
     (v) => v.requestHelpers.uploadFileOnChat
   );
-  const { authLevel, profilePicUrl, signinModalShown, userId, username } =
-    useMyState();
+  const {
+    authLevel,
+    profilePicUrl,
+    signinModalShown,
+    twinkleXP,
+    userId,
+    username
+  } = useMyState();
   const channelOnCall = useChatContext((v) => v.state.channelOnCall);
   const channelsObj = useChatContext((v) => v.state.channelsObj);
   const currentChannelName = useChatContext((v) => v.state.currentChannelName);
@@ -125,6 +132,7 @@ function App({ location, history }) {
   );
   const updateDetail = useNotiContext((v) => v.state.updateDetail);
   const updateNoticeShown = useNotiContext((v) => v.state.updateNoticeShown);
+  const onGetRanks = useNotiContext((v) => v.actions.onGetRanks);
   const pageVisible = useViewContext((v) => v.state.pageVisible);
   const scrollPositions = useViewContext((v) => v.state.scrollPositions);
   const onChangePageVisibility = useViewContext(
@@ -144,6 +152,7 @@ function App({ location, history }) {
   const visibilityChangeRef = useRef(null);
   const hiddenRef = useRef(null);
   const authRef = useRef(null);
+  const prevTwinkleXP = useRef(twinkleXP);
   const mounted = useRef(true);
   const usingChat = useMemo(
     () => getSectionFromPathname(location?.pathname)?.section === 'chat',
@@ -156,6 +165,42 @@ function App({ location, history }) {
     scrollPositions,
     isMobile: deviceIsMobile
   });
+
+  useEffect(() => {
+    if (
+      typeof twinkleXP === 'number' &&
+      twinkleXP > (prevTwinkleXP.current || 0)
+    ) {
+      handleLoadRankings();
+    }
+    prevTwinkleXP.current = twinkleXP;
+
+    async function handleLoadRankings() {
+      const {
+        all,
+        top30s,
+        allMonthly,
+        top30sMonthly,
+        myMonthlyRank,
+        myAllTimeRank,
+        myAllTimeXP,
+        myMonthlyXP
+      } = await loadRankings();
+      if (mounted.current) {
+        onGetRanks({
+          all,
+          top30s,
+          allMonthly,
+          top30sMonthly,
+          myMonthlyRank,
+          myAllTimeRank,
+          myAllTimeXP,
+          myMonthlyXP
+        });
+      }
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [twinkleXP]);
 
   useEffect(() => {
     mounted.current = true;
@@ -563,6 +608,13 @@ function App({ location, history }) {
       {signinModalShown && <SigninModal show onHide={onCloseSigninModal} />}
       {channelOnCall.incomingShown && <Incoming />}
       {outgoingShown && <Outgoing />}
+      <div
+        className={css`
+          opacity: 0;
+          position: fixed;
+          background: url('/img/emojis.png');
+        `}
+      />
     </div>
   );
 }

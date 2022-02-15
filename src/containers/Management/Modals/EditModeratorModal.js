@@ -64,6 +64,7 @@ export default function EditModeratorModal({ accountTypes, onHide, target }) {
         </div>
         <DropdownButton
           style={{ marginTop: '1rem' }}
+          icon="chevron-down"
           skeuomorphic
           text={selectedAccountType || 'Not Selected'}
           color="darkerGray"

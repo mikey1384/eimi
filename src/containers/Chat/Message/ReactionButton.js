@@ -36,7 +36,7 @@ export default function ReactionButton({
   const BarRef = useRef(null);
   const coolDownRef = useRef(null);
   useOutsideClick(BarRef, () => {
-    if (!deviceIsMobile) return;
+    if (!deviceIsMobile || !reactionsMenuShown) return;
     coolDownRef.current = true;
     onSetReactionsMenuShown(false);
     setTimeout(() => {
@@ -55,44 +55,42 @@ export default function ReactionButton({
           deviceIsMobile ? {} : onSetReactionsMenuShown(false)
         }
       >
-        {reactionsMenuShown && (
-          <div
-            ref={BarRef}
-            style={{
-              width: '20rem',
-              background: 'rgb(255, 255, 255)',
-              display: 'flex',
-              justifyContent: 'space-around',
-              alignItems: 'center',
-              marginRight: '0.5rem',
-              boxShadow: `0 0 1px ${Color.black()}`,
-              outline: 0
-            }}
-          >
-            {reactions.map((reaction) => (
-              <div
-                key={reaction}
-                className={css`
-                  cursor: pointer;
-                  width: 2rem;
-                  height: 2rem;
-                  background: url('${process.env.PUBLIC_URL}/img/emojis.png')
-                    ${reactionsObj[reaction].position} / 5100%;
-                  transition: all 0.1s ease-in-out;
+        <div
+          ref={BarRef}
+          style={{
+            display: reactionsMenuShown ? 'flex' : 'none',
+            width: '20rem',
+            background: 'rgb(255, 255, 255)',
+            justifyContent: 'space-around',
+            alignItems: 'center',
+            marginRight: '0.5rem',
+            boxShadow: `0 0 1px ${Color.black()}`,
+            outline: 0
+          }}
+        >
+          {reactions.map((reaction) => (
+            <div
+              key={reaction}
+              className={css`
+                cursor: pointer;
+                width: 2rem;
+                height: 2rem;
+                background: url('/img/emojis.png')
+                  ${reactionsObj[reaction].position} / 5100%;
+                transition: all 0.1s ease-in-out;
+                &:hover {
+                  transform: scale(1.5);
+                }
+                @media (max-width: ${mobileMaxWidth}) {
                   &:hover {
-                    transform: scale(1.5);
+                    transform: none;
                   }
-                  @media (max-width: ${mobileMaxWidth}) {
-                    &:hover {
-                      transform: none;
-                    }
-                  }
-                `}
-                onClick={() => handleReactionClick(reaction)}
-              />
-            ))}
-          </div>
-        )}
+                }
+              `}
+              onClick={() => handleReactionClick(reaction)}
+            />
+          ))}
+        </div>
         <Button
           className="menu-button"
           style={{ padding: '0.5rem 0.7rem', lineHeight: 1 }}

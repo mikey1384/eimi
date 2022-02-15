@@ -79,18 +79,19 @@ export default function UserListModal({
                   }}
                 >
                   <div style={{ display: 'flex', alignItems: 'center' }}>
-                    <ProfilePic
-                      style={{
-                        width: '3rem',
-                        height: '3rem',
-                        cursor: 'pointer'
-                      }}
-                      userId={user.id}
-                      profilePicUrl={user.profilePicUrl}
-                      online={!!user.online}
-                      onClick={() => history.push(`/users/${user.username}`)}
-                      statusShown
-                    />
+                    <div>
+                      <ProfilePic
+                        style={{
+                          width: '3rem',
+                          cursor: 'pointer'
+                        }}
+                        userId={user.id}
+                        profilePicUrl={user.profilePicUrl}
+                        online={!!user.online}
+                        onClick={() => history.push(`/users/${user.username}`)}
+                        statusShown
+                      />
+                    </div>
                     <div style={{ marginLeft: '1rem' }}>
                       <b>{user.username}</b>{' '}
                       <span

@@ -85,7 +85,7 @@ function Home({ history, location, onFileUpload }) {
               </Switch>
             </div>
           </div>
-          <Notification className={Right} location="home" />
+          <Notification trackScrollPosition className={Right} location="home" />
           {imageEditModalShown && (
             <ImageEditModal
               isProfilePic

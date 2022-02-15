@@ -11,10 +11,8 @@ export const MessageStyle = {
   `,
   profilePic: css`
     width: 5vw;
-    height: 5vw;
     @media (max-width: ${mobileMaxWidth}) {
       width: 6vw;
-      height: 5.8vw;
     }
   `,
   messageWrapper: css`

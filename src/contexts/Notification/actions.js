@@ -22,10 +22,30 @@ export default function NotiActions(dispatch) {
         type: 'CLEAR_NOTIFICATIONS'
       });
     },
-    onFetchNotifications(data) {
+    onFetchNotifications({
+      currentChatSubject,
+      loadMoreNotifications,
+      notifications
+    }) {
       return dispatch({
         type: 'LOAD_NOTIFICATIONS',
-        data
+        currentChatSubject,
+        loadMoreNotifications,
+        notifications
+      });
+    },
+    onLoadRewards({
+      rewards,
+      loadMoreRewards,
+      totalRewardedTwinkles,
+      totalRewardedTwinkleCoins
+    }) {
+      return dispatch({
+        type: 'LOAD_REWARDS',
+        rewards,
+        loadMoreRewards,
+        totalRewardedTwinkles,
+        totalRewardedTwinkleCoins
       });
     },
     onGetRanks({
@@ -60,10 +80,11 @@ export default function NotiActions(dispatch) {
         type: 'INCREASE_NUM_NEW_POSTS'
       });
     },
-    onLoadMoreNotifications(data) {
+    onLoadMoreNotifications({ loadMoreNotifications, notifications }) {
       return dispatch({
         type: 'LOAD_MORE_NOTIFICATIONS',
-        data
+        loadMoreNotifications,
+        notifications
       });
     },
     onLoadMoreRewards(data) {

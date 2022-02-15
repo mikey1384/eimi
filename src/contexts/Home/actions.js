@@ -25,6 +25,13 @@ export default function HomeActions(dispatch) {
         loadMoreButton
       });
     },
+    onLoadMonthlyLeaderboards({ leaderboards, year }) {
+      return dispatch({
+        type: 'LOAD_MONTHLY_LEADERBOARDS',
+        leaderboards,
+        year
+      });
+    },
     onLoadMoreFeeds({ feeds, loadMoreButton }) {
       return dispatch({
         type: 'LOAD_MORE_FEEDS',
@@ -53,6 +60,13 @@ export default function HomeActions(dispatch) {
     onSetFileUploadComplete() {
       return dispatch({
         type: 'SET_FILE_UPLOAD_COMPLETE'
+      });
+    },
+    onSetLeaderboardsExpanded({ expanded, year }) {
+      return dispatch({
+        type: 'SET_LEADERBOARDS_EXPANDED',
+        expanded,
+        year
       });
     },
     onSetSecretAttachmentUploadComplete() {

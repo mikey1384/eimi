@@ -13,8 +13,8 @@ const monthLabel = moment().format('MMMM');
 const allTimeLabel = localize('allTime');
 
 export default function Rankings() {
-  const [thisMonthSelected, setThisMonthSelected] = useState(true);
   const { userId } = useMyState();
+  const [thisMonthSelected, setThisMonthSelected] = useState(!!userId);
   const allRanks = useNotiContext((v) => v.state.allRanks);
   const top30s = useNotiContext((v) => v.state.top30s);
   const allMonthly = useNotiContext((v) => v.state.allMonthly);
@@ -26,14 +26,12 @@ export default function Rankings() {
   const myAllTimeXP = useNotiContext((v) => v.state.myAllTimeXP);
   const userChangedTab = useRef(false);
   const mounted = useRef(true);
-  const prevId = useRef(userId);
 
   useEffect(() => {
     userChangedTab.current = false;
     if (!rankingsLoaded && mounted.current) {
       setThisMonthSelected(!!userId);
     }
-    prevId.current = userId;
   }, [userId, rankingsLoaded]);
 
   useEffect(() => {
@@ -42,34 +40,32 @@ export default function Rankings() {
 
   return (
     <ErrorBoundary>
-      {!!userId && (
-        <FilterBar
-          bordered
-          style={{
-            height: '4.5rem',
-            fontSize: '1.6rem'
+      <FilterBar
+        bordered
+        style={{
+          height: '4.5rem',
+          fontSize: '1.6rem'
+        }}
+      >
+        <nav
+          className={thisMonthSelected ? 'active' : ''}
+          onClick={() => {
+            userChangedTab.current = true;
+            setThisMonthSelected(true);
           }}
         >
-          <nav
-            className={thisMonthSelected ? 'active' : ''}
-            onClick={() => {
-              userChangedTab.current = true;
-              setThisMonthSelected(true);
-            }}
-          >
-            {monthLabel}
-          </nav>
-          <nav
-            className={thisMonthSelected ? '' : 'active'}
-            onClick={() => {
-              userChangedTab.current = true;
-              setThisMonthSelected(false);
-            }}
-          >
-            {allTimeLabel}
-          </nav>
-        </FilterBar>
-      )}
+          {monthLabel}
+        </nav>
+        <nav
+          className={thisMonthSelected ? '' : 'active'}
+          onClick={() => {
+            userChangedTab.current = true;
+            setThisMonthSelected(false);
+          }}
+        >
+          {allTimeLabel}
+        </nav>
+      </FilterBar>
       {rankingsLoaded === false && <Loading />}
       {rankingsLoaded && (
         <>

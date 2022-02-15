@@ -26,8 +26,14 @@ export default function notificationRequestHelpers({ auth, handleError }) {
             currentChatSubject: data
           });
         } else {
-          const { data } = await request.get(`${URL}/notification`, auth());
-          return Promise.resolve(data);
+          const {
+            data: { currentChatSubject, loadMoreNotifications, notifications }
+          } = await request.get(`${URL}/notification`, auth());
+          return Promise.resolve({
+            currentChatSubject,
+            loadMoreNotifications,
+            notifications
+          });
         }
       } catch (error) {
         return handleError(error);
@@ -35,11 +41,10 @@ export default function notificationRequestHelpers({ auth, handleError }) {
     },
     async loadMoreNotifications(lastId) {
       try {
-        const { data } = await request.get(
-          `${URL}/notification?lastId=${lastId}`,
-          auth()
-        );
-        return Promise.resolve(data);
+        const {
+          data: { loadMoreNotifications, notifications }
+        } = await request.get(`${URL}/notification?lastId=${lastId}`, auth());
+        return Promise.resolve({ loadMoreNotifications, notifications });
       } catch (error) {
         return handleError(error);
       }
@@ -51,6 +56,34 @@ export default function notificationRequestHelpers({ auth, handleError }) {
           auth()
         );
         return Promise.resolve(data);
+      } catch (error) {
+        return handleError(error);
+      }
+    },
+    async loadRewards() {
+      if (auth().headers.authorization === null) {
+        return {
+          rewards: [],
+          loadMore: false,
+          totalRewardedTwinkles: 0,
+          totalRewardedTwinkleCoins: 0
+        };
+      }
+      try {
+        const {
+          data: {
+            rewards,
+            loadMoreRewards,
+            totalRewardedTwinkles,
+            totalRewardedTwinkleCoins
+          }
+        } = await request.get(`${URL}/notification/rewards`, auth());
+        return Promise.resolve({
+          rewards,
+          loadMoreRewards,
+          totalRewardedTwinkles,
+          totalRewardedTwinkleCoins
+        });
       } catch (error) {
         return handleError(error);
       }

@@ -150,21 +150,17 @@ function Comment({
           align-items: space-between;
         `}
       >
-        <div
-          className={css`
-            width: 6rem;
-          `}
-        >
+        <div>
           <ProfilePic
             userId={reward.rewarderId}
             profilePicUrl={reward.rewarderProfilePicUrl}
-            style={{ width: '5rem', height: '5rem' }}
+            style={{ width: '5rem' }}
           />
         </div>
         <div
           className={css`
             width: 100%;
-            margin-left: 0.5rem;
+            margin-left: 1rem;
             font-size: 1.5rem;
             display: flex;
             justify-content: space-between;

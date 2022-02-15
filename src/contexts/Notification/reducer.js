@@ -51,17 +51,33 @@ export default function NotiReducer(state, action) {
     case 'LOAD_MORE_NOTIFICATIONS':
       return {
         ...state,
-        notifications: state.notifications.concat(action.data.notifications),
+        notifications: state.notifications.concat(action.notifications),
         loadMore: {
           ...state.loadMore,
-          ...action.data.loadMore
+          notifications: action.loadMoreNotifications
         }
       };
     case 'LOAD_NOTIFICATIONS':
       return {
         ...state,
-        ...action.data,
+        currentChatSubject: action.currentChatSubject,
+        notifications: action.notifications,
+        loadMore: {
+          ...state.loadMore,
+          notifications: action.loadMoreNotifications
+        },
         numNewNotis: 0
+      };
+    case 'LOAD_REWARDS':
+      return {
+        ...state,
+        rewards: action.rewards,
+        totalRewardedTwinkles: action.totalRewardedTwinkles,
+        totalRewardedTwinkleCoins: action.totalRewardedTwinkleCoins,
+        loadMore: {
+          ...state.loadMore,
+          rewards: action.loadMoreRewards
+        }
       };
     case 'LOAD_MORE_REWARDS':
       return {
