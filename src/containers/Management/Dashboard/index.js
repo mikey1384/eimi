@@ -47,7 +47,8 @@ export default function Dashboard() {
       style={{
         display: 'flex',
         justifyContent: 'center',
-        flexDirection: 'column'
+        flexDirection: 'column',
+        width: '100%'
       }}
     >
       <GraphBlock
@@ -68,6 +69,7 @@ export default function Dashboard() {
       />
       <GraphBlock
         title={`3) 체스`}
+        chartWidth={300}
         graphs={[
           { data: chess.toEnd },
           { data: chess.wins },

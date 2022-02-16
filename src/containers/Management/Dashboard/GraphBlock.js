@@ -6,10 +6,11 @@ import moment from 'moment';
 
 GraphBlock.propTypes = {
   title: PropTypes.string,
-  graphs: PropTypes.array.isRequired
+  graphs: PropTypes.array.isRequired,
+  chartWidth: PropTypes.number
 };
 
-export default function GraphBlock({ title, graphs }) {
+export default function GraphBlock({ title, graphs, chartWidth }) {
   // eslint-disable-next-line react/prop-types
   const CustomTooltip = ({ active, payload }) => {
     if (active && payload && payload.length) {
@@ -29,19 +30,30 @@ export default function GraphBlock({ title, graphs }) {
     return null;
   };
   return (
-    <div style={{ marginTop: '5rem' }}>
+    <div
+      style={{
+        marginTop: '5rem',
+        width: '100%',
+        display: 'flex',
+        justifyContent: 'center',
+        flexDirection: 'column',
+        alignItems: 'center'
+      }}
+    >
       <h2>{title}</h2>
       <div
         style={{
           display: 'flex',
+          flexWrap: 'wrap',
           marginTop: '3rem',
+          width: '750px',
           justifyContent: 'center'
         }}
       >
         {graphs.map((graph, index) => (
           <BarChart
             key={index}
-            width={250}
+            width={chartWidth || 250}
             height={300}
             data={graph.data}
             margin={{ top: 5, right: 20, left: 10, bottom: 5 }}
